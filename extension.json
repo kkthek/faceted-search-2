@@ -1,0 +1,47 @@
+{
+	"name": "FacetedSearch2",
+	"author": [
+		"[http://www.diqa-pm.com DIQA]"
+	],
+	"url": "https://github.com/kkthek/faceted-search2",
+	"descriptionmsg": "facetedsearch2-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"version": "2.3",
+	"requires": {
+		"MediaWiki": ">= 1.35",
+		"platform": {
+			"php": ">= 7.3"
+		}
+	},
+	"AutoloadNamespaces": {
+		"DIQA\\FacetedSearch2\\": "src/FacetedSearch2/"
+	},
+	"callback" : "DIQA\\FacetedSearch2\\Setup::initModules",
+	"SpecialPages": {
+		"FacetedSearch2": "DIQA\\FacetedSearch2\\Specials\\SpecialFacetedSearch"
+	},
+	"AutoloadNamespaces": {
+		"DIQA\\FacetedSearch2\\": "src/",
+		"DIQA\\FacetedSearch2\\Maintenance\\": "maintenance/"
+	},
+	"Hooks": {
+		"BeforePageDisplay": "DIQA\\FacetedSearch2\\Setup::onBeforePageDisplay"
+	},
+	"ExtensionMessagesFiles": {
+		"FacetedSearch2Magic": "i18n/MagicWords.php"
+	},
+	"MessagesDirs": {
+		"FacetedSearch2": [
+			"i18n"
+		]
+	},
+	"RestRoutes": [
+		{
+			"path": "/FacetedSearch2/v1/proxy",
+			"method": "GET",
+			"class": "DIQA\\FacetedSearch2\\ProxyRestEndpoint"
+		}
+	],
+	"manifest_version": 2
+}
