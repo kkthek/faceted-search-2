@@ -1,3 +1,9 @@
+/**
+ * Faceted search 2
+ *
+ * (c) 2024 DIQA Projektmanagement GmbH
+ *
+ */
 import Helper from "./helper";
 import {AttributeFacet, Property, PropertyFacet} from "./datatypes";
 

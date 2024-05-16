@@ -1,3 +1,9 @@
+/**
+ * Faceted search 2
+ *
+ * (c) 2024 DIQA Projektmanagement GmbH
+ *
+ */
 export interface PropertyFacet {
     property: string        // property as MW-DBkey
     value: MWTitle
