@@ -6,7 +6,8 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
-    "jsx": "react"
+    "jsx": "react",
+    "esModuleInterop": true
   },
   "include": ["src/**/*"]
 }
