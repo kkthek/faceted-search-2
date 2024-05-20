@@ -4,20 +4,24 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
+
+/**
+ * Request types
+ */
 export interface PropertyFacet {
-    property: string        // property as MW-DBkey
+    property: string
     value: MWTitle
 }
 
 export interface AttributeFacet {
-    property: string        // property as MW-DBkey
+    property: string
     value: string | [string, string]
     type: Datatype
 
 }
 
 export interface Property {
-    property: string        // property as MW-DBkey
+    property: string
     type: Datatype
 }
 
@@ -30,7 +34,30 @@ export enum Datatype {
 }
 
 export interface MWTitle {
-    dbKey: string
+    title: string
     displayTitle: string
 }
 
+/**
+ * Response types
+ */
+
+export interface PropertyFacetResponse {
+    property: string
+    value: MWTitle[]
+}
+
+export interface AttributeFacetResponse {
+    property: string
+    value: any[]
+    type: Datatype
+
+}
+
+export interface SolrResponse {
+    numResults: number;
+    attributeFacets: AttributeFacetResponse[];
+    propertyFacets: PropertyFacetResponse[];
+    categoryFacets: string[];
+    namespaceFacets: number[];
+}

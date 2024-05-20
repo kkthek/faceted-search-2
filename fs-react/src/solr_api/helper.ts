@@ -8,19 +8,31 @@ import {AttributeFacet, Datatype, PropertyFacet} from "./datatypes";
 
 class Helper {
 
-    private static encodeWhitespaces(title: string) {
+    private static encodeWhitespacesInProperties(title: string) {
         let s: string = title.replace(/_/g, '__')
             .replace(/\s/g, '__');
         return s;
     }
 
+    private static encodeWhitespacesInTitles(title: string) {
+        return title.replace(/\s/g, '_');
+    }
+
+    public static decodeWhitespacesInTitle(title: string) {
+        return title.replace(/_/g, ' ');
+    }
+
+    public static decodeWhitespacesInProperty(title: string) {
+        return title.replace(/__/g, ' ');
+    }
+
     static encodePropertyTitleAsValue(title: string, type: Datatype) {
-        let s = this.encodeWhitespaces(title);
+        let s = this.encodeWhitespacesInProperties(title);
         return 'smwh_' + s + '_' + type;
     }
 
     static encodePropertyTitleAsProperty(title: string, type: Datatype) {
-        let s = this.encodeWhitespaces(title);
+        let s = this.encodeWhitespacesInProperties(title);
         if (type === Datatype.datetime) {
             return 'smwh_' + s + '_datevalue_l';
         } else if (type === Datatype.wikipage) {
@@ -51,8 +63,7 @@ class Helper {
                 facetValues.push(pAsValue);
             }
             let p = this.encodePropertyTitleAsProperty(f.property, Datatype.wikipage);
-            let dbKeyEncoded = this.encodePropertyTitleAsValue(f.value.dbKey, Datatype.wikipage);
-            let value = this.quoteValue(`${dbKeyEncoded}|${f.value.displayTitle}`);
+            let value = this.quoteValue(`${f.value.title}|${f.value.displayTitle}`);
             facetValues.push(`${p}:${value}`)
         })
         return facetValues;
@@ -73,6 +84,28 @@ class Helper {
                 value = `${f.value[0]} TO ${f.value[1]}`;
             }
             facetValues.push(`${p}:${value}`)
+        })
+        return facetValues;
+    }
+
+    static encodeCategoryFacets(categories: string[]) {
+        let facetValues: string[] = [];
+        categories.forEach( (category) => {
+            let pAsValue = 'smwh_categories:'+this.encodeWhitespacesInTitles(category);
+            if (!facetValues.includes(pAsValue)) {
+                facetValues.push(pAsValue);
+            }
+        })
+        return facetValues;
+    }
+
+    static encodeNamespaceFacets(namespaces: number[]) {
+        let facetValues: string[] = [];
+        namespaces.forEach( (namespaceId) => {
+            let pAsValue = 'smwh_namespace_id:'+namespaceId;
+            if (!facetValues.includes(pAsValue)) {
+                facetValues.push(pAsValue);
+            }
         })
         return facetValues;
     }

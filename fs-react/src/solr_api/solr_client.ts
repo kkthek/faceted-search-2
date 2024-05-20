@@ -82,6 +82,8 @@ class SolrClient {
 
         Helper.encodeAttributeFacetValues(attributeFacets).forEach((e)=> params.append('fq', e));
         Helper.encodePropertyFacetValues(propertyFacets).forEach((e)=> params.append('fq', e));
+        Helper.encodeCategoryFacets(categoryFacets).forEach((e)=> params.append('fq', e));
+        Helper.encodeNamespaceFacets(namespaceFacets).forEach((e)=> params.append('fq', e));
 
         params.append('q.alt', searchText === '' ? 'smwh_search_field:(*)' : Helper.encodeQuery(searchText.split(/\s+/)));
         return params;
