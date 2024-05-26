@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {AttributeFacet, Datatype, PropertyFacet} from "./datatypes";
+import {AttributeFacet, Datatype, DatatypeForPropertyMap, DatatypeForValueMap, PropertyFacet} from "./datatypes";
 
 class Helper {
 
@@ -28,17 +28,12 @@ class Helper {
 
     static encodePropertyTitleAsValue(title: string, type: Datatype) {
         let s = this.encodeWhitespacesInProperties(title);
-        return 'smwh_' + s + '_' + type;
+        return 'smwh_' + s + '_' + DatatypeForValueMap(type);
     }
 
     static encodePropertyTitleAsProperty(title: string, type: Datatype) {
         let s = this.encodeWhitespacesInProperties(title);
-        if (type === Datatype.datetime) {
-            return 'smwh_' + s + '_datevalue_l';
-        } else if (type === Datatype.wikipage) {
-            return 'smwh_' + s + '_s';
-        }
-        return 'smwh_' + s + '_' + type;
+        return 'smwh_' + s + '_' + DatatypeForPropertyMap(type);
     }
 
     static encodeQuery(terms: string[]) {

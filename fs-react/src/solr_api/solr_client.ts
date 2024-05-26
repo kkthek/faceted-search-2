@@ -58,7 +58,7 @@ class SolrClient {
         ];
 
         let extraPropertiesAsStrings = extraProperties
-            .map((e) => Helper.encodePropertyTitleAsProperty(e.property, e.type));
+            .map((e) => Helper.encodePropertyTitleAsValue(e.property, e.type));
 
         params.append('defType', 'edismax');
         params.append('boost', 'max(smwh_boost_dummy)');

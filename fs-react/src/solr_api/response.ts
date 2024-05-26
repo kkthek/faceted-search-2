@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {AttributeFacetResponse, PropertyFacetResponse, SolrResponse} from "./datatypes";
+import {AttributeFacetResponse, Documents, PropertyFacetResponse, SolrResponse} from "./datatypes";
 import {Datatype} from "./datatypes";
 import Helper from "./helper";
 
@@ -20,35 +20,52 @@ class SolrResponseParser {
     }
 
     parse(): SolrResponse {
-        let attributeFacets: AttributeFacetResponse[] = [];
-        let propertyFacets: PropertyFacetResponse[] = [];
-        this.body.response.docs.forEach((e: any): any => {
-            for (let p in e) {
-
-                if (p.startsWith("smwh_")) {
-                    let nameType = p.match(this.ATTRIBUTE_REGEX);
-                    if (!nameType) {
-                        // maybe a relation facet
-                        nameType = p.match(this.RELATION_REGEX);
-                        if (nameType) {
-                            let name = nameType[1];
-                            propertyFacets.push(this.parseProperty(name, e[p]));
-                        }
-                        continue;
-                    }
-                    let name = nameType[1];
-                    let type = nameType[2];
-                    attributeFacets.push(this.parseAttribute(name, e[p], type));
+        let docs: Documents[] = [];
+        this.body.response.docs.forEach((doc: any): any => {
+            let attributeFacets: AttributeFacetResponse[] = [];
+            let propertyFacets: PropertyFacetResponse[] = [];
+            let categoryFacets: string[] = [];
+            let directCategoryFacets: string[] = [];
+            let namespace = null;
+            for (let property in doc) {
+                if (property.startsWith("smwh_namespace_id")) {
+                    namespace = doc[property];
+                } else if (property.startsWith("smwh_categories")) {
+                    categoryFacets = doc[property];
+                } else if (property.startsWith("smwh_directcategories")) {
+                    directCategoryFacets = doc[property];
+                } else if (property.startsWith("smwh_")) {
+                    this.parseAttributeOrProperty(property, doc[property], propertyFacets, attributeFacets);
                 }
             }
+            docs.push({
+                attributeFacets: attributeFacets,
+                propertyFacets: propertyFacets,
+                categoryFacets: categoryFacets,
+                directCategoryFacets: directCategoryFacets,
+                namespaceFacet: namespace
+            })
         });
         return {
             numResults: this.body.response.numFound,
-            attributeFacets: attributeFacets,
-            propertyFacets: propertyFacets,
-            categoryFacets: [],
-            namespaceFacets: []
+            docs : docs
         };
+    }
+
+    private parseAttributeOrProperty(property: string, values: any, propertyFacets: PropertyFacetResponse[], attributeFacets: AttributeFacetResponse[]) {
+        let nameType = property.match(this.ATTRIBUTE_REGEX);
+        if (!nameType) {
+            // maybe a relation facet
+            nameType = property.match(this.RELATION_REGEX);
+            if (nameType) {
+                let name = nameType[1];
+                propertyFacets.push(this.parseProperty(name, values));
+            }
+            return;
+        }
+        let name = nameType[1];
+        let type = nameType[2];
+        attributeFacets.push(this.parseAttribute(name, values, type));
     }
 
     private parseProperty(name: string, value: string[]): PropertyFacetResponse {
