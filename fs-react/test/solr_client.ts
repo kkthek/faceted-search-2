@@ -5,7 +5,7 @@
  *
  */
 import SolrClient from "../src/solr_api/solr_client";
-import {Datatype} from "../src/solr_api/datatypes";
+import {Datatype} from "../src/common/datatypes";
 
 function initSolr() {
     return new SolrClient('http://localhost:8983/solr/mw');

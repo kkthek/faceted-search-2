@@ -4,7 +4,30 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import { Datatype, DatatypeSuffixForPropertyMap, DatatypeSuffixForValueMap } from "./datatypes";
+import { Datatype } from "../common/datatypes";
+
+/**
+ * Helper functions to return implementation specific property/value suffixes.
+ * dependant from backend
+ */
+let DatatypeSuffixForPropertyMap = function(type: Datatype) {
+    switch(type) {
+        case Datatype.string: return 's';
+        case Datatype.number: return 'xsdvalue_d';
+        case Datatype.boolean: return 'xsdvalue_b';
+        case Datatype.wikipage: return 's';
+    }
+}
+
+
+let DatatypeSuffixForValueMap = function(type: Datatype) {
+    switch(type) {
+        case Datatype.string: return 'xsdvalue_t';
+        case Datatype.number: return 'xsdvalue_d';
+        case Datatype.boolean: return 'xsdvalue_b';
+        case Datatype.wikipage: return 't';
+    }
+}
 
 class Helper {
 
@@ -53,6 +76,7 @@ class Helper {
         if (n < 10) return "0"+n;
         else return n;
     }
+
 }
 
 export default Helper;

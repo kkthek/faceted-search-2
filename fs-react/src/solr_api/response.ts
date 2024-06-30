@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {Datatype, Document, PropertyFacetResponse, SolrResponse} from "./datatypes";
+import {Datatype, Document, PropertyFacetResponse, SolrResponse} from "../common/datatypes";
 import Helper from "./helper";
 
 

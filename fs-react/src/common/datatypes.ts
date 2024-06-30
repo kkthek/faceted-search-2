@@ -39,30 +39,6 @@ export enum Datatype {
 }
 
 /**
- * Helper functions to return implementation specific property/value suffixes.
- * dependant from backend
- */
-export let DatatypeSuffixForPropertyMap = function(type: Datatype) {
-    switch(type) {
-        case Datatype.string: return 's';
-        case Datatype.number: return 'xsdvalue_d';
-        case Datatype.boolean: return 'xsdvalue_b';
-        case Datatype.wikipage: return 's';
-    }
-}
-
-
-export let DatatypeSuffixForValueMap = function(type: Datatype) {
-    switch(type) {
-        case Datatype.string: return 'xsdvalue_t';
-        case Datatype.number: return 'xsdvalue_d';
-        case Datatype.boolean: return 'xsdvalue_b';
-        case Datatype.wikipage: return 't';
-    }
-}
-
-
-/**
  * Response types
  */
 

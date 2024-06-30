@@ -5,7 +5,7 @@
  *
  */
 import Helper from "./helper";
-import {PropertyFacet, Datatype, MWTitle, Range, Property, ValueType} from "./datatypes";
+import {PropertyFacet, Datatype, MWTitle, Range, Property, ValueType} from "../common/datatypes";
 
 class SolrClient {
 
@@ -36,7 +36,7 @@ class SolrClient {
     }
 
     getParams(searchText: string,
-                      attributeFacets: Array<PropertyFacet>,
+                      propertyFacets: Array<PropertyFacet>,
                       categoryFacets: Array<string>,
                       namespaceFacets: Array<number>,
                       extraProperties: Array<Property>,
@@ -78,7 +78,7 @@ class SolrClient {
         params.append('sort', sort);
         params.append('wt', "json");
 
-        SolrClient.encodeAttributeFacetValues(attributeFacets).forEach((e)=> params.append('fq', e));
+        SolrClient.encodePropertyFacetValues(propertyFacets).forEach((e)=> params.append('fq', e));
         SolrClient.encodeCategoryFacets(categoryFacets).forEach((e)=> params.append('fq', e));
         SolrClient.encodeNamespaceFacets(namespaceFacets).forEach((e)=> params.append('fq', e));
 
@@ -98,7 +98,7 @@ class SolrClient {
         return (value as Range).from != undefined && (value as Range).to != undefined;
     }
 
-    private static encodeAttributeFacetValues(facets: PropertyFacet[]) {
+    private static encodePropertyFacetValues(facets: PropertyFacet[]) {
         let facetValues: string[] = [];
 
         facets.forEach( (f) => {
@@ -136,8 +136,6 @@ class SolrClient {
         }
         return `${range.from} TO ${range.to}`;
     }
-
-
 
     private static encodeCategoryFacets(categories: string[]) {
         let facetValues: string[] = [];
