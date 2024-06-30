@@ -10,7 +10,7 @@
  */
 export interface PropertyFacet {
     property: Property
-    value: string | Range | MWTitle
+    value: string | number | boolean | Date | Range | MWTitle
 }
 
 export interface Property {
@@ -24,8 +24,8 @@ export interface MWTitle {
 }
 
 export interface Range {
-    from: string
-    to: string
+    from: string | number | Date
+    to: string | number | Date
 }
 
 export enum Datatype {
@@ -65,15 +65,8 @@ export let DatatypeSuffixForValueMap = function(type: Datatype) {
  */
 
 export interface PropertyFacetResponse {
-    property: string
-    value: MWTitle[]
-}
-
-export interface AttributeFacetResponse {
-    property: string
-    value: any[]
-    type: Datatype
-
+    property: Property
+    values: string[] | number[] | boolean[] | Date[] | MWTitle[]
 }
 
 export interface SolrResponse {
@@ -82,7 +75,6 @@ export interface SolrResponse {
 }
 
 export interface Documents {
-    attributeFacets: AttributeFacetResponse[];
     propertyFacets: PropertyFacetResponse[];
     categoryFacets: string[];
     directCategoryFacets: string[];

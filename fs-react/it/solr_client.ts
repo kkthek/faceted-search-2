@@ -17,6 +17,9 @@ function initSolr() {
 describe('search()', function () {
     it('request SOLR', function () {
         let response = initSolr().search('test');
-        console.log(response);
+        response.then((e) => {
+            console.log(e);
+
+        });
     });
 });

@@ -4,8 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {AttributeFacetResponse, Documents, PropertyFacetResponse, SolrResponse} from "./datatypes";
-import {Datatype} from "./datatypes";
+import {Datatype, Documents, PropertyFacetResponse, SolrResponse} from "./datatypes";
 import Helper from "./helper";
 
 
@@ -22,7 +21,6 @@ class SolrResponseParser {
     parse(): SolrResponse {
         let docs: Documents[] = [];
         this.body.response.docs.forEach((doc: any): any => {
-            let attributeFacets: AttributeFacetResponse[] = [];
             let propertyFacets: PropertyFacetResponse[] = [];
             let categoryFacets: string[] = [];
             let directCategoryFacets: string[] = [];
@@ -35,11 +33,10 @@ class SolrResponseParser {
                 } else if (property.startsWith("smwh_directcategories")) {
                     directCategoryFacets = doc[property];
                 } else if (property.startsWith("smwh_")) {
-                    this.parseAttributeOrProperty(property, doc[property], propertyFacets, attributeFacets);
+                    this.parseAttributeOrProperty(property, doc[property], propertyFacets);
                 }
             }
             docs.push({
-                attributeFacets: attributeFacets,
                 propertyFacets: propertyFacets,
                 categoryFacets: categoryFacets,
                 directCategoryFacets: directCategoryFacets,
@@ -52,7 +49,7 @@ class SolrResponseParser {
         };
     }
 
-    private parseAttributeOrProperty(property: string, values: any, propertyFacets: PropertyFacetResponse[], attributeFacets: AttributeFacetResponse[]) {
+    private parseAttributeOrProperty(property: string, values: any, propertyFacets: PropertyFacetResponse[]) {
         let nameType = property.match(this.ATTRIBUTE_REGEX);
         if (!nameType) {
             // maybe a relation facet
@@ -65,53 +62,55 @@ class SolrResponseParser {
         }
         let name = nameType[1];
         let type = nameType[2];
-        attributeFacets.push(this.parseAttribute(name, values, type));
+        propertyFacets.push(this.parseAttribute(name, values, type));
     }
 
-    private parseProperty(name: string, value: string[]): PropertyFacetResponse {
+    private parseProperty(name: string, values: string[]): PropertyFacetResponse {
         return {
-            'property': Helper.decodeWhitespacesInProperty(name),
-            'value': value.map((e) => {
+            'property': { title: Helper.decodeWhitespacesInProperty(name), type: Datatype.wikipage },
+            'values': values.map((e) => {
                 let parts = e.split("|");
                 return {title: parts[0], displayTitle: parts[1]};
             })
         };
     }
 
-    private parseAttribute(name: string, value: string[], type: string): AttributeFacetResponse {
+    private parseAttribute(name: string, values: any[], type: string): PropertyFacetResponse {
         let decodedPropertyName = Helper.decodeWhitespacesInProperty(name);
         switch (type) {
             case 'd':
             case 'i':
                 // numeric
                 return {
-                    'property': decodedPropertyName,
-                    'value': value.map((e) => parseFloat(e)),
-                    'type': Datatype.number
+                    property: {title: decodedPropertyName, type: Datatype.number },
+                    values: values.map((e) => parseFloat(e))
                 };
             case 'dt':
                 // date
                 return {
-                    'property': decodedPropertyName,
-                    'value': value.map((e) => {
+                    property: {title: decodedPropertyName, type: Datatype.datetime },
+                    values: values.map((e) => {
                         return Date.parse(e);
-                    }),
-                    'type': Datatype.datetime
+                    })
                 };
             case 'b':
                 // boolean
                 return {
-                    'property': decodedPropertyName,
-                    'value': value,
-                    'type': Datatype.boolean
+                    property: {title: decodedPropertyName, type: Datatype.boolean },
+                    values: values.map((e) => {
+                        console.log(values);
+                        if (typeof e === 'boolean') {
+                            return e;
+                        }
+                        return typeof e === 'string' && e.trim().toLowerCase() === 'true';
+                    })
                 };
             case 's':
                 // string or anything else
             default:
                 return {
-                    'property': decodedPropertyName,
-                    'value': value,
-                    'type': Datatype.string
+                    property: {title: decodedPropertyName, type: Datatype.string },
+                    values: values
                 };
         }
 
