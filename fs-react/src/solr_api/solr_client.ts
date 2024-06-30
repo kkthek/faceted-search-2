@@ -5,7 +5,7 @@
  *
  */
 import Helper from "./helper";
-import {PropertyFacet, Datatype, MWTitle, Range, Property} from "./datatypes";
+import {PropertyFacet, Datatype, MWTitle, Range, Property, ValueType} from "./datatypes";
 
 class SolrClient {
 
@@ -86,8 +86,16 @@ class SolrClient {
         return params;
     }
 
-    private static isMWTitle(value: string | Range | MWTitle): value is MWTitle {
+    private static isMWTitle(value: ValueType): value is MWTitle {
         return (value as MWTitle).title != undefined;
+    }
+
+    private static isDate(value: ValueType): value is Date {
+        return (value as Date).getDate() != undefined;
+    }
+
+    private static isRange(value: ValueType): value is Range {
+        return (value as Range).from != undefined && (value as Range).to != undefined;
     }
 
     private static encodeAttributeFacetValues(facets: PropertyFacet[]) {
@@ -109,16 +117,27 @@ class SolrClient {
                 }
                 let p = Helper.encodePropertyTitleAsProperty(f.property.title, f.property.type);
                 let value;
-                if (typeof f.value === 'string') {
+                if (typeof f.value === 'string' || typeof f.value === 'number' || typeof f.value === 'boolean') {
                     value = Helper.quoteValue(f.value);
-                } else {
-                    value = `${f.value.from} TO ${f.value.to}`;
+                } else if (this.isDate(f.value)){
+                    value = f.value.toString();
+                } else if (this.isRange(f.value)) {
+                    value = this.encodeRange(f.value)
                 }
                 facetValues.push(`${p}:${value}`);
             }
         })
         return facetValues;
     }
+
+    private static encodeRange(range: Range) {
+        if (this.isDate(range.from) && this.isDate(range.to)) {
+            return `${Helper.serializeDate(range.from)} TO ${Helper.serializeDate(range.to)}`;
+        }
+        return `${range.from} TO ${range.to}`;
+    }
+
+
 
     private static encodeCategoryFacets(categories: string[]) {
         let facetValues: string[] = [];

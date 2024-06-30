@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {Datatype, Documents, PropertyFacetResponse, SolrResponse} from "./datatypes";
+import {Datatype, Document, PropertyFacetResponse, SolrResponse} from "./datatypes";
 import Helper from "./helper";
 
 
@@ -19,7 +19,7 @@ class SolrResponseParser {
     }
 
     parse(): SolrResponse {
-        let docs: Documents[] = [];
+        let docs: Document[] = [];
         this.body.response.docs.forEach((doc: any): any => {
             let propertyFacets: PropertyFacetResponse[] = [];
             let categoryFacets: string[] = [];

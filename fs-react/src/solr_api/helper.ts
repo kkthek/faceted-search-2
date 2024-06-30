@@ -36,10 +36,23 @@ class Helper {
         return 'smwh_' + s + '_' + DatatypeSuffixForPropertyMap(type);
     }
 
-    static quoteValue(v : string) {
-        return "\"" + v.replace(/"/g, "\"") + "\"";
+    static quoteValue(v : string | number | boolean) {
+        if (typeof v === 'string') {
+            return "\"" + v.replace(/"/g, "\"") + "\"";
+        }
+        return v;
     }
 
+    static serializeDate(d: Date) {
+        let date = `${d.getFullYear()}${this.padNumber(d.getMonth())}${this.padNumber(d.getDate())}`;
+        let time = `${this.padNumber(d.getHours())}${this.padNumber(d.getMinutes())}${this.padNumber(d.getSeconds())}`;
+        return date+time;
+    }
+
+    static padNumber(n: number) {
+        if (n < 10) return "0"+n;
+        else return n;
+    }
 }
 
 export default Helper;

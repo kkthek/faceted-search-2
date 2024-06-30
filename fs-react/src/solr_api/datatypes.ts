@@ -10,8 +10,10 @@
  */
 export interface PropertyFacet {
     property: Property
-    value: string | number | boolean | Date | Range | MWTitle
+    value: ValueType
 }
+
+export type ValueType = string | number | boolean | Date | Range | MWTitle;
 
 export interface Property {
     title: string
@@ -24,8 +26,8 @@ export interface MWTitle {
 }
 
 export interface Range {
-    from: string | number | Date
-    to: string | number | Date
+    from: number | Date
+    to: number | Date
 }
 
 export enum Datatype {
@@ -71,10 +73,10 @@ export interface PropertyFacetResponse {
 
 export interface SolrResponse {
     numResults: number;
-    docs: Documents[];
+    docs: Document[];
 }
 
-export interface Documents {
+export interface Document {
     propertyFacets: PropertyFacetResponse[];
     categoryFacets: string[];
     directCategoryFacets: string[];
