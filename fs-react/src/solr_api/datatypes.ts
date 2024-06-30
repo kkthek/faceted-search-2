@@ -9,20 +9,23 @@
  * Request types
  */
 export interface PropertyFacet {
-    property: string
-    value: MWTitle
-}
-
-export interface AttributeFacet {
-    property: string
-    value: string | [string, string]
-    type: Datatype
-
+    property: Property
+    value: string | Range | MWTitle
 }
 
 export interface Property {
-    property: string
+    title: string
     type: Datatype
+}
+
+export interface MWTitle {
+    title: string
+    displayTitle: string
+}
+
+export interface Range {
+    from: string
+    to: string
 }
 
 export enum Datatype {
@@ -33,6 +36,10 @@ export enum Datatype {
     wikipage
 }
 
+/**
+ * Helper functions to return implementation specific property/value suffixes.
+ * dependant from backend
+ */
 export let DatatypeSuffixForPropertyMap = function(type: Datatype) {
     switch(type) {
         case Datatype.string: return 's';
@@ -52,10 +59,6 @@ export let DatatypeSuffixForValueMap = function(type: Datatype) {
     }
 }
 
-export interface MWTitle {
-    title: string
-    displayTitle: string
-}
 
 /**
  * Response types

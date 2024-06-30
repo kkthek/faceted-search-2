@@ -5,7 +5,7 @@
  *
  */
 import Helper from "./helper";
-import {AttributeFacet, Datatype, Property, PropertyFacet} from "./datatypes";
+import {PropertyFacet, Datatype, MWTitle, Range, Property} from "./datatypes";
 
 class SolrClient {
 
@@ -16,14 +16,13 @@ class SolrClient {
     }
 
     async search(searchText: string,
-                 attributeFacets: Array<AttributeFacet> = [],
-                 propertyFacets: Array<PropertyFacet> = [],
+                 attributeFacets: Array<PropertyFacet> = [],
                  categoryFacets: Array<string> = [],
                  namespaceFacets: Array<number> = [],
                  extraProperties: Array<Property> = [],
                  sort: string = "score desc, smwh_displaytitle asc"
     ) {
-        let params = this.getParams(searchText, attributeFacets, propertyFacets,
+        let params = this.getParams(searchText, attributeFacets,
             categoryFacets, namespaceFacets, extraProperties, sort);
 
         const response = await fetch(this.url + '/rest.php/EnhancedRetrieval/v1/proxy?' + params.toString(), {
@@ -37,8 +36,7 @@ class SolrClient {
     }
 
     getParams(searchText: string,
-                      attributeFacets: Array<AttributeFacet>,
-                      propertyFacets: Array<PropertyFacet>,
+                      attributeFacets: Array<PropertyFacet>,
                       categoryFacets: Array<string>,
                       namespaceFacets: Array<number>,
                       extraProperties: Array<Property>,
@@ -58,7 +56,7 @@ class SolrClient {
         ];
 
         let extraPropertiesAsStrings = extraProperties
-            .map((e) => Helper.encodePropertyTitleAsValue(e.property, e.type));
+            .map((e) => Helper.encodePropertyTitleAsValue(e.title, e.type));
 
         params.append('defType', 'edismax');
         params.append('boost', 'max(smwh_boost_dummy)');
@@ -81,7 +79,6 @@ class SolrClient {
         params.append('wt', "json");
 
         SolrClient.encodeAttributeFacetValues(attributeFacets).forEach((e)=> params.append('fq', e));
-        SolrClient.encodePropertyFacetValues(propertyFacets).forEach((e)=> params.append('fq', e));
         SolrClient.encodeCategoryFacets(categoryFacets).forEach((e)=> params.append('fq', e));
         SolrClient.encodeNamespaceFacets(namespaceFacets).forEach((e)=> params.append('fq', e));
 
@@ -89,36 +86,36 @@ class SolrClient {
         return params;
     }
 
-    private static encodePropertyFacetValues(facets: PropertyFacet[]) {
-        let facetValues: string[] = [];
-
-        facets.forEach( (f) => {
-            let pAsValue = 'smwh_properties:'+Helper.encodePropertyTitleAsValue(f.property, Datatype.wikipage);
-            if (!facetValues.includes(pAsValue)) {
-                facetValues.push(pAsValue);
-            }
-            let p = Helper.encodePropertyTitleAsProperty(f.property, Datatype.wikipage);
-            let value = Helper.quoteValue(`${f.value.title}|${f.value.displayTitle}`);
-            facetValues.push(`${p}:${value}`)
-        })
-        return facetValues;
+    private static isMWTitle(value: string | Range | MWTitle): value is MWTitle {
+        return (value as MWTitle).title != undefined;
     }
 
-    private static encodeAttributeFacetValues(facets: AttributeFacet[]) {
+    private static encodeAttributeFacetValues(facets: PropertyFacet[]) {
         let facetValues: string[] = [];
+
         facets.forEach( (f) => {
-            let pAsValue = 'smwh_attributes:'+Helper.encodePropertyTitleAsValue(f.property, f.type);
-            if (!facetValues.includes(pAsValue)) {
-                facetValues.push(pAsValue);
-            }
-            let p = Helper.encodePropertyTitleAsProperty(f.property, f.type);
-            let value;
-            if (typeof f.value === 'string') {
-                value = Helper.quoteValue(f.value);
+            if (this.isMWTitle(f.value)) {
+                let pAsValue = 'smwh_properties:'+Helper.encodePropertyTitleAsValue(f.property.title, Datatype.wikipage);
+                if (!facetValues.includes(pAsValue)) {
+                    facetValues.push(pAsValue);
+                }
+                let p = Helper.encodePropertyTitleAsProperty(f.property.title, Datatype.wikipage);
+                let value = Helper.quoteValue(`${f.value.title}|${f.value.displayTitle}`);
+                facetValues.push(`${p}:${value}`);
             } else {
-                value = `${f.value[0]} TO ${f.value[1]}`;
+                let pAsValue = 'smwh_attributes:' + Helper.encodePropertyTitleAsValue(f.property.title, f.property.type);
+                if (!facetValues.includes(pAsValue)) {
+                    facetValues.push(pAsValue);
+                }
+                let p = Helper.encodePropertyTitleAsProperty(f.property.title, f.property.type);
+                let value;
+                if (typeof f.value === 'string') {
+                    value = Helper.quoteValue(f.value);
+                } else {
+                    value = `${f.value.from} TO ${f.value.to}`;
+                }
+                facetValues.push(`${p}:${value}`);
             }
-            facetValues.push(`${p}:${value}`)
         })
         return facetValues;
     }
