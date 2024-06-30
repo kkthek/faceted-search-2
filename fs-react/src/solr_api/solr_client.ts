@@ -5,7 +5,7 @@
  *
  */
 import Helper from "./helper";
-import {AttributeFacet, Property, PropertyFacet} from "./datatypes";
+import {AttributeFacet, Datatype, Property, PropertyFacet} from "./datatypes";
 
 class SolrClient {
 
@@ -16,11 +16,11 @@ class SolrClient {
     }
 
     async search(searchText: string,
-                 attributeFacets: Array<AttributeFacet>,
-                 propertyFacets: Array<PropertyFacet>,
-                 categoryFacets: Array<string>,
-                 namespaceFacets: Array<number>,
-                 extraProperties: Array<Property>,
+                 attributeFacets: Array<AttributeFacet> = [],
+                 propertyFacets: Array<PropertyFacet> = [],
+                 categoryFacets: Array<string> = [],
+                 namespaceFacets: Array<number> = [],
+                 extraProperties: Array<Property> = [],
                  sort: string = "score desc, smwh_displaytitle asc"
     ) {
         let params = this.getParams(searchText, attributeFacets, propertyFacets,
@@ -80,18 +80,80 @@ class SolrClient {
         params.append('sort', sort);
         params.append('wt', "json");
 
-        Helper.encodeAttributeFacetValues(attributeFacets).forEach((e)=> params.append('fq', e));
-        Helper.encodePropertyFacetValues(propertyFacets).forEach((e)=> params.append('fq', e));
-        Helper.encodeCategoryFacets(categoryFacets).forEach((e)=> params.append('fq', e));
-        Helper.encodeNamespaceFacets(namespaceFacets).forEach((e)=> params.append('fq', e));
+        SolrClient.encodeAttributeFacetValues(attributeFacets).forEach((e)=> params.append('fq', e));
+        SolrClient.encodePropertyFacetValues(propertyFacets).forEach((e)=> params.append('fq', e));
+        SolrClient.encodeCategoryFacets(categoryFacets).forEach((e)=> params.append('fq', e));
+        SolrClient.encodeNamespaceFacets(namespaceFacets).forEach((e)=> params.append('fq', e));
 
-        params.append('q.alt', searchText === '' ? 'smwh_search_field:(*)' : Helper.encodeQuery(searchText.split(/\s+/)));
+        params.append('q.alt', searchText === '' ? 'smwh_search_field:(*)' : SolrClient.encodeQuery(searchText.split(/\s+/)));
         return params;
     }
 
-    async facets(text: string) {
+    private static encodePropertyFacetValues(facets: PropertyFacet[]) {
+        let facetValues: string[] = [];
 
+        facets.forEach( (f) => {
+            let pAsValue = 'smwh_properties:'+Helper.encodePropertyTitleAsValue(f.property, Datatype.wikipage);
+            if (!facetValues.includes(pAsValue)) {
+                facetValues.push(pAsValue);
+            }
+            let p = Helper.encodePropertyTitleAsProperty(f.property, Datatype.wikipage);
+            let value = Helper.quoteValue(`${f.value.title}|${f.value.displayTitle}`);
+            facetValues.push(`${p}:${value}`)
+        })
+        return facetValues;
     }
+
+    private static encodeAttributeFacetValues(facets: AttributeFacet[]) {
+        let facetValues: string[] = [];
+        facets.forEach( (f) => {
+            let pAsValue = 'smwh_attributes:'+Helper.encodePropertyTitleAsValue(f.property, f.type);
+            if (!facetValues.includes(pAsValue)) {
+                facetValues.push(pAsValue);
+            }
+            let p = Helper.encodePropertyTitleAsProperty(f.property, f.type);
+            let value;
+            if (typeof f.value === 'string') {
+                value = Helper.quoteValue(f.value);
+            } else {
+                value = `${f.value[0]} TO ${f.value[1]}`;
+            }
+            facetValues.push(`${p}:${value}`)
+        })
+        return facetValues;
+    }
+
+    private static encodeCategoryFacets(categories: string[]) {
+        let facetValues: string[] = [];
+        categories.forEach( (category) => {
+            let pAsValue = 'smwh_categories:'+Helper.encodeWhitespacesInTitles(category);
+            if (!facetValues.includes(pAsValue)) {
+                facetValues.push(pAsValue);
+            }
+        })
+        return facetValues;
+    }
+
+    private static encodeNamespaceFacets(namespaces: number[]) {
+        let facetValues: string[] = [];
+        namespaces.forEach( (namespaceId) => {
+            let pAsValue = 'smwh_namespace_id:'+namespaceId;
+            if (!facetValues.includes(pAsValue)) {
+                facetValues.push(pAsValue);
+            }
+        })
+        return facetValues;
+    }
+
+    private static encodeQuery(terms: string[]) {
+        let searchTerms = terms.join(' AND ');
+        let searchTermsWithPlus = terms.map((e) => '+' + e).join(' AND ');
+        return `smwh_search_field:(${searchTermsWithPlus}* ) OR `
+            +`smwh_search_field:(${searchTerms}) OR `
+            +`smwh_title:(${searchTerms}) OR `
+            +`smwh_displaytitle:(${searchTerms})`;
+    }
+
 }
 
 export default SolrClient;

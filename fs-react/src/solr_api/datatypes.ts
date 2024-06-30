@@ -33,7 +33,7 @@ export enum Datatype {
     wikipage
 }
 
-export let DatatypeForPropertyMap = function(type: Datatype) {
+export let DatatypeSuffixForPropertyMap = function(type: Datatype) {
     switch(type) {
         case Datatype.string: return 's';
         case Datatype.number: return 'xsdvalue_d';
@@ -43,7 +43,7 @@ export let DatatypeForPropertyMap = function(type: Datatype) {
 }
 
 
-export let DatatypeForValueMap = function(type: Datatype) {
+export let DatatypeSuffixForValueMap = function(type: Datatype) {
     switch(type) {
         case Datatype.string: return 'xsdvalue_t';
         case Datatype.number: return 'xsdvalue_d';

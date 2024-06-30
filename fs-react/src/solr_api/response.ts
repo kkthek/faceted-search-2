@@ -99,12 +99,14 @@ class SolrResponseParser {
                     'type': Datatype.datetime
                 };
             case 'b':
+                // boolean
                 return {
                     'property': decodedPropertyName,
                     'value': value,
                     'type': Datatype.boolean
                 };
             case 's':
+                // string or anything else
             default:
                 return {
                     'property': decodedPropertyName,

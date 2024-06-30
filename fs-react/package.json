@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack --mode=development",
     "build": "webpack --mode=production",
-    "test": "mocha --import=tsx 'test/**/*.ts'"
+    "test": "mocha --import=tsx 'test/**/*.ts'",
+    "it-test": "mocha --import=tsx 'it/**/*.ts'"
   },
   "keywords": [],
   "author": "",
