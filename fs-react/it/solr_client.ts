@@ -1,4 +1,5 @@
 import SolrClient from "../src/solr_api/solr_client";
+import SolrResponseParser from "../src/solr_api/response";
 
 /**
  * Faceted search 2
@@ -8,18 +9,20 @@ import SolrClient from "../src/solr_api/solr_client";
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-let assert = require('assert');
+const assert = require('assert');
+const util = require('util');
 
 function initSolr() {
-    return new SolrClient('http://localhost:8983/solr/mw');
+    return new SolrClient('http://localhost/main/mediawiki');
 }
 
 describe('search()', function () {
     it('request SOLR', function () {
-        let response = initSolr().search('test');
-        response.then((e) => {
-            console.log(e);
-
+        console.log("Test");
+        let response = initSolr().search('carbon');
+        response.then((body) => {
+            let parser = new SolrResponseParser(body);
+            console.log(util.inspect(parser.parse(), {showHidden: false, depth: null, colors: true}));
         });
     });
 });

@@ -4,7 +4,14 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {Datatype, Document, PropertyFacetResponse, SolrResponse} from "../common/datatypes";
+import {
+    CategoryFacetCount,
+    Datatype,
+    Document, NamespaceFacetCount,
+    Property, PropertyFacetCount,
+    PropertyFacetResponse,
+    SolrResponse
+} from "../common/datatypes";
 import Helper from "./helper";
 
 
@@ -25,6 +32,7 @@ class SolrResponseParser {
             let categoryFacets: string[] = [];
             let directCategoryFacets: string[] = [];
             let namespace = null;
+            let properties: Property[] = [];
             for (let property in doc) {
                 if (property.startsWith("smwh_namespace_id")) {
                     namespace = doc[property];
@@ -32,40 +40,71 @@ class SolrResponseParser {
                     categoryFacets = doc[property];
                 } else if (property.startsWith("smwh_directcategories")) {
                     directCategoryFacets = doc[property];
+                } else if (property.startsWith("smwh_attributes")) {
+                    properties = properties.concat(this.parseProperties(doc[property]));
+                } else if (property.startsWith("smwh_properties")) {
+                    properties = properties.concat(this.parseProperties(doc[property]));
                 } else if (property.startsWith("smwh_")) {
-                    this.parseAttributeOrProperty(property, doc[property], propertyFacets);
+                    let item = this.parsePropertyWithValues(property, doc[property]);
+                    if (item != null) {
+                        propertyFacets.push(item);
+                    }
                 }
             }
             docs.push({
                 propertyFacets: propertyFacets,
                 categoryFacets: categoryFacets,
                 directCategoryFacets: directCategoryFacets,
-                namespaceFacet: namespace
-            })
+                namespaceFacet: namespace,
+                properties: properties,
+                score: doc.score,
+                title: doc.smwh_title,
+                displayTitle: doc.smwh_displaytitle
+            });
         });
+        let smwh_categories = this.body.facet_counts.facet_fields.smwh_categories;
+        let categoryFacetCounts: CategoryFacetCount[] = [];
+        for (let category in smwh_categories) {
+            categoryFacetCounts.push({title: category, count: smwh_categories[category]});
+        }
+        let smwh_properties = this.body.facet_counts.facet_fields.smwh_properties;
+        let propertyFacetCounts: PropertyFacetCount[] = [];
+        for (let property in smwh_properties) {
+            propertyFacetCounts.push({ property: this.parseProperty(property), count: smwh_properties[property]});
+        }
+        let smwh_namespaces = this.body.facet_counts.facet_fields.smwh_namespace_id;
+        let namespaceFacetCounts: NamespaceFacetCount[] = [];
+        for (let namespace in smwh_namespaces) {
+            namespaceFacetCounts.push({ namespace: parseInt(namespace), count: smwh_namespaces[namespace]});
+        }
+
         return {
+            propertyFacetCounts: propertyFacetCounts,
+            namespaceFacetCounts: namespaceFacetCounts,
+            categoryFacetCounts: categoryFacetCounts,
             numResults: this.body.response.numFound,
             docs : docs
         };
     }
 
-    private parseAttributeOrProperty(property: string, values: any, propertyFacets: PropertyFacetResponse[]) {
+    private parsePropertyWithValues(property: string, values: any): PropertyFacetResponse {
         let nameType = property.match(this.ATTRIBUTE_REGEX);
         if (!nameType) {
             // maybe a relation facet
             nameType = property.match(this.RELATION_REGEX);
             if (nameType) {
                 let name = nameType[1];
-                propertyFacets.push(this.parseProperty(name, values));
+                 return this.parsePropertyValues(name, values);
             }
-            return;
+            return null;
         }
         let name = nameType[1];
         let type = nameType[2];
-        propertyFacets.push(this.parseAttribute(name, values, type));
+        return this.parseAttributeValues(name, values, type);
+
     }
 
-    private parseProperty(name: string, values: string[]): PropertyFacetResponse {
+    private parsePropertyValues(name: string, values: string[]): PropertyFacetResponse {
         return {
             'property': { title: Helper.decodeWhitespacesInProperty(name), type: Datatype.wikipage },
             'values': values.map((e) => {
@@ -75,7 +114,7 @@ class SolrResponseParser {
         };
     }
 
-    private parseAttribute(name: string, values: any[], type: string): PropertyFacetResponse {
+    private parseAttributeValues(name: string, values: any[], type: string): PropertyFacetResponse {
         let decodedPropertyName = Helper.decodeWhitespacesInProperty(name);
         switch (type) {
             case 'd':
@@ -114,6 +153,46 @@ class SolrResponseParser {
                 };
         }
 
+    }
+
+    private parseProperties(docElement: any) {
+        let properties: Property[] = [];
+        docElement.forEach((property: string) => {
+            properties.push(this.parseProperty(property));
+        });
+        return properties;
+    }
+
+    private parseProperty(property: string): Property {
+        let nameType = property.match(this.ATTRIBUTE_REGEX);
+        if (!nameType) {
+            nameType = property.match(this.RELATION_REGEX);
+            if (nameType) {
+                let name = nameType[1];
+                name = Helper.decodeWhitespacesInProperty(name);
+                 return { title: name, type: Datatype.wikipage};
+            }
+        }
+        let name = nameType[1];
+        let type = nameType[2];
+        name = Helper.decodeWhitespacesInProperty(name);
+        let datatype: Datatype;
+        switch(type) {
+            case 'd':
+            case 'i':
+                datatype = Datatype.number;
+                break;
+            case 'b':
+                datatype = Datatype.boolean;
+                break;
+            case 'dt':
+                datatype = Datatype.datetime;
+                break;
+            case 's':
+            default:
+                datatype = Datatype.string;
+        }
+        return { title: name, type: datatype};
     }
 }
 

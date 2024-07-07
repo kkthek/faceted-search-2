@@ -50,6 +50,24 @@ export interface PropertyFacetResponse {
 export interface SolrResponse {
     numResults: number;
     docs: Document[];
+    categoryFacetCounts: CategoryFacetCount[];
+    propertyFacetCounts: PropertyFacetCount[];
+    namespaceFacetCounts: NamespaceFacetCount[];
+}
+
+export interface CategoryFacetCount {
+    title: string;
+    count: number;
+}
+
+export interface PropertyFacetCount {
+    property: Property;
+    count: number;
+}
+
+export interface NamespaceFacetCount {
+    namespace: number;
+    count: number;
 }
 
 export interface Document {
@@ -57,4 +75,8 @@ export interface Document {
     categoryFacets: string[];
     directCategoryFacets: string[];
     namespaceFacet: number;
+    properties: Property[];
+    title: string;
+    displayTitle: string;
+    score: number;
 }
