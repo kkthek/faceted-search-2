@@ -8,7 +8,7 @@
 /**
  * Request types
  */
-export interface PropertyFacet {
+export interface PropertyFacetConstraint {
     property: Property
     value: ValueType
 }
@@ -41,12 +41,6 @@ export enum Datatype {
 /**
  * Response types
  */
-
-export interface PropertyFacetResponse {
-    property: Property
-    values: string[] | number[] | boolean[] | Date[] | MWTitle[]
-}
-
 export interface SolrResponse {
     numResults: number;
     docs: Document[];
@@ -55,8 +49,26 @@ export interface SolrResponse {
     namespaceFacetCounts: NamespaceFacetCount[];
 }
 
-export interface CategoryFacetCount {
+export interface Document {
+    id: string
+    propertyFacets: PropertyFacetValues[];
+    categoryFacets: string[];
+    directCategoryFacets: string[];
+    namespaceFacet: number;
+    properties: Property[];
     title: string;
+    displayTitle: string;
+    score: number;
+    highlighting: string;
+}
+
+export interface PropertyFacetValues {
+    property: Property
+    values: string[] | number[] | boolean[] | Date[] | MWTitle[]
+}
+
+export interface CategoryFacetCount {
+    category: string;
     count: number;
 }
 
@@ -70,13 +82,3 @@ export interface NamespaceFacetCount {
     count: number;
 }
 
-export interface Document {
-    propertyFacets: PropertyFacetResponse[];
-    categoryFacets: string[];
-    directCategoryFacets: string[];
-    namespaceFacet: number;
-    properties: Property[];
-    title: string;
-    displayTitle: string;
-    score: number;
-}

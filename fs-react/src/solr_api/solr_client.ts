@@ -5,7 +5,7 @@
  *
  */
 import Helper from "./helper";
-import {PropertyFacet, Datatype, MWTitle, Range, Property, ValueType} from "../common/datatypes";
+import {PropertyFacetConstraint, Datatype, MWTitle, Range, Property, ValueType} from "../common/datatypes";
 
 class SolrClient {
 
@@ -16,7 +16,7 @@ class SolrClient {
     }
 
     async search(searchText: string,
-                 attributeFacets: Array<PropertyFacet> = [],
+                 attributeFacets: Array<PropertyFacetConstraint> = [],
                  categoryFacets: Array<string> = [],
                  namespaceFacets: Array<number> = [],
                  extraProperties: Array<Property> = [],
@@ -24,7 +24,7 @@ class SolrClient {
     ) {
         let params = this.getParams(searchText, attributeFacets,
             categoryFacets, namespaceFacets, extraProperties, sort);
-
+        console.log(params);
         const response = await fetch(this.url + '/rest.php/EnhancedRetrieval/v1/proxy?' + params.toString(), {
             method: "GET",
             cache: "no-cache",
@@ -36,7 +36,7 @@ class SolrClient {
     }
 
     getParams(searchText: string,
-                      propertyFacets: Array<PropertyFacet>,
+                      propertyFacets: Array<PropertyFacetConstraint>,
                       categoryFacets: Array<string>,
                       namespaceFacets: Array<number>,
                       extraProperties: Array<Property>,
@@ -51,6 +51,7 @@ class SolrClient {
             'smwh_properties',
             'smwh_title',
             'smwh_namespace_id',
+            'id',
             'score',
             'smwh_displaytitle'
         ];
@@ -98,7 +99,7 @@ class SolrClient {
         return (value as Range).from != undefined && (value as Range).to != undefined;
     }
 
-    private static encodePropertyFacetValues(facets: PropertyFacet[]) {
+    private static encodePropertyFacetValues(facets: PropertyFacetConstraint[]) {
         let facetValues: string[] = [];
 
         facets.forEach( (f) => {

@@ -9,7 +9,7 @@ import {
     Datatype,
     Document, NamespaceFacetCount,
     Property, PropertyFacetCount,
-    PropertyFacetResponse,
+    PropertyFacetValues,
     SolrResponse
 } from "../common/datatypes";
 import Helper from "./helper";
@@ -28,7 +28,7 @@ class SolrResponseParser {
     parse(): SolrResponse {
         let docs: Document[] = [];
         this.body.response.docs.forEach((doc: any): any => {
-            let propertyFacets: PropertyFacetResponse[] = [];
+            let propertyFacets: PropertyFacetValues[] = [];
             let categoryFacets: string[] = [];
             let directCategoryFacets: string[] = [];
             let namespace = null;
@@ -37,9 +37,9 @@ class SolrResponseParser {
                 if (property.startsWith("smwh_namespace_id")) {
                     namespace = doc[property];
                 } else if (property.startsWith("smwh_categories")) {
-                    categoryFacets = doc[property];
+                    categoryFacets = doc[property].map((category: string) => Helper.decodeWhitespacesInTitle(category));
                 } else if (property.startsWith("smwh_directcategories")) {
-                    directCategoryFacets = doc[property];
+                    directCategoryFacets = doc[property].map((category: string) => Helper.decodeWhitespacesInTitle(category));
                 } else if (property.startsWith("smwh_attributes")) {
                     properties = properties.concat(this.parseProperties(doc[property]));
                 } else if (property.startsWith("smwh_properties")) {
@@ -51,7 +51,9 @@ class SolrResponseParser {
                     }
                 }
             }
+            console.log(doc);
             docs.push({
+                id: doc.id,
                 propertyFacets: propertyFacets,
                 categoryFacets: categoryFacets,
                 directCategoryFacets: directCategoryFacets,
@@ -59,13 +61,14 @@ class SolrResponseParser {
                 properties: properties,
                 score: doc.score,
                 title: doc.smwh_title,
-                displayTitle: doc.smwh_displaytitle
+                displayTitle: doc.smwh_displaytitle,
+                highlighting: this.body.highlighting[doc.id].smwh_search_field ?? ''
             });
         });
         let smwh_categories = this.body.facet_counts.facet_fields.smwh_categories;
         let categoryFacetCounts: CategoryFacetCount[] = [];
         for (let category in smwh_categories) {
-            categoryFacetCounts.push({title: category, count: smwh_categories[category]});
+            categoryFacetCounts.push({category: category, count: smwh_categories[category]});
         }
         let smwh_properties = this.body.facet_counts.facet_fields.smwh_properties;
         let propertyFacetCounts: PropertyFacetCount[] = [];
@@ -87,7 +90,7 @@ class SolrResponseParser {
         };
     }
 
-    private parsePropertyWithValues(property: string, values: any): PropertyFacetResponse {
+    private parsePropertyWithValues(property: string, values: any): PropertyFacetValues {
         let nameType = property.match(this.ATTRIBUTE_REGEX);
         if (!nameType) {
             // maybe a relation facet
@@ -104,7 +107,7 @@ class SolrResponseParser {
 
     }
 
-    private parsePropertyValues(name: string, values: string[]): PropertyFacetResponse {
+    private parsePropertyValues(name: string, values: string[]): PropertyFacetValues {
         return {
             'property': { title: Helper.decodeWhitespacesInProperty(name), type: Datatype.wikipage },
             'values': values.map((e) => {
@@ -114,7 +117,7 @@ class SolrResponseParser {
         };
     }
 
-    private parseAttributeValues(name: string, values: any[], type: string): PropertyFacetResponse {
+    private parseAttributeValues(name: string, values: any[], type: string): PropertyFacetValues {
         let decodedPropertyName = Helper.decodeWhitespacesInProperty(name);
         switch (type) {
             case 'd':

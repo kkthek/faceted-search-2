@@ -1,5 +1,6 @@
 import SolrClient from "../src/solr_api/solr_client";
 import SolrResponseParser from "../src/solr_api/response";
+import {Datatype} from "../src/common/datatypes";
 
 /**
  * Faceted search 2
@@ -19,7 +20,7 @@ function initSolr() {
 describe('search()', function () {
     it('request SOLR', function () {
         console.log("Test");
-        let response = initSolr().search('carbon');
+        let response = initSolr().search('carbon', [], [], [], [{title: 'AuthorPage', type: Datatype.wikipage}]);
         response.then((body) => {
             let parser = new SolrResponseParser(body);
             console.log(util.inspect(parser.parse(), {showHidden: false, depth: null, colors: true}));
