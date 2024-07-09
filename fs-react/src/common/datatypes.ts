@@ -38,6 +38,17 @@ export enum Datatype {
     wikipage
 }
 
+export interface SearchQuery {
+    searchText: string,
+    propertyFacetConstraints: Array<PropertyFacetConstraint>,
+    propertyFacets: Array<Property>
+    categoryFacets: Array<string>,
+    namespaceFacets: Array<number>,
+    extraProperties: Array<Property>,
+    sort: string,
+    statField: Property
+}
+
 /**
  * Response types
  */
@@ -47,6 +58,8 @@ export interface SolrResponse {
     categoryFacetCounts: CategoryFacetCount[];
     propertyFacetCounts: PropertyFacetCount[];
     namespaceFacetCounts: NamespaceFacetCount[];
+    propertyValueCount: PropertyValueCount[];
+    stats: Stats[];
 }
 
 export interface Document {
@@ -62,9 +75,28 @@ export interface Document {
     highlighting: string;
 }
 
+export interface Stats {
+    property: Property;
+    min: number;
+    max: number;
+    count: number;
+    sum: number;
+}
+
 export interface PropertyFacetValues {
     property: Property
     values: string[] | number[] | boolean[] | Date[] | MWTitle[]
+}
+
+export interface PropertyValueCount {
+    property: Property,
+    values: ValueCount[]
+
+}
+
+export interface ValueCount {
+    value: string,
+    count: number
 }
 
 export interface CategoryFacetCount {

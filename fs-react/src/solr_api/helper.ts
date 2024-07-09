@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import { Datatype } from "../common/datatypes";
+import {Datatype} from "../common/datatypes";
 
 /**
  * Helper functions to return implementation specific property/value suffixes.
@@ -28,6 +28,16 @@ let DatatypeSuffixForValueMap = function(type: Datatype) {
         case Datatype.wikipage: return 't';
     }
 }
+
+let DatatypeSuffixForFacetMap = function(type: Datatype) {
+    switch(type) {
+        case Datatype.string: return 'xsdvalue_s';
+        case Datatype.number: return 'xsdvalue_d';
+        case Datatype.boolean: return 'xsdvalue_b';
+        case Datatype.wikipage: return 's';
+    }
+}
+
 
 class Helper {
 
@@ -57,6 +67,22 @@ class Helper {
     static encodePropertyTitleAsProperty(title: string, type: Datatype) {
         let s = this.encodeWhitespacesInProperties(title);
         return 'smwh_' + s + '_' + DatatypeSuffixForPropertyMap(type);
+    }
+
+    static encodePropertyTitleAsFacet(title: string, type: Datatype) {
+        let s = this.encodeWhitespacesInProperties(title);
+        return 'smwh_' + s + '_' + DatatypeSuffixForFacetMap(type);
+    }
+
+    static encodePropertyTitleAsStatField(title: string, type: Datatype) {
+        let s = this.encodeWhitespacesInProperties(title);
+        if (type == Datatype.datetime) {
+            return 'smwh_' + s + '_datevalue_l';
+        } else if (type == Datatype.number) {
+            return 'smwh_' + s + '_xsdvalue_d';
+        } else {
+            return 'smwh_' + s + '_xsdvalue_s';
+        }
     }
 
     static quoteValue(v : string | number | boolean) {

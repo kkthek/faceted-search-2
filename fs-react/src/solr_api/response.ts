@@ -7,10 +7,15 @@
 import {
     CategoryFacetCount,
     Datatype,
-    Document, NamespaceFacetCount,
-    Property, PropertyFacetCount,
+    Document,
+    NamespaceFacetCount,
+    Property,
+    PropertyFacetCount,
     PropertyFacetValues,
-    SolrResponse
+    PropertyValueCount,
+    SolrResponse,
+    Stats,
+    ValueCount
 } from "../common/datatypes";
 import Helper from "./helper";
 
@@ -19,6 +24,7 @@ class SolrResponseParser {
 
     private readonly body: any;
     private readonly RELATION_REGEX = /^smwh_(.*)_t$/;
+    private readonly RELATION_FROM_FACET_REGEX = /^smwh_(.*)_s$/;
     private readonly ATTRIBUTE_REGEX = /smwh_(.*)_xsdvalue_(.*)/;
 
     constructor(body: object) {
@@ -51,7 +57,7 @@ class SolrResponseParser {
                     }
                 }
             }
-            console.log(doc);
+
             docs.push({
                 id: doc.id,
                 propertyFacets: propertyFacets,
@@ -80,13 +86,43 @@ class SolrResponseParser {
         for (let namespace in smwh_namespaces) {
             namespaceFacetCounts.push({ namespace: parseInt(namespace), count: smwh_namespaces[namespace]});
         }
+        let propertyValueCount: PropertyValueCount[] = [];
+        for (let p in this.body.facet_counts.facet_fields) {
+            if (p === 'smwh_categories' || p === 'smwh_attributes' || p === 'smwh_properties' || p === 'smwh_namespace_id') continue;
+            let property = this.parsePropertyFromFacet(p);
+               let valueCounts: ValueCount[] = [];
+               for(let v in this.body.facet_counts.facet_fields[p]) {
+                   valueCounts.push({ value: v, count: this.body.facet_counts.facet_fields[p][v]});
+               }
+               propertyValueCount.push({property: property, values: valueCounts});
+        }
+
+        let stats: Stats[] = [];
+        if ( this.body.stats.stats_fields) {
+            for(let p in this.body.stats.stats_fields) {
+                let property = this.parsePropertyFromStats(p);
+                if (property != null) {
+                    let info = this.body.stats.stats_fields[p];
+                    let stat: Stats = {
+                        max: info.max,
+                        min: info.min,
+                        count: info.count,
+                        sum: info.sum,
+                        property: property
+                    };
+                    stats.push(stat);
+                }
+            }
+        }
 
         return {
             propertyFacetCounts: propertyFacetCounts,
             namespaceFacetCounts: namespaceFacetCounts,
             categoryFacetCounts: categoryFacetCounts,
             numResults: this.body.response.numFound,
-            docs : docs
+            propertyValueCount: propertyValueCount,
+            docs : docs,
+            stats: stats
         };
     }
 
@@ -140,7 +176,7 @@ class SolrResponseParser {
                 return {
                     property: {title: decodedPropertyName, type: Datatype.boolean },
                     values: values.map((e) => {
-                        console.log(values);
+
                         if (typeof e === 'boolean') {
                             return e;
                         }
@@ -196,6 +232,50 @@ class SolrResponseParser {
                 datatype = Datatype.string;
         }
         return { title: name, type: datatype};
+    }
+
+    private parsePropertyFromFacet(property: string): Property {
+        let nameType = property.match(this.ATTRIBUTE_REGEX);
+        if (!nameType) {
+            nameType = property.match(this.RELATION_FROM_FACET_REGEX);
+            if (nameType) {
+                let name = nameType[1];
+                name = Helper.decodeWhitespacesInProperty(name);
+                return { title: name, type: Datatype.wikipage};
+            }
+        }
+        let name = nameType[1];
+        let type = nameType[2];
+        name = Helper.decodeWhitespacesInProperty(name);
+        let datatype: Datatype;
+        switch(type) {
+            case 'd':
+            case 'i':
+                datatype = Datatype.number;
+                break;
+            case 'b':
+                datatype = Datatype.boolean;
+                break;
+            case 'dt':
+                datatype = Datatype.datetime;
+                break;
+            case 's':
+            default:
+                datatype = Datatype.string;
+        }
+        return { title: name, type: datatype};
+    }
+
+    private parsePropertyFromStats(property: string): Property {
+        let name = property.match(/smwh_(.*)_datevalue_l/);
+        if (!name) {
+            name = property.match(/smwh_(.*)_xsdvalue_d/);
+            return { title: Helper.decodeWhitespacesInProperty(name[1]), type: Datatype.datetime};
+            if (!name) {
+                return null;
+            }
+        }
+        return { title: Helper.decodeWhitespacesInProperty(name[1]), type: Datatype.number};
     }
 }
 

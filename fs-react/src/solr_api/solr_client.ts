@@ -5,7 +5,7 @@
  *
  */
 import Helper from "./helper";
-import {PropertyFacetConstraint, Datatype, MWTitle, Range, Property, ValueType} from "../common/datatypes";
+import {PropertyFacetConstraint, Datatype, MWTitle, Range, Property, ValueType, SearchQuery} from "../common/datatypes";
 
 class SolrClient {
 
@@ -15,15 +15,11 @@ class SolrClient {
         this.url = url;
     }
 
-    async search(searchText: string,
-                 attributeFacets: Array<PropertyFacetConstraint> = [],
-                 categoryFacets: Array<string> = [],
-                 namespaceFacets: Array<number> = [],
-                 extraProperties: Array<Property> = [],
-                 sort: string = "score desc, smwh_displaytitle asc"
+    async search(query: SearchQuery
     ) {
-        let params = this.getParams(searchText, attributeFacets,
-            categoryFacets, namespaceFacets, extraProperties, sort);
+
+        let params = this.getParams(query.searchText, query.propertyFacetConstraints, query.propertyFacets,
+            query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sort, query.statField);
         console.log(params);
         const response = await fetch(this.url + '/rest.php/EnhancedRetrieval/v1/proxy?' + params.toString(), {
             method: "GET",
@@ -36,11 +32,13 @@ class SolrClient {
     }
 
     getParams(searchText: string,
-                      propertyFacets: Array<PropertyFacetConstraint>,
+                      propertyFacetConstraints: Array<PropertyFacetConstraint>,
+                      propertyFacets: Array<Property>,
                       categoryFacets: Array<string>,
                       namespaceFacets: Array<number>,
                       extraProperties: Array<Property>,
-                      sort: string) {
+                      sort: string,
+                      statField: Property | null) {
         let params = new URLSearchParams();
 
         let defaultProperties = [
@@ -66,6 +64,14 @@ class SolrClient {
         params.append('facet.field', 'smwh_attributes');
         params.append('facet.field', 'smwh_properties');
         params.append('facet.field', 'smwh_namespace_id');
+        propertyFacets.forEach((p) => {
+            params.append('facet.field', Helper.encodePropertyTitleAsFacet(p.title, p.type));
+        });
+        if (statField != null) {
+            params.append('stats', 'true');
+            params.append('stats.field', Helper.encodePropertyTitleAsStatField(statField.title, statField.type));
+        }
+
         params.append('facet.mincount', "1");
         params.append('json.nl', "map");
         params.append('fl', [...defaultProperties, ...extraPropertiesAsStrings].join(','));
@@ -79,7 +85,7 @@ class SolrClient {
         params.append('sort', sort);
         params.append('wt', "json");
 
-        SolrClient.encodePropertyFacetValues(propertyFacets).forEach((e)=> params.append('fq', e));
+        SolrClient.encodePropertyFacetValues(propertyFacetConstraints).forEach((e)=> params.append('fq', e));
         SolrClient.encodeCategoryFacets(categoryFacets).forEach((e)=> params.append('fq', e));
         SolrClient.encodeNamespaceFacets(namespaceFacets).forEach((e)=> params.append('fq', e));
 
