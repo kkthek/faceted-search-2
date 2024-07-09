@@ -8,11 +8,12 @@ import {
     CategoryFacetCount,
     Datatype,
     Document,
+    FacetQuery, FacetQueryResponse,
     NamespaceFacetCount,
     Property,
     PropertyFacetCount,
     PropertyFacetValues,
-    PropertyValueCount,
+    PropertyValueCount, Range,
     SolrResponse,
     Stats,
     ValueCount
@@ -57,7 +58,6 @@ class SolrResponseParser {
                     }
                 }
             }
-
             docs.push({
                 id: doc.id,
                 propertyFacets: propertyFacets,
@@ -68,8 +68,9 @@ class SolrResponseParser {
                 score: doc.score,
                 title: doc.smwh_title,
                 displayTitle: doc.smwh_displaytitle,
-                highlighting: this.body.highlighting[doc.id].smwh_search_field ?? ''
+                highlighting: this.body.highlighting ? this.body.highlighting[doc.id].smwh_search_field : null
             });
+
         });
         let smwh_categories = this.body.facet_counts.facet_fields.smwh_categories;
         let categoryFacetCounts: CategoryFacetCount[] = [];
@@ -98,7 +99,7 @@ class SolrResponseParser {
         }
 
         let stats: Stats[] = [];
-        if ( this.body.stats.stats_fields) {
+        if ( this.body.stats && this.body.stats.stats_fields) {
             for(let p in this.body.stats.stats_fields) {
                 let property = this.parsePropertyFromStats(p);
                 if (property != null) {
@@ -115,6 +116,24 @@ class SolrResponseParser {
             }
         }
 
+        let facetQueries: FacetQueryResponse[] = [];
+        for (let key in this.body.facet_counts.facet_queries) {
+            let propertyRange = key.split(':');
+            let property = this.parsePropertyFromStats(propertyRange[0]);
+            let range = propertyRange[1].match(/\[(.*) TO (.*)\]/);
+            let r: Range;
+            if (property.type == Datatype.datetime) {
+                r = { from: Helper.parseDate(range[1]), to: Helper.parseDate(range[2])};
+            } else if (property.type == Datatype.number) {
+                r = { from: parseFloat(range[1]), to: parseFloat(range[2])};
+            } else {
+                continue;
+            }
+
+            let count = this.body.facet_counts.facet_queries[key];
+            facetQueries.push({property: property, range: r, count: count})
+        }
+
         return {
             propertyFacetCounts: propertyFacetCounts,
             namespaceFacetCounts: namespaceFacetCounts,
@@ -122,7 +141,8 @@ class SolrResponseParser {
             numResults: this.body.response.numFound,
             propertyValueCount: propertyValueCount,
             docs : docs,
-            stats: stats
+            stats: stats,
+            facetQueries: facetQueries
         };
     }
 
@@ -277,6 +297,7 @@ class SolrResponseParser {
         }
         return { title: Helper.decodeWhitespacesInProperty(name[1]), type: Datatype.number};
     }
+
 }
 
 export default SolrResponseParser;

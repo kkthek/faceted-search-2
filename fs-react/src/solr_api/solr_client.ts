@@ -5,7 +5,16 @@
  *
  */
 import Helper from "./helper";
-import {PropertyFacetConstraint, Datatype, MWTitle, Range, Property, ValueType, SearchQuery} from "../common/datatypes";
+import {
+    PropertyFacetConstraint,
+    Datatype,
+    MWTitle,
+    Range,
+    Property,
+    ValueType,
+    SearchQuery,
+    FacetQuery
+} from "../common/datatypes";
 
 class SolrClient {
 
@@ -19,7 +28,8 @@ class SolrClient {
     ) {
 
         let params = this.getParams(query.searchText, query.propertyFacetConstraints, query.propertyFacets,
-            query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sort, query.statField);
+            query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sort, query.statField,
+            query.facetQueries);
         console.log(params);
         const response = await fetch(this.url + '/rest.php/EnhancedRetrieval/v1/proxy?' + params.toString(), {
             method: "GET",
@@ -38,7 +48,9 @@ class SolrClient {
                       namespaceFacets: Array<number>,
                       extraProperties: Array<Property>,
                       sort: string,
-                      statField: Property | null) {
+                      statField: Property | null,
+                      facetQueries: FacetQuery[]
+    ) {
         let params = new URLSearchParams();
 
         let defaultProperties = [
@@ -71,16 +83,24 @@ class SolrClient {
             params.append('stats', 'true');
             params.append('stats.field', Helper.encodePropertyTitleAsStatField(statField.title, statField.type));
         }
+        facetQueries.forEach((f) => {
+            let encodeProperty = Helper.encodePropertyTitleAsStatField(f.property.title, f.property.type);
+            let encodedRange = SolrClient.encodeRange(f.range)
+            params.append('facet.query', `${encodeProperty}:[${encodedRange}]`);
+
+        });
 
         params.append('facet.mincount', "1");
         params.append('json.nl', "map");
         params.append('fl', [...defaultProperties, ...extraPropertiesAsStrings].join(','));
-        params.append('hl', "true");
+        if (searchText !== '') {
+            params.append('hl', "true");
+        }
         params.append('hl.fl', "smwh_search_field");
         params.append('hl.simple-pre', "<b>");
         params.append('hl.simple-post', "</b>");
         params.append('hl.fragsize', "250");
-        params.append('searchText', searchText);
+        params.append('searchText', searchText === '' ? '(*)' : searchText);
         params.append('rows', "10");
         params.append('sort', sort);
         params.append('wt', "json");

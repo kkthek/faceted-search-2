@@ -1,4 +1,4 @@
-import {Property, PropertyFacetConstraint, SearchQuery} from "./datatypes";
+import {FacetQuery, Property, PropertyFacetConstraint, SearchQuery} from "./datatypes";
 
 class QueryBuilder {
 
@@ -13,7 +13,8 @@ class QueryBuilder {
             namespaceFacets: [],
             extraProperties: [],
             sort: "score desc, smwh_displaytitle asc",
-            statField: null
+            statField: null,
+            facetQueries: []
         }
     }
 
@@ -54,6 +55,11 @@ class QueryBuilder {
 
     withStatField(property: Property): QueryBuilder {
         this.query.statField = property;
+        return this;
+    }
+
+    withFacetQuery(facetQuery: FacetQuery): QueryBuilder {
+        this.query.facetQueries.push(facetQuery);
         return this;
     }
 

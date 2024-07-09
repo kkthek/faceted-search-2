@@ -46,7 +46,13 @@ export interface SearchQuery {
     namespaceFacets: Array<number>,
     extraProperties: Array<Property>,
     sort: string,
-    statField: Property
+    statField: Property | null
+    facetQueries: FacetQuery[]
+}
+
+export interface FacetQuery {
+    property: Property
+    range: Range
 }
 
 /**
@@ -60,6 +66,11 @@ export interface SolrResponse {
     namespaceFacetCounts: NamespaceFacetCount[];
     propertyValueCount: PropertyValueCount[];
     stats: Stats[];
+    facetQueries: FacetQueryResponse[]
+}
+
+export interface FacetQueryResponse extends FacetQuery {
+    count: number;
 }
 
 export interface Document {
@@ -72,7 +83,7 @@ export interface Document {
     title: string;
     displayTitle: string;
     score: number;
-    highlighting: string;
+    highlighting: string | null;
 }
 
 export interface Stats {

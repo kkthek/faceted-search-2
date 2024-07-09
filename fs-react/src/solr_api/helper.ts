@@ -98,6 +98,11 @@ class Helper {
         return date+time;
     }
 
+    static parseDate(rangeElement: string): Date {
+        let parts = rangeElement.match(/(\d\d\d\d)(\d\d)(\d\d)(\d\d)(\d\d)(\d\d)/);
+        return new Date(Date.UTC(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]), parseInt(parts[3]), parseInt(parts[4]), parseInt(parts[5]), 0));
+    }
+
     static padNumber(n: number) {
         if (n < 10) return "0"+n;
         else return n;

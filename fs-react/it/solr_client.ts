@@ -22,13 +22,16 @@ describe('search()', function () {
     it('request SOLR', function () {
         console.log("Test");
         let queryBuilder = new QueryBuilder();
+        let property = {title: 'Publication date', type: Datatype.datetime };
         queryBuilder
             .withSearchText('carbon')
-            .withPropertyFacet({title: 'Author', type: Datatype.string })
-            .withStatField({title: 'Publication date', type: Datatype.datetime })
+           // .withPropertyFacet({title: 'Author', type: Datatype.string })
+           // .withStatField(property)
+            .withFacetQuery({property: property, range: { from: new Date(Date.now()), to: new Date(Date.now()-(2*3600*24*360*1000))} })
         let response = initSolr().search(queryBuilder.build());
         response.then((body) => {
             let parser = new SolrResponseParser(body);
+
             console.log(util.inspect(parser.parse(), {showHidden: false, depth: null, colors: true}));
         });
     });
