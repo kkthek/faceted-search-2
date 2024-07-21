@@ -15,6 +15,7 @@ import {
     SearchQuery,
     FacetQuery
 } from "../common/datatypes";
+import SolrResponseParser from "./response";
 
 class SolrClient {
 
@@ -31,14 +32,16 @@ class SolrClient {
             query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sort, query.statField,
             query.facetQueries);
         console.log(params);
-        const response = await fetch(this.url + '/rest.php/EnhancedRetrieval/v1/proxy?' + params.toString(), {
+        const response = await fetch(this.url + '?' + params.toString(), {
             method: "GET",
             cache: "no-cache",
             credentials: "same-origin",
             redirect: "follow",
             referrerPolicy: "no-referrer"
         });
-        return response.json();
+        let json = await response.json();
+        let parser = new SolrResponseParser(json);
+        return parser.parse();
     }
 
     getParams(searchText: string,

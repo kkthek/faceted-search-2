@@ -15,7 +15,7 @@ const assert = require('assert');
 const util = require('util');
 
 function initSolr() {
-    return new SolrClient('http://localhost/main/mediawiki');
+    return new SolrClient('http://localhost:9000/proxy');
 }
 
 describe('search()', function () {
@@ -29,10 +29,8 @@ describe('search()', function () {
            // .withStatField(property)
             .withFacetQuery({property: property, range: { from: new Date(Date.now()), to: new Date(Date.now()-(2*3600*24*360*1000))} })
         let response = initSolr().search(queryBuilder.build());
-        response.then((body) => {
-            let parser = new SolrResponseParser(body);
-
-            console.log(util.inspect(parser.parse(), {showHidden: false, depth: null, colors: true}));
+        response.then((response) => {
+            console.log(util.inspect(response, {showHidden: false, depth: null, colors: true}));
         });
     });
 });

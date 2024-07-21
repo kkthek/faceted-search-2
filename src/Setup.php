@@ -18,7 +18,7 @@ class Setup {
             'scripts' => [
                 'fs-react/dist/main.js',
             ],
-            'styles' => [ 'skins/main.css' ],
+            'styles' => [ 'fs-react/public/skins/main.css' ],
             'dependencies' => [],
         );
 

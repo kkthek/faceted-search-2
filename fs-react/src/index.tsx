@@ -13,24 +13,29 @@ import ResultView from "./ui/result_view";
 import SolrClient from "./solr_api/solr_client";
 import QueryBuilder from "./common/query_builder";
 
+const client: SolrClient = new SolrClient('http://localhost:9000/proxy');
+const initialSearch = client.search(new QueryBuilder().build());
+
 function App() {
 
-    const client: SolrClient = new SolrClient('http://localhost/main/mediawiki');
     const [searchResult, setSearchResult] = useState((): SolrResponse => null);
+    const queryBuilder = new QueryBuilder();
 
     function onSearchClick(text: string) {
-        let queryBuilder = new QueryBuilder();
         let query = queryBuilder
             .withSearchText(text)
             .build();
-        client.search(query).then(response => setSearchResult(response));
+        client.search(query).then(response => setSearchResult(response))
+            .catch((e) => { console.log("query failed: " + e)});
     }
 
-    const initialSearch = client.search(new QueryBuilder().build());
-    const [, setInitialSearch] = useState(initialSearch);
+
+    const [initialSearchState, setInitialSearch] = useState(initialSearch);
     useEffect(
         () => {
             setInitialSearch(initialSearch);
+            initialSearchState.then(response => setSearchResult(response))
+                .catch((e) => { console.log("query failed: " + e)});
         },
         [initialSearch]
     );
