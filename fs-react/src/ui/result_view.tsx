@@ -2,13 +2,13 @@ import React from "react";
 import {Document} from "../common/datatypes";
 
 
-function SearchResult(prop: {title: string, snippet: string}) {
-    return <li className={'fs-search-result'}>{prop.title}<p>{prop.snippet}</p></li>
+function SearchResult(prop: { title: string, snippet: string}) {
+    return <li className={'fs-search-result'}>{prop.title}{prop.snippet}</li>
 }
 
 function ResultView(prop: {results: Document[]}) {
-    const listItems = prop.results.map(doc =>
-        <SearchResult title={doc.title} snippet={doc.highlighting} />
+    const listItems = prop.results.map((doc,i) =>
+        <SearchResult key={doc.id} title={doc.title} snippet={doc.highlighting} />
     );
     return <div id={'fs-resultview'}>
         <ul>
