@@ -13,7 +13,16 @@ import ResultView from "./ui/result_view";
 import SolrClient from "./solr_api/solr_client";
 import QueryBuilder from "./common/query_builder";
 
-const client: SolrClient = new SolrClient('http://localhost:9000/proxy');
+const browserWindow = window as any;
+let solrProxyUrl;
+if (browserWindow.mw) {
+    const wgServer = browserWindow.mw.config.get("wgServer");
+    const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
+    solrProxyUrl = wgServer + wgScriptPath + "/rest.php/EnhancedRetrieval/v1/proxy";
+} else {
+    solrProxyUrl = "http://localhost:9000/proxy";
+}
+const client: SolrClient = new SolrClient(solrProxyUrl);
 const initialSearch = client.search(new QueryBuilder().build());
 
 function App() {
