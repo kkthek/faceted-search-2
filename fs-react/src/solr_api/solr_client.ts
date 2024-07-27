@@ -6,7 +6,7 @@
  */
 import Helper from "./helper";
 import {
-    PropertyFacetConstraint,
+    PropertyFacet,
     Datatype,
     MWTitle,
     Range,
@@ -28,7 +28,7 @@ class SolrClient {
     async search(query: SearchQuery
     ) {
 
-        let params = this.getParams(query.searchText, query.propertyFacetConstraints, query.propertyFacets,
+        let params = this.getParams(query.searchText, query.propertyFacets,
             query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sorts, query.statFields,
             query.rangeQueries);
         console.log(params);
@@ -45,11 +45,10 @@ class SolrClient {
     }
 
     getParams(searchText: string,
-                      propertyFacetConstraints: Array<PropertyFacetConstraint>,
-                      propertyFacets: Array<Property>,
-                      categoryFacets: Array<string>,
-                      namespaceFacets: Array<number>,
-                      extraProperties: Array<Property>,
+                      propertyFacetConstraints: PropertyFacet[],
+                      categoryFacets: string[],
+                      namespaceFacets: number[],
+                      extraProperties: Property[],
                       sorts: Sort[],
                       statFields: Property[],
                       facetQueries: RangeQuery[]
@@ -79,7 +78,9 @@ class SolrClient {
         params.append('facet.field', 'smwh_attributes');
         params.append('facet.field', 'smwh_properties');
         params.append('facet.field', 'smwh_namespace_id');
-        propertyFacets.forEach((p) => {
+        propertyFacetConstraints.filter((p) => p.value === null)
+            .map((p) => p.property)
+            .forEach((p) => {
             params.append('facet.field', Helper.encodePropertyTitleAsFacet(p.title, p.type));
         });
         if (statFields.length > 0) {
@@ -110,7 +111,8 @@ class SolrClient {
         params.append('sort', SolrClient.serializeSorts(sorts));
         params.append('wt', "json");
 
-        SolrClient.encodePropertyFacetValues(propertyFacetConstraints).forEach((e)=> params.append('fq', e));
+        SolrClient.encodePropertyFacetValues(propertyFacetConstraints.filter((p) => p.value !== null))
+            .forEach((e)=> params.append('fq', e));
         SolrClient.encodeCategoryFacets(categoryFacets).forEach((e)=> params.append('fq', e));
         SolrClient.encodeNamespaceFacets(namespaceFacets).forEach((e)=> params.append('fq', e));
 
@@ -146,7 +148,7 @@ class SolrClient {
         return (value as Range).from != undefined && (value as Range).to != undefined;
     }
 
-    private static encodePropertyFacetValues(facets: PropertyFacetConstraint[]) {
+    private static encodePropertyFacetValues(facets: PropertyFacet[]) {
         let facetValues: string[] = [];
 
         facets.forEach( (f) => {

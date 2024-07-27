@@ -8,12 +8,12 @@
 /**
  * Request types
  */
-export interface PropertyFacetConstraint {
+export interface PropertyFacet {
     property: Property
     value: ValueType
 }
 
-export type ValueType = string | number | boolean | Date | Range | MWTitle;
+export type ValueType = string | number | boolean | Date | Range | MWTitle | null;
 
 export interface Property {
     title: string
@@ -41,8 +41,7 @@ export enum Datatype {
 
 export interface SearchQuery {
     searchText: string,
-    propertyFacetConstraints: PropertyFacetConstraint[],
-    propertyFacets: Property[]
+    propertyFacets: PropertyFacet[],
     categoryFacets: string[],
     namespaceFacets: number[],
     extraProperties: Property[],

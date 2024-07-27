@@ -1,4 +1,4 @@
-import {RangeQuery, Property, PropertyFacetConstraint, SearchQuery, Sort, Datatype, Order} from "./datatypes";
+import {RangeQuery, Property, PropertyFacet, SearchQuery, Sort, Datatype, Order} from "./datatypes";
 
 class QueryBuilder {
 
@@ -7,7 +7,7 @@ class QueryBuilder {
     constructor() {
         this.query = {
             searchText: "",
-            propertyFacetConstraints: [],
+            propertyFacets: [],
             propertyFacets: [],
             categoryFacets: [],
             namespaceFacets: [],
@@ -31,8 +31,8 @@ class QueryBuilder {
         return this;
     }
 
-    withPropertyFacetConstraint(propertyFacetConstraint: PropertyFacetConstraint): QueryBuilder {
-        this.query.propertyFacetConstraints.push(propertyFacetConstraint);
+    withPropertyFacetConstraint(propertyFacetConstraint: PropertyFacet): QueryBuilder {
+        this.query.propertyFacets.push(propertyFacetConstraint);
         return this;
     }
 
