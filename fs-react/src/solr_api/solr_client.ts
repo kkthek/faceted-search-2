@@ -13,7 +13,7 @@ import {
     Property,
     ValueType,
     SearchQuery,
-    FacetQuery
+    RangeQuery
 } from "../common/datatypes";
 import SolrResponseParser from "./response";
 
@@ -30,7 +30,7 @@ class SolrClient {
 
         let params = this.getParams(query.searchText, query.propertyFacetConstraints, query.propertyFacets,
             query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sort, query.statField,
-            query.facetQueries);
+            query.rangeQueries);
         console.log(params);
         const response = await fetch(this.url + '?' + params.toString(), {
             method: "GET",
@@ -52,7 +52,7 @@ class SolrClient {
                       extraProperties: Array<Property>,
                       sort: string,
                       statField: Property | null,
-                      facetQueries: FacetQuery[]
+                      facetQueries: RangeQuery[]
     ) {
         let params = new URLSearchParams();
 

@@ -40,17 +40,17 @@ export enum Datatype {
 
 export interface SearchQuery {
     searchText: string,
-    propertyFacetConstraints: Array<PropertyFacetConstraint>,
-    propertyFacets: Array<Property>
-    categoryFacets: Array<string>,
-    namespaceFacets: Array<number>,
-    extraProperties: Array<Property>,
+    propertyFacetConstraints: PropertyFacetConstraint[],
+    propertyFacets: Property[]
+    categoryFacets: string[],
+    namespaceFacets: number[],
+    extraProperties: Property[],
     sort: string,
     statField: Property | null
-    facetQueries: FacetQuery[]
+    rangeQueries: RangeQuery[]
 }
 
-export interface FacetQuery {
+export interface RangeQuery {
     property: Property
     range: Range
 }
@@ -65,11 +65,13 @@ export interface SolrResponse {
     propertyFacetCounts: PropertyFacetCount[];
     namespaceFacetCounts: NamespaceFacetCount[];
     propertyValueCount: PropertyValueCount[];
+    rangeValueCounts: RangeValueCounts[]
     stats: Stats[];
-    facetQueries: FacetQueryResponse[]
 }
 
-export interface FacetQueryResponse extends FacetQuery {
+export interface RangeValueCounts {
+    property: Property
+    range: Range
     count: number;
 }
 

@@ -8,7 +8,7 @@ import {
     CategoryFacetCount,
     Datatype,
     Document,
-    FacetQuery, FacetQueryResponse,
+    RangeValueCounts,
     NamespaceFacetCount,
     Property,
     PropertyFacetCount,
@@ -97,7 +97,6 @@ class SolrResponseParser {
                }
                propertyValueCount.push({property: property, values: valueCounts});
         }
-
         let stats: Stats[] = [];
         if ( this.body.stats && this.body.stats.stats_fields) {
             for(let p in this.body.stats.stats_fields) {
@@ -116,7 +115,7 @@ class SolrResponseParser {
             }
         }
 
-        let facetQueries: FacetQueryResponse[] = [];
+        let facetQueries: RangeValueCounts[] = [];
         for (let key in this.body.facet_counts.facet_queries) {
             let propertyRange = key.split(':');
             let property = this.parsePropertyFromStats(propertyRange[0]);
@@ -142,7 +141,7 @@ class SolrResponseParser {
             propertyValueCount: propertyValueCount,
             docs : docs,
             stats: stats,
-            facetQueries: facetQueries
+            rangeValueCounts: facetQueries
         };
     }
 
