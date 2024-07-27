@@ -1,4 +1,4 @@
-import {RangeQuery, Property, PropertyFacetConstraint, SearchQuery} from "./datatypes";
+import {RangeQuery, Property, PropertyFacetConstraint, SearchQuery, Sort, Datatype, Order} from "./datatypes";
 
 class QueryBuilder {
 
@@ -12,7 +12,10 @@ class QueryBuilder {
             categoryFacets: [],
             namespaceFacets: [],
             extraProperties: [],
-            sort: "score desc, smwh_displaytitle asc",
+            sorts: [
+                { property: {title:"score", type: Datatype.internal }, order: Order.desc},
+                { property: {title:"displaytitle", type: Datatype.internal }, order: Order.asc}
+            ],
             statFields: [],
             rangeQueries: []
         }
@@ -48,8 +51,8 @@ class QueryBuilder {
         return this;
     }
 
-    withSort(sort: string): QueryBuilder {
-        this.query.sort = sort;
+    withSort(sort: Sort): QueryBuilder {
+        this.query.sorts.push(sort);
         return this;
     }
 
@@ -58,7 +61,7 @@ class QueryBuilder {
         return this;
     }
 
-    withFacetQuery(facetQuery: RangeQuery): QueryBuilder {
+    withRangeQuery(facetQuery: RangeQuery): QueryBuilder {
         this.query.rangeQueries.push(facetQuery);
         return this;
     }

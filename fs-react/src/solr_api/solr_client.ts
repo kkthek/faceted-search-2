@@ -13,7 +13,7 @@ import {
     Property,
     ValueType,
     SearchQuery,
-    RangeQuery
+    RangeQuery, Sort, Order
 } from "../common/datatypes";
 import SolrResponseParser from "./response";
 
@@ -29,7 +29,7 @@ class SolrClient {
     ) {
 
         let params = this.getParams(query.searchText, query.propertyFacetConstraints, query.propertyFacets,
-            query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sort, query.statFields,
+            query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sorts, query.statFields,
             query.rangeQueries);
         console.log(params);
         const response = await fetch(this.url + '?' + params.toString(), {
@@ -50,7 +50,7 @@ class SolrClient {
                       categoryFacets: Array<string>,
                       namespaceFacets: Array<number>,
                       extraProperties: Array<Property>,
-                      sort: string,
+                      sorts: Sort[],
                       statFields: Property[],
                       facetQueries: RangeQuery[]
     ) {
@@ -107,7 +107,7 @@ class SolrClient {
         params.append('hl.fragsize', "250");
         params.append('searchText', searchText === '' ? '(*)' : searchText);
         params.append('rows', "10");
-        params.append('sort', sort);
+        params.append('sort', SolrClient.serializeSorts(sorts));
         params.append('wt', "json");
 
         SolrClient.encodePropertyFacetValues(propertyFacetConstraints).forEach((e)=> params.append('fq', e));
@@ -116,6 +116,22 @@ class SolrClient {
 
         params.append('q.alt', searchText === '' ? 'smwh_search_field:(*)' : SolrClient.encodeQuery(searchText.split(/\s+/)));
         return params;
+    }
+
+    private static serializeSorts(sorts: Sort[]): string {
+        return sorts.map((s) => {
+            let order = s.order === Order.desc ? 'desc' : 'asc';
+            if (s.property.type === Datatype.internal) {
+                if (s.property.title === 'score') {
+                    return 'score ' + order
+                } else if (s.property.title === 'displaytitle') {
+                    return 'smwh_displaytitle ' + order
+                }
+            } else {
+                let property = Helper.encodePropertyTitleAsProperty(s.property.title, s.property.type);
+                return property + " " + order;
+            }
+        }).join(", ");
     }
 
     private static isMWTitle(value: ValueType): value is MWTitle {

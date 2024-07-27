@@ -35,7 +35,8 @@ export enum Datatype {
     number,
     datetime,
     boolean,
-    wikipage
+    wikipage,
+    internal
 }
 
 export interface SearchQuery {
@@ -45,7 +46,7 @@ export interface SearchQuery {
     categoryFacets: string[],
     namespaceFacets: number[],
     extraProperties: Property[],
-    sort: string,
+    sorts: Sort[],
     statFields: Property[]
     rangeQueries: RangeQuery[]
 }
@@ -53,6 +54,16 @@ export interface SearchQuery {
 export interface RangeQuery {
     property: Property
     range: Range
+}
+
+export interface Sort {
+    property: Property,
+    order: Order
+}
+
+export enum Order {
+    asc,
+    desc
 }
 
 /**
