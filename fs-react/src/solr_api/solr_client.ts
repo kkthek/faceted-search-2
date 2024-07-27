@@ -29,7 +29,7 @@ class SolrClient {
     ) {
 
         let params = this.getParams(query.searchText, query.propertyFacetConstraints, query.propertyFacets,
-            query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sort, query.statField,
+            query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sort, query.statFields,
             query.rangeQueries);
         console.log(params);
         const response = await fetch(this.url + '?' + params.toString(), {
@@ -51,7 +51,7 @@ class SolrClient {
                       namespaceFacets: Array<number>,
                       extraProperties: Array<Property>,
                       sort: string,
-                      statField: Property | null,
+                      statFields: Property[],
                       facetQueries: RangeQuery[]
     ) {
         let params = new URLSearchParams();
@@ -82,10 +82,12 @@ class SolrClient {
         propertyFacets.forEach((p) => {
             params.append('facet.field', Helper.encodePropertyTitleAsFacet(p.title, p.type));
         });
-        if (statField != null) {
+        if (statFields.length > 0) {
             params.append('stats', 'true');
-            params.append('stats.field', Helper.encodePropertyTitleAsStatField(statField.title, statField.type));
         }
+        statFields.forEach((statField) => {
+            params.append('stats.field', Helper.encodePropertyTitleAsStatField(statField.title, statField.type));
+        });
         facetQueries.forEach((f) => {
             let encodeProperty = Helper.encodePropertyTitleAsStatField(f.property.title, f.property.type);
             let encodedRange = SolrClient.encodeRange(f.range)

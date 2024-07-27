@@ -46,7 +46,7 @@ export interface SearchQuery {
     namespaceFacets: number[],
     extraProperties: Property[],
     sort: string,
-    statField: Property | null
+    statFields: Property[]
     rangeQueries: RangeQuery[]
 }
 

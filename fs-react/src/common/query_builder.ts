@@ -13,7 +13,7 @@ class QueryBuilder {
             namespaceFacets: [],
             extraProperties: [],
             sort: "score desc, smwh_displaytitle asc",
-            statField: null,
+            statFields: [],
             rangeQueries: []
         }
     }
@@ -54,7 +54,7 @@ class QueryBuilder {
     }
 
     withStatField(property: Property): QueryBuilder {
-        this.query.statField = property;
+        this.query.statFields.push(property);
         return this;
     }
 
