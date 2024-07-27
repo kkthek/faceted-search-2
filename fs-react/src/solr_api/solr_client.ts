@@ -13,7 +13,7 @@ import {
     Property,
     ValueType,
     SearchQuery,
-    RangeQuery, Sort, Order
+    RangeQuery, Sort, Order, RangeType
 } from "../common/datatypes";
 import SolrResponseParser from "./response";
 
@@ -144,8 +144,8 @@ class SolrClient {
         return (value as Date).getDate() != undefined;
     }
 
-    private static isRange(value: ValueType): value is Range {
-        return (value as Range).from != undefined && (value as Range).to != undefined;
+    private static isRange(value: ValueType): value is RangeType {
+        return (value as RangeType).from != undefined && (value as RangeType).to != undefined;
     }
 
     private static encodePropertyFacetValues(facets: PropertyFacet[]) {
@@ -180,7 +180,7 @@ class SolrClient {
         return facetValues;
     }
 
-    private static encodeRange(range: Range) {
+    private static encodeRange(range: RangeType) {
         if (this.isDate(range.from) && this.isDate(range.to)) {
             return `${Helper.serializeDate(range.from)} TO ${Helper.serializeDate(range.to)}`;
         }

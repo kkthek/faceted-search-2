@@ -13,21 +13,9 @@ export interface PropertyFacet {
     value: ValueType
 }
 
-export type ValueType = string | number | boolean | Date | Range | MWTitle | null;
-
 export interface Property {
     title: string
     type: Datatype
-}
-
-export interface MWTitle {
-    title: string
-    displayTitle: string
-}
-
-export interface Range {
-    from: number | Date
-    to: number | Date
 }
 
 export enum Datatype {
@@ -38,6 +26,28 @@ export enum Datatype {
     wikipage,
     internal
 }
+
+export type ValueType =
+      string
+    | number
+    | boolean
+    | Date
+    | RangeType
+    | MWTitle
+    | null;
+
+export type RangeType = Range<number|Date>
+
+export interface Range<T> {
+    from: T
+    to: T
+}
+
+export interface MWTitle {
+    title: string
+    displayTitle: string
+}
+
 
 export interface SearchQuery {
     searchText: string,
@@ -52,7 +62,7 @@ export interface SearchQuery {
 
 export interface RangeQuery {
     property: Property
-    range: Range
+    range: RangeType
 }
 
 export interface Sort {
@@ -81,7 +91,7 @@ export interface SolrResponse {
 
 export interface RangeValueCounts {
     property: Property
-    range: Range
+    range: Range<number|Date>
     count: number;
 }
 
