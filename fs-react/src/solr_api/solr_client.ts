@@ -6,14 +6,17 @@
  */
 import Helper from "./helper";
 import {
-    PropertyFacet,
+    AnyValueType,
     Datatype,
     MWTitle,
-    Range,
+    Order,
     Property,
-    ValueType,
+    PropertyFacet,
+    RangeQuery,
+    RangeType,
     SearchQuery,
-    RangeQuery, Sort, Order, RangeType
+    Sort,
+    ValueType
 } from "../common/datatypes";
 import SolrResponseParser from "./response";
 
@@ -51,7 +54,7 @@ class SolrClient {
                       extraProperties: Property[],
                       sorts: Sort[],
                       statFields: Property[],
-                      facetQueries: RangeQuery[]
+                      rangeQueries: RangeQuery[]
     ) {
         let params = new URLSearchParams();
 
@@ -78,10 +81,10 @@ class SolrClient {
         params.append('facet.field', 'smwh_attributes');
         params.append('facet.field', 'smwh_properties');
         params.append('facet.field', 'smwh_namespace_id');
-        propertyFacetConstraints.filter((p) => p.value === null)
-            .map((p) => p.property)
+        propertyFacetConstraints.filter((p) => SolrClient.isNullType(p.value))
+
             .forEach((p) => {
-            params.append('facet.field', Helper.encodePropertyTitleAsFacet(p.title, p.type));
+            params.append('facet.field', Helper.encodePropertyTitleAsFacet(p.property, SolrClient.getDataType(p.value)));
         });
         if (statFields.length > 0) {
             params.append('stats', 'true');
@@ -89,8 +92,13 @@ class SolrClient {
         statFields.forEach((statField) => {
             params.append('stats.field', Helper.encodePropertyTitleAsStatField(statField.title, statField.type));
         });
-        facetQueries.forEach((f) => {
-            let encodeProperty = Helper.encodePropertyTitleAsStatField(f.property.title, f.property.type);
+        rangeQueries.forEach((f) => {
+            let encodeProperty;
+            if (SolrClient.isDateRange(f.range)) {
+                encodeProperty = Helper.encodePropertyTitleAsStatField(f.property, Datatype.datetime);
+            } else {
+                encodeProperty = Helper.encodePropertyTitleAsStatField(f.property, Datatype.number);
+            }
             let encodedRange = SolrClient.encodeRange(f.range)
             params.append('facet.query', `${encodeProperty}:[${encodedRange}]`);
 
@@ -111,7 +119,7 @@ class SolrClient {
         params.append('sort', SolrClient.serializeSorts(sorts));
         params.append('wt', "json");
 
-        SolrClient.encodePropertyFacetValues(propertyFacetConstraints.filter((p) => p.value !== null))
+        SolrClient.encodePropertyFacetValues(propertyFacetConstraints.filter((p) => !SolrClient.isNullType(p.value)))
             .forEach((e)=> params.append('fq', e));
         SolrClient.encodeCategoryFacets(categoryFacets).forEach((e)=> params.append('fq', e));
         SolrClient.encodeNamespaceFacets(namespaceFacets).forEach((e)=> params.append('fq', e));
@@ -136,16 +144,42 @@ class SolrClient {
         }).join(", ");
     }
 
-    private static isMWTitle(value: ValueType): value is MWTitle {
+    private static isMWTitle(value: ValueType|AnyValueType): value is MWTitle {
         return (value as MWTitle).title != undefined;
     }
 
-    private static isDate(value: ValueType): value is Date {
-        return (value as Date).getDate() != undefined;
+    private static isDate(value: ValueType|AnyValueType): value is Date {
+        return (value as Date).getDate != undefined;
     }
 
-    private static isRange(value: ValueType): value is RangeType {
+    private static isRange(value: ValueType|AnyValueType): value is RangeType {
         return (value as RangeType).from != undefined && (value as RangeType).to != undefined;
+    }
+
+    private static isNullType(value: ValueType|AnyValueType): value is AnyValueType {
+        return (value as AnyValueType).type !== undefined;
+    }
+
+    private static isDateRange(range: RangeType) {
+        return (range.from as Date).getDate != undefined;
+    }
+
+    private static getDataType(type: ValueType|AnyValueType) {
+        if (this.isNullType(type)) {
+            return type.type;
+        } else if (this.isDate(type)) {
+            return Datatype.datetime;
+        } else if (this.isMWTitle(type)) {
+            return Datatype.wikipage;
+        } else if (typeof(type) === 'boolean') {
+            return Datatype.boolean;
+        } else if (typeof(type) === 'string') {
+            return Datatype.string;
+        } else if (typeof(type) === 'number') {
+            return Datatype.number;
+        } else {
+            return Datatype.internal;
+        }
     }
 
     private static encodePropertyFacetValues(facets: PropertyFacet[]) {
@@ -153,19 +187,19 @@ class SolrClient {
 
         facets.forEach( (f) => {
             if (this.isMWTitle(f.value)) {
-                let pAsValue = 'smwh_properties:'+Helper.encodePropertyTitleAsValue(f.property.title, Datatype.wikipage);
+                let pAsValue = 'smwh_properties:'+Helper.encodePropertyTitleAsValue(f.property, Datatype.wikipage);
                 if (!facetValues.includes(pAsValue)) {
                     facetValues.push(pAsValue);
                 }
-                let p = Helper.encodePropertyTitleAsProperty(f.property.title, Datatype.wikipage);
+                let p = Helper.encodePropertyTitleAsProperty(f.property, Datatype.wikipage);
                 let value = Helper.quoteValue(`${f.value.title}|${f.value.displayTitle}`);
                 facetValues.push(`${p}:${value}`);
             } else {
-                let pAsValue = 'smwh_attributes:' + Helper.encodePropertyTitleAsValue(f.property.title, f.property.type);
+                let pAsValue = 'smwh_attributes:' + Helper.encodePropertyTitleAsValue(f.property, SolrClient.getDataType(f.value));
                 if (!facetValues.includes(pAsValue)) {
                     facetValues.push(pAsValue);
                 }
-                let p = Helper.encodePropertyTitleAsProperty(f.property.title, f.property.type);
+                let p = Helper.encodePropertyTitleAsProperty(f.property, SolrClient.getDataType(f.value));
                 let value;
                 if (typeof f.value === 'string' || typeof f.value === 'number' || typeof f.value === 'boolean') {
                     value = Helper.quoteValue(f.value);

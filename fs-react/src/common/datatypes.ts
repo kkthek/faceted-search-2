@@ -8,13 +8,32 @@
 /**
  * Request types
  */
-export interface PropertyFacet {
-    property: Property
-    value: ValueType
+
+export interface SearchQuery {
+    searchText: string,
+    categoryFacets: string[],
+    namespaceFacets: number[],
+    propertyFacets: PropertyFacet[],
+    extraProperties: Property[],
+    sorts: Sort[],
+    statFields: Property[]
+    rangeQueries: RangeQuery[]
 }
 
-export interface Property {
-    title: string
+export interface PropertyFacet {
+    property: string
+    value: ValueType|AnyValueType
+}
+
+export type ValueType =
+      string
+    | number
+    | boolean
+    | Date
+    | RangeType
+    | MWTitle;
+
+export interface AnyValueType {
     type: Datatype
 }
 
@@ -27,15 +46,6 @@ export enum Datatype {
     internal
 }
 
-export type ValueType =
-      string
-    | number
-    | boolean
-    | Date
-    | RangeType
-    | MWTitle
-    | null;
-
 export type RangeType = Range<number|Date>
 
 export interface Range<T> {
@@ -43,25 +53,18 @@ export interface Range<T> {
     to: T
 }
 
+export interface Property {
+    title: string
+    type: Datatype
+}
+
 export interface MWTitle {
     title: string
     displayTitle: string
 }
 
-
-export interface SearchQuery {
-    searchText: string,
-    propertyFacets: PropertyFacet[],
-    categoryFacets: string[],
-    namespaceFacets: number[],
-    extraProperties: Property[],
-    sorts: Sort[],
-    statFields: Property[]
-    rangeQueries: RangeQuery[]
-}
-
 export interface RangeQuery {
-    property: Property
+    property: string
     range: RangeType
 }
 

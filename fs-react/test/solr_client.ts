@@ -35,7 +35,7 @@ describe('getParams()', function () {
 describe('getParams()', function () {
     it('propertyFacets with arbitrary value for a property', function () {
         let propertyFacets = [
-            {property: {title: 'HasChild', type: Datatype.string}, value: null}
+            {property: 'HasChild', value: {type: Datatype.string}}
         ];
         let params = initSolr().getParams("test", propertyFacets, [], [], [], [], [], []);
         console.log(params.toString());
@@ -46,7 +46,7 @@ describe('getParams()', function () {
 describe('getParams()', function () {
     it('propertyFacets with 1 value for a property', function () {
         let propertyFacets = [
-            {property: {title: 'HasChild', type: Datatype.string}, value: 'Thomas'}
+            {property:'HasChild', value: 'Thomas'}
         ];
         let params = initSolr().getParams("test", propertyFacets, [], [], [], [], [], []);
         console.log(params.toString());
@@ -57,8 +57,8 @@ describe('getParams()', function () {
 describe('getParams()', function () {
     it('propertyFacets with 2 values for same attribute', function () {
         let propertyFacets = [
-            {property: {title: 'HasChild', type: Datatype.string}, value: 'Thomas' },
-            {property: {title: 'HasChild', type: Datatype.string}, value: 'Markus' }
+            {property: 'HasChild', value: 'Thomas' },
+            {property: 'HasChild', value: 'Markus' }
         ];
         let params = initSolr().getParams("test", propertyFacets, [], [], [], [], [], []);
         console.log(params.toString());
@@ -69,7 +69,7 @@ describe('getParams()', function () {
 describe('getParams()', function () {
     it('propertyFacets with 1 wikipage value for a property', function () {
         let propertyFacets = [
-            {property: {title: 'IsInCity', type: Datatype.wikipage}, value:  { title: 'Munich', displayTitle: 'München'} }
+            {property: 'IsInCity', value:  { title: 'Munich', displayTitle: 'München'} }
         ];
         let params = initSolr().getParams("test", propertyFacets, [], [], [], [], [], []);
         console.log(params.toString());
@@ -80,8 +80,8 @@ describe('getParams()', function () {
 describe('getParams()', function () {
     it('propertyFacets with 2 wikipage values for same property', function () {
         let propertyFacets = [
-            {property: {title: 'IsInCity', type: Datatype.wikipage}, value:  { title: 'Munich', displayTitle: 'München'} },
-            {property: {title: 'IsInCity', type: Datatype.wikipage}, value:  { title: 'Frankfurt', displayTitle: 'Frankfurt'} }
+            {property: 'IsInCity', value:  { title: 'Munich', displayTitle: 'München'} },
+            {property: 'IsInCity', value:  { title: 'Frankfurt', displayTitle: 'Frankfurt'} }
         ];
         let params = initSolr().getParams("test", propertyFacets, [], [], [], [], [], []);
         console.log(params.toString());
@@ -114,6 +114,15 @@ describe('getParams()', function () {
         let params = initSolr().getParams("test", [], [], [], extraProperties, [], [], []);
         console.log(params.toString());
         assert.equal(params.toString(), 'defType=edismax&boost=max%28smwh_boost_dummy%29&facet=true&facet.field=smwh_categories&facet.field=smwh_attributes&facet.field=smwh_properties&facet.field=smwh_namespace_id&facet.mincount=1&json.nl=map&fl=smwh__MDAT_datevalue_l%2Csmwh_categories%2Csmwh_directcategories%2Csmwh_attributes%2Csmwh_properties%2Csmwh_title%2Csmwh_namespace_id%2Cid%2Cscore%2Csmwh_displaytitle%2Csmwh_Has__Name_xsdvalue_t&hl=true&hl.fl=smwh_search_field&hl.simple-pre=%3Cb%3E&hl.simple-post=%3C%2Fb%3E&hl.fragsize=250&searchText=test&rows=10&sort=&wt=json&q.alt=smwh_search_field%3A%28%2Btest*+%29+OR+smwh_search_field%3A%28test%29+OR+smwh_title%3A%28test%29+OR+smwh_displaytitle%3A%28test%29');
+    });
+});
+
+describe('getParams()', function () {
+    it('rangeQuery', function () {
+        let rangeQueries = [{property: 'Has date', range: { from: new Date(Date.UTC(1999, 2,3, 0,0,0,0)), to: new Date(Date.UTC(2000, 2,3, 0,0,0,0))} }];
+        let params = initSolr().getParams("test", [], [], [], [], [], [], rangeQueries);
+        console.log(params.toString());
+        assert.equal(params.toString(), 'defType=edismax&boost=max%28smwh_boost_dummy%29&facet=true&facet.field=smwh_categories&facet.field=smwh_attributes&facet.field=smwh_properties&facet.field=smwh_namespace_id&facet.query=smwh_Has__date_datevalue_l%3A%5B19990203010000+TO+20000203010000%5D&facet.mincount=1&json.nl=map&fl=smwh__MDAT_datevalue_l%2Csmwh_categories%2Csmwh_directcategories%2Csmwh_attributes%2Csmwh_properties%2Csmwh_title%2Csmwh_namespace_id%2Cid%2Cscore%2Csmwh_displaytitle&hl=true&hl.fl=smwh_search_field&hl.simple-pre=%3Cb%3E&hl.simple-post=%3C%2Fb%3E&hl.fragsize=250&searchText=test&rows=10&sort=&wt=json&q.alt=smwh_search_field%3A%28%2Btest*+%29+OR+smwh_search_field%3A%28test%29+OR+smwh_title%3A%28test%29+OR+smwh_displaytitle%3A%28test%29');
     });
 });
 
