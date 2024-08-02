@@ -30,7 +30,8 @@ export interface StatQuery extends BaseQuery {
 
 export interface PropertyFacet {
     property: string
-    value: ValueType|AnyValueType
+    type: Datatype
+    value: ValueType|void
 }
 
 export type ValueType =
@@ -40,10 +41,6 @@ export type ValueType =
     | Date
     | RangeType
     | MWTitle;
-
-export interface AnyValueType {
-    type: Datatype
-}
 
 export enum Datatype {
     string,
