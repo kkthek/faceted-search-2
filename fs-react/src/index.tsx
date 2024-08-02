@@ -8,10 +8,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search_bar";
 import { useState, useEffect } from 'react';
-import {SolrResponse} from "./common/datatypes";
+import {SolrDocumentsResponse} from "./common/datatypes";
 import ResultView from "./ui/result_view";
-import SolrClient from "./solr_api/solr_client";
-import QueryBuilder from "./common/query_builder";
+import Client from "./common/client";
+import DocumentQueryBuilder from "./common/query_builder";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -22,19 +22,19 @@ if (browserWindow.mw) {
 } else {
     solrProxyUrl = "http://localhost:9000/proxy";
 }
-const client: SolrClient = new SolrClient(solrProxyUrl);
-const initialSearch = client.search(new QueryBuilder().build());
+const client: Client = new Client(solrProxyUrl);
+const initialSearch = client.searchDocuments(new DocumentQueryBuilder().build());
 
 function App() {
 
-    const [searchResult, setSearchResult] = useState((): SolrResponse => null);
-    const queryBuilder = new QueryBuilder();
+    const [searchResult, setSearchResult] = useState((): SolrDocumentsResponse => null);
+    const queryBuilder = new DocumentQueryBuilder();
 
     function onSearchClick(text: string) {
         let query = queryBuilder
             .withSearchText(text)
             .build();
-        client.search(query).then(response => setSearchResult(response))
+        client.searchDocuments(query).then(response => setSearchResult(response))
             .catch((e) => { console.log("query failed: " + e)});
     }
 

@@ -1,8 +1,8 @@
-import {RangeQuery, Property, PropertyFacet, SearchQuery, Sort, Datatype, Order} from "./datatypes";
+import {RangeQuery, Property, PropertyFacet, DocumentQuery, Sort, Datatype, Order} from "./datatypes";
 
-class QueryBuilder {
+class DocumentQueryBuilder {
 
-    private readonly query: SearchQuery;
+    private readonly query: DocumentQuery;
 
     constructor() {
         this.query = {
@@ -15,66 +15,55 @@ class QueryBuilder {
                 { property: {title:"score", type: Datatype.internal }, order: Order.desc},
                 { property: {title:"displaytitle", type: Datatype.internal }, order: Order.asc}
             ],
-            statFields: [],
-            rangeQueries: [],
+
             limit: 10,
             offset: 0
         }
     }
 
-    withSearchText(text: string): QueryBuilder {
+    withSearchText(text: string): DocumentQueryBuilder {
         this.query.searchText = text;
         return this;
     }
 
-    withPropertyFacetConstraint(propertyFacetConstraint: PropertyFacet): QueryBuilder {
+    withPropertyFacetConstraint(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
         this.query.propertyFacets.push(propertyFacetConstraint);
         return this;
     }
 
-    withCategoryFacet(category: string): QueryBuilder {
+    withCategoryFacet(category: string): DocumentQueryBuilder {
         this.query.categoryFacets.push(category);
         return this;
     }
 
-    withNamespaceFacet(namespace: number): QueryBuilder {
+    withNamespaceFacet(namespace: number): DocumentQueryBuilder {
         this.query.namespaceFacets.push(namespace);
         return this;
     }
 
-    withExtraProperty(property: Property): QueryBuilder {
+    withExtraProperty(property: Property): DocumentQueryBuilder {
         this.query.extraProperties.push(property);
         return this;
     }
 
-    withSort(sort: Sort): QueryBuilder {
+    withSort(sort: Sort): DocumentQueryBuilder {
         this.query.sorts.push(sort);
         return this;
     }
 
-    withLimit(limit: number): QueryBuilder {
+    withLimit(limit: number): DocumentQueryBuilder {
         this.query.limit = limit;
         return this;
     }
     
-    withOffset(offset: number): QueryBuilder {
+    withOffset(offset: number): DocumentQueryBuilder {
         this.query.offset = offset;
         return this;
     }
 
-    withStatField(property: Property): QueryBuilder {
-        this.query.statFields.push(property);
-        return this;
-    }
-
-    withRangeQuery(facetQuery: RangeQuery): QueryBuilder {
-        this.query.rangeQueries.push(facetQuery);
-        return this;
-    }
-
-    build(): SearchQuery {
+    build(): DocumentQuery {
         return this.query;
     }
 }
 
-export default QueryBuilder;
+export default DocumentQueryBuilder;
