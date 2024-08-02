@@ -38,9 +38,14 @@
 	},
 	"RestRoutes": [
 		{
-			"path": "/FacetedSearch2/v1/proxy",
-			"method": "GET",
-			"class": "DIQA\\FacetedSearch2\\ProxyRestEndpoint"
+			"path": "/FacetedSearch2/v1/proxy/documents",
+			"method": "POST",
+			"class": "DIQA\\FacetedSearch2\\Endpoints\\DocumentsSearchEndpoint"
+		},
+		{
+			"path": "/FacetedSearch2/v1/proxy/stats",
+			"method": "POST",
+			"class": "DIQA\\FacetedSearch2\\Endpoints\\StatsSearchEndpoint"
 		}
 	],
 	"manifest_version": 2

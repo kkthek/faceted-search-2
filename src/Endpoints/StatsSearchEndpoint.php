@@ -1,6 +1,6 @@
 <?php
 
-namespace DIQA\FacetedSearch2;
+namespace DIQA\FacetedSearch2\Endpoints;
 
 use DIQA\FacetedSearch\Proxy\SolrProxy\SolrService;
 use MediaWiki\Rest\Handler;
