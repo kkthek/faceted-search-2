@@ -27,7 +27,7 @@ describe('search()', function () {
             .withSearchText('carbon')
            // .withPropertyFacet({title: 'Author', type: Datatype.string })
            .withStatField(property)
-            .withRangeQuery({property: property, range: { from: new Date(Date.now()), to: new Date(Date.now()-(2*3600*24*360*1000))} })
+            .withRangeQuery({property: 'Publication date', range: { from: new Date(Date.now()), to: new Date(Date.now()-(2*3600*24*360*1000))} })
         let response = initSolr().search(queryBuilder.build());
         response.then((response) => {
             console.log(util.inspect(response, {showHidden: false, depth: null, colors: true}));

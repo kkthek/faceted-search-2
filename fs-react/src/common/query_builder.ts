@@ -8,7 +8,6 @@ class QueryBuilder {
         this.query = {
             searchText: "",
             propertyFacets: [],
-            propertyFacets: [],
             categoryFacets: [],
             namespaceFacets: [],
             extraProperties: [],
@@ -17,17 +16,14 @@ class QueryBuilder {
                 { property: {title:"displaytitle", type: Datatype.internal }, order: Order.asc}
             ],
             statFields: [],
-            rangeQueries: []
+            rangeQueries: [],
+            limit: 10,
+            offset: 0
         }
     }
 
     withSearchText(text: string): QueryBuilder {
         this.query.searchText = text;
-        return this;
-    }
-
-    withPropertyFacet(property: Property): QueryBuilder {
-        this.query.propertyFacets.push(property);
         return this;
     }
 
@@ -53,6 +49,16 @@ class QueryBuilder {
 
     withSort(sort: Sort): QueryBuilder {
         this.query.sorts.push(sort);
+        return this;
+    }
+
+    withLimit(limit: number): QueryBuilder {
+        this.query.limit = limit;
+        return this;
+    }
+    
+    withOffset(offset: number): QueryBuilder {
+        this.query.offset = offset;
         return this;
     }
 

@@ -16,7 +16,7 @@ import {
     PropertyValueCount, Range,
     SolrResponse,
     Stats,
-    ValueCount
+    ValueCount, CategoryFacetValue
 } from "../common/datatypes";
 import Helper from "./helper";
 
@@ -36,17 +36,32 @@ class SolrResponseParser {
         let docs: Document[] = [];
         this.body.response.docs.forEach((doc: any): any => {
             let propertyFacets: PropertyFacetValues[] = [];
-            let categoryFacets: string[] = [];
-            let directCategoryFacets: string[] = [];
+            let categoryFacets: CategoryFacetValue[] = [];
+            let directCategoryFacets: CategoryFacetValue[] = [];
             let namespace = null;
             let properties: Property[] = [];
             for (let property in doc) {
                 if (property.startsWith("smwh_namespace_id")) {
-                    namespace = doc[property];
+                    namespace = {
+                        namespace: doc[property],
+                        displayTitle: ''
+                    }
                 } else if (property.startsWith("smwh_categories")) {
-                    categoryFacets = doc[property].map((category: string) => Helper.decodeWhitespacesInTitle(category));
+                    categoryFacets = doc[property].map((category: string) =>
+                    {
+                      return {
+                          category: Helper.decodeWhitespacesInTitle(category),
+                          displayTitle: Helper.decodeWhitespacesInTitle(category)
+                      }
+                    });
                 } else if (property.startsWith("smwh_directcategories")) {
-                    directCategoryFacets = doc[property].map((category: string) => Helper.decodeWhitespacesInTitle(category));
+                    directCategoryFacets = doc[property].map((category: string) =>
+                    {
+                        return {
+                            category: Helper.decodeWhitespacesInTitle(category),
+                            displayTitle: Helper.decodeWhitespacesInTitle(category)
+                        }
+                    });
                 } else if (property.startsWith("smwh_attributes")) {
                     properties = properties.concat(this.parseProperties(doc[property]));
                 } else if (property.startsWith("smwh_properties")) {
@@ -120,7 +135,7 @@ class SolrResponseParser {
             let propertyRange = key.split(':');
             let property = this.parsePropertyFromStats(propertyRange[0]);
             let range = propertyRange[1].match(/\[(.*) TO (.*)\]/);
-            let r: Range;
+            let r;
             if (property.type == Datatype.datetime) {
                 r = { from: Helper.parseDate(range[1]), to: Helper.parseDate(range[2])};
             } else if (property.type == Datatype.number) {

@@ -18,6 +18,8 @@ export interface SearchQuery {
     sorts: Sort[],
     statFields: Property[]
     rangeQueries: RangeQuery[]
+    limit: number | null,
+    offset: number | null
 }
 
 export interface PropertyFacet {
@@ -101,9 +103,9 @@ export interface RangeValueCounts {
 export interface Document {
     id: string
     propertyFacets: PropertyFacetValues[];
-    categoryFacets: string[];
-    directCategoryFacets: string[];
-    namespaceFacet: number;
+    categoryFacets: CategoryFacetValue[];
+    directCategoryFacets: CategoryFacetValue[];
+    namespaceFacet: NamespaceFacetValue;
     properties: Property[];
     title: string;
     displayTitle: string;
@@ -122,6 +124,16 @@ export interface Stats {
 export interface PropertyFacetValues {
     property: Property
     values: string[] | number[] | boolean[] | Date[] | MWTitle[]
+}
+
+export interface CategoryFacetValue {
+    category: string
+    displayTitle: string
+}
+
+export interface NamespaceFacetValue {
+    namespace: number;
+    displayTitle: string
 }
 
 export interface PropertyValueCount {

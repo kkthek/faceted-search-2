@@ -33,7 +33,7 @@ class SolrClient {
 
         let params = this.getParams(query.searchText, query.propertyFacets,
             query.categoryFacets, query.namespaceFacets, query.extraProperties, query.sorts, query.statFields,
-            query.rangeQueries);
+            query.rangeQueries, query.limit, query.offset);
         console.log(params);
         const response = await fetch(this.url + '?' + params.toString(), {
             method: "GET",
@@ -54,7 +54,9 @@ class SolrClient {
                       extraProperties: Property[],
                       sorts: Sort[],
                       statFields: Property[],
-                      rangeQueries: RangeQuery[]
+                      rangeQueries: RangeQuery[],
+                      limit: number,
+                      offset: number
     ) {
         let params = new URLSearchParams();
 
@@ -115,7 +117,8 @@ class SolrClient {
         params.append('hl.simple-post', "</b>");
         params.append('hl.fragsize', "250");
         params.append('searchText', searchText === '' ? '(*)' : searchText);
-        params.append('rows', "10");
+        params.append('rows', limit.toString());
+        params.append('start', offset.toString());
         params.append('sort', SolrClient.serializeSorts(sorts));
         params.append('wt', "json");
 
