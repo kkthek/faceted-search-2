@@ -13,9 +13,10 @@ class Client
 {
 
 
-    public function request(DocumentQuery $documentQuery)
+    public function request(DocumentQuery $q)
     {
-
+        return $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
+        $q->namespaceFacets, $q->extraProperties, $q->sorts, $q->limit, $q->offset);
     }
 
     private function getParams(string $searchText,
