@@ -1,6 +1,8 @@
 <?php
 
-namespace DIQA\FacetedSearch2\SolrClient\Response;
+namespace DIQA\FacetedSearch2\Model\Response;
+
+use DIQA\FacetedSearch2\Model\Range;
 
 class RangeValueCounts
 {

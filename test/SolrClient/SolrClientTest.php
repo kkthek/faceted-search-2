@@ -5,7 +5,7 @@ use DIQA\FacetedSearch2\Model\DocumentQuery;
 use DIQA\FacetedSearch2\SolrClient\Client;
 use PHPUnit\Framework\TestCase;
 
-final class AlignmentTest extends TestCase {
+final class SolrClientTest extends TestCase {
 
     public function test1(): void
     {

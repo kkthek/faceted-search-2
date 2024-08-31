@@ -35,23 +35,23 @@ class Helper
     public static function encodeWhitespacesInProperties(string $title)
     {
         $s = $title;
-        $s = preg_replace('/_/g', '__', $s);
-        return preg_replace('/\s/g', '__', $s);
+        $s = preg_replace('/_/', '__', $s);
+        return preg_replace('/\s/', '__', $s);
     }
 
     public static function encodeWhitespacesInTitles(string $title)
     {
-        return preg_replace('/\s/g', '_', $title);
+        return preg_replace('/\s/', '_', $title);
     }
 
     public static function decodeWhitespacesInTitle(string $title)
     {
-        return preg_replace('/_/g', ' ', $title);
+        return preg_replace('/_/', ' ', $title);
     }
 
     public static function decodeWhitespacesInProperty(string $title)
     {
-        return preg_replace('/__/g', ' ', $title);
+        return preg_replace('/__/', ' ', $title);
     }
 
     public static function encodePropertyTitleAsValue(string $title, $type)
@@ -75,7 +75,7 @@ class Helper
     public static function encodePropertyTitleAsStatField(string $title, $type)
     {
         $s = self::encodeWhitespacesInProperties($title);
-        if ($type === Datatype . datetime) {
+        if ($type === Datatype::DATETIME) {
             return "smwh_{$s}_datevalue_l";
         } else if ($type === Datatype . number) {
             return "smwh_{$s}_xsdvalue_d";

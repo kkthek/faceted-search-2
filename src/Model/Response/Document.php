@@ -1,6 +1,6 @@
 <?php
 
-namespace DIQA\FacetedSearch2\SolrClient\Response;
+namespace DIQA\FacetedSearch2\Model\Response;
 
 class Document
 {
@@ -27,7 +27,7 @@ class Document
      * @param PropertyFacetValues[] $propertyFacets
      * @param CategoryFacetValue[] $categoryFacets
      * @param CategoryFacetValue[] $directCategoryFacets
-     * @param NamespaceFacetValue[] $namespaceFacet
+     * @param NamespaceFacetValue $namespaceFacet
      * @param PropertyResponse[] $properties
      * @param string $title
      * @param string $displayTitle
@@ -35,7 +35,7 @@ class Document
      * @param int $score
      * @param string|null $highlighting
      */
-    public function __construct(string $id, array $propertyFacets, array $categoryFacets, array $directCategoryFacets, array $namespaceFacet, array $properties, string $title, string $displayTitle, string $url, int $score, ?string $highlighting)
+    public function __construct(string $id, array $propertyFacets, array $categoryFacets, array $directCategoryFacets, NamespaceFacetValue $namespaceFacet, array $properties, string $title, string $displayTitle, string $url, int $score, ?string $highlighting)
     {
         $this->id = $id;
         $this->propertyFacets = $propertyFacets;

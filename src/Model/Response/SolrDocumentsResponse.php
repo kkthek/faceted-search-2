@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-use DIQA\FacetedSearch2\SolrClient\Response\Document;
+use DIQA\FacetedSearch2\Model\Response\Document;
 
 class SolrDocumentsResponse
 {

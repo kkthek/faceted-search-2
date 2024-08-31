@@ -1,5 +1,5 @@
 <?php
-namespace DIQA\FacetedSearch2\SolrClient\Response;
+namespace DIQA\FacetedSearch2\Model\Response;
 
 class PropertyFacetCount
 {

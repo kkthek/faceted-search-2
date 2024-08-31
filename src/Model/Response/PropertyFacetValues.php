@@ -2,8 +2,6 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-use DIQA\FacetedSearch2\SolrClient\Response\PropertyResponse;
-
 class PropertyFacetValues
 {
     private PropertyResponse $property;

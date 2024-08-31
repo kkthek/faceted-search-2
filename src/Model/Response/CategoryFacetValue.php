@@ -1,21 +1,21 @@
 <?php
-namespace DIQA\FacetedSearch2\SolrClient\Response;
+namespace DIQA\FacetedSearch2\Model\Response;
 
 class CategoryFacetValue
 {
-    private int $namespace;
+    private string $category;
     private string $displayTitle;
     private string $url;
 
     /**
      * CategoryFacetValue constructor.
-     * @param int $namespace
+     * @param string $namespace
      * @param string $displayTitle
      * @param string $url
      */
-    public function __construct(int $namespace, string $displayTitle, string $url)
+    public function __construct(string $namespace, string $displayTitle, string $url)
     {
-        $this->namespace = $namespace;
+        $this->category = $namespace;
         $this->displayTitle = $displayTitle;
         $this->url = $url;
     }
