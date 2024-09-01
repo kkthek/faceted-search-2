@@ -6,9 +6,9 @@ use DIQA\FacetedSearch2\Model\Range;
 
 class RangeValueCounts
 {
-    private PropertyResponse $property;
-    private Range $range;
-    private int $count;
+    public PropertyResponse $property;
+    public Range $range;
+    public int $count;
 
     /**
      * RangeValueCounts constructor.

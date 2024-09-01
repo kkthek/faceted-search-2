@@ -89,17 +89,17 @@ class SolrResponseParser {
             );
 
         }
-        $smwh_categories = $this->body->facet_counts->facet_fields->smwh_categories;
+        $smwh_categories = $this->body->facet_counts->facet_fields->smwh_categories ?? [];
         $categoryFacetCounts = []; /* @var CategoryFacetCount[] */
         foreach ($smwh_categories as $category => $count) {
             $categoryFacetCounts[] = new CategoryFacetCount($category, $count);
         }
-        $smwh_properties = $this->body->facet_counts->facet_fields->smwh_properties;
+        $smwh_properties = $this->body->facet_counts->facet_fields->smwh_properties ?? [];
         $propertyFacetCounts = []; /* @var PropertyFacetCount[] */
         foreach ($smwh_properties as $property => $count) {
             $propertyFacetCounts[] = new PropertyFacetCount($this->parseProperty($property, self::RELATION_REGEX), $count);
         }
-        $smwh_namespaces = $this->body->facet_counts->facet_fields->smwh_namespace_id;
+        $smwh_namespaces = $this->body->facet_counts->facet_fields->smwh_namespace_id ?? [];
         $namespaceFacetCounts = []; /* @var NamespaceFacetCount[] */
         foreach ($smwh_namespaces as $namespace => $count) {
             $namespaceFacetCounts[] = new NamespaceFacetCount($namespace, "", $count);

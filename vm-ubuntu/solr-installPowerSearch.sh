@@ -9,7 +9,7 @@
 #
 ####################
 
-export POWER_SEARCH=/opt/fs2/vm-ubuntu/solr
+export POWER_SEARCH=/vagrant/solr
 export SOLR_DATA_DIR=/var/solr
 export SOLR_INSTALL_DIR=/opt/solr
 

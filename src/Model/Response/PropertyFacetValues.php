@@ -4,8 +4,8 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class PropertyFacetValues
 {
-    private PropertyResponse $property;
-    private $values;
+    public PropertyResponse $property;
+    public $values;
 
     /**
      * PropertyFacetValues constructor.

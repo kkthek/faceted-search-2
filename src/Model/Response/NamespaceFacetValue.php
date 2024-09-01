@@ -3,9 +3,9 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class NamespaceFacetValue
 {
-    private int $namespace;
-    private string $displayTitle;
-    private string $url;
+    public int $namespace;
+    public string $displayTitle;
+    public string $url;
 
     /**
      * NamespaceFacetValue constructor.

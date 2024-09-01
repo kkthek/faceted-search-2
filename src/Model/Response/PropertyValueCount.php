@@ -3,9 +3,9 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class PropertyValueCount
 {
-    private PropertyResponse $property;
+    public PropertyResponse $property;
     /* @var ValueCount[] */
-    private array $values;
+    public array $values;
 
     /**
      * PropertyValueCount constructor.

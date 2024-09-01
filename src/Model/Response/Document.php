@@ -4,22 +4,22 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class Document
 {
-    private string $id;
+    public string $id;
     /* @var PropertyFacetValues[] */
-    private array $propertyFacets;
+    public array $propertyFacets;
     /* @var CategoryFacetValue[] */
-    private array $categoryFacets;
+    public array $categoryFacets;
     /* @var CategoryFacetValue[] */
-    private array $directCategoryFacets;
+    public array $directCategoryFacets;
     /* @var NamespaceFacetValue[] */
-    private $namespaceFacet;
+    public $namespaceFacet;
     /* @var PropertyResponse[] */
-    private array $properties;
-    private string $title;
-    private string $displayTitle;
-    private string $url;
-    private int $score;
-    private ?string $highlighting;
+    public array $properties;
+    public string $title;
+    public string $displayTitle;
+    public string $url;
+    public int $score;
+    public ?string $highlighting;
 
     /**
      * Document constructor.

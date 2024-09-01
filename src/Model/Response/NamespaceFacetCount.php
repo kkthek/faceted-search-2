@@ -3,9 +3,9 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class NamespaceFacetCount
 {
-    private int $namespace;
-    private string $displayTitle;
-    private int $count;
+    public int $namespace;
+    public string $displayTitle;
+    public int $count;
 
     /**
      * NamespaceFacetCount constructor.

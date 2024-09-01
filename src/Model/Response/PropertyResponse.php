@@ -6,9 +6,9 @@ use DIQA\FacetedSearch2\Model\Datatype;
 
 class PropertyResponse
 {
-    private string $title;
-    private int $type;
-    private string $url;
+    public string $title;
+    public int $type;
+    public string $url;
 
     /**
      * PropertyResponse constructor.

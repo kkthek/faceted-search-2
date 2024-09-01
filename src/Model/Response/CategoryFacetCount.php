@@ -4,8 +4,8 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class CategoryFacetCount
 {
-    private string $category;
-    private int $count;
+    public string $category;
+    public int $count;
 
     /**
      * CategoryFacetCount constructor.

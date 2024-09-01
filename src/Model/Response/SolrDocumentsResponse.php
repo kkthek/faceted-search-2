@@ -6,17 +6,17 @@ use DIQA\FacetedSearch2\Model\Response\Document;
 
 class SolrDocumentsResponse
 {
-    private int $numResults;
+    public int $numResults;
     /* @var Document[] */
-    private array $docs;
+    public array $docs;
     /* @var CategoryFacetCount[] */
-    private array $categoryFacetCounts;
+    public array $categoryFacetCounts;
     /* @var PropertyFacetCount[] */
-    private array $propertyFacetCounts;
+    public array $propertyFacetCounts;
     /* @var NamespaceFacetCount[] */
-    private array $namespaceFacetCounts;
+    public array $namespaceFacetCounts;
     /* @var PropertyValueCount[] */
-    private array $propertyValueCount;
+    public array $propertyValueCount;
 
     /**
      * SolrDocumentsResponse constructor.

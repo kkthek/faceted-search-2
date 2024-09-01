@@ -5,9 +5,9 @@ namespace DIQA\FacetedSearch2\Model\Response;
 class SolrStatsResponse
 {
     /* @var RangeValueCounts[] */
-    private array $rangeValueCounts;
+    public array $rangeValueCounts;
     /* @var Stats[] */
-    private array $stats;
+    public array $stats;
 
     /**
      * SolrStatsResponse constructor.

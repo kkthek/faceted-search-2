@@ -4,11 +4,11 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class Stats
 {
-    private PropertyResponse $property;
-    private int $min;
-    private int $max;
-    private int $count;
-    private int $sum;
+    public PropertyResponse $property;
+    public int $min;
+    public int $max;
+    public int $count;
+    public int $sum;
 
     /**
      * Stats constructor.

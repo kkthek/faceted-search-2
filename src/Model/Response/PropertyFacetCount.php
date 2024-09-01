@@ -3,8 +3,8 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class PropertyFacetCount
 {
-    private PropertyResponse $property;
-    private int $count;
+    public PropertyResponse $property;
+    public int $count;
 
     /**
      * PropertyFacetCount constructor.

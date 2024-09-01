@@ -3,9 +3,9 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class CategoryFacetValue
 {
-    private string $category;
-    private string $displayTitle;
-    private string $url;
+    public string $category;
+    public string $displayTitle;
+    public string $url;
 
     /**
      * CategoryFacetValue constructor.

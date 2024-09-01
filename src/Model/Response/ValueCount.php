@@ -3,8 +3,8 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class ValueCount
 {
-    private string $value;
-    private int $count;
+    public string $value;
+    public int $count;
 
     /**
      * ValueCount constructor.
