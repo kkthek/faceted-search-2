@@ -21,7 +21,7 @@ final class SolrClientTest extends TestCase {
         $p->value = new Value();
         $p->value->value = '1S/C5H5P/c1-2-4-6-5-3-1/h1-5H';
         $q->propertyFacets = [$p];
-        var_dump($client->request($q));
+        var_dump($client->requestDocuments($q));
 
         $this->assertEquals(
             1,1

@@ -128,6 +128,7 @@ class SolrResponseParser {
     }
 
     public function parseStatsResponse() {
+
         $stats = [] /* @var Stats[] */;
         if ( isset($this->body->stats->stats_fields)) {
             foreach($this->body->stats->stats_fields as $p => $info) {
@@ -280,6 +281,7 @@ class SolrResponseParser {
     }
 
     private function parsePropertyFromStats(string $property): ?PropertyResponse {
+
         $num = preg_match_all("/smwh_(.*)_datevalue_l/", $property, $name);
         if ($num === 0) {
             $num = preg_match_all("/smwh_(.*)_xsdvalue_d/", $property, $name);

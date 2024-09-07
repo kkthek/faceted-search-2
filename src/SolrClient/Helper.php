@@ -15,7 +15,8 @@ class Helper
         Datatype::STRING => 's',
         Datatype::NUMBER => 'xsdvalue_d',
         Datatype::BOOLEAN => 'xsdvalue_b',
-        Datatype::WIKIPAGE => 's'
+        Datatype::WIKIPAGE => 's',
+        Datatype::DATETIME => 'datevalue_l'
     ];
 
     private const DatatypeSuffixForValueMap = [

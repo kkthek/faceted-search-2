@@ -2,10 +2,11 @@
 namespace DIQA\FacetedSearch2;
 
 use PHPUnit\Framework\TestCase;
+use Exception;
 
 final class EndToEnd extends TestCase {
 
-    public function test1(): void
+    public function documentQuery(): void
     {
        $body = <<<BODY
 {
@@ -13,13 +14,30 @@ final class EndToEnd extends TestCase {
 }
 BODY;
 
-        $response = $this->requestProxy($body);
+        $response = $this->requestProxy($body, "documents");
         $this->assertEquals(
             176,$response->numResults
         );
     }
 
-    function requestProxy(string $json)
+    public function statsQuery(): void
+    {
+        $body = <<<BODY
+{
+    "statsProperties": [{
+        "property": "Modification date",
+        "type": 2
+    }]
+}
+BODY;
+
+        $response = $this->requestProxy($body, "stats");
+        $this->assertEquals(
+            1, count($response->stats)
+        );
+    }
+
+    function requestProxy(string $json, $endpoint)
     {
         try {
             $headerFields = [];
@@ -27,7 +45,7 @@ BODY;
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
             $ch = curl_init();
 
-            $url = "http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy/documents";
+            $url = "http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy/$endpoint";
 
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);

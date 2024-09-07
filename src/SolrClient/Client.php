@@ -10,28 +10,43 @@ use DIQA\FacetedSearch2\Model\Order;
 use DIQA\FacetedSearch2\Model\Property;
 use DIQA\FacetedSearch2\Model\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Sort;
+use DIQA\FacetedSearch2\Model\StatsQuery;
 use Exception;
 
 class Client
 {
 
 
-    public function request(DocumentQuery $q)
+    public function requestDocuments(DocumentQuery $q)
     {
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
-        $q->namespaceFacets, $q->extraProperties, $q->sorts, $q->limit, $q->offset);
+        $q->namespaceFacets, $q->extraProperties);
+        $sortsAndLimits = $this->getSortsAndLimits($q->sorts, $q->limit, $q->offset);
+        $queryParams = array_merge($queryParams, $sortsAndLimits);
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
         return $response->parse();
+    }
+
+    public function requestStats(StatsQuery $q)
+    {
+        $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
+            $q->namespaceFacets, []);
+        $queryParams['stats'] = 'true';
+        $statsFields = [];
+        foreach($q->statsProperties as $p) {
+            $statsFields[] = Helper::encodePropertyTitleAsProperty($p->property, $p->type);
+        }
+        $queryParams['stats.field'] = $statsFields;
+        $response =  new SolrResponseParser($this->requestSOLR($queryParams));
+        return $response->parseStatsResponse();
     }
 
     private function getParams(string $searchText,
                                array $propertyFacetConstraints, /* @var PropertyFacet[] */
                                array $categoryFacets, /* @var string [] */
                                array $namespaceFacets, /* @var number[] */
-                               array $extraProperties, /* @var PropertyFacet[] */
-                               array $sorts, /* @var Sort[] */
-                               int $limit,
-                               int $offset)
+                               array $extraProperties /* @var PropertyFacet[] */
+                              )
     {
 
 
@@ -73,9 +88,7 @@ class Client
         $params['hl.simple-post'] = '</b>';
         $params['hl.fragsize'] = '250';
         $params['searchText'] = $searchText === '' ? '(*)' : $searchText;
-        $params['rows'] = $limit;
-        $params['start'] = $offset;
-        $params['sort'] = self::serializeSorts($sorts);
+
         $params['wt'] = 'json';
 
 
@@ -87,6 +100,14 @@ class Client
 
         $params['q.alt'] = $searchText === '' ? 'smwh_search_field:(*)' : self::encodeQuery(preg_split("/\s+/", $searchText));
 
+        return $params;
+    }
+
+    private function getSortsAndLimits(array $sorts /* @var Sort[] */, $limit, $offset) {
+        $params = [];
+        $params['rows'] = $limit;
+        $params['start'] = $offset;
+        $params['sort'] = self::serializeSorts($sorts);
         return $params;
     }
 
@@ -186,7 +207,7 @@ class Client
             . "smwh_displaytitle:(${searchTerms})";
     }
 
-    function requestSOLR(array $queryParams)
+    private function requestSOLR(array $queryParams)
     {
         try {
             $headerFields = [];

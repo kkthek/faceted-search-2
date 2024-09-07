@@ -50,19 +50,23 @@ unset($options);
 require COMPOSER_INSTALL;
 
 use DIQA\FacetedSearch2\Model\DocumentQuery;
+use DIQA\FacetedSearch2\Model\StatsQuery;
 use DIQA\FacetedSearch2\SolrClient\Client;
 
 $entityBody = file_get_contents('php://input');
 
 $url = $_SERVER['REQUEST_URI'];
 
+$client = new Client();
 if (endsWith($url, '/FacetedSearch2/v1/proxy/documents')) {
-    $documentQuery = DocumentQuery::fromJson($entityBody);
+    $query = DocumentQuery::fromJson($entityBody);
+    echo json_encode($client->requestDocuments($query));
+} else if (endsWith($url, '/FacetedSearch2/v1/proxy/stats')) {
+    $query = StatsQuery::fromJson($entityBody);
+    echo json_encode($client->requestStats($query));
 } else {
     throw new Exception('Not yet supported');
 }
-$client = new Client();
-echo json_encode($client->request($documentQuery));
 
 
 function endsWith( $haystack, $needle ) {
