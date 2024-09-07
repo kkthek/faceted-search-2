@@ -52,7 +52,7 @@ class Client
 
         $params = [];
         $params['defType'] = 'edismax';
-        $params['boost'] = 'max(smwh_boost_dummy)';
+        //$params['boost'] = 'max(smwh_boost_dummy)';
         $params['facet'] = 'true';
         $params['facet.field'] = ['smwh_categories', 'smwh_attributes', 'smwh_properties', 'smwh_namespace_id'];
 
@@ -81,9 +81,8 @@ class Client
 
         $propertyFacetsConstraintsWithNotNullValue = array_filter($propertyFacetConstraints, fn(PropertyFacet $f) => !is_null($f->value));
         $fq = self::encodePropertyFacetValues($propertyFacetsConstraintsWithNotNullValue);
-
-        $fq = $fq + self::encodeCategoryFacets($categoryFacets);
-        $fq = $fq + self::encodeNamespaceFacets($namespaceFacets);
+        $fq = array_merge($fq, self::encodeCategoryFacets($categoryFacets));
+        $fq = array_merge($fq, self::encodeNamespaceFacets($namespaceFacets));
         $params['fq'] = $fq;
 
         $params['q.alt'] = $searchText === '' ? 'smwh_search_field:(*)' : self::encodeQuery(preg_split("/\s+/", $searchText));
@@ -110,12 +109,12 @@ class Client
                 if (!in_array($pAsValue, $facetValues)) {
                     $facetValues[] = $pAsValue;
                 }
-                $p = Helper::encodePropertyTitleAsProperty($f->property, $f->type);
+                $p = Helper::encodePropertyTitleAsValue($f->property, $f->type);
                 $value = '';
                 if ($f->type === Datatype::STRING || $f->type === Datatype::NUMBER || $f->type === Datatype::BOOLEAN) {
-                    $value = Helper::quoteValue($f->value);
+                    $value = Helper::quoteValue($f->value->value);
                 } else if ($f->type === Datatype::DATETIME) {
-                    $value = $f->value;
+                    $value = $f->value->value;
                 } else if (!is_null($f->range)) {
                     $value = self::encodeRange($f->range, $f->type);
                 }
@@ -194,7 +193,7 @@ class Client
             $headerFields[] = "Content-Type: application/x-www-form-urlencoded; charset=UTF-8";
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
             $ch = curl_init();
-            $queryString = http_build_query($queryParams);
+            $queryString = self::buildQueryParams($queryParams);
             $url = "http://localhost:8983/solr/mw/select";  //TODO: make configurable
 
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -224,6 +223,20 @@ class Client
         } finally {
             curl_close($ch);
         }
+    }
+
+    private static function buildQueryParams(array $params) {
+        $encodedParams = [];
+
+        foreach($params as $key => $value) {
+            if (is_array($value)) {
+                $encodedParams = array_merge($encodedParams, array_map(fn($e) => "$key=".urlencode($e), $value));
+            } else {
+                $encodedParams[] = "$key=".urlencode($value);
+            }
+        }
+
+        return implode("&", $encodedParams);
     }
 
     private static function splitResponse($res): array

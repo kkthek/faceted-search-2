@@ -25,10 +25,15 @@ module.exports = {
     port: 9000,
     proxy: [
       {
-        context: ['/proxy'],
-        target: 'http://localhost/main/mediawiki/rest.php/EnhancedRetrieval/v1',
+        context: ['/documents'],
+        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
         changeOrigin: true,
       },
+      {
+        context: ['/stats'],
+        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
+        changeOrigin: true,
+      }
     ],
   }
 };

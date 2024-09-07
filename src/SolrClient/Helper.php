@@ -11,21 +11,21 @@ class Helper
      * Helper functions to return implementation specific property/value suffixes.
      * dependant from backend
      */
-    private static $DatatypeSuffixForPropertyMap = [
+    private const DatatypeSuffixForPropertyMap = [
         Datatype::STRING => 's',
         Datatype::NUMBER => 'xsdvalue_d',
         Datatype::BOOLEAN => 'xsdvalue_b',
         Datatype::WIKIPAGE => 's'
     ];
 
-    private static $DatatypeSuffixForValueMap = [
+    private const DatatypeSuffixForValueMap = [
         Datatype::STRING => 'xsdvalue_t',
         Datatype::NUMBER => 'xsdvalue_d',
         Datatype::BOOLEAN => 'xsdvalue_b',
         Datatype::WIKIPAGE => 't'
     ];
 
-    private static $DatatypeSuffixForFacetMap = [
+    private const DatatypeSuffixForFacetMap = [
         Datatype::STRING => 'xsdvalue_s',
         Datatype::NUMBER => 'xsdvalue_d',
         Datatype::BOOLEAN => 'xsdvalue_b',
@@ -57,19 +57,19 @@ class Helper
     public static function encodePropertyTitleAsValue(string $title, $type)
     {
         $s = self::encodeWhitespacesInProperties($title);
-        return "smwh_{$s}_" . self::DatatypeSuffixForValueMap($type);
+        return "smwh_{$s}_" . self::DatatypeSuffixForValueMap[$type];
     }
 
     public static function encodePropertyTitleAsProperty(string $title, $type)
     {
         $s = self::encodeWhitespacesInProperties($title);
-        return "smwh_{$s}_" . self::DatatypeSuffixForPropertyMap($type);
+        return "smwh_{$s}_" . self::DatatypeSuffixForPropertyMap[$type];
     }
 
     public static function encodePropertyTitleAsFacet(string $title, $type)
     {
         $s = self::encodeWhitespacesInProperties($title);
-        return "smwh_{$s}_" . self::DatatypeSuffixForFacetMap($type);
+        return "smwh_{$s}_" . self::DatatypeSuffixForFacetMap[$type];
     }
 
     public static function encodePropertyTitleAsStatField(string $title, $type)
@@ -77,17 +77,17 @@ class Helper
         $s = self::encodeWhitespacesInProperties($title);
         if ($type === Datatype::DATETIME) {
             return "smwh_{$s}_datevalue_l";
-        } else if ($type === Datatype . number) {
+        } else if ($type === Datatype::number) {
             return "smwh_{$s}_xsdvalue_d";
         } else {
             return "smwh_{$s}_xsdvalue_s";
         }
     }
 
-    public static function quoteValue(mixed $v)
+    public static function quoteValue($v)
     {
         if (is_string($v)) {
-            return '"' + preg_replace('/"/g', '"', $v) + '"';
+            return '"' . preg_replace('/"/', '"', $v) . '"';
         }
         return $v;
     }

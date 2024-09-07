@@ -17,4 +17,9 @@ class DocumentQuery extends BaseQuery {
     public ?int $limit = 10;
     public ?int $offset = 0;
 
+    public static function fromJson($json)
+    {
+        $mapper = new \JsonMapper();
+        return $mapper->map(json_decode($json), new DocumentQuery());
+    }
 }

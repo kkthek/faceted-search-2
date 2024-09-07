@@ -6,21 +6,17 @@ use DIQA\FacetedSearch\Proxy\SolrProxy\SolrService;
 use DIQA\FacetedSearch2\Model\DocumentQuery;
 use MediaWiki\Rest\Handler;
 use MediaWiki\Rest\Response;
-use JsonMapper;
 
 class DocumentsSearchEndpoint extends Handler
 {
 
     public function execute()
     {
-
+        $solrClient = new Client();
         $jsonBody = $this->getRequest()->getBody();
-        $body = json_decode($jsonBody);
-
-        $mapper = new JsonMapper();
-        $documentQuery = $mapper->map($body, new DocumentQuery());
-        return new Response(print_r($documentQuery, true));
-
+        $documentQuery = DocumentQuery::fromJson($jsonBody);
+        $response = $solrClient->request($documentQuery);
+        return new Response(json_encode($response));
     }
 
 }

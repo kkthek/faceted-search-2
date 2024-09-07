@@ -54,8 +54,21 @@ use DIQA\FacetedSearch2\SolrClient\Client;
 
 $entityBody = file_get_contents('php://input');
 
-$mapper = new JsonMapper();
-$documentQuery = $mapper->map(json_decode($entityBody), new DocumentQuery());
+$url = $_SERVER['REQUEST_URI'];
 
+if (endsWith($url, '/FacetedSearch2/v1/proxy/documents')) {
+    $documentQuery = DocumentQuery::fromJson($entityBody);
+} else {
+    throw new Exception('Not yet supported');
+}
 $client = new Client();
 echo json_encode($client->request($documentQuery));
+
+
+function endsWith( $haystack, $needle ) {
+    $length = strlen( $needle );
+    if( !$length ) {
+        return true;
+    }
+    return substr( $haystack, -$length ) === $needle;
+}

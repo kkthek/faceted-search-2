@@ -10,9 +10,9 @@ class PropertyFacet {
     /**
      * @var mixed
      */
-    public Value $value;
-    public MWTitle $mwTitle;
-    public Range $range;
+    public ?Value $value;
+    public ?MWTitle $mwTitle;
+    public ?Range $range;
 
 
 }
