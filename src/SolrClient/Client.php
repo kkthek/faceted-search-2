@@ -9,6 +9,7 @@ use DIQA\FacetedSearch2\Model\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Order;
 use DIQA\FacetedSearch2\Model\Property;
 use DIQA\FacetedSearch2\Model\PropertyFacet;
+use DIQA\FacetedSearch2\Model\Range;
 use DIQA\FacetedSearch2\Model\Sort;
 use DIQA\FacetedSearch2\Model\StatsQuery;
 use Exception;
@@ -23,6 +24,7 @@ class Client
         $q->namespaceFacets, $q->extraProperties);
         $sortsAndLimits = $this->getSortsAndLimits($q->sorts, $q->limit, $q->offset);
         $queryParams = array_merge($queryParams, $sortsAndLimits);
+        print_r($queryParams);die();
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
         return $response->parse();
     }
@@ -71,7 +73,8 @@ class Client
         $params['facet'] = 'true';
         $params['facet.field'] = ['smwh_categories', 'smwh_attributes', 'smwh_properties', 'smwh_namespace_id'];
 
-        $propertyFacetsConstraintsWithNullValue = array_filter($propertyFacetConstraints, fn(PropertyFacet $f) => is_null($f->value));
+        $propertyFacetsConstraintsWithNullValue = array_filter($propertyFacetConstraints, fn(PropertyFacet $f) => is_null($f->value)
+        && is_null($f->range) && is_null($f->mwTitle));
         foreach ($propertyFacetsConstraintsWithNullValue as $v) {
             /* @var $v PropertyFacet */
             $params['facet.field'] = Helper::encodePropertyTitleAsFacet($v->property, $v->type);
@@ -92,8 +95,8 @@ class Client
         $params['wt'] = 'json';
 
 
-        $propertyFacetsConstraintsWithNotNullValue = array_filter($propertyFacetConstraints, fn(PropertyFacet $f) => !is_null($f->value));
-        $fq = self::encodePropertyFacetValues($propertyFacetsConstraintsWithNotNullValue);
+
+        $fq = self::encodePropertyFacetValues($propertyFacetConstraints);
         $fq = array_merge($fq, self::encodeCategoryFacets($categoryFacets));
         $fq = array_merge($fq, self::encodeNamespaceFacets($namespaceFacets));
         $params['fq'] = $fq;
@@ -123,23 +126,24 @@ class Client
                     $facetValues[] = $pAsValue;
                 }
                 $p = Helper::encodePropertyTitleAsProperty($f->property, Datatype::WIKIPAGE);
-                $value = Helper::quoteValue($f->mwTitle->title . '|' . $f->mwTitle->displayTitle);
+                $value = Helper::quoteValue($f->mwTitle->title . '|' . $f->mwTitle->displayTitle, Datatype::WIKIPAGE);
                 $facetValues[] = $p . ':' . $value;
             } else {
                 $pAsValue = 'smwh_attributes:' . Helper::encodePropertyTitleAsValue($f->property, $f->type);
                 if (!in_array($pAsValue, $facetValues)) {
                     $facetValues[] = $pAsValue;
                 }
-                $p = Helper::encodePropertyTitleAsValue($f->property, $f->type);
+                $p = Helper::encodePropertyTitleAsProperty($f->property, $f->type);
                 $value = '';
-                if ($f->type === Datatype::STRING || $f->type === Datatype::NUMBER || $f->type === Datatype::BOOLEAN) {
-                    $value = Helper::quoteValue($f->value->value);
-                } else if ($f->type === Datatype::DATETIME) {
-                    $value = $f->value->value;
-                } else if (!is_null($f->range)) {
-                    $value = self::encodeRange($f->range, $f->type);
+
+                if (!is_null($f->range)) {
+                    $value = "[".self::encodeRange($f->range, $f->type)."]";
+                    $facetValues[] = "$p:$value";
+                } else if (!is_null($f->value) && ($f->type === Datatype::STRING || $f->type === Datatype::NUMBER || $f->type === Datatype::BOOLEAN
+                            || $f->type === Datatype::DATETIME)) {
+                    $value = Helper::quoteValue($f->value->value, $f->type);
+                    $facetValues[] = "$p:$value";
                 }
-                $facetValues[] = "$p:$value";
             }
         }
         return $facetValues;

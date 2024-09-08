@@ -153,7 +153,9 @@ class SolrResponseParser {
             preg_match_all("/\[(.*) TO (.*)\]/", $propertyRange[1], $range);
 
             if ($property->getType() === Datatype::DATETIME || $property->getType() === Datatype::NUMBER) {
-                $r = new Range($range[1][0], $range[2][0]);
+                $r = new Range();
+                $r->from = $range[1][0];
+                $r->to = $range[2][0];
             } else {
                 continue;
             }

@@ -23,7 +23,8 @@ class Helper
         Datatype::STRING => 'xsdvalue_t',
         Datatype::NUMBER => 'xsdvalue_d',
         Datatype::BOOLEAN => 'xsdvalue_b',
-        Datatype::WIKIPAGE => 't'
+        Datatype::WIKIPAGE => 't',
+        Datatype::DATETIME => 'xsdvalue_dt'
     ];
 
     private const DatatypeSuffixForFacetMap = [
@@ -85,12 +86,12 @@ class Helper
         }
     }
 
-    public static function quoteValue($v)
+    public static function quoteValue($v, $type)
     {
-        if (is_string($v)) {
-            return '"' . preg_replace('/"/', '"', $v) . '"';
+        if ($type === Datatype::NUMBER || $type === Datatype::BOOLEAN) {
+            return $v;
         }
-        return $v;
+        return '"' . preg_replace('/"/', '\"', $v) . '"';
     }
 
     public static function serializeDate($date): string
