@@ -49,9 +49,9 @@ unset($options);
 
 require COMPOSER_INSTALL;
 
-use DIQA\FacetedSearch2\Model\DocumentQuery;
-use DIQA\FacetedSearch2\Model\StatsQuery;
-use DIQA\FacetedSearch2\Model\FacetQuery;
+use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
+use DIQA\FacetedSearch2\Model\Request\StatsQuery;
+use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\SolrClient\Client;
 
 $entityBody = file_get_contents('php://input');

@@ -1,11 +1,11 @@
 <?php
 
-namespace DIQA\FacetedSearch2\Model;
+namespace DIQA\FacetedSearch2\Model\Request;
 
 class FacetQuery extends BaseQuery {
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\PropertyFacet[]
+     * @var \DIQA\FacetedSearch2\Model\Request\PropertyFacet[]
      */
     public $facetQueries = [];
 

@@ -6,7 +6,7 @@ use Exception;
 
 final class EndToEnd extends TestCase {
 
-    public function documentQuery(): void
+    public function testDocumentQuery(): void
     {
        $body = <<<BODY
 {
@@ -20,7 +20,7 @@ BODY;
         );
     }
 
-    public function statsQuery(): void
+    public function testStatsQuery(): void
     {
         $body = <<<BODY
 {

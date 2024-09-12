@@ -1,5 +1,5 @@
 <?php
-namespace DIQA\FacetedSearch2\Model;
+namespace DIQA\FacetedSearch2\Model\Request;
 
 class MWTitle {
 

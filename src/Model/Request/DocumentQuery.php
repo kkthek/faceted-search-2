@@ -1,16 +1,16 @@
 <?php
 
-namespace DIQA\FacetedSearch2\Model;
+namespace DIQA\FacetedSearch2\Model\Request;
 
 class DocumentQuery extends BaseQuery {
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\Property[]
+     * @var \DIQA\FacetedSearch2\Model\Request\Property[]
      */
     public $extraProperties = [];
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\Sort[]
+     * @var \DIQA\FacetedSearch2\Model\Request\Sort[]
      */
     public $sorts = [];
 

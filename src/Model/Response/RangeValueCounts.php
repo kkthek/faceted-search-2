@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-use DIQA\FacetedSearch2\Model\Range;
+use DIQA\FacetedSearch2\Model\Request\Range;
 
 class RangeValueCounts
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace DIQA\FacetedSearch2\Model;
+namespace DIQA\FacetedSearch2\Model\Request;
 
 class StatsQuery extends BaseQuery {
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\Property[]
+     * @var \DIQA\FacetedSearch2\Model\Request\Property[]
      */
     public $statsProperties = [];
 

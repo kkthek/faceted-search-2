@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\SolrClient;
 
-use DIQA\FacetedSearch2\Model\Datatype;
+use DIQA\FacetedSearch2\Model\Request\Datatype;
 
 class Helper
 {

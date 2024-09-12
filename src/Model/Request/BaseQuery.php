@@ -1,6 +1,6 @@
 <?php
 
-namespace DIQA\FacetedSearch2\Model;
+namespace DIQA\FacetedSearch2\Model\Request;
 
 class BaseQuery {
 
@@ -9,7 +9,7 @@ class BaseQuery {
     public $namespaceFacets = [];
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\PropertyFacet[]
+     * @var \DIQA\FacetedSearch2\Model\Request\PropertyFacet[]
      */
     public  $propertyFacets = [];
 

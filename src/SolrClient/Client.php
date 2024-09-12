@@ -4,15 +4,15 @@ namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\ChemExtension\Pages\ChemForm;
 use DIQA\ChemExtension\Utils\CurlUtil;
-use DIQA\FacetedSearch2\Model\Datatype;
-use DIQA\FacetedSearch2\Model\DocumentQuery;
-use DIQA\FacetedSearch2\Model\FacetQuery;
-use DIQA\FacetedSearch2\Model\Order;
-use DIQA\FacetedSearch2\Model\Property;
-use DIQA\FacetedSearch2\Model\PropertyFacet;
-use DIQA\FacetedSearch2\Model\Range;
-use DIQA\FacetedSearch2\Model\Sort;
-use DIQA\FacetedSearch2\Model\StatsQuery;
+use DIQA\FacetedSearch2\Model\Request\Datatype;
+use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
+use DIQA\FacetedSearch2\Model\Request\FacetQuery;
+use DIQA\FacetedSearch2\Model\Request\Order;
+use DIQA\FacetedSearch2\Model\Request\Property;
+use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
+use DIQA\FacetedSearch2\Model\Request\Range;
+use DIQA\FacetedSearch2\Model\Request\Sort;
+use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use Exception;
 
 class Client

@@ -1,12 +1,12 @@
 <?php
 namespace DIQA\FacetedSearch2;
 
-use DIQA\FacetedSearch2\Model\Datatype;
-use DIQA\FacetedSearch2\Model\DocumentQuery;
-use DIQA\FacetedSearch2\Model\Property;
-use DIQA\FacetedSearch2\Model\PropertyFacet;
-use DIQA\FacetedSearch2\Model\Range;
-use DIQA\FacetedSearch2\Model\Value;
+use DIQA\FacetedSearch2\Model\Request\Datatype;
+use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
+use DIQA\FacetedSearch2\Model\Request\Property;
+use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
+use DIQA\FacetedSearch2\Model\Request\Range;
+use DIQA\FacetedSearch2\Model\Request\Value;
 use DIQA\FacetedSearch2\SolrClient\Client;
 use PHPUnit\Framework\TestCase;
 

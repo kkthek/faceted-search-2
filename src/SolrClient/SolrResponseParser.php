@@ -2,10 +2,10 @@
 
 namespace DIQA\FacetedSearch2\SolrClient;
 
-use DIQA\FacetedSearch2\Model\Datatype;
-use DIQA\FacetedSearch2\Model\MWTitle;
-use DIQA\FacetedSearch2\Model\Property;
-use DIQA\FacetedSearch2\Model\Range;
+use DIQA\FacetedSearch2\Model\Request\Datatype;
+use DIQA\FacetedSearch2\Model\Request\MWTitle;
+use DIQA\FacetedSearch2\Model\Request\Property;
+use DIQA\FacetedSearch2\Model\Request\Range;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetValues;
 use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
