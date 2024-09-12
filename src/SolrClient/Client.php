@@ -6,6 +6,7 @@ use DIQA\ChemExtension\Pages\ChemForm;
 use DIQA\ChemExtension\Utils\CurlUtil;
 use DIQA\FacetedSearch2\Model\Datatype;
 use DIQA\FacetedSearch2\Model\DocumentQuery;
+use DIQA\FacetedSearch2\Model\FacetQuery;
 use DIQA\FacetedSearch2\Model\Order;
 use DIQA\FacetedSearch2\Model\Property;
 use DIQA\FacetedSearch2\Model\PropertyFacet;
@@ -24,7 +25,7 @@ class Client
         $q->namespaceFacets, $q->extraProperties);
         $sortsAndLimits = $this->getSortsAndLimits($q->sorts, $q->limit, $q->offset);
         $queryParams = array_merge($queryParams, $sortsAndLimits);
-        print_r($queryParams);die();
+
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
         return $response->parse();
     }
@@ -39,6 +40,23 @@ class Client
             $statsFields[] = Helper::encodePropertyTitleAsProperty($p->property, $p->type);
         }
         $queryParams['stats.field'] = $statsFields;
+        $response =  new SolrResponseParser($this->requestSOLR($queryParams));
+        return $response->parseStatsResponse();
+    }
+
+    public function requestFacet(FacetQuery $q)
+    {
+        $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
+            $q->namespaceFacets, []);
+
+        $facetQueries = [];
+        foreach($q->facetQueries as $p) {
+            $property = Helper::encodePropertyTitleAsProperty($p->property, $p->type);
+            $range = self::encodeRange($p->range, $p->type);
+            $facetQueries[] = $property .":[" . $range . "]";
+        }
+        $queryParams['facet.query'] = $facetQueries;
+        //print_r($queryParams);die();
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
         return $response->parseStatsResponse();
     }

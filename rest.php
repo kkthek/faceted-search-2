@@ -51,6 +51,7 @@ require COMPOSER_INSTALL;
 
 use DIQA\FacetedSearch2\Model\DocumentQuery;
 use DIQA\FacetedSearch2\Model\StatsQuery;
+use DIQA\FacetedSearch2\Model\FacetQuery;
 use DIQA\FacetedSearch2\SolrClient\Client;
 
 $entityBody = file_get_contents('php://input');
@@ -64,6 +65,9 @@ if (endsWith($url, '/FacetedSearch2/v1/proxy/documents')) {
 } else if (endsWith($url, '/FacetedSearch2/v1/proxy/stats')) {
     $query = StatsQuery::fromJson($entityBody);
     echo json_encode($client->requestStats($query));
+} else if (endsWith($url, '/FacetedSearch2/v1/proxy/facets')) {
+    $query = FacetQuery::fromJson($entityBody);
+    echo json_encode($client->requestFacet($query));
 } else {
     throw new Exception('Not yet supported');
 }

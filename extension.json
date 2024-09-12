@@ -46,6 +46,11 @@
 			"path": "/FacetedSearch2/v1/proxy/stats",
 			"method": "POST",
 			"class": "DIQA\\FacetedSearch2\\Endpoints\\StatsSearchEndpoint"
+		},
+		{
+			"path": "/FacetedSearch2/v1/proxy/facets",
+			"method": "POST",
+			"class": "DIQA\\FacetedSearch2\\Endpoints\\FacetQueryEndpoint"
 		}
 	],
 	"manifest_version": 2
