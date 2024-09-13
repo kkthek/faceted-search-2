@@ -7,14 +7,14 @@ use DIQA\FacetedSearch2\Model\Request\Datatype;
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 
 
-class PropertyValue {
+class PropertyValues {
 
     private Property $property;
     private $values = []            /* @var string[] */;
     private $mwTitles = []          /* @var MWTitle[] */;
 
     /**
-     * PropertyValue constructor.
+     * PropertyValues constructor.
      * @param Property $property
      * @param $values
      */

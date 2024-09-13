@@ -9,7 +9,7 @@ class Document {
     private string $displayTitle;
     private int $namespace;
     private string $fulltext = '';
-    private $propertyValues = [];    /* @var PropertyValue[] */
+    private $propertyValues = [];    /* @var PropertyValues[] */
     private $categories = [];        /* @var string[] */
     private $directCategories = [];  /* @var string[] */
     private ?number $boost = null;
@@ -66,7 +66,7 @@ class Document {
     }
 
     /**
-     * @return PropertyValue[]
+     * @return PropertyValues[]
      */
     public function getCategories(): array
     {
@@ -74,7 +74,7 @@ class Document {
     }
 
     /**
-     * @param PropertyValue[] $categories
+     * @param PropertyValues[] $categories
      * @return Document
      */
     public function setCategories(array $categories): Document
