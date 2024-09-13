@@ -4,10 +4,22 @@ namespace DIQA\FacetedSearch2\Model\Request;
 class Value {
 
     public string $value;
-    public string $title;
-    public string $displayTitle;
-    public string $from;
-    public string $to;
 
+    /**
+     * Value constructor.
+     * @param string $value
+     */
+    public function __construct(string $value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
+    }
 
 }

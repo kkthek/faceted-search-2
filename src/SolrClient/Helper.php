@@ -74,12 +74,42 @@ class Helper
         return "smwh_{$s}_" . self::DatatypeSuffixForFacetMap[$type];
     }
 
+    public static function encodePropertyForUpdate(string $title, $type) {
+        $s = self::encodeWhitespacesInProperties($title);
+        if ($type === Datatype::DATETIME) {
+            return "smwh_{$s}_xsdvalue_dt";
+        } else if ($type === Datatype::NUMBER) {
+            return "smwh_{$s}_xsdvalue_d";
+        } else if ($type === Datatype::BOOLEAN) {
+            return "smwh_{$s}_xsdvalue_d";
+        } else if ($type === Datatype::WIKIPAGE) {
+            return "smwh_{$s}_t";
+        } else {
+            return "smwh_{$s}_xsdvalue_t";
+        }
+    }
+
+    public static function encodePropertyAsValueForUpdate(string $title, $type) {
+        $s = self::encodeWhitespacesInProperties($title);
+        if ($type === Datatype::DATETIME) {
+            return "smwh_{$s}_datevalue_dt";
+        } else if ($type === Datatype::NUMBER) {
+            return "smwh_{$s}_xsdvalue_d";
+        } else if ($type === Datatype::BOOLEAN) {
+            return "smwh_{$s}_xsdvalue_d";
+        } else if ($type === Datatype::WIKIPAGE) {
+            return "smwh_{$s}_t";
+        } else {
+            return "smwh_{$s}_xsdvalue_t";
+        }
+    }
+
     public static function encodePropertyTitleAsStatField(string $title, $type)
     {
         $s = self::encodeWhitespacesInProperties($title);
         if ($type === Datatype::DATETIME) {
             return "smwh_{$s}_datevalue_l";
-        } else if ($type === Datatype::number) {
+        } else if ($type === Datatype::NUMBER) {
             return "smwh_{$s}_xsdvalue_d";
         } else {
             return "smwh_{$s}_xsdvalue_s";

@@ -18,19 +18,11 @@ final class FacetQueryTest extends TestCase {
         $client = new Client();
         $q = new FacetQuery();
 
-        $p = new PropertyFacet();
-        $p->property = 'Publication date';
-        $p->type = Datatype::DATETIME;
-        $p->range = new Range();
-        $p->range->from = '2015-02-09T00:00:00';
-        $p->range->to = '2015-09-10T00:00:00';
+        $p = new PropertyFacet('Publication date', Datatype::DATETIME);
+        $p->range = new Range('2015-02-09T00:00:00', '2015-09-10T00:00:00');
 
-        $p2 = new PropertyFacet();
-        $p2->property = 'Publication date';
-        $p2->type = Datatype::DATETIME;
-        $p2->range = new Range();
-        $p2->range->from = '2016-01-01T00:00:00';
-        $p2->range->to = '2016-12-31T00:00:00';
+        $p2 = new PropertyFacet('Publication date', Datatype::DATETIME);
+        $p2->range = new Range('2016-01-01T00:00:00', '2016-12-31T00:00:00');
 
         $q->facetQueries = [$p, $p2];
         print_r($client->requestFacet($q));

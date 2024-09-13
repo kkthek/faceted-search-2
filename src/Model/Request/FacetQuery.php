@@ -9,7 +9,7 @@ class FacetQuery extends BaseQuery {
      */
     public $facetQueries = [];
 
-    public static function fromJson($json)
+    public static function fromJson($json): FacetQuery
     {
         $mapper = new \JsonMapper();
         return $mapper->map(json_decode($json), new FacetQuery());

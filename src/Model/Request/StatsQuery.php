@@ -9,7 +9,7 @@ class StatsQuery extends BaseQuery {
      */
     public $statsProperties = [];
 
-    public static function fromJson($json)
+    public static function fromJson($json): StatsQuery
     {
         $mapper = new \JsonMapper();
         return $mapper->map(json_decode($json), new StatsQuery());
