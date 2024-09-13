@@ -39,7 +39,7 @@ class Client
         $queryParams['stats'] = 'true';
         $statsFields = [];
         foreach($q->statsProperties as $p) {
-            $statsFields[] = Helper::encodePropertyTitleAsProperty($p->property, $p->type);
+            $statsFields[] = Helper::generateSOLRPropertyForSearch($p->property, $p->type);
         }
         $queryParams['stats.field'] = $statsFields;
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
@@ -53,7 +53,7 @@ class Client
 
         $facetQueries = [];
         foreach($q->facetQueries as $p) {
-            $property = Helper::encodePropertyTitleAsProperty($p->property, $p->type);
+            $property = Helper::generateSOLRPropertyForSearch($p->property, $p->type);
             $range = self::encodeRange($p->range, $p->type);
             $facetQueries[] = $property .":[" . $range . "]";
         }
@@ -85,7 +85,7 @@ class Client
             'smwh_displaytitle'
         ];
 
-        $extraPropertiesAsStrings = array_map(fn(Property $e) => Helper::encodePropertyTitleAsValue($e->property, $e->type), $extraProperties);
+        $extraPropertiesAsStrings = array_map(fn(Property $e) => Helper::generateSOLRProperty($e->property, $e->type), $extraProperties);
 
         $params = [];
         $params['defType'] = 'edismax';
@@ -97,7 +97,7 @@ class Client
         && is_null($f->range) && is_null($f->mwTitle));
         foreach ($propertyFacetsConstraintsWithNullValue as $v) {
             /* @var $v PropertyFacet */
-            $params['facet.field'] = Helper::encodePropertyTitleAsFacet($v->property, $v->type);
+            $params['facet.field'] = Helper::generateSOLRPropertyForSearch($v->property, $v->type);
         }
 
         $params['facet.mincount'] = '1';
@@ -141,19 +141,19 @@ class Client
         foreach ($facets as $f) {
             /* @var $f PropertyFacet */
             if ($f->type === Datatype::WIKIPAGE) {
-                $pAsValue = 'smwh_properties:' . Helper::encodePropertyTitleAsValue($f->property, Datatype::WIKIPAGE);
+                $pAsValue = 'smwh_properties:' . Helper::generateSOLRProperty($f->property, Datatype::WIKIPAGE);
                 if (!in_array($pAsValue, $facetValues)) {
                     $facetValues[] = $pAsValue;
                 }
-                $p = Helper::encodePropertyTitleAsProperty($f->property, Datatype::WIKIPAGE);
+                $p = Helper::generateSOLRPropertyForSearch($f->property, Datatype::WIKIPAGE);
                 $value = Helper::quoteValue($f->mwTitle->title . '|' . $f->mwTitle->displayTitle, Datatype::WIKIPAGE);
                 $facetValues[] = $p . ':' . $value;
             } else {
-                $pAsValue = 'smwh_attributes:' . Helper::encodePropertyTitleAsValue($f->property, $f->type);
+                $pAsValue = 'smwh_attributes:' . Helper::generateSOLRProperty($f->property, $f->type);
                 if (!in_array($pAsValue, $facetValues)) {
                     $facetValues[] = $pAsValue;
                 }
-                $p = Helper::encodePropertyTitleAsProperty($f->property, $f->type);
+                $p = Helper::generateSOLRPropertyForSearch($f->property, $f->type);
                 $value = '';
 
                 if (!is_null($f->range)) {
@@ -172,7 +172,7 @@ class Client
     private static function encodeRange(Range $range, $type): string
     {
         if ($type === Datatype::DATETIME) {
-            return Helper::serializeDate($range->from) . " TO " . Helper::serializeDate($range->to);
+            return Helper::convertDateTimeToLong($range->from) . " TO " . Helper::convertDateTimeToLong($range->to);
         }
         return $range->from . " TO " . $range->to;
     }
@@ -181,7 +181,7 @@ class Client
     {
         $facetValues = [];
         foreach ($categories as $category) {
-            $pAsValue = 'smwh_categories:' . Helper::encodeWhitespacesInTitles($category);
+            $pAsValue = 'smwh_categories:' . Helper::quoteValue($category, Datatype::WIKIPAGE);
             if (!in_array($pAsValue, $facetValues)) {
                 $facetValues[] = $pAsValue;
             }
@@ -193,7 +193,7 @@ class Client
     {
         $facetValues = [];
         foreach ($namespaces as $namespace) {
-            $pAsValue = 'smwh_namespace_id:' . Helper::encodeWhitespacesInTitles($namespace);
+            $pAsValue = 'smwh_namespace_id:' . $namespace;
             if (!in_array($pAsValue, $facetValues)) {
                 $facetValues[] = $pAsValue;
             }
@@ -212,7 +212,7 @@ class Client
                     return "smwh_displaytitle $order";
                 }
             } else {
-                $property = Helper::encodePropertyTitleAsProperty($s->property->property, $s->property->type);
+                $property = Helper::generateSOLRPropertyForSearch($s->property->property, $s->property->type);
                 return "$property $order";
             }
         }, $sorts);

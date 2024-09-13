@@ -51,15 +51,15 @@ class SolrResponseParser {
                         $namespace = new NamespaceFacetValue($value, "", "");
                     } else if (self::startsWith($property, "smwh_categories")) {
                         $categoryFacets = array_map(fn($category) => new CategoryFacetValue(
-                            Helper::decodeWhitespacesInTitle($category),
-                            Helper::decodeWhitespacesInTitle($category),
+                            $category,
+                            $category,
                             ""
                         ), $value);
 
                     } else if (self::startsWith($property, "smwh_directcategories")) {
                         $directCategoryFacets = array_map(fn($category) => new CategoryFacetValue(
-                            Helper::decodeWhitespacesInTitle($category),
-                            Helper::decodeWhitespacesInTitle($category),
+                            $category,
+                            $category,
                             ""
                         ), $value);
 
@@ -183,7 +183,7 @@ class SolrResponseParser {
 
     private function parsePropertyValues(string $name, array $values /* @var string[] */): PropertyFacetValues {
         return new PropertyFacetValues(
-            new PropertyResponse(Helper::decodeWhitespacesInProperty($name),
+            new PropertyResponse(Helper::decodeCharsInProperty($name),
                 Datatype::WIKIPAGE,
                 ""
             ),
@@ -195,7 +195,7 @@ class SolrResponseParser {
     }
 
     private function parseAttributeValues(string $name, array $values, string $type): PropertyFacetValues {
-        $decodedPropertyName = Helper::decodeWhitespacesInProperty($name);
+        $decodedPropertyName = Helper::decodeCharsInProperty($name);
 
         switch ($type) {
             case 'd':
@@ -254,14 +254,14 @@ class SolrResponseParser {
             $num = preg_match_all($relationRegex, $property, $nameType);
             if ($num > 0) {
                 $name = $nameType[1][0];
-                $name = Helper::decodeWhitespacesInProperty($name);
+                $name = Helper::decodeCharsInProperty($name);
                 return new PropertyResponse($name, Datatype::WIKIPAGE, "");
             }
 
         }
         $name = $nameType[1][0];
         $type = $nameType[2][0];
-        $name = Helper::decodeWhitespacesInProperty($name);
+        $name = Helper::decodeCharsInProperty($name);
 
         switch($type) {
             case 'd':
@@ -289,9 +289,9 @@ class SolrResponseParser {
             if ($num === 0) {
                 return null;
             }
-            return new PropertyResponse(Helper::decodeWhitespacesInProperty($name[1][0]), Datatype::DATETIME, "");
+            return new PropertyResponse(Helper::decodeCharsInProperty($name[1][0]), Datatype::DATETIME, "");
         }
-        return new PropertyResponse(Helper::decodeWhitespacesInProperty($name[1][0]), Datatype::NUMBER, "");
+        return new PropertyResponse(Helper::decodeCharsInProperty($name[1][0]), Datatype::NUMBER, "");
     }
 
     private static function startsWith($string, $query){
