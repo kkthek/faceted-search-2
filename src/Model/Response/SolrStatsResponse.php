@@ -20,5 +20,21 @@ class SolrStatsResponse
         $this->stats = $stats;
     }
 
+    /**
+     * @return RangeValueCounts[]
+     */
+    public function getRangeValueCounts(): array
+    {
+        return $this->rangeValueCounts;
+    }
+
+    /**
+     * @return Stats[]
+     */
+    public function getStats(): array
+    {
+        return $this->stats;
+    }
+
 
 }

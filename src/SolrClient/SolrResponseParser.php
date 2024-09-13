@@ -3,9 +3,9 @@
 namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\FacetedSearch2\Model\Request\Datatype;
-use DIQA\FacetedSearch2\Model\Request\MWTitle;
-use DIQA\FacetedSearch2\Model\Request\Property;
-use DIQA\FacetedSearch2\Model\Request\Range;
+use DIQA\FacetedSearch2\Model\Common\MWTitle;
+use DIQA\FacetedSearch2\Model\Common\Property;
+use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetValues;
 use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
@@ -38,7 +38,7 @@ class SolrResponseParser {
         $this->body = $body;
     }
 
-    public function parse() {
+    public function parse(): SolrDocumentsResponse {
         $docs = [];
         foreach ($this->body->response->docs as $doc) {
             $propertyFacets = []; /* @var PropertyFacetValues[] */
@@ -127,7 +127,7 @@ class SolrResponseParser {
 
     }
 
-    public function parseStatsResponse() {
+    public function parseStatsResponse(): SolrStatsResponse {
 
         $stats = [] /* @var Stats[] */;
         if ( isset($this->body->stats->stats_fields)) {
@@ -135,8 +135,8 @@ class SolrResponseParser {
                 $property = $this->parsePropertyFromStats($p);
                 if (!is_null($property)) {
                     $stat = new Stats($property,
-                        $info->max,
                         $info->min,
+                        $info->max,
                         $info->count,
                         $info->sum
                     );

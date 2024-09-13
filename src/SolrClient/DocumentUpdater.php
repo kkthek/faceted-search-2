@@ -104,7 +104,8 @@ XML;
         foreach ($dateTimePropertyValues as $pv) {
             $encProperty = 'smwh_' . Helper::encodeWhitespacesInProperties($pv->getProperty()->property) . '_datevalue_l';
             foreach ($pv->getValues() as $v) {
-                $propertyValues[] = "<field name='$encProperty'><![CDATA[{$v}]]></field>";
+                $longValueDate = Helper::serializeDate($v);
+                $propertyValues[] = "<field name='$encProperty'><![CDATA[{$longValueDate}]]></field>";
             }
         }
 

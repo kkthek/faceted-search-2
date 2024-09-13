@@ -12,7 +12,7 @@ class Helper
      * dependant from backend
      */
     private const DatatypeSuffixForPropertyMap = [
-        Datatype::STRING => 's',
+        Datatype::STRING => 'xsdvalue_s',
         Datatype::NUMBER => 'xsdvalue_d',
         Datatype::BOOLEAN => 'xsdvalue_b',
         Datatype::WIKIPAGE => 's',
@@ -81,7 +81,7 @@ class Helper
         } else if ($type === Datatype::NUMBER) {
             return "smwh_{$s}_xsdvalue_d";
         } else if ($type === Datatype::BOOLEAN) {
-            return "smwh_{$s}_xsdvalue_d";
+            return "smwh_{$s}_xsdvalue_b";
         } else if ($type === Datatype::WIKIPAGE) {
             return "smwh_{$s}_t";
         } else {
@@ -92,11 +92,11 @@ class Helper
     public static function encodePropertyAsValueForUpdate(string $title, $type) {
         $s = self::encodeWhitespacesInProperties($title);
         if ($type === Datatype::DATETIME) {
-            return "smwh_{$s}_datevalue_dt";
+            return "smwh_{$s}_xsdvalue_dt";
         } else if ($type === Datatype::NUMBER) {
             return "smwh_{$s}_xsdvalue_d";
         } else if ($type === Datatype::BOOLEAN) {
-            return "smwh_{$s}_xsdvalue_d";
+            return "smwh_{$s}_xsdvalue_b";
         } else if ($type === Datatype::WIKIPAGE) {
             return "smwh_{$s}_t";
         } else {

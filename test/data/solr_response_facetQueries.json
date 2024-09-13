@@ -128,8 +128,8 @@
   },
   "facet_counts":{
     "facet_queries":{
-      "smwh_Turnover__frequency__HCOOH_xsdvalue_d:[0 TO -1]":0,
-      "smwh_Turnover__frequency__HCOOH_xsdvalue_d:[0 TO 0]":0},
+      "smwh_Turnover__frequency__HCOOH_xsdvalue_d:[1 TO 5]":4,
+      "smwh_Turnover__frequency__HCOOH_xsdvalue_d:[5 TO 11]":7},
     "facet_fields":{
       "smwh_categories":{
         "Imported_vocabulary":4},

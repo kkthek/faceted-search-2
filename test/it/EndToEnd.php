@@ -1,23 +1,32 @@
 <?php
 namespace DIQA\FacetedSearch2;
 
+use DIQA\FacetedSearch2\SolrClient\DocumentUpdater;
+use DIQA\FacetedSearch2\SolrClient\TestData;
 use DIQA\FacetedSearch2\SolrClient\Util;
-use PHPUnit\Framework\TestCase;
 use Exception;
+use PHPUnit\Framework\TestCase;
 
 final class EndToEnd extends TestCase {
+
+    protected function setUp(): void
+    {
+        $documentUpdater = new DocumentUpdater();
+        $documentUpdater->clearCore();
+        $documentUpdater->updateDocument(TestData::generateData());
+    }
 
     public function testDocumentQuery(): void
     {
        $body = <<<BODY
 {
-    "searchText": "test"
+    "searchText": "DIQA"
 }
 BODY;
 
         $response = $this->requestProxy($body, "documents");
         $this->assertEquals(
-            176,$response->numResults
+            1,$response->numResults
         );
     }
 
@@ -26,7 +35,7 @@ BODY;
         $body = <<<BODY
 {
     "statsProperties": [{
-        "property": "Modification date",
+        "property": "Was born at",
         "type": 2
     }]
 }

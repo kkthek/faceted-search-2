@@ -5,7 +5,7 @@ namespace DIQA\FacetedSearch2\Model\Request;
 class DocumentQuery extends BaseQuery {
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\Request\Property[]
+     * @var \DIQA\FacetedSearch2\Model\Common\Property[]
      */
     public $extraProperties = [];
 

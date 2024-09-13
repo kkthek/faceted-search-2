@@ -8,18 +8,20 @@ use DIQA\FacetedSearch2\Model\Request\Datatype;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\Order;
-use DIQA\FacetedSearch2\Model\Request\Property;
+use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
-use DIQA\FacetedSearch2\Model\Request\Range;
+use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\Sort;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
+use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
+use DIQA\FacetedSearch2\Model\Response\SolrStatsResponse;
 use Exception;
 
 class Client
 {
 
 
-    public function requestDocuments(DocumentQuery $q)
+    public function requestDocuments(DocumentQuery $q): SolrDocumentsResponse
     {
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
         $q->namespaceFacets, $q->extraProperties);
@@ -30,7 +32,7 @@ class Client
         return $response->parse();
     }
 
-    public function requestStats(StatsQuery $q)
+    public function requestStats(StatsQuery $q): SolrStatsResponse
     {
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
             $q->namespaceFacets, []);
@@ -44,7 +46,7 @@ class Client
         return $response->parseStatsResponse();
     }
 
-    public function requestFacet(FacetQuery $q)
+    public function requestFacet(FacetQuery $q): SolrStatsResponse
     {
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
             $q->namespaceFacets, []);

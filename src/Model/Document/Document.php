@@ -25,7 +25,7 @@ class Document {
     {
         $this->id = $id;
         $this->title = $title;
-        $this->displayTitle = $displayTitle;
+        $this->displayTitle = trim($displayTitle) === '' ? $title: $displayTitle;
         $this->namespace = $namespace;
     }
 

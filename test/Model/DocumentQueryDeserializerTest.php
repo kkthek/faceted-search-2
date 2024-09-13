@@ -1,11 +1,11 @@
 <?php
-namespace DIQA\FacetedSearch2;
+namespace DIQA\FacetedSearch2\Model;
 
 use DIQA\FacetedSearch2\Model\Request\Datatype;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use PHPUnit\Framework\TestCase;
 
-final class DeserializeRequestTest extends TestCase {
+final class DocumentQueryDeserializerTest extends TestCase {
 
     public function testPropertyFacet(): void
     {

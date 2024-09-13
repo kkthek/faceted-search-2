@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-use DIQA\FacetedSearch2\Model\Request\Range;
+use DIQA\FacetedSearch2\Model\Common\Range;
 
 class RangeValueCounts
 {
@@ -21,6 +21,30 @@ class RangeValueCounts
         $this->property = $property;
         $this->range = $range;
         $this->count = $count;
+    }
+
+    /**
+     * @return PropertyResponse
+     */
+    public function getProperty(): PropertyResponse
+    {
+        return $this->property;
+    }
+
+    /**
+     * @return Range
+     */
+    public function getRange(): Range
+    {
+        return $this->range;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCount(): int
+    {
+        return $this->count;
     }
 
 

@@ -37,5 +37,53 @@ class SolrDocumentsResponse
         $this->propertyValueCount = $propertyValueCount;
     }
 
+    /**
+     * @return int
+     */
+    public function getNumResults(): int
+    {
+        return $this->numResults;
+    }
+
+    /**
+     * @return Document[]
+     */
+    public function getDocs(): array
+    {
+        return $this->docs;
+    }
+
+    /**
+     * @return CategoryFacetCount[]
+     */
+    public function getCategoryFacetCounts(): array
+    {
+        return $this->categoryFacetCounts;
+    }
+
+    /**
+     * @return PropertyFacetCount[]
+     */
+    public function getPropertyFacetCounts(): array
+    {
+        return $this->propertyFacetCounts;
+    }
+
+    /**
+     * @return NamespaceFacetCount[]
+     */
+    public function getNamespaceFacetCounts(): array
+    {
+        return $this->namespaceFacetCounts;
+    }
+
+    /**
+     * @return PropertyValueCount[]
+     */
+    public function getPropertyValueCount(): array
+    {
+        return $this->propertyValueCount;
+    }
+
 
 }

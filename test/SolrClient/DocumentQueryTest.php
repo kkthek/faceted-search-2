@@ -1,78 +1,126 @@
 <?php
-namespace DIQA\FacetedSearch2;
+namespace DIQA\FacetedSearch2\SolrClient;
 
+use DIQA\FacetedSearch2\Model\Common\MWTitle;
+use DIQA\FacetedSearch2\Model\Common\Range;
+use DIQA\FacetedSearch2\Model\Common\Value;
 use DIQA\FacetedSearch2\Model\Request\Datatype;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
-use DIQA\FacetedSearch2\Model\Request\Property;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
-use DIQA\FacetedSearch2\Model\Request\Range;
-use DIQA\FacetedSearch2\Model\Request\Value;
-use DIQA\FacetedSearch2\SolrClient\Client;
 use PHPUnit\Framework\TestCase;
 
 final class SolrClientTest extends TestCase {
 
-    public function test1(): void
+    private Client $client;
+
+    protected function setUp(): void
     {
-        $client = new Client();
-        $q = new DocumentQuery();
-        $q->searchText = '';
-        $p = new PropertyFacet('InChI', Datatype::STRING);
-        $p->value = new Value('1S/C5H5P/c1-2-4-6-5-3-1/h1-5H');
-
-        $q->propertyFacets = [$p];
-        var_dump($client->requestDocuments($q));
-
-        $this->assertEquals(
-            1,1
-        );
+       $this->client = new Client();
+       $documentUpdater = new DocumentUpdater();
+       $documentUpdater->clearCore();
+       $documentUpdater->updateDocument(TestData::generateData());
     }
 
-    public function propertyFacetNumberRange(): void
+    public function testStringPropertyConstraint(): void
     {
-        $client = new Client();
+        
         $q = new DocumentQuery();
-        $q->searchText = '';
-        $p = new PropertyFacet('Turnover frequency HCOOH', Datatype::NUMBER);
-        $p->range = new Range(0, 600);
-        $q->propertyFacets = [$p];
-        var_dump($client->requestDocuments($q));
+        $p = new PropertyFacet('Has name', Datatype::STRING);
+        $p->setValue(new Value('Michael'));
 
-        $this->assertEquals(
-            1,1
-        );
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
     }
 
-    public function testPropertyFacetDateRange(): void
+    public function testPropertyFacetNumberRange(): void
     {
-        $client = new Client();
+        
         $q = new DocumentQuery();
-        $q->searchText = '';
-        $p = new PropertyFacet('Publication date', Datatype::DATETIME);
+        $p = new PropertyFacet('Has age', Datatype::NUMBER);
+        $p->setRange(new Range(40, 60));
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
 
-        $p->range = new Range('2015-02-09T00:00:00', '2015-09-10T00:00:00');
-
-        $q->propertyFacets = [$p];
-        var_dump($client->requestDocuments($q));
-
-        $this->assertEquals(
-            1,1
-        );
+        $this->assertEquals(1, count($response->docs));
     }
 
-    public function testPropertyFacetNumber(): void
+    public function testPropertyFacetNumberRangeEmpty(): void
     {
-        $client = new Client();
+        
         $q = new DocumentQuery();
-        $q->searchText = '';
-        $p = new PropertyFacet('Turnover frequency HCOOH', Datatype::NUMBER);
-        $p->value = new Value('11.5');
+        $p = new PropertyFacet('Has age', Datatype::NUMBER);
+        $p->setRange(new Range(80, 90));
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
 
-        $q->propertyFacets = [$p];
-        print_r($client->requestDocuments($q));
-
-        $this->assertEquals(
-            1,1
-        );
+        $this->assertEquals(0, count($response->docs));
     }
+
+    public function testPropertyFacetDateTimeRange(): void
+    {
+        
+        $q = new DocumentQuery();
+        $p = new PropertyFacet('Was born at', Datatype::DATETIME);
+        $p->setRange(new Range('1969-01-01T00:00:00Z', '1970-01-01T00:00:00Z'));
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
+    public function testPropertyFacetDateTimeRangeEmpty(): void
+    {
+        
+        $q = new DocumentQuery();
+        $p = new PropertyFacet('Was born at', Datatype::DATETIME);
+        $p->setRange(new Range('1970-01-01T00:00:00Z', '1971-01-01T00:00:00Z'));
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(0, count($response->docs));
+    }
+
+    public function testPropertyFacetBoolean(): void
+    {
+
+        $q = new DocumentQuery();
+        $p = new PropertyFacet('Is on pension', Datatype::BOOLEAN);
+        $p->setValue(new Value('false'));
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
+    public function testFulltext(): void
+    {
+
+        $q = new DocumentQuery();
+        $q->setSearchText('DIQA');
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
+    public function testPropertyFacetWikiPage(): void
+    {
+
+        $q = new DocumentQuery();
+        $p = new PropertyFacet('Works at', Datatype::WIKIPAGE);
+        $p->setMwTitle(new MWTitle('DIQA-GmbH', 'DIQA'));
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
 }

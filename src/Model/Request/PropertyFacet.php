@@ -2,6 +2,10 @@
 
 namespace DIQA\FacetedSearch2\Model\Request;
 
+use DIQA\FacetedSearch2\Model\Common\MWTitle;
+use DIQA\FacetedSearch2\Model\Common\Range;
+use DIQA\FacetedSearch2\Model\Common\Value;
+
 class PropertyFacet {
 
     public string $property;
