@@ -4,14 +4,13 @@ namespace DIQA\FacetedSearch2\Model\Request;
 
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Range;
-use DIQA\FacetedSearch2\Model\Common\Value;
 
 class PropertyFacet {
 
     public string $property;
     public int $type;
 
-    public ?Value $value = null;
+    public ?string $value = null;
     public ?MWTitle $mwTitle = null;
     public ?Range $range = null;
 
@@ -43,9 +42,9 @@ class PropertyFacet {
     }
 
     /**
-     * @return Value|null
+     * @return string|null
      */
-    public function getValue(): ?Value
+    public function getValue(): ?string
     {
         return $this->value;
     }
@@ -67,10 +66,10 @@ class PropertyFacet {
     }
 
     /**
-     * @param Value|null $value
+     * @param string|null $value
      * @return PropertyFacet
      */
-    public function setValue(?Value $value): PropertyFacet
+    public function setValue(?string $value): PropertyFacet
     {
         $this->value = $value;
         return $this;

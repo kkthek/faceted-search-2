@@ -161,7 +161,7 @@ class Client
                     $facetValues[] = "$p:$value";
                 } else if (!is_null($f->value) && ($f->type === Datatype::STRING || $f->type === Datatype::NUMBER || $f->type === Datatype::BOOLEAN
                             || $f->type === Datatype::DATETIME)) {
-                    $value = Helper::quoteValue($f->value->value, $f->type);
+                    $value = Helper::quoteValue($f->value, $f->type);
                     $facetValues[] = "$p:$value";
                 }
             }

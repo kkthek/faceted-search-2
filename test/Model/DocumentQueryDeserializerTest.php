@@ -15,9 +15,7 @@ final class DocumentQueryDeserializerTest extends TestCase {
         {
           "property": "Has name",
           "type": 0,
-          "value": {
-            "value": "Michael" 
-          }
+          "value": "Michael" 
         }
     ]
 }
@@ -27,7 +25,7 @@ JSON;
         $this->assertEquals(1, count($documentQuery->getPropertyFacets()) );
         $this->assertEquals('Has name', $documentQuery->getPropertyFacets()[0]->getProperty() );
         $this->assertEquals(Datatype::STRING, $documentQuery->getPropertyFacets()[0]->getType() );
-        $this->assertEquals('Michael', $documentQuery->getPropertyFacets()[0]->getValue()->getValue() );
+        $this->assertEquals('Michael', $documentQuery->getPropertyFacets()[0]->getValue() );
         $this->assertNull($documentQuery->getPropertyFacets()[0]->getMwTitle() );
         $this->assertNull($documentQuery->getPropertyFacets()[0]->getRange() );
     }

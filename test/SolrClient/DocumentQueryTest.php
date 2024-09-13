@@ -3,7 +3,6 @@ namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Range;
-use DIQA\FacetedSearch2\Model\Common\Value;
 use DIQA\FacetedSearch2\Model\Request\Datatype;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
@@ -26,7 +25,7 @@ final class SolrClientTest extends TestCase {
         
         $q = new DocumentQuery();
         $p = new PropertyFacet('Has name', Datatype::STRING);
-        $p->setValue(new Value('Michael'));
+        $p->setValue('Michael');
 
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
@@ -92,7 +91,7 @@ final class SolrClientTest extends TestCase {
 
         $q = new DocumentQuery();
         $p = new PropertyFacet('Is on pension', Datatype::BOOLEAN);
-        $p->setValue(new Value('false'));
+        $p->setValue('false');
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
         $response = $this->client->requestDocuments($q);
