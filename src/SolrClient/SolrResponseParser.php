@@ -23,10 +23,6 @@ use DIQA\FacetedSearch2\Model\Response\ValueCount;
 
 class SolrResponseParser {
 
-    private const RELATION_REGEX = "/^smwh_(.*)_t$/";
-    private const RELATION_FROM_FACET_REGEX = "/^smwh_(.*)_s$/";
-    private const ATTRIBUTE_REGEX = "/smwh_(.*)_xsdvalue_(.*)/";
-
     private $body;
 
     /**
@@ -97,7 +93,10 @@ class SolrResponseParser {
         $smwh_properties = $this->body->facet_counts->facet_fields->smwh_properties ?? [];
         $propertyFacetCounts = []; /* @var PropertyFacetCount[] */
         foreach ($smwh_properties as $property => $count) {
-            $propertyFacetCounts[] = new PropertyFacetCount($this->parseProperty($property, self::RELATION_REGEX), $count);
+            $propertyFacetCount = new PropertyFacetCount($this->parseProperty($property), $count);
+            if (!is_null($propertyFacetCount)) {
+                $propertyFacetCounts[] = $propertyFacetCount;
+            }
         }
         $smwh_namespaces = $this->body->facet_counts->facet_fields->smwh_namespace_id ?? [];
         $namespaceFacetCounts = []; /* @var NamespaceFacetCount[] */
@@ -108,7 +107,7 @@ class SolrResponseParser {
         $propertyValueCount= [] /* @var PropertyValueCount[] */;
         foreach ($this->body->facet_counts->facet_fields as $p => $values) {
                 if ($p === 'smwh_categories' || $p === 'smwh_attributes' || $p === 'smwh_properties' || $p === 'smwh_namespace_id') continue;
-                $property = $this->parseProperty($p, self::RELATION_FROM_FACET_REGEX);
+                $property = $this->parseProperty($p);
                 $valueCounts = [] /* @var ValueCount[] */;
                foreach($values as $v => $count) {
                 $valueCounts[] = new ValueCount($v, $count);
@@ -165,70 +164,22 @@ class SolrResponseParser {
     }
 
     private function parsePropertyWithValues(string $property, $values): ?PropertyFacetValues {
-        $num = preg_match_all(self::ATTRIBUTE_REGEX, $property, $nameType);
-        if ($num === 0) {
-            // maybe a relation facet
-            preg_match_all(self::RELATION_REGEX, $property, $nameType);
-            if ($num > 0) {
-                 $name = $nameType[1][0];
-                 return $this->parsePropertyValues($name, $values);
-            }
-            return null;
-        }
-        $name = $nameType[1][0];
-        $type = $nameType[2][0];
-        return $this->parseAttributeValues($name, $values, $type);
-
-    }
-
-    private function parsePropertyValues(string $name, array $values /* @var string[] */): PropertyFacetValues {
-        return new PropertyFacetValues(
-            new PropertyResponse(Helper::decodeCharsInProperty($name),
-                Datatype::WIKIPAGE,
-                ""
-            ),
-            array_map(function($e) {
+        list($name, $type) = Helper::parseSOLRProperty($property);
+        if (is_null($name)) return null;
+        if ($type === Datatype::WIKIPAGE) {
+            return new PropertyFacetValues(
+                new PropertyResponse($name,
+                    Datatype::WIKIPAGE,
+                    ""
+                ),
+                array_map(function($e) {
                     $parts = explode("|", $e);
                     return new MWTitle($parts[0], $parts[1]);
                 }, $values));
-
-    }
-
-    private function parseAttributeValues(string $name, array $values, string $type): PropertyFacetValues {
-        $decodedPropertyName = Helper::decodeCharsInProperty($name);
-
-        switch ($type) {
-            case 'd':
-            case 'i':
-                // numeric
+        } else {
             return new PropertyFacetValues(
-                new PropertyResponse($decodedPropertyName,
+                new PropertyResponse($name,
                     Datatype::NUMBER,
-                    ""
-                ),
-                $values);
-            case 'dt':
-                // date
-                return new PropertyFacetValues(
-                    new PropertyResponse($decodedPropertyName,
-                        Datatype::DATETIME,
-                        ""
-                    ),
-                    $values);
-            case 'b':
-                // boolean
-                return new PropertyFacetValues(
-                    new PropertyResponse($decodedPropertyName,
-                        Datatype::BOOLEAN,
-                        ""
-                    ),
-                    $values);
-            case 's':
-                // string or anything else
-            default:
-            return new PropertyFacetValues(
-                new PropertyResponse($decodedPropertyName,
-                    Datatype::STRING,
                     ""
                 ),
                 $values);
@@ -240,58 +191,33 @@ class SolrResponseParser {
     {
         $properties = [] /* @var Property[] */;
         foreach($propertyList as $property) {
-            $properties[] = $this->parseProperty($property, self::RELATION_REGEX);
+            $propertyResponse = $this->parseProperty($property);
+            if (!is_null($propertyResponse)) {
+                $properties[] = $propertyResponse;
+            }
         }
         return $properties;
     }
 
-
-
-    private function parseProperty(string $property, $relationRegex): PropertyResponse {
-        $num = preg_match_all(self::ATTRIBUTE_REGEX, $property, $nameType);
-        if ($num === 0) {
-            // maybe a relation facet
-            $num = preg_match_all($relationRegex, $property, $nameType);
-            if ($num > 0) {
-                $name = $nameType[1][0];
-                $name = Helper::decodeCharsInProperty($name);
-                return new PropertyResponse($name, Datatype::WIKIPAGE, "");
-            }
-
+    private function parseProperty(string $property): ?PropertyResponse {
+        list($name, $type) = Helper::parseSOLRProperty($property);
+        if (is_null($name)) {
+            return null;
         }
-        $name = $nameType[1][0];
-        $type = $nameType[2][0];
-        $name = Helper::decodeCharsInProperty($name);
-
-        switch($type) {
-            case 'd':
-            case 'i':
-                $datatype = Datatype::NUMBER;
-                break;
-            case 'b':
-                $datatype = Datatype::BOOLEAN;
-                break;
-            case 'dt':
-                $datatype = Datatype::DATETIME;
-                break;
-            case 's':
-            default:
-                $datatype = Datatype::STRING;
+        if ($type === Datatype::WIKIPAGE) {
+            return new PropertyResponse($name, Datatype::WIKIPAGE, "");
+        } else {
+            return new PropertyResponse($name, $type, "");
         }
-        return new PropertyResponse($name, $datatype, "");
+
     }
 
     private function parsePropertyFromStats(string $property): ?PropertyResponse {
-
-        $num = preg_match_all("/smwh_(.*)_datevalue_l/", $property, $name);
-        if ($num === 0) {
-            $num = preg_match_all("/smwh_(.*)_xsdvalue_d/", $property, $name);
-            if ($num === 0) {
-                return null;
-            }
-            return new PropertyResponse(Helper::decodeCharsInProperty($name[1][0]), Datatype::DATETIME, "");
+        list($name, $type) = Helper::parseSOLRProperty($property);
+        if (is_null($name)) {
+            return null;
         }
-        return new PropertyResponse(Helper::decodeCharsInProperty($name[1][0]), Datatype::NUMBER, "");
+        return new PropertyResponse($name, $type, "");
     }
 
     private static function startsWith($string, $query){

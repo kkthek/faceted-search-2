@@ -6,7 +6,9 @@ use DIQA\FacetedSearch2\Model\Request\Datatype;
 
 class Helper
 {
-
+    private const RELATION_REGEX = "/^smwh_(.*)_(t|s)$/";
+    private const ATTRIBUTE_REGEX = "/^smwh_(.*)_xsdvalue_(.*)$/";
+    private const ATTRIBUTE_REGEX_DATEVALUE = "/^smwh_(.*)_(datevalue_l)$/";
     /**
      * Helper functions to return implementation specific property/value suffixes.
      * dependant from backend
@@ -27,21 +29,6 @@ class Helper
         Datatype::DATETIME => 'xsdvalue_dt'
     ];
 
-    private static function encodeCharsInProperties(string $title)
-    {
-        $s = $title;
-        $s = preg_replace('/_/', '__', $s);
-        $s = preg_replace('/\s/', '__', $s);
-        return self::encodeSpecialChars($s);
-    }
-
-    public static function decodeCharsInProperty(string $title)
-    {
-        $s = $title;
-        $s = self::decodeSpecialChars($s);
-        return preg_replace('/__/', ' ', $s);
-    }
-
     public static function generateSOLRProperty(string $title, $type)
     {
         $s = self::encodeCharsInProperties($title);
@@ -54,12 +41,70 @@ class Helper
         return "smwh_{$s}_" . self::DatatypeSuffixForSearchMap[$type];
     }
 
+    private static function decodeCharsInProperty(string $title)
+    {
+        $s = $title;
+        $s = self::decodeSpecialChars($s);
+        return preg_replace('/__/', ' ', $s);
+    }
+
     private static function encodeSpecialChars($s) {
         return str_replace("%", "_0x", urlencode($s));
     }
 
     private static function decodeSpecialChars($s) {
         return urldecode(str_replace("_0x", "%", $s));
+    }
+
+    private static function encodeCharsInProperties(string $title)
+    {
+        $s = $title;
+        $s = preg_replace('/_/', '__', $s);
+        $s = preg_replace('/\s/', '__', $s);
+        return self::encodeSpecialChars($s);
+    }
+
+    public static function parseSOLRProperty(string $property) {
+        $num = preg_match_all(self::ATTRIBUTE_REGEX, $property, $nameType);
+        if ($num === 0) {
+            // maybe a relation facet
+            $num = preg_match_all(self::RELATION_REGEX, $property, $nameType);
+            if ($num > 0) {
+                $name = $nameType[1][0];
+                $name = Helper::decodeCharsInProperty($name);
+                return [$name, Datatype::WIKIPAGE];
+            }
+            $num = preg_match_all(self::ATTRIBUTE_REGEX_DATEVALUE, $property, $nameType);
+            if ($num > 0) {
+                $name = $nameType[1][0];
+                $name = Helper::decodeCharsInProperty($name);
+                return [$name, Datatype::DATETIME];
+            }
+            return null;
+        }
+        $name = $nameType[1][0];
+        $name = Helper::decodeCharsInProperty($name);
+        $type = $nameType[2][0];
+        switch ($type) {
+            case 'd':
+            case 'i':
+                // numeric
+                return [$name, Datatype::NUMBER];
+            case 'dt':
+            case 'datevalue_l':
+                // date
+                return [$name, Datatype::DATETIME];
+            case 'b':
+                // boolean
+                return [$name, Datatype::BOOLEAN];
+            case 's':
+            case 't':
+                // string or anything else
+            default:
+                return [$name, Datatype::STRING];
+        }
+
+
     }
 
     public static function quoteValue($v, $type)
