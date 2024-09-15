@@ -51,5 +51,12 @@
     },
 	"require-dev": {
 		"phpunit/phpunit": "^7"
+	},
+	"archive": {
+		"exclude": [
+			"/.git", "/.idea", "/vm-ubuntu", "/test",
+			"/fs-react", "!/fs-react/dist", "/vendor",
+			"/rest.php", "/runTests.sh", "/phpunit", "/composer.lock"
+		]
 	}
 }
