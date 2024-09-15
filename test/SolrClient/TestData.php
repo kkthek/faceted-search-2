@@ -29,7 +29,10 @@ class TestData {
         $pvWorksAt = new PropertyValues($p, [new MWTitle('DIQA-GmbH', 'DIQA')]);
 
         $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt])
-        ->setFulltext("Michael Erdmann arbeitet bei DIQA-GmbH");
+        ->setFulltext("Michael Erdmann arbeitet bei DIQA-GmbH")
+        ->setCategories(["Employee"])
+        ->setDirectCategories(["Employee"])
+        ->setNamespace(0);
         return $document;
     }
 }

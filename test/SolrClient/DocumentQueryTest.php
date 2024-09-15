@@ -22,7 +22,6 @@ final class SolrClientTest extends TestCase {
 
     public function testStringPropertyConstraint(): void
     {
-        
         $q = new DocumentQuery();
         $p = new PropertyFacet('Has name', Datatype::STRING);
         $p->setValue('Michael');
@@ -36,7 +35,6 @@ final class SolrClientTest extends TestCase {
 
     public function testPropertyFacetNumberRange(): void
     {
-        
         $q = new DocumentQuery();
         $p = new PropertyFacet('Has age', Datatype::NUMBER);
         $p->setRange(new Range(40, 60));
@@ -49,7 +47,6 @@ final class SolrClientTest extends TestCase {
 
     public function testPropertyFacetNumberRangeEmpty(): void
     {
-        
         $q = new DocumentQuery();
         $p = new PropertyFacet('Has age', Datatype::NUMBER);
         $p->setRange(new Range(80, 90));
@@ -62,7 +59,6 @@ final class SolrClientTest extends TestCase {
 
     public function testPropertyFacetDateTimeRange(): void
     {
-        
         $q = new DocumentQuery();
         $p = new PropertyFacet('Was born at', Datatype::DATETIME);
         $p->setRange(new Range('1969-01-01T00:00:00Z', '1970-01-01T00:00:00Z'));
@@ -75,7 +71,6 @@ final class SolrClientTest extends TestCase {
 
     public function testPropertyFacetDateTimeRangeEmpty(): void
     {
-        
         $q = new DocumentQuery();
         $p = new PropertyFacet('Was born at', Datatype::DATETIME);
         $p->setRange(new Range('1970-01-01T00:00:00Z', '1971-01-01T00:00:00Z'));
@@ -88,7 +83,6 @@ final class SolrClientTest extends TestCase {
 
     public function testPropertyFacetBoolean(): void
     {
-
         $q = new DocumentQuery();
         $p = new PropertyFacet('Is on pension', Datatype::BOOLEAN);
         $p->setValue('false');
@@ -101,7 +95,6 @@ final class SolrClientTest extends TestCase {
 
     public function testFulltext(): void
     {
-
         $q = new DocumentQuery();
         $q->setSearchText('DIQA');
         $response = $this->client->requestDocuments($q);
@@ -111,12 +104,31 @@ final class SolrClientTest extends TestCase {
 
     public function testPropertyFacetWikiPage(): void
     {
-
         $q = new DocumentQuery();
         $p = new PropertyFacet('Works at', Datatype::WIKIPAGE);
         $p->setMwTitle(new MWTitle('DIQA-GmbH', 'DIQA'));
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
+    public function testCategoryFacet(): void
+    {
+        $q = new DocumentQuery();
+        $q->setSearchText('')
+            ->setCategoryFacets(["Employee"]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
+    public function testNamespaceFacet(): void
+    {
+        $q = new DocumentQuery();
+        $q->setSearchText('')
+            ->setNamespaceFacets([0]);
         $response = $this->client->requestDocuments($q);
 
         $this->assertEquals(1, count($response->docs));
