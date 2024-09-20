@@ -2,11 +2,11 @@
 
 namespace DIQA\FacetedSearch2\Maintenance;
 
-use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 use DIQA\FacetedSearch2\SolrClient\SolrUpdateClient;
 use MediaWiki\MediaWikiServices;
 use WikiPage;
 use Title;
+use DIQA\FacetedSearch2\Update\SMWDBReader;
 
 /**
  * Updates the solr index.
@@ -157,10 +157,10 @@ class UpdateSolr extends \Maintenance
      */
     private function updateIndex($title) {
         $client = new SolrUpdateClient();
-        $indexer = new \DIQA\FacetedSearch2\Update\SMWDBReader();
+        $indexer = new SMWDBReader();
         try {
             $messages = [];
-            $document = $indexer->updateIndexForArticle(new WikiPage($title), null, $messages, $this->hasOption('x'));
+            $document = $indexer->getIndexDocumentFromWikiPage(new WikiPage($title), null, $messages);
             $client->updateDocument($document);
             if (count($messages) > 0) {
                 print implode("\t\n", $messages);

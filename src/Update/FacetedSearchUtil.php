@@ -101,4 +101,23 @@ class FacetedSearchUtil {
         return $originalPageName;
     }
 
+    public static function getISODateFromDataItem(\SMWDataItem $dataItem): string
+    {
+        $year = $dataItem->getYear();
+        $month = $dataItem->getMonth();
+        $day = $dataItem->getDay();
+
+        $hour = $dataItem->getHour();
+        $min = $dataItem->getMinute();
+        $sec = $dataItem->getSecond();
+
+        $month = strlen($month) === 1 ? "0$month" : $month;
+        $day = strlen($day) === 1 ? "0$day" : $day;
+        $hour = strlen($hour) === 1 ? "0$hour" : $hour;
+        $min = strlen($min) === 1 ? "0$min" : $min;
+        $sec = strlen($sec) === 1 ? "0$sec" : $sec;
+
+        // Required format: 1995-12-31T23:59:59Z
+        return "{$year}-{$month}-{$day}T{$hour}:{$min}:{$sec}Z";
+    }
 }

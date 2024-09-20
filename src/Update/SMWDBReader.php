@@ -11,16 +11,16 @@ use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
-use SMW\DataTypeRegistry;
+use Sanitizer;
 use SMW\DIProperty as SMWDIProperty;
 use SMW\DIWikiPage as SMWDIWikiPage;
 use SMW\PropertyRegistry;
-use WikiPage;
-use Sanitizer;
 use SMWDataItem;
 use Title;
+use WikiPage;
 
 class SMWDBReader {
+
     /**
      * Updates the index for the given $wikiPage.
      * It retrieves all semantic data of the new version and adds it to the index.
@@ -32,11 +32,9 @@ class SMWDBReader {
      *        retrieved in this method.
      * @param array $messages
      *      User readible messages (out)
-     * @param bool $debugMode
-     *      Prints verbose output
      */
-    public function updateIndexForArticle(WikiPage $wikiPage, $rawText = null,
-                                          &$messages = [], bool $debugMode = false
+    public function getIndexDocumentFromWikiPage(WikiPage $wikiPage, $rawText = null,
+                                          &$messages = []
     ) : Document {
 
         $doc = [];
@@ -75,15 +73,14 @@ class SMWDBReader {
         $hookContainer = MediaWikiServices::getInstance()->getHookContainer();
         $hookContainer->run( 'fs_saveArticle', [ $text, &$doc ] );
 
-        // Let the super class update the index
-        //$this->updateIndex( $doc, $options, $debugMode );
         $document = new Document($doc['id'],
             $doc['smwh_title'],
             $doc['smwh_displaytitle'],
             $doc['smwh_namespace_id']);
-        $document->setPropertyValues(array_merge($doc['smw_properties'] ?? [], $doc['smwh_attributes'] ?? []))
-        ->setCategories($doc['smwh_categories']?? [])
-        ->setDirectCategories($doc['smwh_directcategories']?? []);
+        $document->setPropertyValues($doc['smwh_properties'] ?? [])
+                ->setCategories($doc['smwh_categories']?? [])
+                ->setDirectCategories($doc['smwh_directcategories']?? [])
+                ->setBoost($options['smwh_boost_dummy']['boost'] ?? 1.0);
         print_r($document);
 
         return $document;
@@ -300,7 +297,7 @@ class SMWDBReader {
      * @param $options
      */
     private function retrieveTemplates($db, $pid, array &$doc, array &$options) {
-        // MW >= 1.38
+
         $res = $db->newSelectQueryBuilder()
             ->select( 'CAST(lt_title AS CHAR) AS template' )
             ->from( 'templatelinks' )
@@ -309,15 +306,6 @@ class SMWDBReader {
             ->where( "tl_from = $pid" )
             ->caller( __METHOD__ )
             ->fetchResultSet();
-
-        // // MW < 1.38
-        // $templateLinksTable = $db->tableName('templatelinks');
-        // $sql = <<<SQL
-        //     SELECT CAST(t.tl_title AS CHAR) template
-        //     FROM $templateLinksTable t
-        //     WHERE t.tl_from=$pid
-        //     SQL;
-        // $res = $db->query($sql);
 
         $smwhTemplates = [];
         if ( $res->numRows() > 0 ) {
@@ -329,87 +317,6 @@ class SMWDBReader {
         $res->free();
 
         return $smwhTemplates;
-    }
-
-    /**
-     * Encodes special characters in a given SMW property name to make it compliant with SOLR field names
-     *
-     * @param string  $propertyName
-     * @return string
-     */
-    public static function encodeTitle($propertyName) {
-        // turns non-acii and some special characters into percent encoding, e.g. %3A
-        $tmp = rawurlencode($propertyName);
-
-        $tmp = str_replace("_", "__", $tmp);
-
-        // replaces % with _0x
-        $tmp = str_replace("%", "_0x", $tmp);
-        return $tmp;
-    }
-
-    /**
-     * Returns the SOLR field name for a property
-     * @param SMWDIProperty $property
-     *
-     * @return string
-     */
-    public static function encodeSOLRFieldName($property) {
-        $prop = str_replace(' ', '_', $property->getLabel());
-
-        $prop = self::encodeTitle($prop);
-
-        $typeId = $property->findPropertyValueType();
-        $type = DataTypeRegistry::getInstance()->getDataItemByType($typeId);
-
-        // The property names of all attributes are built based on their type.
-        switch($type) {
-            case SMWDataItem::TYPE_BOOLEAN:
-                return "smwh_{$prop}_xsdvalue_b";
-            case SMWDataItem::TYPE_NUMBER:
-                return "smwh_{$prop}_numvalue_d";
-            case SMWDataItem::TYPE_BLOB:
-                return "smwh_{$prop}_xsdvalue_t";
-            case SMWDataItem::TYPE_WIKIPAGE:
-                return "smwh_{$prop}_t";
-            case SMWDataItem::TYPE_TIME:
-                return "smwh_{$prop}_xsdvalue_dt";
-        }
-
-        // all others are regarded as string/text
-        return "smwh_{$prop}_xsdvalue_t";
-    }
-
-    /**
-     * Returns the SOLR field name for a property value constraint
-     * @param SMWDIProperty $property
-     *
-     * @return string
-     */
-    public static function encodeSOLRFieldNameForValue($property) {
-        $prop = str_replace(' ', '_', $property->getLabel());
-
-        $prop = self::encodeTitle($prop);
-
-        $typeId = $property->findPropertyValueType();
-        $type = DataTypeRegistry::getInstance()->getDataItemByType($typeId);
-
-        // The property names of all attributes are built based on their type.
-        switch($type) {
-            case SMWDataItem::TYPE_BOOLEAN:
-                return "smwh_{$prop}_xsdvalue_b";
-            case SMWDataItem::TYPE_NUMBER:
-                return "smwh_{$prop}_numvalue_d";
-            case SMWDataItem::TYPE_BLOB:
-                return "smwh_{$prop}_xsdvalue_s";
-            case SMWDataItem::TYPE_WIKIPAGE:
-                return "smwh_{$prop}_s";
-            case SMWDataItem::TYPE_TIME:
-                return "smwh_{$prop}_xsdvalue_dt";
-        }
-
-        // all others are regarded as wikipage
-        return "smwh_{$prop}_s";
     }
 
 
@@ -483,8 +390,7 @@ class SMWDBReader {
         global $fsgIndexPredefinedProperties;
 
         $store = smwfGetStore();
-        $attributes = array();
-        $relations = array();
+        $propertyValuesToAdd = [];
 
         $subject = SMWDIWikiPage::newFromTitle($title);
         $properties = $store->getProperties($subject);
@@ -536,36 +442,35 @@ class SMWDBReader {
                                 $record_value = reset($propertyValues);
                                 if ($record_value === false) continue;
                                 if ($record_value->getDIType() == SMWDataItem::TYPE_WIKIPAGE) {
-                                    $enc_prop = $this->serializeWikiPageDataItem($subject, $rp, $record_value, $doc);
-                                    $relations[] = $enc_prop;
+                                    $enc_prop = $this->serializeWikiPageDataItem($rp, $record_value);
+                                    $propertyValuesToAdd[] = $enc_prop;
                                 } else {
-                                    $enc_prop = $this->serializeDataItem($rp, $record_value, $doc);
+                                    $enc_prop = $this->serializeDataItem($rp, $record_value);
                                     if (is_null($enc_prop)) {
                                         continue;
                                     }
-                                    $attributes[] = $enc_prop;
+                                    $propertyValuesToAdd[] = $enc_prop;
                                 }
                             }
                         }
                     } else {
                         // handle relation properties
-                        $enc_prop = $this->serializeWikiPageDataItem($subject, $property, $value, $doc);
-                        $relations[] = $enc_prop;
+                        $enc_prop = $this->serializeWikiPageDataItem($property, $value);
+                        $propertyValuesToAdd[] = $enc_prop;
                     }
 
                 } else {
                     // handle attribute properties
-                    $enc_prop = $this->serializeDataItem($property, $value, $doc);
+                    $enc_prop = $this->serializeDataItem($property, $value);
                     if (is_null($enc_prop)) {
                         continue;
                     }
-                    $attributes[] = $enc_prop;
+                    $propertyValuesToAdd[] = $enc_prop;
                 }
             }
         }
 
-        $doc['smwh_properties'] = array_filter($relations, function($e) { return $e->getProperty()->getType() === Datatype::WIKIPAGE; });
-        $doc['smwh_attributes'] = array_filter($attributes, function($e) { return $e->getProperty()->getType() !== Datatype::WIKIPAGE; });
+        $doc['smwh_properties'] = $propertyValuesToAdd;
     }
 
     /**
@@ -646,17 +551,7 @@ class SMWDBReader {
         return $y;
     }
 
-    /**
-     * Serialize SMWDIWikiPage into $doc array.
-     *
-     * @param SMWDIWikiPage $subject
-     * @param SMWDIProperty $property
-     * @param SMWDataItem $dataItem
-     * @param array $doc
-     *
-     * @return string representing the encoded property name
-     */
-    private function serializeWikiPageDataItem($subject, $property, $dataItem, array &$doc) {
+    private function serializeWikiPageDataItem($property, $dataItem) {
 
         $title = $dataItem->getTitle();
         $valueId = $title->getPrefixedText();
@@ -665,44 +560,18 @@ class SMWDBReader {
             [ new MWTitle($valueId, $valueLabel) ]);
     }
 
-    /**
-     * Serialize all other SMWDataItems into $doc array (non-SMWDIWikiPage).
-     *
-     * @param SMWDIProperty $property
-     * @param SMWDataItem $dataItem
-     * @param array $doc
-     *
-     * @return string|null representing the encoded property name
-     */
-    private function serializeDataItem($property, $dataItem, array &$doc) {
+
+    private function serializeDataItem($property, $dataItem) {
 
         $valueXSD = $dataItem->getSerialization();
 
-        // TODO use encodeSOLRFieldName() here
-        $prop = str_replace(' ', '_', $property->getLabel());
-        $prop = self::encodeTitle($prop);
         $type = $dataItem->getDIType();
 
         // The values of all attributes are stored according to their type.
         if ($type == SMWDataItem::TYPE_TIME) {
 
-            /** @var SMWDITime $dataItem */
-            $year = $dataItem->getYear();
-            $month = $dataItem->getMonth();
-            $day = $dataItem->getDay();
-
-            $hour = $dataItem->getHour();
-            $min = $dataItem->getMinute();
-            $sec = $dataItem->getSecond();
-
-            $month = strlen($month) === 1 ? "0$month" : $month;
-            $day = strlen($day) === 1 ? "0$day" : $day;
-            $hour = strlen($hour) === 1 ? "0$hour" : $hour;
-            $min = strlen($min) === 1 ? "0$min" : $min;
-            $sec = strlen($sec) === 1 ? "0$sec" : $sec;
-
             // Required format: 1995-12-31T23:59:59Z
-            $valueXSD = "{$year}-{$month}-{$day}T{$hour}:{$min}:{$sec}Z";
+            $valueXSD = FacetedSearchUtil::getISODateFromDataItem($dataItem);
 
             return new PropertyValues(new Property($property->getLabel(), Datatype::DATETIME),
                 [ $valueXSD ]);
@@ -723,30 +592,8 @@ class SMWDBReader {
         return new PropertyValues(new Property($property->getLabel(), Datatype::STRING),
             [ $valueXSD ]);
 
-        //$this->handleSpecialWikiProperties($property, $dataItem, $doc);
-
         return $propXSD;
     }
 
-    /**
-     * Special handling for special SMW properties.
-     *
-     * @param SMWDIProperty $property
-     * @param SMWDataItem $dataItem
-     * @param array $doc
-     */
-    private function handleSpecialWikiProperties($property, $dataItem, array &$doc) {
-        if ($property->isUserDefined()) {
-            return; // not special
-        }
-
-        switch ($property->getKey()) {
-            case '_MDAT':
-                // used for sorting
-                /** @var SMWDITime $dataItem */
-                $doc['smwh__MDAT_datevalue_l'] = $dataItem->getMwTimestamp();
-                break;
-        }
-    }
 
 }

@@ -12,7 +12,7 @@ class Document {
     private $propertyValues = [];    /* @var PropertyValues[] */
     private $categories = [];        /* @var string[] */
     private $directCategories = [];  /* @var string[] */
-    private ?number $boost = null;
+    private ?float $boost = null;
 
     /**
      * Document constructor.
@@ -104,16 +104,16 @@ class Document {
     /**
      * @return number
      */
-    public function getBoost(): ?number
+    public function getBoost(): ?float
     {
         return $this->boost;
     }
 
     /**
-     * @param string[] $boost
+     * @param ?float $boost
      * @return Document
      */
-    public function setBoost(array $boost): Document
+    public function setBoost(?float $boost): Document
     {
         $this->boost = $boost;
         return $this;

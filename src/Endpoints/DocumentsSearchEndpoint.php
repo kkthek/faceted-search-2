@@ -2,8 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Endpoints;
 
-use DIQA\FacetedSearch\Proxy\SolrProxy\SolrService;
-use DIQA\FacetedSearch2\Model\DocumentQuery;
+use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 use MediaWiki\Rest\Handler;
 use MediaWiki\Rest\Response;
