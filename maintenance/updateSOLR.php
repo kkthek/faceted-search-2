@@ -2,8 +2,8 @@
 
 namespace DIQA\FacetedSearch2\Maintenance;
 
-use DIQA\FacetedSearch2\SolrClient\Client;
-use DIQA\FacetedSearch2\SolrClient\DocumentUpdater;
+use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
+use DIQA\FacetedSearch2\SolrClient\SolrUpdateClient;
 use MediaWiki\MediaWikiServices;
 use WikiPage;
 use Title;
@@ -156,7 +156,7 @@ class UpdateSolr extends \Maintenance
      * @param Title $title
      */
     private function updateIndex($title) {
-        $client = new DocumentUpdater();
+        $client = new SolrUpdateClient();
         $indexer = new \DIQA\FacetedSearch2\Update\SMWDBReader();
         try {
             $messages = [];

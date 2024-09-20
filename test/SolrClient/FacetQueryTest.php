@@ -15,8 +15,8 @@ final class FacetQueryTest extends TestCase {
 
     protected function setUp(): void
     {
-        $this->client = new Client();
-        $documentUpdater = new DocumentUpdater();
+        $this->client = new SolrRequestClient();
+        $documentUpdater = new SolrUpdateClient();
         $documentUpdater->clearCore();
         $documentUpdater->updateDocument(TestData::generateData());
     }

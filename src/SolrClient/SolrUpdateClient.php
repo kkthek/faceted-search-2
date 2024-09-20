@@ -6,7 +6,7 @@ use DIQA\FacetedSearch2\Model\Document\Document;
 use DIQA\FacetedSearch2\Model\Request\Datatype;
 use Exception;
 
-class DocumentUpdater {
+class SolrUpdateClient {
 
     public function updateDocument(Document $doc) {
         $xml = $this->serializeAsXml($doc);

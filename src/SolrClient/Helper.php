@@ -121,5 +121,17 @@ class Helper
         return $datetime->format('YmdHis');
     }
 
+    public static function getSOLRBaseUrl() {
+
+        global $fsgSOLRHost;
+        global $fsgSOLRPort;
+        global $fsgSOLRCore;
+
+        $host = $fsgSOLRHost ?? "http://localhost";
+        $port = $fsgSOLRPort ?? "8983";
+        $core = $fsgSOLRCore ?? "mw";
+
+        return "$host:$port/solr/$core";
+    }
 
 }

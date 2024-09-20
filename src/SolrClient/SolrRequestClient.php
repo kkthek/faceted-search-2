@@ -19,7 +19,7 @@ use Exception;
 use MediaWiki\MediaWikiServices;
 use Title;
 
-class Client
+class SolrRequestClient
 {
 
 
@@ -305,7 +305,7 @@ class Client
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
             $ch = curl_init();
             $queryString = self::buildQueryParams($queryParams);
-            $url = "http://localhost:8983/solr/mw/select";  //TODO: make configurable
+            $url = Helper::getSOLRBaseUrl() . "/select";
 
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);
@@ -344,7 +344,7 @@ class Client
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
             $ch = curl_init();
 
-            $url = "http://localhost:8983/solr/mw/update/extract?extractOnly=true&wt=json";  //TODO: make configurable
+            $url = Helper::getSOLRBaseUrl() . "/update/extract?extractOnly=true&wt=json";
 
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);

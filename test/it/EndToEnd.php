@@ -1,7 +1,7 @@
 <?php
 namespace DIQA\FacetedSearch2;
 
-use DIQA\FacetedSearch2\SolrClient\DocumentUpdater;
+use DIQA\FacetedSearch2\SolrClient\SolrUpdateClient;
 use DIQA\FacetedSearch2\SolrClient\TestData;
 use DIQA\FacetedSearch2\SolrClient\Util;
 use Exception;
@@ -11,7 +11,7 @@ final class EndToEnd extends TestCase {
 
     protected function setUp(): void
     {
-        $documentUpdater = new DocumentUpdater();
+        $documentUpdater = new SolrUpdateClient();
         $documentUpdater->clearCore();
         $documentUpdater->updateDocument(TestData::generateData());
     }

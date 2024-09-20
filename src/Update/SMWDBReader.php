@@ -7,7 +7,7 @@ use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Document\Document;
 use DIQA\FacetedSearch2\Model\Document\PropertyValues;
 use DIQA\FacetedSearch2\Model\Request\Datatype;
-use DIQA\FacetedSearch2\SolrClient\Client;
+use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
@@ -148,7 +148,7 @@ class SMWDBReader {
             if (isset($fsgIndexImageURL) && $fsgIndexImageURL === true) {
                 $this->retrieveFileSystemPath($db, $pageNamespace, $pageDbKey, $doc);
             }
-            $client = new Client();
+            $client = new SolrRequestClient();
             $docData = $client->extractDocument( $pageTitle );
             if( array_key_exists('text', $docData) ) {
                 $text = $docData['text'] ?? '';

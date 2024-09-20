@@ -17,7 +17,7 @@ final class DocumentUpdaterTest extends TestCase {
         $pv = new PropertyValues($p, ['Michael']);
         $document->setPropertyValues([$pv]);
 
-        $updater = new DocumentUpdater();
+        $updater = new SolrUpdateClient();
         $updater->clearCore();
         $xml = $updater->updateDocument($document);
 

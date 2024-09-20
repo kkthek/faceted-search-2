@@ -52,13 +52,13 @@ require COMPOSER_INSTALL;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
-use DIQA\FacetedSearch2\SolrClient\Client;
+use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 
 $entityBody = file_get_contents('php://input');
 
 $url = $_SERVER['REQUEST_URI'];
 
-$client = new Client();
+$client = new SolrRequestClient();
 if (endsWith($url, '/FacetedSearch2/v1/proxy/documents')) {
     $query = DocumentQuery::fromJson($entityBody);
     echo json_encode($client->requestDocuments($query));

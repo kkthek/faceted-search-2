@@ -10,12 +10,12 @@ use PHPUnit\Framework\TestCase;
 
 final class SolrClientTest extends TestCase {
 
-    private Client $client;
+    private SolrRequestClient $client;
 
     protected function setUp(): void
     {
-       $this->client = new Client();
-       $documentUpdater = new DocumentUpdater();
+       $this->client = new SolrRequestClient();
+       $documentUpdater = new SolrUpdateClient();
        $documentUpdater->clearCore();
        $documentUpdater->updateDocument(TestData::generateData());
     }
