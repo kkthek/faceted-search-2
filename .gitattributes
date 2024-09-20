@@ -1,0 +1,7 @@
+vm-ubuntu export-ignore
+test export-ignore
+fs-react export-ignore
+rest.php export-ignore
+runTests.sh export-ignore
+phpunit export-ignore
+composer.lock export-ignore
