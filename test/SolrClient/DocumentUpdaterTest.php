@@ -4,7 +4,7 @@ namespace DIQA\FacetedSearch2\SolrClient;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Document\Document;
 use DIQA\FacetedSearch2\Model\Document\PropertyValues;
-use DIQA\FacetedSearch2\Model\Request\Datatype;
+use DIQA\FacetedSearch2\Model\Common\Datatype;
 use PHPUnit\Framework\TestCase;
 
 final class DocumentUpdaterTest extends TestCase {

@@ -4,10 +4,10 @@ namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\ChemExtension\Pages\ChemForm;
 use DIQA\ChemExtension\Utils\CurlUtil;
-use DIQA\FacetedSearch2\Model\Request\Datatype;
+use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
-use DIQA\FacetedSearch2\Model\Request\Order;
+use DIQA\FacetedSearch2\Model\Common\Order;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Common\Range;

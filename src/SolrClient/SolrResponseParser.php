@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\SolrClient;
 
-use DIQA\FacetedSearch2\Model\Request\Datatype;
+use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;

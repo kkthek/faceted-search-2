@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-use DIQA\FacetedSearch2\Model\Request\Datatype;
+use DIQA\FacetedSearch2\Model\Common\Datatype;
 
 class PropertyResponse
 {

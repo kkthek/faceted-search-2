@@ -1,6 +1,6 @@
 <?php
 
-namespace DIQA\FacetedSearch2\Model\Request;
+namespace DIQA\FacetedSearch2\Model\Common;
 
 class Datatype {
     public const STRING = 0;

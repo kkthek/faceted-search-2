@@ -5,7 +5,9 @@ namespace DIQA\FacetedSearch2\Model\Request;
 class BaseQuery {
 
     public string $searchText = '';
+    /* @var string[] */
     public $categoryFacets = [];
+    /* @var int[] */
     public $namespaceFacets = [];
 
     /**
