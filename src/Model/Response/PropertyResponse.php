@@ -7,6 +7,7 @@ use DIQA\FacetedSearch2\Model\Common\Datatype;
 class PropertyResponse
 {
     public string $title;
+    public string $displayTitle;
     public int $type;
     public string $url;
 
@@ -16,9 +17,10 @@ class PropertyResponse
      * @param int $type
      * @param string $url
      */
-    public function __construct(string $title, int $type, string $url)
+    public function __construct(string $title, string $displayTitle, int $type, string $url)
     {
         $this->title = $title;
+        $this->displayTitle = $displayTitle;
         $this->type = $type;
         $this->url = $url;
     }

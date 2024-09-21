@@ -20,6 +20,7 @@ use DIQA\FacetedSearch2\Model\Response\RangeValueCounts;
 use DIQA\FacetedSearch2\Model\Response\SolrStatsResponse;
 use DIQA\FacetedSearch2\Model\Response\Stats;
 use DIQA\FacetedSearch2\Model\Response\ValueCount;
+use DIQA\FacetedSearch2\Utils\WikiTools;
 
 class SolrResponseParser {
 
@@ -44,19 +45,19 @@ class SolrResponseParser {
             $properties = []; /* @var Property[] */;
             foreach ($doc as $property => $value) {
                     if (self::startsWith($property, "smwh_namespace_id")) {
-                        $namespace = new NamespaceFacetValue($value, "", "");
+                        $namespace = new NamespaceFacetValue($value, WikiTools::getNamespaceName($value));
                     } else if (self::startsWith($property, "smwh_categories")) {
                         $categoryFacets = array_map(fn($category) => new CategoryFacetValue(
                             $category,
-                            $category,
-                            ""
+                            WikiTools::getDisplayTitleForCategory($category),
+                            WikiTools::createURLForCategory($category)
                         ), $value);
 
                     } else if (self::startsWith($property, "smwh_directcategories")) {
                         $directCategoryFacets = array_map(fn($category) => new CategoryFacetValue(
                             $category,
-                            $category,
-                            ""
+                            WikiTools::getDisplayTitleForCategory($category),
+                            WikiTools::createURLForCategory($category)
                         ), $value);
 
                     } else if (self::startsWith($property, "smwh_attributes")) {
@@ -79,7 +80,7 @@ class SolrResponseParser {
                 $properties,
                 $doc->smwh_title,
                 $doc->smwh_displaytitle,
-                "",
+                WikiTools::createURLForPage($doc->smwh_title, $namespace->namespace),
                 $doc->score,
                 isset($this->body->highlighting) ? $this->body->highlighting->{$doc->id}->smwh_search_field[0] : null
             );
@@ -101,7 +102,7 @@ class SolrResponseParser {
         $smwh_namespaces = $this->body->facet_counts->facet_fields->smwh_namespace_id ?? [];
         $namespaceFacetCounts = []; /* @var NamespaceFacetCount[] */
         foreach ($smwh_namespaces as $namespace => $count) {
-            $namespaceFacetCounts[] = new NamespaceFacetCount($namespace, "", $count);
+            $namespaceFacetCounts[] = new NamespaceFacetCount($namespace, WikiTools::getNamespaceName($namespace), $count);
         }
 
         $propertyValueCount= [] /* @var PropertyValueCount[] */;
@@ -166,11 +167,12 @@ class SolrResponseParser {
     private function parsePropertyWithValues(string $property, $values): ?PropertyFacetValues {
         list($name, $type) = Helper::parseSOLRProperty($property);
         if (is_null($name)) return null;
+        $displayTitle = WikiTools::getDisplayTitleForProperty($name);
         if ($type === Datatype::WIKIPAGE) {
             return new PropertyFacetValues(
-                new PropertyResponse($name,
+                new PropertyResponse($name, $displayTitle,
                     Datatype::WIKIPAGE,
-                    ""
+                    WikiTools::createURLForProperty($name)
                 ),
                 array_map(function($e) {
                     $parts = explode("|", $e);
@@ -178,9 +180,9 @@ class SolrResponseParser {
                 }, $values));
         } else {
             return new PropertyFacetValues(
-                new PropertyResponse($name,
+                new PropertyResponse($name, $displayTitle,
                     Datatype::NUMBER,
-                    ""
+                    WikiTools::createURLForProperty($name)
                 ),
                 $values);
         }
@@ -204,10 +206,11 @@ class SolrResponseParser {
         if (is_null($name)) {
             return null;
         }
+        $displayTitle = WikiTools::getDisplayTitleForProperty($name);
         if ($type === Datatype::WIKIPAGE) {
-            return new PropertyResponse($name, Datatype::WIKIPAGE, "");
+            return new PropertyResponse($name, $displayTitle, Datatype::WIKIPAGE, WikiTools::createURLForProperty($name));
         } else {
-            return new PropertyResponse($name, $type, "");
+            return new PropertyResponse($name, $displayTitle, $type, "");
         }
 
     }
@@ -217,7 +220,8 @@ class SolrResponseParser {
         if (is_null($name)) {
             return null;
         }
-        return new PropertyResponse($name, $type, "");
+        $displayTitle = WikiTools::getDisplayTitleForProperty($name);
+        return new PropertyResponse($name, $displayTitle, $type, WikiTools::createURLForProperty($name));
     }
 
     private static function startsWith($string, $query){

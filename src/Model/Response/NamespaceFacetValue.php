@@ -5,7 +5,6 @@ class NamespaceFacetValue
 {
     public int $namespace;
     public string $displayTitle;
-    public string $url;
 
     /**
      * NamespaceFacetValue constructor.
@@ -13,11 +12,10 @@ class NamespaceFacetValue
      * @param string $displayTitle
      * @param string $url
      */
-    public function __construct(int $namespace, string $displayTitle, string $url)
+    public function __construct(int $namespace, string $displayTitle)
     {
         $this->namespace = $namespace;
         $this->displayTitle = $displayTitle;
-        $this->url = $url;
     }
 
 }
