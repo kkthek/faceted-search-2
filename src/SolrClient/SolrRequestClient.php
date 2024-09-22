@@ -41,7 +41,7 @@ class SolrRequestClient
         $queryParams['stats'] = 'true';
         $statsFields = [];
         foreach($q->statsProperties as $p) {
-            $statsFields[] = Helper::generateSOLRPropertyForSearch($p->property, $p->type);
+            $statsFields[] = Helper::generateSOLRPropertyForSearch($p->title, $p->type);
         }
         $queryParams['stats.field'] = $statsFields;
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
@@ -151,7 +151,7 @@ class SolrRequestClient
             'smwh_displaytitle'
         ];
 
-        $extraPropertiesAsStrings = array_map(fn(Property $e) => Helper::generateSOLRProperty($e->property, $e->type), $extraProperties);
+        $extraPropertiesAsStrings = array_map(fn(Property $e) => Helper::generateSOLRProperty($e->title, $e->type), $extraProperties);
 
         $params = [];
         $params['defType'] = 'edismax';
@@ -272,13 +272,14 @@ class SolrRequestClient
         $arr = array_map(function (Sort $s) {
             $order = $s->order === Order::DESC ? 'desc' : 'asc';
             if ($s->property->type === Datatype::INTERNAL) {
-                if ($s->property->property === 'score') {
+                if ($s->property->title === 'score') {
                     return "score $order";
-                } else if ($s->property->property === 'displaytitle') {
+                } else if ($s->property->title === 'displaytitle') {
                     return "smwh_displaytitle $order";
                 }
+                throw new Exception("unknown special property: {$s->property->title}");
             } else {
-                $property = Helper::generateSOLRPropertyForSearch($s->property->property, $s->property->type);
+                $property = Helper::generateSOLRPropertyForSearch($s->property->title, $s->property->type);
                 return "$property $order";
             }
         }, $sorts);

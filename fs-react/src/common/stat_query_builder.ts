@@ -10,7 +10,7 @@ class StatQueryBuilder {
             propertyFacets: [],
             categoryFacets: [],
             namespaceFacets: [],
-            statFields: [],
+            statsProperties: [],
             rangeQueries: []
         }
     }
@@ -36,7 +36,7 @@ class StatQueryBuilder {
     }
 
     withStatField(property: Property): StatQueryBuilder {
-        this.query.statFields.push(property);
+        this.query.statsProperties.push(property);
         return this;
     }
 

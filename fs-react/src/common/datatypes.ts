@@ -24,23 +24,19 @@ export interface DocumentQuery extends BaseQuery {
 }
 
 export interface StatQuery extends BaseQuery {
-    statFields: Property[]
+    statsProperties: Property[]
     rangeQueries: RangeQuery[]
 }
 
 export interface PropertyFacet {
     property: string
     type: Datatype
-    value: ValueType|void
+    value: ValueType|void,
+    mwTitle: MWTitle|void,
+    range: RangeType|void
 }
 
-export type ValueType =
-      string
-    | number
-    | boolean
-    | Date
-    | RangeType
-    | MWTitle;
+export type ValueType = string | number | boolean | Date;
 
 export enum Datatype {
     string,
@@ -102,11 +98,11 @@ export interface SolrStatsResponse {
 }
 
 export interface PropertyResponse {
-    title: string
+    title: string,
+    displayTitle: string,
     type: Datatype,
     url: string
 }
-
 
 export interface RangeValueCounts {
     property: PropertyResponse
@@ -150,7 +146,6 @@ export interface CategoryFacetValue {
 export interface NamespaceFacetValue {
     namespace: number;
     displayTitle: string
-    url: string
 }
 
 export interface PropertyValueCount {

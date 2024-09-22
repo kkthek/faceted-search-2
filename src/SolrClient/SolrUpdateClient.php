@@ -69,14 +69,14 @@ XML;
     private function createPropertyLists(Document $doc): array
     {
         $wikiPageProperties = array_filter($doc->getPropertyValues(), fn($p) => $p->getProperty()->type == Datatype::WIKIPAGE);
-        $wikiPageProperties = array_unique(array_map((fn($p) => Helper::generateSOLRProperty($p->getProperty()->property, $p->getProperty()->type)), $wikiPageProperties));
+        $wikiPageProperties = array_unique(array_map((fn($p) => Helper::generateSOLRProperty($p->getProperty()->title, $p->getProperty()->type)), $wikiPageProperties));
         $wikiPagePropertiesAsXml = array_map(function ($p) {
             return "<field name='smwh_properties'><![CDATA[{$p}]]></field>";
         }, $wikiPageProperties);
 
 
         $valueProperties = array_filter($doc->getPropertyValues(), fn($p) => $p->getProperty()->type !== Datatype::WIKIPAGE);
-        $valueProperties = array_unique(array_map((fn($p) => Helper::generateSOLRProperty($p->getProperty()->property, $p->getProperty()->type)), $valueProperties));
+        $valueProperties = array_unique(array_map((fn($p) => Helper::generateSOLRProperty($p->getProperty()->title, $p->getProperty()->type)), $valueProperties));
         $valuePropertiesAsXml = array_map(function ($p) {
             return "<field name='smwh_attributes'><![CDATA[{$p}]]></field>";
         }, $valueProperties);
@@ -92,7 +92,7 @@ XML;
     {
         $propertyValues = [];
         foreach ($doc->getPropertyValues() as $pv) {
-            $encProperty = Helper::generateSOLRProperty($pv->getProperty()->property, $pv->getProperty()->type);
+            $encProperty = Helper::generateSOLRProperty($pv->getProperty()->title, $pv->getProperty()->type);
             foreach ($pv->getValues() as $v) {
                 $propertyValues[] = "<field name='$encProperty'><![CDATA[{$v}]]></field>";
             }
@@ -102,7 +102,7 @@ XML;
         }
         $dateTimePropertyValues = array_filter($doc->getPropertyValues(), fn($p) => $p->getProperty()->type == Datatype::DATETIME);
         foreach ($dateTimePropertyValues as $pv) {
-            $encProperty = Helper::generateSOLRPropertyForSearch($pv->getProperty()->property, $pv->getProperty()->type);
+            $encProperty = Helper::generateSOLRPropertyForSearch($pv->getProperty()->title, $pv->getProperty()->type);
             foreach ($pv->getValues() as $v) {
                 $longValueDate = Helper::convertDateTimeToLong($v);
                 $propertyValues[] = "<field name='$encProperty'><![CDATA[{$longValueDate}]]></field>";

@@ -4,26 +4,26 @@ namespace DIQA\FacetedSearch2\Model\Common;
 
 class Property {
 
-    public string $property;
+    public string $title;
     public int $type;
 
     /**
      * Property constructor.
-     * @param string $property
+     * @param string $title
      * @param int $type
      */
-    public function __construct(string $property, int $type)
+    public function __construct(string $title, int $type)
     {
-        $this->property = $property;
+        $this->title = $title;
         $this->type = $type;
     }
 
     /**
      * @return string
      */
-    public function getProperty(): string
+    public function getTitle(): string
     {
-        return $this->property;
+        return $this->title;
     }
 
     /**

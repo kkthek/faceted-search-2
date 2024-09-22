@@ -12,7 +12,7 @@ final class StatsQueryDeserializerTest extends TestCase {
         $json = <<<JSON
 {
     "statsProperties": [{
-        "property": "Modification date",
+        "title": "Modification date",
         "type": 2
     }]
 }
@@ -21,7 +21,7 @@ JSON;
 
         $this->assertEquals(1, count($statsQuery->getStatsProperties()) );
         $this->assertEquals(Datatype::DATETIME, $statsQuery->getStatsProperties()[0]->getType() );
-        $this->assertEquals("Modification date", $statsQuery->getStatsProperties()[0]->getProperty() );
+        $this->assertEquals("Modification date", $statsQuery->getStatsProperties()[0]->getTitle() );
 
     }
 
