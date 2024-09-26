@@ -9,15 +9,15 @@ import {DocumentQuery, SolrDocumentsResponse, SolrStatsResponse, StatQuery} from
 
 class Client {
 
-    private readonly url: string;
+    private readonly baseUrl: string;
 
     constructor(url: string) {
-        this.url = url;
+        this.baseUrl = url;
     }
 
     async searchDocuments(query: DocumentQuery
     ): Promise<SolrDocumentsResponse> {
-        const response = await fetch(this.url, {
+        const response = await fetch(this.baseUrl + "/documents", {
             method: "POST",
             cache: "no-cache",
             credentials: "same-origin",
@@ -30,7 +30,20 @@ class Client {
 
     async searchStats(query: StatQuery
     ): Promise<SolrStatsResponse> {
-        const response = await fetch(this.url, {
+        const response = await fetch(this.baseUrl + "/stats", {
+            method: "POST",
+            cache: "no-cache",
+            credentials: "same-origin",
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify(query)
+        });
+        return await response.json();
+    }
+
+    async searchFacets(query: StatQuery
+    ): Promise<SolrStatsResponse> {
+        const response = await fetch(this.baseUrl + "/facets", {
             method: "POST",
             cache: "no-cache",
             credentials: "same-origin",

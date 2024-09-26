@@ -15,7 +15,7 @@ const util = require('util');
 
 let client;
 function initSolr() {
-    let proxyUrl = 'http://localhost:9000/documents';
+    let proxyUrl = 'http://localhost:9000';
     client = new Client(proxyUrl);
 }
 initSolr();

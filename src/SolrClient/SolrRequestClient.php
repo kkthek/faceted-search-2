@@ -14,6 +14,7 @@ use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\Sort;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
+use DIQA\FacetedSearch2\Model\Response\SolrFacetResponse;
 use DIQA\FacetedSearch2\Model\Response\SolrStatsResponse;
 use Exception;
 use MediaWiki\MediaWikiServices;
@@ -48,7 +49,7 @@ class SolrRequestClient
         return $response->parseStatsResponse();
     }
 
-    public function requestFacet(FacetQuery $q): SolrStatsResponse
+    public function requestFacet(FacetQuery $q): SolrFacetResponse
     {
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
             $q->namespaceFacets, []);
@@ -61,7 +62,7 @@ class SolrRequestClient
         }
         $queryParams['facet.query'] = $facetQueries;
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
-        return $response->parseStatsResponse();
+        return $response->parseFacetResponse();
     }
 
     /**

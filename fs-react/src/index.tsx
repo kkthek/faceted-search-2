@@ -20,7 +20,7 @@ if (browserWindow.mw) {
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
     solrProxyUrl = wgServer + wgScriptPath + "/rest.php/EnhancedRetrieval/v1/proxy";
 } else {
-    solrProxyUrl = "http://localhost:9000/proxy";
+    solrProxyUrl = "http://localhost:9000";
 }
 const client: Client = new Client(solrProxyUrl);
 const initialSearch = client.searchDocuments(new DocumentQueryBuilder().build());

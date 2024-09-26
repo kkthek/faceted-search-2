@@ -25,7 +25,10 @@ export interface DocumentQuery extends BaseQuery {
 
 export interface StatQuery extends BaseQuery {
     statsProperties: Property[]
-    rangeQueries: RangeQuery[]
+}
+
+export interface FacetsQuery extends BaseQuery {
+    facetQueries: RangeQuery[]
 }
 
 export interface PropertyFacet {
@@ -33,7 +36,7 @@ export interface PropertyFacet {
     type: Datatype
     value: ValueType|void,
     mwTitle: MWTitle|void,
-    range: RangeType|void
+    range: Range|void
 }
 
 export type ValueType = string | number | boolean | Date;
@@ -47,11 +50,9 @@ export enum Datatype {
     internal
 }
 
-export type RangeType = Range<number|Date>
-
-export interface Range<T> {
-    from: T
-    to: T
+export interface Range {
+    from: string
+    to: string
 }
 
 export interface Property {
@@ -66,7 +67,8 @@ export interface MWTitle {
 
 export interface RangeQuery {
     property: string
-    range: RangeType
+    type: Datatype
+    range: Range|void
 }
 
 export interface Sort {
@@ -106,7 +108,7 @@ export interface PropertyResponse {
 
 export interface RangeValueCounts {
     property: PropertyResponse
-    range: Range<number|Date>
+    range: Range
     count: number;
 }
 

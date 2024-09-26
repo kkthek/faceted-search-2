@@ -17,6 +17,7 @@ use DIQA\FacetedSearch2\Model\Response\PropertyFacetCount;
 use DIQA\FacetedSearch2\Model\Response\PropertyResponse;
 use DIQA\FacetedSearch2\Model\Response\PropertyValueCount;
 use DIQA\FacetedSearch2\Model\Response\RangeValueCounts;
+use DIQA\FacetedSearch2\Model\Response\SolrFacetResponse;
 use DIQA\FacetedSearch2\Model\Response\SolrStatsResponse;
 use DIQA\FacetedSearch2\Model\Response\Stats;
 use DIQA\FacetedSearch2\Model\Response\ValueCount;
@@ -145,6 +146,10 @@ class SolrResponseParser {
             }
         }
 
+        return new SolrStatsResponse($stats);
+    }
+
+    public function parseFacetResponse(): SolrFacetResponse {
         $r = null;
         $rangeValueCounts = [] /* @var RangeValueCounts[] */;
         foreach ($this->body->facet_counts->facet_queries as $key => $count) {
@@ -161,7 +166,8 @@ class SolrResponseParser {
 
             $rangeValueCounts[] = new RangeValueCounts($property, $r, $count);
         }
-        return new SolrStatsResponse($rangeValueCounts, $stats);
+        return new SolrFacetResponse($rangeValueCounts);
+
     }
 
     private function parsePropertyWithValues(string $property, $values): ?PropertyFacetValues {

@@ -13,6 +13,10 @@ use DIQA\FacetedSearch2\Update\SMWDBReader;
  *
  * @ingroup EnhancedRetrieval
  */
+if (!file_exists(__DIR__ . '/../../../maintenance/Maintenance.php')) {
+    echo "No wiki context found!\n";
+    die();
+}
 require_once __DIR__ . '/../../../maintenance/Maintenance.php';
 
 class UpdateSolr extends \Maintenance

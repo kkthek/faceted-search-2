@@ -5,20 +5,20 @@ namespace DIQA\FacetedSearch2\Model\Response;
 class Stats
 {
     public PropertyResponse $property;
-    public ?int $min;
-    public ?int $max;
-    public ?int $count;
-    public ?int $sum;
+    public ?float $min;
+    public ?float $max;
+    public ?float $count;
+    public ?float $sum;
 
     /**
      * Stats constructor.
      * @param PropertyResponse $property
-     * @param int $min
-     * @param int $max
-     * @param int $count
-     * @param int $sum
+     * @param float|null $min
+     * @param float|null $max
+     * @param float|null $count
+     * @param float|null $sum
      */
-    public function __construct(PropertyResponse $property, ?int $min, ?int $max, ?int $count, ?int $sum)
+    public function __construct(PropertyResponse $property, ?float $min, ?float $max, ?float $count, ?float $sum)
     {
         $this->property = $property;
         $this->min = $min;
@@ -38,7 +38,7 @@ class Stats
     /**
      * @return int|null
      */
-    public function getMin(): ?int
+    public function getMin(): ?float
     {
         return $this->min;
     }
@@ -46,7 +46,7 @@ class Stats
     /**
      * @return int|null
      */
-    public function getMax(): ?int
+    public function getMax(): ?float
     {
         return $this->max;
     }
@@ -54,7 +54,7 @@ class Stats
     /**
      * @return int|null
      */
-    public function getCount(): ?int
+    public function getCount(): ?float
     {
         return $this->count;
     }
@@ -62,7 +62,7 @@ class Stats
     /**
      * @return int|null
      */
-    public function getSum(): ?int
+    public function getSum(): ?float
     {
         return $this->sum;
     }

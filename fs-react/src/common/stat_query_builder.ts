@@ -11,7 +11,6 @@ class StatQueryBuilder {
             categoryFacets: [],
             namespaceFacets: [],
             statsProperties: [],
-            rangeQueries: []
         }
     }
 
@@ -37,11 +36,6 @@ class StatQueryBuilder {
 
     withStatField(property: Property): StatQueryBuilder {
         this.query.statsProperties.push(property);
-        return this;
-    }
-
-    withRangeQuery(facetQuery: RangeQuery): StatQueryBuilder {
-        this.query.rangeQueries.push(facetQuery);
         return this;
     }
 
