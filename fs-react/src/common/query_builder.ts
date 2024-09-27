@@ -1,4 +1,5 @@
 import {RangeQuery, Property, PropertyFacet, DocumentQuery, Sort, Datatype, Order} from "./datatypes";
+import Tools from "../util/tools";
 
 class DocumentQueryBuilder {
 
@@ -63,6 +64,10 @@ class DocumentQueryBuilder {
 
     build(): DocumentQuery {
         return this.query;
+    }
+
+    hasPropertyFacet(property: string) {
+        return Tools.findFirst(this.query.propertyFacets, (f) => f.property, property) !== null;
     }
 }
 

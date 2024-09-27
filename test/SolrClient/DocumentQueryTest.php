@@ -33,6 +33,18 @@ final class SolrClientTest extends TestCase {
         $this->assertEquals(1, count($response->docs));
     }
 
+    public function testStringPropertyConstraintEmpty(): void
+    {
+        $q = new DocumentQuery();
+        $p = new PropertyFacet('Has name', Datatype::STRING);
+
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
     public function testPropertyFacetNumberRange(): void
     {
         $q = new DocumentQuery();
@@ -107,6 +119,17 @@ final class SolrClientTest extends TestCase {
         $q = new DocumentQuery();
         $p = new PropertyFacet('Works at', Datatype::WIKIPAGE);
         $p->setMwTitle(new MWTitle('DIQA-GmbH', 'DIQA'));
+        $q->setSearchText('')
+            ->setPropertyFacets([$p]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
+    public function testPropertyFacetWikiPageEmpty(): void
+    {
+        $q = new DocumentQuery();
+        $p = new PropertyFacet('Works at', Datatype::WIKIPAGE);
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
         $response = $this->client->requestDocuments($q);

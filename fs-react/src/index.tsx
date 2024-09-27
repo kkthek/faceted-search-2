@@ -8,10 +8,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search_bar";
 import { useState, useEffect } from 'react';
-import {SolrDocumentsResponse} from "./common/datatypes";
+import {PropertyResponse, SolrDocumentsResponse} from "./common/datatypes";
 import ResultView from "./ui/result_view";
 import Client from "./common/client";
 import DocumentQueryBuilder from "./common/query_builder";
+import FacetView from "./ui/facet_view";
+import SelectedFacetsView from "./ui/selected_facets";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -22,20 +24,34 @@ if (browserWindow.mw) {
 } else {
     solrProxyUrl = "http://localhost:9000";
 }
+let queryBuilder = new DocumentQueryBuilder();
 const client: Client = new Client(solrProxyUrl);
-const initialSearch = client.searchDocuments(new DocumentQueryBuilder().build());
+const initialSearch = client.searchDocuments(queryBuilder.build());
 
 function App() {
 
     const [searchResult, setSearchResult] = useState((): SolrDocumentsResponse => null);
-    const queryBuilder = new DocumentQueryBuilder();
+    const [selectedFacetsResults, setSelectedFacetsResults] = useState((): SolrDocumentsResponse => null);
 
     function onSearchClick(text: string) {
-        let query = queryBuilder
-            .withSearchText(text)
-            .build();
-        client.searchDocuments(query).then(response => setSearchResult(response))
-            .catch((e) => { console.log("query failed: " + e)});
+        queryBuilder = queryBuilder
+            .withSearchText(text);
+        client.searchDocuments(queryBuilder.build()).then(response => {
+            setSearchResult(response);
+        }).catch((e) => { console.log("query failed: " + e)});
+    }
+
+    function onPropertyClick(p: PropertyResponse) {
+        queryBuilder = queryBuilder.withPropertyFacetConstraint(
+            {property: p.title, type: p.type, value: null, mwTitle:null, range: null}
+        );
+        client.searchDocuments(queryBuilder.build()).then(response => {
+            setSearchResult(response);
+        }).catch((e) => { console.log("query failed: " + e)});
+    }
+
+    function onSelectedPropertyClick(p: PropertyResponse) {
+        console.log(p);
     }
 
 
@@ -50,9 +66,16 @@ function App() {
     );
 
     return <div id={'fs-content'}>
-            <div id={'fs-header'} className={'fs-boxes'}><SearchBar onClick={onSearchClick}/></div>
-            <div id={'fs-facets'} className={'fs-boxes fs-body'}>Facets</div>
-            <div id={'fs-results'} className={'fs-boxes fs-body'}><ResultView results={searchResult ? searchResult.docs : []}/></div>
+            <div id={'fs-header'} className={'fs-boxes'}>
+                <SearchBar onClick={onSearchClick}/>
+            </div>
+            <div id={'fs-facets'} className={'fs-boxes fs-body'}>
+                <SelectedFacetsView results={searchResult} documentQueryBuilder={queryBuilder} onPropertyClick={onSelectedPropertyClick}/>
+                <FacetView results={searchResult} onPropertyClick={onPropertyClick}/>
+            </div>
+            <div id={'fs-results'} className={'fs-boxes fs-body'}>
+                <ResultView results={searchResult ? searchResult.docs : []}/>
+            </div>
         </div>;
 }
 

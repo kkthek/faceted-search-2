@@ -35,4 +35,35 @@ class TestData {
         ->setNamespace(0);
         return $document;
     }
+
+    public static function generateData2() {
+        $document = new Document('815', "Peter, Maier.", "", 0);
+        $p = new Property('Has name', Datatype::STRING);
+
+        $pvName = new PropertyValues($p, ['Peter']);
+
+        $p = new Property('Has age', Datatype::NUMBER);
+        $pvAge = new PropertyValues($p, [32]);
+
+        $p = new Property('Was born at', Datatype::DATETIME);
+        $pvWasBornAt = new PropertyValues($p, ['1993-06-10T00:00:00Z']);
+
+        $p = new Property('Is on pension', Datatype::BOOLEAN);
+        $pvIsOnPension = new PropertyValues($p, ['false']);
+
+        $p = new Property('Works at', Datatype::WIKIPAGE);
+        $pvWorksAt = new PropertyValues($p, [new MWTitle('Mercedes AG', 'Mercedes')]);
+
+        $p = new Property('Has spouse', Datatype::WIKIPAGE);
+        $pvSpouse = new PropertyValues($p, [new MWTitle('Maria, Maier', 'Maria')]);
+
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse])
+            ->setFulltext("Peter Maier arbeitet bei Mercedes.")
+            ->setCategories(["Employee"])
+            ->setDirectCategories(["Employee"])
+            ->setNamespace(0);
+        return $document;
+    }
+
+
 }

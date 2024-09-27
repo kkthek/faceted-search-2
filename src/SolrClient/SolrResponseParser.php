@@ -34,6 +34,7 @@ class SolrResponseParser {
     public function __construct($body)
     {
         $this->body = $body;
+
     }
 
     public function parse(): SolrDocumentsResponse {
@@ -62,9 +63,9 @@ class SolrResponseParser {
                         ), $value);
 
                     } else if (self::startsWith($property, "smwh_attributes")) {
-                        $properties = $properties + $this->parseProperties($value);
+                        $properties = array_merge($properties, $this->parseProperties($value));
                     } else if (self::startsWith($property, "smwh_properties")) {
-                        $properties = $properties + $this->parseProperties($value);
+                        $properties = array_merge($properties, $this->parseProperties($value));
                     } else if (self::startsWith($property, "smwh_")) {
                         $item = $this->parsePropertyWithValues($property, $value);
                         if (!is_null($item)) {
@@ -95,6 +96,13 @@ class SolrResponseParser {
         $smwh_properties = $this->body->facet_counts->facet_fields->smwh_properties ?? [];
         $propertyFacetCounts = []; /* @var PropertyFacetCount[] */
         foreach ($smwh_properties as $property => $count) {
+            $propertyFacetCount = new PropertyFacetCount($this->parseProperty($property), $count);
+            if (!is_null($propertyFacetCount)) {
+                $propertyFacetCounts[] = $propertyFacetCount;
+            }
+        }
+        $smwh_attributes = $this->body->facet_counts->facet_fields->smwh_attributes ?? [];
+        foreach ($smwh_attributes as $property => $count) {
             $propertyFacetCount = new PropertyFacetCount($this->parseProperty($property), $count);
             if (!is_null($propertyFacetCount)) {
                 $propertyFacetCounts[] = $propertyFacetCount;
@@ -216,7 +224,7 @@ class SolrResponseParser {
         if ($type === Datatype::WIKIPAGE) {
             return new PropertyResponse($name, $displayTitle, Datatype::WIKIPAGE, WikiTools::createURLForProperty($name));
         } else {
-            return new PropertyResponse($name, $displayTitle, $type, "");
+            return new PropertyResponse($name, $displayTitle, $type, WikiTools::createURLForProperty($name));
         }
 
     }

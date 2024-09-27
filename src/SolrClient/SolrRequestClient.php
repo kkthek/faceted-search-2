@@ -156,16 +156,10 @@ class SolrRequestClient
 
         $params = [];
         $params['defType'] = 'edismax';
-        //$params['boost'] = 'max(smwh_boost_dummy)';
+        $params['boost'] = 'max(smwh_boost_dummy)';
         $params['facet'] = 'true';
         $params['facet.field'] = ['smwh_categories', 'smwh_attributes', 'smwh_properties', 'smwh_namespace_id'];
 
-        $propertyFacetsConstraintsWithNullValue = array_filter($propertyFacetConstraints, fn(PropertyFacet $f) => is_null($f->value)
-            && is_null($f->range) && is_null($f->mwTitle));
-        foreach ($propertyFacetsConstraintsWithNullValue as $v) {
-            /* @var $v PropertyFacet */
-            $params['facet.field'] = Helper::generateSOLRPropertyForSearch($v->property, $v->type);
-        }
 
         $params['facet.mincount'] = '1';
         $params['json.nl'] = 'map';
@@ -180,8 +174,6 @@ class SolrRequestClient
         $params['searchText'] = $searchText === '' ? '(*)' : $searchText;
 
         $params['wt'] = 'json';
-
-
 
         $fq = self::encodePropertyFacetValues($propertyFacetConstraints);
         $fq = array_merge($fq, self::encodeCategoryFacets($categoryFacets));
@@ -212,9 +204,11 @@ class SolrRequestClient
                 if (!in_array($pAsValue, $facetValues)) {
                     $facetValues[] = $pAsValue;
                 }
-                $p = Helper::generateSOLRPropertyForSearch($f->property, Datatype::WIKIPAGE);
-                $value = Helper::quoteValue($f->mwTitle->title . '|' . $f->mwTitle->displayTitle, Datatype::WIKIPAGE);
-                $facetValues[] = $p . ':' . $value;
+                if (!is_null($f->mwTitle)) {
+                    $p = Helper::generateSOLRPropertyForSearch($f->property, Datatype::WIKIPAGE);
+                    $value = Helper::quoteValue($f->mwTitle->title . '|' . $f->mwTitle->displayTitle, Datatype::WIKIPAGE);
+                    $facetValues[] = $p . ':' . $value;
+                }
             } else {
                 $pAsValue = 'smwh_attributes:' . Helper::generateSOLRProperty($f->property, $f->type);
                 if (!in_array($pAsValue, $facetValues)) {
