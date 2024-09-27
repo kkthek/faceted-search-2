@@ -1,6 +1,7 @@
 <?php
 namespace DIQA\FacetedSearch2\Model;
 
+use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use PHPUnit\Framework\TestCase;
 
@@ -27,6 +28,26 @@ JSON;
         $this->assertEquals(1, count($statsQuery->getFacetQueries()) );
         $this->assertEquals(1, $statsQuery->getFacetQueries()[0]->getRange()->getFrom() );
         $this->assertEquals(25, $statsQuery->getFacetQueries()[0]->getRange()->getTo() );
+
+    }
+
+    public function testFacetProperty(): void
+    {
+        $json = <<<JSON
+{
+    "facetProperties": [
+        {
+          "title": "Has name",
+          "type": 0
+        }
+    ]
+}
+JSON;
+        $statsQuery = FacetQuery::fromJson($json);
+
+        $this->assertEquals(1, count($statsQuery->getFacetProperties()) );
+        $this->assertEquals("Has name", $statsQuery->getFacetProperties()[0]->getTitle() );
+        $this->assertEquals(Datatype::STRING, $statsQuery->getFacetProperties()[0]->getType() );
 
     }
 

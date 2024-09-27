@@ -2,12 +2,18 @@
 
 namespace DIQA\FacetedSearch2\Model\Request;
 
+
 class FacetQuery extends BaseQuery {
 
     /**
      * @var PropertyFacet[]
      */
     public $facetQueries = [];
+
+    /**
+     * @var \DIQA\FacetedSearch2\Model\Common\Property[]
+     */
+    public $facetProperties = [];
 
     public static function fromJson($json): FacetQuery
     {
@@ -30,6 +36,24 @@ class FacetQuery extends BaseQuery {
     public function setFacetQueries(array $facetQueries): FacetQuery
     {
         $this->facetQueries = $facetQueries;
+        return $this;
+    }
+
+    /**
+     * @return \DIQA\FacetedSearch2\Model\Common\Property[]
+     */
+    public function getFacetProperties(): array
+    {
+        return $this->facetProperties;
+    }
+
+    /**
+     * @param \DIQA\FacetedSearch2\Model\Common\Property[] $facetProperties
+     * @return FacetQuery
+     */
+    public function setFacetProperties(array $facetProperties): FacetQuery
+    {
+        $this->facetProperties = $facetProperties;
         return $this;
     }
 

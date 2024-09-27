@@ -114,24 +114,12 @@ class SolrResponseParser {
             $namespaceFacetCounts[] = new NamespaceFacetCount($namespace, WikiTools::getNamespaceName($namespace), $count);
         }
 
-        $propertyValueCount= [] /* @var PropertyValueCount[] */;
-        foreach ($this->body->facet_counts->facet_fields as $p => $values) {
-                if ($p === 'smwh_categories' || $p === 'smwh_attributes' || $p === 'smwh_properties' || $p === 'smwh_namespace_id') continue;
-                $property = $this->parseProperty($p);
-                $valueCounts = [] /* @var ValueCount[] */;
-               foreach($values as $v => $count) {
-                $valueCounts[] = new ValueCount($v, $count);
-               }
-                $propertyValueCount[] = new PropertyValueCount($property, $valueCounts);
-        }
-
         return new SolrDocumentsResponse(
             $this->body->response->numFound,
             $docs,
             $categoryFacetCounts,
             $propertyFacetCounts,
-            $namespaceFacetCounts,
-            $propertyValueCount
+            $namespaceFacetCounts
         );
 
     }
@@ -174,7 +162,18 @@ class SolrResponseParser {
 
             $rangeValueCounts[] = new RangeValueCounts($property, $r, $count);
         }
-        return new SolrFacetResponse($rangeValueCounts);
+
+        $propertyValueCount= [] /* @var PropertyValueCount[] */;
+        foreach ($this->body->facet_counts->facet_fields as $p => $values) {
+            if ($p === 'smwh_categories' || $p === 'smwh_attributes' || $p === 'smwh_properties' || $p === 'smwh_namespace_id') continue;
+            $property = $this->parseProperty($p);
+            $valueCounts = [] /* @var ValueCount[] */;
+            foreach($values as $v => $count) {
+                $valueCounts[] = new ValueCount($v, $count);
+            }
+            $propertyValueCount[] = new PropertyValueCount($property, $valueCounts);
+        }
+        return new SolrFacetResponse($rangeValueCounts, $propertyValueCount);
 
     }
 

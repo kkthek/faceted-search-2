@@ -54,6 +54,11 @@ class SolrRequestClient
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
             $q->namespaceFacets, []);
 
+        foreach ($q->getFacetProperties() as $v) {
+            /* @var $v Property */
+            $queryParams['facet.field'][] = Helper::generateSOLRPropertyForSearch($v->title, $v->type);
+        }
+
         $facetQueries = [];
         foreach($q->facetQueries as $p) {
             $property = Helper::generateSOLRPropertyForSearch($p->property, $p->type);

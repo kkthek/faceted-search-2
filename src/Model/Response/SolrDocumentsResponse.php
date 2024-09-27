@@ -25,16 +25,14 @@ class SolrDocumentsResponse
      * @param CategoryFacetCount[] $categoryFacetCounts
      * @param PropertyFacetCount[] $propertyFacetCounts
      * @param NamespaceFacetCount[] $namespaceFacetCounts
-     * @param PropertyValueCount[] $propertyValueCount
      */
-    public function __construct(int $numResults, array $docs, array $categoryFacetCounts, array $propertyFacetCounts, array $namespaceFacetCounts, array $propertyValueCount)
+    public function __construct(int $numResults, array $docs, array $categoryFacetCounts, array $propertyFacetCounts, array $namespaceFacetCounts)
     {
         $this->numResults = $numResults;
         $this->docs = $docs;
         $this->categoryFacetCounts = $categoryFacetCounts;
         $this->propertyFacetCounts = $propertyFacetCounts;
         $this->namespaceFacetCounts = $namespaceFacetCounts;
-        $this->propertyValueCount = $propertyValueCount;
     }
 
     /**
@@ -76,14 +74,5 @@ class SolrDocumentsResponse
     {
         return $this->namespaceFacetCounts;
     }
-
-    /**
-     * @return PropertyValueCount[]
-     */
-    public function getPropertyValueCount(): array
-    {
-        return $this->propertyValueCount;
-    }
-
 
 }

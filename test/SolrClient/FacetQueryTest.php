@@ -41,18 +41,19 @@ final class FacetQueryTest extends TestCase {
 
     }
 
-    public function testStatsQuery(): void
+    public function testFacetProperties(): void
     {
 
-        $q = new StatsQuery();
-        $p = new Property('Was born at', Datatype::DATETIME);
-        $q->setStatsProperties([$p]);
-        $response = $this->client->requestStats($q);
+        $q = new FacetQuery();
 
-        $this->assertEquals(1, count($response->getStats()));
-        $this->assertEquals(1, $response->getStats()[0]->getCount());
-        $this->assertEquals('19690610000000', $response->getStats()[0]->getMin());
-        $this->assertEquals('19690610000000', $response->getStats()[0]->getMax());
+        $p = new Property('Has name', Datatype::STRING);
+
+        $q->setFacetProperties([$p]);
+        $response = $this->client->requestFacet($q);
+
+        $this->assertEquals(1, count($response->getValueCounts()));
+        $this->assertEquals('Michael', $response->getValueCounts()[0]->values[0]->value);
+        $this->assertEquals(1, $response->getValueCounts()[0]->values[0]->count);
 
     }
 
