@@ -29,6 +29,7 @@ export interface StatQuery extends BaseQuery {
 
 export interface FacetsQuery extends BaseQuery {
     facetQueries: RangeQuery[]
+    facetProperties: Property[]
 }
 
 export interface PropertyFacet {
@@ -90,13 +91,16 @@ export interface SolrDocumentsResponse {
     categoryFacetCounts: CategoryFacetCount[];
     propertyFacetCounts: PropertyFacetCount[];
     namespaceFacetCounts: NamespaceFacetCount[];
-    propertyValueCount: PropertyValueCount[];
 
 }
 
 export interface SolrStatsResponse {
-    rangeValueCounts: RangeValueCounts[]
     stats: Stats[];
+}
+
+export interface SolrFacetResponse {
+    rangeValueCounts: RangeValueCounts[];
+    valueCounts: PropertyValueCount[];
 }
 
 export interface PropertyResponse {

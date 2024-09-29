@@ -8,12 +8,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search_bar";
 import { useState, useEffect } from 'react';
-import {PropertyResponse, SolrDocumentsResponse} from "./common/datatypes";
+import {PropertyResponse, SolrDocumentsResponse, SolrFacetResponse} from "./common/datatypes";
 import ResultView from "./ui/result_view";
 import Client from "./common/client";
-import DocumentQueryBuilder from "./common/query_builder";
+import DocumentQueryBuilder from "./common/document_query_builder";
 import FacetView from "./ui/facet_view";
 import SelectedFacetsView from "./ui/selected_facets";
+import FacetQueryBuilder from "./common/facet_query_builder";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -24,29 +25,35 @@ if (browserWindow.mw) {
 } else {
     solrProxyUrl = "http://localhost:9000";
 }
-let queryBuilder = new DocumentQueryBuilder();
+let currentDocumentsQueryBuilder = new DocumentQueryBuilder();
+let currentFacetsQueryBuilder = new FacetQueryBuilder();
 const client: Client = new Client(solrProxyUrl);
-const initialSearch = client.searchDocuments(queryBuilder.build());
+const initialSearch = client.searchDocuments(currentDocumentsQueryBuilder.build());
 
 function App() {
 
     const [searchResult, setSearchResult] = useState((): SolrDocumentsResponse => null);
-    const [selectedFacetsResults, setSelectedFacetsResults] = useState((): SolrDocumentsResponse => null);
+    const [selectedFacetsResults, setSelectedFacetsResults] = useState((): SolrFacetResponse => null);
 
     function onSearchClick(text: string) {
-        queryBuilder = queryBuilder
+        currentDocumentsQueryBuilder = currentDocumentsQueryBuilder
             .withSearchText(text);
-        client.searchDocuments(queryBuilder.build()).then(response => {
+        client.searchDocuments(currentDocumentsQueryBuilder.build()).then(response => {
             setSearchResult(response);
         }).catch((e) => { console.log("query failed: " + e)});
     }
 
     function onPropertyClick(p: PropertyResponse) {
-        queryBuilder = queryBuilder.withPropertyFacetConstraint(
+        currentDocumentsQueryBuilder = currentDocumentsQueryBuilder.withPropertyFacetConstraint(
             {property: p.title, type: p.type, value: null, mwTitle:null, range: null}
         );
-        client.searchDocuments(queryBuilder.build()).then(response => {
+        client.searchDocuments(currentDocumentsQueryBuilder.build()).then(response => {
             setSearchResult(response);
+        }).catch((e) => { console.log("query failed: " + e)});
+        currentFacetsQueryBuilder.update(currentDocumentsQueryBuilder.build());
+        currentFacetsQueryBuilder.withFacetProperties({title: p.title, type: p.type})
+        client.searchFacets(currentFacetsQueryBuilder.build()).then(response => {
+            setSelectedFacetsResults(response);
         }).catch((e) => { console.log("query failed: " + e)});
     }
 
@@ -70,7 +77,7 @@ function App() {
                 <SearchBar onClick={onSearchClick}/>
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
-                <SelectedFacetsView results={searchResult} documentQueryBuilder={queryBuilder} onPropertyClick={onSelectedPropertyClick}/>
+                <SelectedFacetsView results={selectedFacetsResults} onPropertyClick={onSelectedPropertyClick}/>
                 <FacetView results={searchResult} onPropertyClick={onPropertyClick}/>
             </div>
             <div id={'fs-results'} className={'fs-boxes fs-body'}>

@@ -1,4 +1,4 @@
-import DocumentQueryBuilder from "../src/common/query_builder";
+import DocumentQueryBuilder from "../src/common/document_query_builder";
 import Client from "../src/common/client";
 import {Datatype} from "../src/common/datatypes";
 

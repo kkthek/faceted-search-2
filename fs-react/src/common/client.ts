@@ -4,7 +4,14 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {DocumentQuery, SolrDocumentsResponse, SolrStatsResponse, StatQuery} from "./datatypes";
+import {
+    DocumentQuery,
+    FacetsQuery,
+    SolrDocumentsResponse,
+    SolrFacetResponse,
+    SolrStatsResponse,
+    StatQuery
+} from "./datatypes";
 
 
 class Client {
@@ -41,8 +48,8 @@ class Client {
         return await response.json();
     }
 
-    async searchFacets(query: StatQuery
-    ): Promise<SolrStatsResponse> {
+    async searchFacets(query: FacetsQuery
+    ): Promise<SolrFacetResponse> {
         const response = await fetch(this.baseUrl + "/facets", {
             method: "POST",
             cache: "no-cache",
