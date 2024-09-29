@@ -5,3 +5,4 @@ rest.php export-ignore
 runTests.sh export-ignore
 phpunit export-ignore
 composer.lock export-ignore
+*.sh		text eol=lf
