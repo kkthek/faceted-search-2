@@ -2,6 +2,10 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
+use DIQA\FacetedSearch2\Model\Common\Datatype;
+use DIQA\FacetedSearch2\Utils\DateTimeClusterer;
+use DIQA\FacetedSearch2\Utils\NumericClusterer;
+
 class Stats
 {
     public PropertyResponse $property;
@@ -9,6 +13,7 @@ class Stats
     public ?float $max;
     public ?float $count;
     public ?float $sum;
+    public array $clusters;
 
     /**
      * Stats constructor.
@@ -25,6 +30,7 @@ class Stats
         $this->max = $max;
         $this->count = $count;
         $this->sum = $sum;
+        $this->makeClusters($property, $min, $max);
     }
 
     /**
@@ -65,6 +71,22 @@ class Stats
     public function getSum(): ?float
     {
         return $this->sum;
+    }
+
+    private function makeClusters(PropertyResponse $property, ?float $min, ?float $max)
+    {
+        switch($property->getType()) {
+            case Datatype::DATETIME:
+                $clusterer = new DateTimeClusterer();
+                $this->clusters = $clusterer->makeClusters($min, $max, 10);
+                break;
+            case Datatype::NUMBER:
+                $clusterer = new NumericClusterer();
+                $this->clusters = $clusterer->makeClusters($min, $max, 10);
+                break;
+            default:
+                $this->clusters = [];
+        }
     }
 
 
