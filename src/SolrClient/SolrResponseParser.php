@@ -148,19 +148,24 @@ class SolrResponseParser {
     public function parseFacetResponse(): SolrFacetResponse {
         $r = null;
         $rangeValueCounts = [] /* @var RangeValueCounts[] */;
+        $ranges = [];
+        $properties = [];
         foreach ($this->body->facet_counts->facet_queries as $key => $count) {
             $propertyRange = explode(':', $key);
             $property = $this->parsePropertyFromStats($propertyRange[0]);
             preg_match_all("/\[(.*) TO (.*)\]/", $propertyRange[1], $range);
 
             if ($property->getType() === Datatype::DATETIME || $property->getType() === Datatype::NUMBER) {
-                $r = new Range($range[1][0], $range[2][0]);
+                $r = new ValueCount(null, null, new Range($range[1][0], $range[2][0]), $count);
 
             } else {
                 continue;
             }
-
-            $rangeValueCounts[] = new RangeValueCounts($property, $r, $count);
+            $ranges[$property->title][] = $r;
+            $properties[$property->title] = $property;
+        }
+        foreach ($properties as $key => $property) {
+            $rangeValueCounts[] = new RangeValueCounts($property, $ranges[$key]);
         }
 
         $propertyValueCount= [] /* @var PropertyValueCount[] */;
@@ -171,9 +176,9 @@ class SolrResponseParser {
             foreach($values as $v => $count) {
                 if ($property->getType() === Datatype::WIKIPAGE) {
                     list($title, $displayTitle) = explode("|", $v);
-                    $valueCounts[] = new ValueCount(null, new MWTitle($title, $displayTitle), $count);
+                    $valueCounts[] = new ValueCount(null, new MWTitle($title, $displayTitle), null, $count);
                 } else {
-                    $valueCounts[] = new ValueCount($v, null, $count);
+                    $valueCounts[] = new ValueCount($v, null, null, $count);
                 }
             }
             $propertyValueCount[] = new PropertyValueCount($property, $valueCounts);

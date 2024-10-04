@@ -1,4 +1,4 @@
-import {RangeQuery, Property, PropertyFacet, StatQuery} from "./datatypes";
+import {RangeQuery, Property, PropertyFacet, StatQuery, DocumentQuery} from "./datatypes";
 
 class StatQueryBuilder {
 
@@ -37,6 +37,13 @@ class StatQueryBuilder {
     withStatField(property: Property): StatQueryBuilder {
         this.query.statsProperties.push(property);
         return this;
+    }
+
+    update(base: DocumentQuery): void {
+        this.query.searchText = base.searchText;
+        this.query.propertyFacets = base.propertyFacets;
+        this.query.categoryFacets = base.categoryFacets;
+        this.query.namespaceFacets = base.namespaceFacets;
     }
 
     build(): StatQuery {

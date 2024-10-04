@@ -31,12 +31,16 @@ final class SolrResponseParserTest extends TestCase {
         $parser = new SolrResponseParser(json_decode($jsonResponse));
         $solrDocumentResponse = $parser->parseFacetResponse();
 
-        $this->assertEquals(2, count($solrDocumentResponse->getRangeValueCounts()));
-        $this->assertEquals(1, $solrDocumentResponse->getRangeValueCounts()[0]->getRange()->getFrom());
-        $this->assertEquals(5, $solrDocumentResponse->getRangeValueCounts()[0]->getRange()->getTo());
-        $this->assertEquals(4, $solrDocumentResponse->getRangeValueCounts()[0]->getCount());
-        $this->assertEquals(5, $solrDocumentResponse->getRangeValueCounts()[1]->getRange()->getFrom());
-        $this->assertEquals(11, $solrDocumentResponse->getRangeValueCounts()[1]->getRange()->getTo());
-        $this->assertEquals(7, $solrDocumentResponse->getRangeValueCounts()[1]->getCount());
+        $this->assertEquals(1, count($solrDocumentResponse->getRangeValueCounts()));
+        $this->assertEquals(2, count($solrDocumentResponse->getRangeValueCounts()[0]->getValues()));
+
+        $this->assertEquals(1, $solrDocumentResponse->getRangeValueCounts()[0]->getValues()[0]->range->getFrom());
+        $this->assertEquals(5, $solrDocumentResponse->getRangeValueCounts()[0]->getValues()[0]->range->getTo());
+        $this->assertEquals(4, $solrDocumentResponse->getRangeValueCounts()[0]->getValues()[0]->count);
+
+        $this->assertEquals(5, $solrDocumentResponse->getRangeValueCounts()[0]->getValues()[1]->range->getFrom());
+        $this->assertEquals(11, $solrDocumentResponse->getRangeValueCounts()[0]->getValues()[1]->range->getTo());
+        $this->assertEquals(7, $solrDocumentResponse->getRangeValueCounts()[0]->getValues()[1]->count);
+
     }
 }

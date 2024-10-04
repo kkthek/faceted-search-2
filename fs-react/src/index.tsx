@@ -4,17 +4,17 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search_bar";
-import { useState, useEffect } from 'react';
-import {PropertyResponse, SolrDocumentsResponse, SolrFacetResponse} from "./common/datatypes";
+import {Datatype, PropertyResponse, SolrDocumentsResponse, SolrFacetResponse, Stats} from "./common/datatypes";
 import ResultView from "./ui/result_view";
 import Client from "./common/client";
 import DocumentQueryBuilder from "./common/document_query_builder";
 import FacetView from "./ui/facet_view";
 import SelectedFacetsView from "./ui/selected_facets";
 import FacetQueryBuilder from "./common/facet_query_builder";
+import StatQueryBuilder from "./common/stat_query_builder";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -51,10 +51,26 @@ function App() {
             setSearchResult(response);
         }).catch((e) => { console.log("query failed: " + e)});
         currentFacetsQueryBuilder.update(currentDocumentsQueryBuilder.build());
-        currentFacetsQueryBuilder.withFacetProperties({title: p.title, type: p.type})
-        client.searchFacets(currentFacetsQueryBuilder.build()).then(response => {
-            setSelectedFacetsResults(response);
-        }).catch((e) => { console.log("query failed: " + e)});
+        if (p.type === Datatype.datetime || p.type === Datatype.number) {
+            const sqb = new StatQueryBuilder();
+            sqb.update(currentDocumentsQueryBuilder.build());
+            sqb.withStatField({title: p.title, type: p.type} );
+            client.searchStats(sqb.build()).then((r) => {
+                let stat: Stats = r.stats[0];
+                stat.clusters.forEach((r) => {
+                    currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
+                });
+                client.searchFacets(currentFacetsQueryBuilder.build()).then(response => {
+                    setSelectedFacetsResults(response);
+                }).catch((e) => { console.log("query failed: " + e)});
+            });
+        } else {
+            currentFacetsQueryBuilder.withFacetProperties({title: p.title, type: p.type})
+            client.searchFacets(currentFacetsQueryBuilder.build()).then(response => {
+                setSelectedFacetsResults(response);
+            }).catch((e) => { console.log("query failed: " + e)});
+
+        }
     }
 
     function onSelectedPropertyClick(p: PropertyResponse) {

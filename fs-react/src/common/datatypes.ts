@@ -112,8 +112,7 @@ export interface PropertyResponse {
 
 export interface RangeValueCounts {
     property: PropertyResponse
-    range: Range
-    count: number;
+    values: ValueCount[]
 }
 
 export interface Document {
@@ -164,6 +163,7 @@ export interface PropertyValueCount {
 export interface ValueCount {
     value: string|null,
     mwTitle: MWTitle|null,
+    range: Range|null,
     count: number
 }
 

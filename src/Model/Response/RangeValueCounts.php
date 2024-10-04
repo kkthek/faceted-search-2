@@ -2,25 +2,21 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-use DIQA\FacetedSearch2\Model\Common\Range;
-
 class RangeValueCounts
 {
     public PropertyResponse $property;
-    public Range $range;
-    public int $count;
+    /* @var ValueCount[] */
+    public array $values;
 
     /**
      * RangeValueCounts constructor.
      * @param PropertyResponse $property
-     * @param Range $range
-     * @param int $count
+     * @param ValueCount[] $values
      */
-    public function __construct(PropertyResponse $property, Range $range, int $count)
+    public function __construct(PropertyResponse $property, array $values)
     {
         $this->property = $property;
-        $this->range = $range;
-        $this->count = $count;
+        $this->values = $values;
     }
 
     /**
@@ -32,20 +28,11 @@ class RangeValueCounts
     }
 
     /**
-     * @return Range
+     * @return ValueCount[]
      */
-    public function getRange(): Range
+    public function getValues(): array
     {
-        return $this->range;
+        return $this->values;
     }
-
-    /**
-     * @return int
-     */
-    public function getCount(): int
-    {
-        return $this->count;
-    }
-
 
 }

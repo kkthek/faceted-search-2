@@ -1,7 +1,6 @@
 import Client from "../src/common/client";
 import {Datatype} from "../src/common/datatypes";
-import StatQueryBuilder from "../src/common/stat_query_builder";
-import FacetsQueryBuilder from "../src/common/facets_query_builder";
+import FacetsQueryBuilder from "../src/common/facet_query_builder";
 
 /**
  * Faceted search 2
@@ -35,7 +34,7 @@ describe('fecets-search', function () {
     it('request facets for datetime property', function () {
         globalResult = null;
         let query = new FacetsQueryBuilder()
-            .withRangeQuery({property: 'Was born at', type: Datatype.datetime,
+            .withFacetQuery({property: 'Was born at', type: Datatype.datetime,
                     range: {from: "1969-01-01T00:00:00Z", to: "1970-01-01T00:00:00Z"} })
             .build();
         client.searchFacets(query).then((e) => {
@@ -52,9 +51,9 @@ describe('fecets-search', function () {
 
             assert.equal(response.rangeValueCounts.length, 1);
             assert.equal(response.rangeValueCounts[0].property.title, "Was born at");
-            assert.equal(response.rangeValueCounts[0].range.from, "19690101000000");
-            assert.equal(response.rangeValueCounts[0].range.to, "19700101000000");
-            assert.equal(response.rangeValueCounts[0].count, 1);
+            assert.equal(response.rangeValueCounts[0].values[0].range.from, "19690101000000");
+            assert.equal(response.rangeValueCounts[0].values[0].range.to, "19700101000000");
+            assert.equal(response.rangeValueCounts[0].values[0].count, 1);
 
 
         });
