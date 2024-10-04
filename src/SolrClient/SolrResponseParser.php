@@ -169,7 +169,12 @@ class SolrResponseParser {
             $property = $this->parseProperty($p);
             $valueCounts = [] /* @var ValueCount[] */;
             foreach($values as $v => $count) {
-                $valueCounts[] = new ValueCount($v, $count);
+                if ($property->getType() === Datatype::WIKIPAGE) {
+                    list($title, $displayTitle) = explode("|", $v);
+                    $valueCounts[] = new ValueCount(null, new MWTitle($title, $displayTitle), $count);
+                } else {
+                    $valueCounts[] = new ValueCount($v, null, $count);
+                }
             }
             $propertyValueCount[] = new PropertyValueCount($property, $valueCounts);
         }

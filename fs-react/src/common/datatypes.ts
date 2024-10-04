@@ -136,6 +136,7 @@ export interface Stats {
     max: number;
     count: number;
     sum: number;
+    clusters: Range[]
 }
 
 export interface PropertyFacetValues {
@@ -161,7 +162,8 @@ export interface PropertyValueCount {
 }
 
 export interface ValueCount {
-    value: string,
+    value: string|null,
+    mwTitle: MWTitle|null,
     count: number
 }
 

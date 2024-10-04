@@ -4,6 +4,7 @@ namespace DIQA\FacetedSearch2\Utils;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use DIQA\FacetedSearch2\Model\Common\Range;
 
 class DateTimeClusterer implements Clusterer
 {
@@ -27,10 +28,10 @@ class DateTimeClusterer implements Clusterer
         $lowerVal = $this->next();
         while (($upperVal = $this->next()) !== null) {
             $temp = clone $upperVal;
-            $values[] = [
+            $values[] = new Range(
                 $lowerVal->format('YmdHis'),
                 $upperVal->equalTo($lowerVal) ? $upperVal->format('YmdHis') : $upperVal->subSecond()->format('YmdHis')
-            ];
+            );
             $lowerVal = $temp;
         }
         return $values;
