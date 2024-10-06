@@ -5,7 +5,7 @@ import {
     SolrFacetResponse,
 } from "../common/datatypes";
 
-function SelectedFacet(prop: { propertyValueCount: PropertyValueCount }) {
+export function SelectedFacet(prop: { propertyValueCount: PropertyValueCount }) {
     const listItems = prop.propertyValueCount.values.map((v, i) => {
         return <li>{v.value === null ? v.mwTitle.displayTitle : v.value}:{v.count}</li>
     });
@@ -17,7 +17,7 @@ function SelectedFacet(prop: { propertyValueCount: PropertyValueCount }) {
     </div>
 }
 
-function SelectedFacetRangeValue(prop: { rangeValueCount: RangeValueCounts }) {
+export function SelectedFacetRangeValue(prop: { rangeValueCount: RangeValueCounts }) {
     const listItems = prop.rangeValueCount.values.map((v, i) => {
         return <li>{v.range.from}-{v.range.to}:{v.count}</li>
     });

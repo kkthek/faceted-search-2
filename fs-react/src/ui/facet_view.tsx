@@ -5,20 +5,39 @@ import {
     PropertyFacetCount,
     PropertyResponse,
     PropertyValueCount,
-    SolrDocumentsResponse
+    SolrDocumentsResponse, SolrFacetResponse
 } from "../common/datatypes";
 import Tools from "../util/tools";
+import facet_query_builder from "../common/facet_query_builder";
+import {SelectedFacet} from "./selected_facets";
 
 export function FacetViewProperty(prop: {
     title: string,
     property: PropertyResponse,
+    facets: SolrFacetResponse,
     PropertyFacetCount: PropertyFacetCount|null,
-    onPropertyClick: (p: PropertyResponse)=>void
+    onPropertyClick: (p: PropertyResponse)=>void,
+    onExpandClick: (p: PropertyResponse)=>void
 }) {
-    return <li className={'fs-facets'} onClick={() => prop.onPropertyClick(prop.property)}><span>({prop.PropertyFacetCount?.count})</span>{prop.title}</li>
+    let pvc;
+    if (prop.facets !== null && prop.facets.valueCounts !== null) {
+        pvc = Tools.findFirst(prop.facets.valueCounts, (e) => e.property.title, prop.property.title)
+    }
+
+    return <li className={'fs-facets'}>
+        <span onClick={() => prop.onExpandClick(prop.property)}>[e]</span>
+        <span>({prop.PropertyFacetCount?.count})</span>
+        <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
+        {pvc ? <SelectedFacet propertyValueCount={pvc}/> : ''}
+    </li>
 }
 
-function FacetView(prop: {results: SolrDocumentsResponse, onPropertyClick: (p: PropertyResponse)=>void}) {
+function FacetView(prop: {
+    results: SolrDocumentsResponse,
+    facets: SolrFacetResponse,
+    onPropertyClick: (p: PropertyResponse)=>void,
+    onExpandClick: (p: PropertyResponse)=>void
+}) {
     if (!prop.results) return;
     let properties = prop.results.docs.flatMap((doc, i) => {
         return doc.properties;
@@ -34,6 +53,8 @@ function FacetView(prop: {results: SolrDocumentsResponse, onPropertyClick: (p: P
                            title={property.title}
                            property={property}
                            onPropertyClick={prop.onPropertyClick}
+                           onExpandClick={prop.onExpandClick}
+                           facets={prop.facets}
                            PropertyFacetCount={facetCount}
         />
     }

@@ -50,6 +50,10 @@ function App() {
         client.searchDocuments(currentDocumentsQueryBuilder.build()).then(response => {
             setSearchResult(response);
         }).catch((e) => { console.log("query failed: " + e)});
+        updateFacets(p);
+    }
+
+    function updateFacets(p: PropertyResponse) {
         currentFacetsQueryBuilder.update(currentDocumentsQueryBuilder.build());
         if (p.type === Datatype.datetime || p.type === Datatype.number) {
             const sqb = new StatQueryBuilder();
@@ -73,6 +77,11 @@ function App() {
         }
     }
 
+    function onExpandClick(p: PropertyResponse) {
+        updateFacets(p);
+
+    }
+
     function onSelectedPropertyClick(p: PropertyResponse) {
         console.log(p);
     }
@@ -94,7 +103,7 @@ function App() {
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <SelectedFacetsView results={selectedFacetsResults} onPropertyClick={onSelectedPropertyClick}/>
-                <FacetView results={searchResult} onPropertyClick={onPropertyClick}/>
+                <FacetView facets={selectedFacetsResults} results={searchResult} onPropertyClick={onPropertyClick} onExpandClick={onExpandClick}/>
             </div>
             <div id={'fs-results'} className={'fs-boxes fs-body'}>
                 <ResultView results={searchResult ? searchResult.docs : []}/>

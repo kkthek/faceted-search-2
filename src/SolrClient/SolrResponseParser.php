@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\SolrClient;
 
+use Carbon\Carbon;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Property;
@@ -155,7 +156,11 @@ class SolrResponseParser {
             $property = $this->parsePropertyFromStats($propertyRange[0]);
             preg_match_all("/\[(.*) TO (.*)\]/", $propertyRange[1], $range);
 
-            if ($property->getType() === Datatype::DATETIME || $property->getType() === Datatype::NUMBER) {
+            if ($property->getType() === Datatype::DATETIME) {
+                $from = Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $range[1][0]);
+                $to = Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $range[2][0]);
+                $r = new ValueCount(null, null, new Range($from, $to), $count);
+            } else if ($property->getType() === Datatype::NUMBER) {
                 $r = new ValueCount(null, null, new Range($range[1][0], $range[2][0]), $count);
 
             } else {
