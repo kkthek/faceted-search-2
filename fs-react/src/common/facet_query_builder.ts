@@ -33,6 +33,10 @@ class FacetQueryBuilder {
         this.query.namespaceFacets = base.namespaceFacets;
     }
 
+    hasPropertyFacet(property: string) {
+        return Tools.findFirst(this.query.propertyFacets, (f) => f.property, property) !== null;
+    }
+
     build(): FacetsQuery {
         return this.query;
     }

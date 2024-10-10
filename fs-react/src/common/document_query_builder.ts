@@ -66,9 +66,7 @@ class DocumentQueryBuilder {
         return this.query;
     }
 
-    hasPropertyFacet(property: string) {
-        return Tools.findFirst(this.query.propertyFacets, (f) => f.property, property) !== null;
-    }
+
 }
 
 export default DocumentQueryBuilder;

@@ -10,17 +10,19 @@ import {
 import Tools from "../util/tools";
 import facet_query_builder from "../common/facet_query_builder";
 import {SelectedFacet} from "./selected_facets";
+import FacetQueryBuilder from "../common/facet_query_builder";
 
 export function FacetViewProperty(prop: {
     title: string,
     property: PropertyResponse,
     facets: SolrFacetResponse,
+    facetsQueryBuilder: FacetQueryBuilder,
     PropertyFacetCount: PropertyFacetCount|null,
     onPropertyClick: (p: PropertyResponse)=>void,
     onExpandClick: (p: PropertyResponse)=>void
 }) {
     let pvc;
-    if (prop.facets !== null && prop.facets.valueCounts !== null) {
+    if (prop.facets !== null && prop.facets.valueCounts !== null && !prop.facetsQueryBuilder.hasPropertyFacet(prop.property.title)) {
         pvc = Tools.findFirst(prop.facets.valueCounts, (e) => e.property.title, prop.property.title)
     }
 
@@ -35,6 +37,7 @@ export function FacetViewProperty(prop: {
 function FacetView(prop: {
     results: SolrDocumentsResponse,
     facets: SolrFacetResponse,
+    facetsQueryBuilder: FacetQueryBuilder,
     onPropertyClick: (p: PropertyResponse)=>void,
     onExpandClick: (p: PropertyResponse)=>void
 }) {
@@ -55,6 +58,7 @@ function FacetView(prop: {
                            onPropertyClick={prop.onPropertyClick}
                            onExpandClick={prop.onExpandClick}
                            facets={prop.facets}
+                           facetsQueryBuilder={prop.facetsQueryBuilder}
                            PropertyFacetCount={facetCount}
         />
     }

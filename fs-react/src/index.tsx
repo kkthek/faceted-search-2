@@ -102,8 +102,8 @@ function App() {
                 <SearchBar onClick={onSearchClick}/>
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
-                <SelectedFacetsView results={selectedFacetsResults} onPropertyClick={onSelectedPropertyClick}/>
-                <FacetView facets={selectedFacetsResults} results={searchResult} onPropertyClick={onPropertyClick} onExpandClick={onExpandClick}/>
+                <SelectedFacetsView facetsQueryBuilder={currentFacetsQueryBuilder} results={selectedFacetsResults} onPropertyClick={onSelectedPropertyClick}/>
+                <FacetView facetsQueryBuilder={currentFacetsQueryBuilder} facets={selectedFacetsResults} results={searchResult} onPropertyClick={onPropertyClick} onExpandClick={onExpandClick}/>
             </div>
             <div id={'fs-results'} className={'fs-boxes fs-body'}>
                 <ResultView results={searchResult ? searchResult.docs : []}/>
