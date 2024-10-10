@@ -7,7 +7,14 @@
 import React, {useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search_bar";
-import {Datatype, PropertyResponse, SolrDocumentsResponse, SolrFacetResponse, Stats} from "./common/datatypes";
+import {
+    Datatype,
+    PropertyResponse,
+    SolrDocumentsResponse,
+    SolrFacetResponse,
+    Stats,
+    ValueCount
+} from "./common/datatypes";
 import ResultView from "./ui/result_view";
 import Client from "./common/client";
 import DocumentQueryBuilder from "./common/document_query_builder";
@@ -86,6 +93,17 @@ function App() {
 
     }
 
+    function onValueClick(p: PropertyResponse, v: ValueCount) {
+        currentDocumentsQueryBuilder = currentDocumentsQueryBuilder.withPropertyFacetConstraint(
+            {property: p.title, type: p.type, value: v.value, mwTitle:v.mwTitle, range: v.range}
+        );
+        client.searchDocuments(currentDocumentsQueryBuilder.build()).then(response => {
+            setSearchResult(response);
+        }).catch((e) => { console.log("query failed: " + e)});
+        updateFacets(p);
+
+    }
+
     function onSelectedPropertyClick(p: PropertyResponse) {
         console.log(p);
     }
@@ -106,8 +124,22 @@ function App() {
                 <SearchBar onClick={onSearchClick}/>
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
-                <SelectedFacetsView facetsQueryBuilder={currentFacetsQueryBuilder} results={selectedFacetsResults} onPropertyClick={onSelectedPropertyClick}/>
-                <FacetView facetsQueryBuilder={currentFacetsQueryBuilder} facets={selectedFacetsResults} results={searchResult} onPropertyClick={onPropertyClick} onExpandClick={onExpandClick}/>
+                <div id={'fs-selected-facets'}>
+                    <SelectedFacetsView facetsQueryBuilder={currentFacetsQueryBuilder}
+                                        results={selectedFacetsResults}
+                                        onPropertyClick={onSelectedPropertyClick}
+                                        onValueClick={onValueClick}
+                    />
+                </div>
+                <div>
+                    <FacetView facetsQueryBuilder={currentFacetsQueryBuilder}
+                               facets={selectedFacetsResults}
+                               results={searchResult}
+                               onPropertyClick={onPropertyClick}
+                               onExpandClick={onExpandClick}
+                               onValueClick={onValueClick}
+                    />
+                </div>
             </div>
             <div id={'fs-results'} className={'fs-boxes fs-body'}>
                 <ResultView results={searchResult ? searchResult.docs : []}/>

@@ -1,15 +1,12 @@
 import React from "react";
 import {
-    Document,
-    Property,
     PropertyFacetCount,
     PropertyResponse,
-    PropertyValueCount,
-    SolrDocumentsResponse, SolrFacetResponse
+    SolrDocumentsResponse,
+    SolrFacetResponse,
+    ValueCount
 } from "../common/datatypes";
 import Tools from "../util/tools";
-import facet_query_builder from "../common/facet_query_builder";
-
 import FacetQueryBuilder from "../common/facet_query_builder";
 import {FacetValues} from "./facet_values";
 
@@ -20,7 +17,8 @@ export function FacetViewProperty(prop: {
     facetsQueryBuilder: FacetQueryBuilder,
     PropertyFacetCount: PropertyFacetCount|null,
     onPropertyClick: (p: PropertyResponse)=>void,
-    onExpandClick: (p: PropertyResponse)=>void
+    onExpandClick: (p: PropertyResponse)=>void,
+    onValueClick: (p: PropertyResponse, v: ValueCount)=>void
 }) {
     let pvc;
     if (!prop.facetsQueryBuilder.hasPropertyFacet(prop.property.title)) {
@@ -31,7 +29,7 @@ export function FacetViewProperty(prop: {
         <span onClick={() => prop.onExpandClick(prop.property)}>[e]</span>
         <span>({prop.PropertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
-        {pvc ? <FacetValues propertyValueCount={pvc}/> : ''}
+        {pvc ? <FacetValues propertyValueCount={pvc} onValueClick={prop.onValueClick}/> : ''}
     </li>
 }
 
@@ -40,7 +38,8 @@ function FacetView(prop: {
     facets: SolrFacetResponse,
     facetsQueryBuilder: FacetQueryBuilder,
     onPropertyClick: (p: PropertyResponse)=>void,
-    onExpandClick: (p: PropertyResponse)=>void
+    onExpandClick: (p: PropertyResponse)=>void,
+    onValueClick: (p: PropertyResponse, v: ValueCount)=>void
 }) {
     if (!prop.results) return;
     let properties = prop.results.docs.flatMap((doc, i) => {
@@ -61,6 +60,7 @@ function FacetView(prop: {
                            facets={prop.facets}
                            facetsQueryBuilder={prop.facetsQueryBuilder}
                            PropertyFacetCount={facetCount}
+                           onValueClick={prop.onValueClick}
         />
     }
     );

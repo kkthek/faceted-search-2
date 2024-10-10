@@ -5,6 +5,8 @@
 #fs-header {
     height: 80px;
     background: lightpink;
+    align-items: center;
+    justify-content: center;
 }
 
 #fs-facets {
@@ -23,8 +25,7 @@ div.fs-boxes {
     margin-top: 3px;
 
     display: flex;
-    align-items: center;
-    justify-content: center;
+
 }
 
 @media (min-width: 1000px) {
@@ -66,3 +67,11 @@ div.fs-boxes {
 
 }
 
+#fs-facets {
+    display: flex;
+    flex-direction: column;
+}
+
+#fs-selected-facets {
+    height: 200px;
+}

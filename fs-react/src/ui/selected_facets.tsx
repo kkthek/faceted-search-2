@@ -1,7 +1,7 @@
 import React from "react";
 import {
     PropertyResponse,
-    SolrFacetResponse,
+    SolrFacetResponse, ValueCount,
 } from "../common/datatypes";
 import FacetQueryBuilder from "../common/facet_query_builder";
 import {FacetValues} from "./facet_values";
@@ -11,6 +11,7 @@ function SelectedFacetsView(prop: {
     results: SolrFacetResponse,
     facetsQueryBuilder: FacetQueryBuilder,
     onPropertyClick: (p: PropertyResponse) => void
+    onValueClick: (p: PropertyResponse, v: ValueCount)=>void
 }) {
     if (!prop.results) return;
 
@@ -18,6 +19,7 @@ function SelectedFacetsView(prop: {
 
             return (prop.facetsQueryBuilder.hasPropertyFacet(v.property.title) ? <FacetValues key={v.property.title}
                                                                                               propertyValueCount={v}
+                                                                                              onValueClick={prop.onValueClick}
             /> : '');
         }
     );

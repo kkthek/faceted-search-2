@@ -1,8 +1,9 @@
-import {PropertyValueCount} from "../common/datatypes";
+import {PropertyResponse, PropertyValueCount, ValueCount} from "../common/datatypes";
 import React from "react";
 
 export function FacetValues(prop: {
-    propertyValueCount: PropertyValueCount
+    propertyValueCount: PropertyValueCount,
+    onValueClick: (p: PropertyResponse, v: ValueCount)=>void
 }) {
 
     const listItems = prop.propertyValueCount.values.map((v, i) => {
@@ -15,7 +16,7 @@ export function FacetValues(prop: {
             // range
             value = v.range.from + "-" + v.range.to;
         }
-        return <li>{value}:{v.count}</li>
+        return <li key={value+v.count} onClick={() => prop.onValueClick(prop.propertyValueCount.property, v)}>{value}:{v.count}</li>
     });
     return <div>
         <span>({prop.propertyValueCount.property.title})</span>
