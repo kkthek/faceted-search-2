@@ -25,10 +25,6 @@ export function FacetViewProperty(prop: {
     let pvc;
     if (!prop.facetsQueryBuilder.hasPropertyFacet(prop.property.title)) {
         pvc = Tools.findFirst(prop.facets?.valueCounts || [], (e) => e.property.title, prop.property.title);
-        if (pvc === null) {
-            pvc = Tools.findFirst(prop.facets?.rangeValueCounts || [], (e) => e.property.title, prop.property.title);
-        }
-
     }
 
     return <li className={'fs-facets'}>

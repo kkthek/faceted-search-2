@@ -41,6 +41,10 @@ function App() {
         client.searchDocuments(currentDocumentsQueryBuilder.build()).then(response => {
             setSearchResult(response);
         }).catch((e) => { console.log("query failed: " + e)});
+        currentFacetsQueryBuilder.update(currentDocumentsQueryBuilder.build());
+        client.searchFacets(currentFacetsQueryBuilder.build()).then(response => {
+            setSelectedFacetsResults(response);
+        }).catch((e) => { console.log("query failed: " + e)});
     }
 
     function onPropertyClick(p: PropertyResponse) {
