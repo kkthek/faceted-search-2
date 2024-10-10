@@ -18,4 +18,12 @@ class PropertyValueCount
         $this->values = $values;
     }
 
+    /**
+     * @return ValueCount[]
+     */
+    public function getValues(): array
+    {
+        return $this->values;
+    }
+
 }

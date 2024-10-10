@@ -37,7 +37,7 @@ class TestData {
     }
 
     public static function generateData2() {
-        $document = new Document('815', "Peter, Maier.", "", 0);
+        $document = new Document('815', "Maier, Peter.", "", 0);
         $p = new Property('Has name', Datatype::STRING);
 
         $pvName = new PropertyValues($p, ['Peter']);
@@ -55,12 +55,36 @@ class TestData {
         $pvWorksAt = new PropertyValues($p, [new MWTitle('Mercedes AG', 'Mercedes')]);
 
         $p = new Property('Has spouse', Datatype::WIKIPAGE);
-        $pvSpouse = new PropertyValues($p, [new MWTitle('Maria, Maier', 'Maria')]);
+        $pvSpouse = new PropertyValues($p, [new MWTitle('Maier, Maria', 'Maria')]);
 
         $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse])
             ->setFulltext("Peter Maier arbeitet bei Mercedes.")
             ->setCategories(["Employee"])
             ->setDirectCategories(["Employee"])
+            ->setNamespace(0);
+        return $document;
+    }
+
+    public static function generateData3() {
+        $document = new Document('123', "Günther, Horst", "", 0);
+        $p = new Property('Has name', Datatype::STRING);
+
+        $pvName = new PropertyValues($p, ['Horst']);
+
+        $p = new Property('Has age', Datatype::NUMBER);
+        $pvAge = new PropertyValues($p, [66]);
+
+        $p = new Property('Was born at', Datatype::DATETIME);
+        $pvWasBornAt = new PropertyValues($p, ['1973-02-11T00:00:00Z']);
+
+        $p = new Property('Is on pension', Datatype::BOOLEAN);
+        $pvIsOnPension = new PropertyValues($p, ['true']);
+
+        $p = new Property('Has spouse', Datatype::WIKIPAGE);
+        $pvSpouse = new PropertyValues($p, [new MWTitle('Günther, Brigitte', 'Brigitte')]);
+
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvSpouse])
+            ->setFulltext("Horst Günther ist im Ruhestand.")
             ->setNamespace(0);
         return $document;
     }

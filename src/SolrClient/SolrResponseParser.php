@@ -7,17 +7,16 @@ use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;
-use DIQA\FacetedSearch2\Model\Response\PropertyFacetValues;
-use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetValue;
 use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\NamespaceFacetCount;
 use DIQA\FacetedSearch2\Model\Response\NamespaceFacetValue;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetCount;
+use DIQA\FacetedSearch2\Model\Response\PropertyFacetValues;
 use DIQA\FacetedSearch2\Model\Response\PropertyResponse;
 use DIQA\FacetedSearch2\Model\Response\PropertyValueCount;
-use DIQA\FacetedSearch2\Model\Response\RangeValueCounts;
+use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\SolrFacetResponse;
 use DIQA\FacetedSearch2\Model\Response\SolrStatsResponse;
 use DIQA\FacetedSearch2\Model\Response\Stats;
@@ -148,7 +147,7 @@ class SolrResponseParser {
 
     public function parseFacetResponse(): SolrFacetResponse {
         $r = null;
-        $rangeValueCounts = [] /* @var RangeValueCounts[] */;
+        $propertyValueCount = [] /* @var PropertyValueCount[] */;
         $ranges = [];
         $properties = [];
         foreach ($this->body->facet_counts->facet_queries as $key => $count) {
@@ -170,10 +169,9 @@ class SolrResponseParser {
             $properties[$property->title] = $property;
         }
         foreach ($properties as $key => $property) {
-            $rangeValueCounts[] = new RangeValueCounts($property, $ranges[$key]);
+            $propertyValueCount[] = new PropertyValueCount($property, $ranges[$key]);
         }
 
-        $propertyValueCount= [] /* @var PropertyValueCount[] */;
         foreach ($this->body->facet_counts->facet_fields as $p => $values) {
             if ($p === 'smwh_categories' || $p === 'smwh_attributes' || $p === 'smwh_properties' || $p === 'smwh_namespace_id') continue;
             $property = $this->parseProperty($p);
@@ -188,7 +186,7 @@ class SolrResponseParser {
             }
             $propertyValueCount[] = new PropertyValueCount($property, $valueCounts);
         }
-        return new SolrFacetResponse($rangeValueCounts, $propertyValueCount);
+        return new SolrFacetResponse($propertyValueCount);
 
     }
 

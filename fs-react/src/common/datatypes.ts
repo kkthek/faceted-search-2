@@ -99,7 +99,6 @@ export interface SolrStatsResponse {
 }
 
 export interface SolrFacetResponse {
-    rangeValueCounts: RangeValueCounts[];
     valueCounts: PropertyValueCount[];
 }
 
@@ -108,11 +107,6 @@ export interface PropertyResponse {
     displayTitle: string,
     type: Datatype,
     url: string
-}
-
-export interface RangeValueCounts {
-    property: PropertyResponse
-    values: ValueCount[]
 }
 
 export interface Document {

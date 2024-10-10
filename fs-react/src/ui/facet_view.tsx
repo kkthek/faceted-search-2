@@ -9,8 +9,9 @@ import {
 } from "../common/datatypes";
 import Tools from "../util/tools";
 import facet_query_builder from "../common/facet_query_builder";
-import {SelectedFacet} from "./selected_facets";
+
 import FacetQueryBuilder from "../common/facet_query_builder";
+import {FacetValues} from "./facet_values";
 
 export function FacetViewProperty(prop: {
     title: string,
@@ -22,15 +23,19 @@ export function FacetViewProperty(prop: {
     onExpandClick: (p: PropertyResponse)=>void
 }) {
     let pvc;
-    if (prop.facets !== null && prop.facets.valueCounts !== null && !prop.facetsQueryBuilder.hasPropertyFacet(prop.property.title)) {
-        pvc = Tools.findFirst(prop.facets.valueCounts, (e) => e.property.title, prop.property.title)
+    if (!prop.facetsQueryBuilder.hasPropertyFacet(prop.property.title)) {
+        pvc = Tools.findFirst(prop.facets?.valueCounts || [], (e) => e.property.title, prop.property.title);
+        if (pvc === null) {
+            pvc = Tools.findFirst(prop.facets?.rangeValueCounts || [], (e) => e.property.title, prop.property.title);
+        }
+
     }
 
     return <li className={'fs-facets'}>
         <span onClick={() => prop.onExpandClick(prop.property)}>[e]</span>
         <span>({prop.PropertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
-        {pvc ? <SelectedFacet propertyValueCount={pvc}/> : ''}
+        {pvc ? <FacetValues propertyValueCount={pvc}/> : ''}
     </li>
 }
 

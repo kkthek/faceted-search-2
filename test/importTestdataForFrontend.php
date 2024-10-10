@@ -52,11 +52,9 @@ require COMPOSER_INSTALL;
 use DIQA\FacetedSearch2\SolrClient\SolrUpdateClient;
 use DIQA\FacetedSearch2\SolrClient\TestData;
 
-$data1 = TestData::generateData();
-$data2 = TestData::generateData2();
-
 $documentUpdater = new SolrUpdateClient();
 $documentUpdater->clearCore();
-$documentUpdater->updateDocument($data1);
-$documentUpdater->updateDocument($data2);
+$documentUpdater->updateDocument(TestData::generateData());
+$documentUpdater->updateDocument(TestData::generateData2());
+$documentUpdater->updateDocument(TestData::generateData3());
 
