@@ -20,11 +20,13 @@ class EventHandler {
     private readonly setSearchResult: React.Dispatch<React.SetStateAction<SolrDocumentsResponse>>;
     private readonly setSelectedFacetsResults: React.Dispatch<React.SetStateAction<SolrFacetResponse>>;
     private readonly setSelectedFacets: React.Dispatch<React.SetStateAction<PropertyFacet[]>>;
+    private readonly setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
 
 
     constructor(  setSearchResult: React.Dispatch<React.SetStateAction<SolrDocumentsResponse>>,
                   setSelectedFacetsResults: React.Dispatch<React.SetStateAction<SolrFacetResponse>>,
                   setSelectedFacets: React.Dispatch<React.SetStateAction<PropertyFacet[]>>,
+                  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>,
                   client: Client) {
         this.currentDocumentsQueryBuilder = new DocumentQueryBuilder();
         this.currentFacetsQueryBuilder = new FacetQueryBuilder();
@@ -32,6 +34,7 @@ class EventHandler {
         this.setSearchResult = setSearchResult;
         this.setSelectedFacetsResults = setSelectedFacetsResults;
         this.setSelectedFacets = setSelectedFacets;
+        this.setSelectedCategories = setSelectedCategories;
 
     }
 
@@ -75,6 +78,14 @@ class EventHandler {
 
     onSelectedPropertyClick(p: PropertyResponse) {
         console.log(p);
+    }
+
+    onCategoryClick(c: string) {
+        this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder.withCategoryFacet(c);
+        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
+            this.setSelectedCategories(this.currentDocumentsQueryBuilder.build().categoryFacets);
+            this.setSearchResult(response);
+        }).catch((e) => { console.log("query failed: " + e)});
     }
 
     private updateFacetValues(p: PropertyResponse) {

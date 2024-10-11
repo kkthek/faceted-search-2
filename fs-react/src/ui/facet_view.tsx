@@ -11,7 +11,7 @@ import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
 
 
-export function FacetViewProperty(prop: {
+function FacetViewProperty(prop: {
     title: string,
     property: PropertyResponse,
     facets: SolrFacetResponse,

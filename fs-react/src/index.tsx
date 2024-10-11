@@ -14,6 +14,8 @@ import DocumentQueryBuilder from "./common/document_query_builder";
 import FacetView from "./ui/facet_view";
 import SelectedFacetsView from "./ui/selected_facets_view";
 import EventHandler from "./ui/event_handler";
+import CategoryView from "./ui/category_view";
+import SelectedCategoriesView from "./ui/selected_categories_view";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -33,8 +35,15 @@ function App() {
     const [searchDocumentResult, setSearchDocumentResult] = useState((): SolrDocumentsResponse => null);
     const [searchFacetResults, setSearchFacetResults] = useState((): SolrFacetResponse => null);
     const [selectedFacets, setSelectedFacets] = useState((): PropertyFacet[] => []);
+    const [selectedCategories, setSelectedCategories] = useState((): string[] => []);
 
-    const eventHandler = new EventHandler(setSearchDocumentResult, setSearchFacetResults, setSelectedFacets, client);
+    const eventHandler = new EventHandler(
+        setSearchDocumentResult,
+        setSearchFacetResults,
+        setSelectedFacets,
+        setSelectedCategories,
+        client
+    );
 
     const [initialSearchState, setInitialSearch] = useState(initialSearch);
     useEffect(
@@ -57,6 +66,9 @@ function App() {
                                         onPropertyClick={eventHandler.onSelectedPropertyClick.bind(eventHandler)}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                     />
+                    <SelectedCategoriesView results={searchDocumentResult}
+                                            selectedCategories={selectedCategories}
+                    />
                 </div>
                 <div>
                     <FacetView selectedFacets={selectedFacets}
@@ -65,6 +77,10 @@ function App() {
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
                                onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
                                onValueClick={eventHandler.onValueClick.bind(eventHandler)}
+                    />
+                    <CategoryView results={searchDocumentResult}
+                                  selectedCategories={selectedCategories}
+                                  onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                     />
                 </div>
             </div>
