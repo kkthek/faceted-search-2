@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React, {useEffect, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search_bar_view";
 import {PropertyFacet, SolrDocumentsResponse, SolrFacetResponse} from "./common/datatypes";
@@ -16,19 +16,24 @@ import SelectedFacetsView from "./ui/selected_facets_view";
 import EventHandler from "./ui/event_handler";
 import CategoryView from "./ui/category_view";
 import SelectedCategoriesView from "./ui/selected_categories_view";
+import NamespaceView from "./ui/namespace_view";
 
 const browserWindow = window as any;
 let solrProxyUrl;
+let wikiContext = {};
 if (browserWindow.mw) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
     solrProxyUrl = wgServer + wgScriptPath + "/rest.php/EnhancedRetrieval/v1/proxy";
+    wikiContext = browserWindow.mw.config.values;
 } else {
+    wikiContext = {'wgFormattedNamespaces': {0: 'Main', 14: 'Category', 10: 'Template'}};
     solrProxyUrl = "http://localhost:9000";
 }
 
 const client: Client = new Client(solrProxyUrl);
 const initialSearch = client.searchDocuments(new DocumentQueryBuilder().build());
+export let WikiContext = createContext(null);
 
 function App() {
 
@@ -36,12 +41,15 @@ function App() {
     const [searchFacetResults, setSearchFacetResults] = useState((): SolrFacetResponse => null);
     const [selectedFacets, setSelectedFacets] = useState((): PropertyFacet[] => []);
     const [selectedCategories, setSelectedCategories] = useState((): string[] => []);
+    const [selectedNamespace, setSelectedNamespace] = useState((): number => 0);
+
 
     const eventHandler = new EventHandler(
         setSearchDocumentResult,
         setSearchFacetResults,
         setSelectedFacets,
         setSelectedCategories,
+        setSelectedNamespace,
         client
     );
 
@@ -55,9 +63,14 @@ function App() {
         [initialSearch]
     );
 
-    return <div id={'fs-content'}>
+    return <WikiContext.Provider value={wikiContext}>
+            <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
                 <SearchBar onClick={eventHandler.onSearchClick.bind(eventHandler)}/>
+                <NamespaceView results={searchDocumentResult}
+                               selectedNamespace={selectedNamespace}
+                               onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
+                />
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
@@ -87,7 +100,8 @@ function App() {
             <div id={'fs-results'} className={'fs-boxes fs-body'}>
                 <ResultView results={searchDocumentResult ? searchDocumentResult.docs : []}/>
             </div>
-        </div>;
+            </div>
+        </WikiContext.Provider>;
 }
 
 const container = document.getElementById('root');

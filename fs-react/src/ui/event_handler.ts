@@ -21,12 +21,14 @@ class EventHandler {
     private readonly setSelectedFacetsResults: React.Dispatch<React.SetStateAction<SolrFacetResponse>>;
     private readonly setSelectedFacets: React.Dispatch<React.SetStateAction<PropertyFacet[]>>;
     private readonly setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
+    private readonly setSelectedNamespace: React.Dispatch<React.SetStateAction<number>>;
 
 
     constructor(  setSearchResult: React.Dispatch<React.SetStateAction<SolrDocumentsResponse>>,
                   setSelectedFacetsResults: React.Dispatch<React.SetStateAction<SolrFacetResponse>>,
                   setSelectedFacets: React.Dispatch<React.SetStateAction<PropertyFacet[]>>,
                   setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>,
+                  setSelectedNamespace: React.Dispatch<React.SetStateAction<number>>,
                   client: Client) {
         this.currentDocumentsQueryBuilder = new DocumentQueryBuilder();
         this.currentFacetsQueryBuilder = new FacetQueryBuilder();
@@ -35,6 +37,7 @@ class EventHandler {
         this.setSelectedFacetsResults = setSelectedFacetsResults;
         this.setSelectedFacets = setSelectedFacets;
         this.setSelectedCategories = setSelectedCategories;
+        this.setSelectedNamespace = setSelectedNamespace;
 
     }
 
@@ -78,6 +81,14 @@ class EventHandler {
 
     onSelectedPropertyClick(p: PropertyResponse) {
         console.log(p);
+    }
+
+    onNamespaceClick(n: number) {
+        this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder.withNamespaceFacet(n);
+        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
+            this.setSelectedNamespace(this.currentDocumentsQueryBuilder.build().namespaceFacets[0]);
+            this.setSearchResult(response);
+        }).catch((e) => { console.log("query failed: " + e)});
     }
 
     onCategoryClick(c: string) {
