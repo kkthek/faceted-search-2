@@ -3,18 +3,18 @@ import {PropertyFacet, PropertyResponse, SolrFacetResponse, ValueCount,} from ".
 
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
+import {SearchStateDocument, SearchStateFacet} from "./event_handler";
 
 
 function SelectedFacetsView(prop: {
-    results: SolrFacetResponse,
-    selectedFacets: PropertyFacet[],
+    searchStateDocument: SearchStateFacet,
     onPropertyClick: (p: PropertyResponse) => void
     onValueClick: (p: PropertyResponse, v: ValueCount) => void
 }) {
-    if (!prop.results) return;
+    if (!prop.searchStateDocument) return;
 
-    const facetValues = prop.results.valueCounts.map((v, i) => {
-            let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, v.property.title) !== null;
+    const facetValues = prop.searchStateDocument.facetsResponse.valueCounts.map((v, i) => {
+            let isSelectedFacet = Tools.findFirst(prop.searchStateDocument.query.propertyFacets, (e) => e.property, v.property.title) !== null;
             return (isSelectedFacet ?
                 <FacetValues key={v.property.title} propertyValueCount={v} onValueClick={prop.onValueClick}/> : '');
         }

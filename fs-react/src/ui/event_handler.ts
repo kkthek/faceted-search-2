@@ -1,6 +1,7 @@
 import DocumentQueryBuilder from "../common/document_query_builder";
 import FacetQueryBuilder from "../common/facet_query_builder";
 import {
+    BaseQuery,
     Datatype,
     PropertyFacet,
     PropertyResponse,
@@ -12,32 +13,32 @@ import {
 import StatQueryBuilder from "../common/stat_query_builder";
 import Client from "../common/client";
 
+export interface SearchStateDocument {
+    documentResponse: SolrDocumentsResponse;
+    query: BaseQuery
+}
+export interface SearchStateFacet {
+    facetsResponse: SolrFacetResponse;
+    query: BaseQuery
+}
+
+
 class EventHandler {
 
     private currentDocumentsQueryBuilder: DocumentQueryBuilder;
     private currentFacetsQueryBuilder: FacetQueryBuilder;
     private readonly client: Client;
-    private readonly setSearchResult: React.Dispatch<React.SetStateAction<SolrDocumentsResponse>>;
-    private readonly setSelectedFacetsResults: React.Dispatch<React.SetStateAction<SolrFacetResponse>>;
-    private readonly setSelectedFacets: React.Dispatch<React.SetStateAction<PropertyFacet[]>>;
-    private readonly setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>;
-    private readonly setSelectedNamespace: React.Dispatch<React.SetStateAction<number>>;
+    private readonly setSearchState: React.Dispatch<React.SetStateAction<SearchStateDocument>>;
+    private readonly setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>;
 
-
-    constructor(  setSearchResult: React.Dispatch<React.SetStateAction<SolrDocumentsResponse>>,
-                  setSelectedFacetsResults: React.Dispatch<React.SetStateAction<SolrFacetResponse>>,
-                  setSelectedFacets: React.Dispatch<React.SetStateAction<PropertyFacet[]>>,
-                  setSelectedCategories: React.Dispatch<React.SetStateAction<string[]>>,
-                  setSelectedNamespace: React.Dispatch<React.SetStateAction<number>>,
+    constructor(  setDocumentState: React.Dispatch<React.SetStateAction<SearchStateDocument>>,
+                  setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>,
                   client: Client) {
         this.currentDocumentsQueryBuilder = new DocumentQueryBuilder();
         this.currentFacetsQueryBuilder = new FacetQueryBuilder();
         this.client = client;
-        this.setSearchResult = setSearchResult;
-        this.setSelectedFacetsResults = setSelectedFacetsResults;
-        this.setSelectedFacets = setSelectedFacets;
-        this.setSelectedCategories = setSelectedCategories;
-        this.setSelectedNamespace = setSelectedNamespace;
+        this.setSearchState = setDocumentState;
+        this.setFacetState = setFacetState;
 
     }
 
@@ -45,12 +46,17 @@ class EventHandler {
         this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder
             .withSearchText(text);
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSearchResult(response);
+            this.setSearchState({
+                documentResponse: response,
+                query: this.currentDocumentsQueryBuilder.build()
+            });
         }).catch((e) => { console.log("query failed: " + e)});
         this.currentFacetsQueryBuilder.update(this.currentDocumentsQueryBuilder.build());
         this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
-            this.setSelectedFacetsResults(response);
-            this.setSelectedFacets(this.currentFacetsQueryBuilder.build().propertyFacets)
+            this.setFacetState({
+                facetsResponse: response,
+                query: this.currentFacetsQueryBuilder.build()
+            });
         }).catch((e) => { console.log("query failed: " + e)});
     }
 
@@ -59,7 +65,10 @@ class EventHandler {
             {property: p.title, type: p.type, value: null, mwTitle:null, range: null}
         );
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSearchResult(response);
+            this.setSearchState({
+                documentResponse: response,
+                query: this.currentDocumentsQueryBuilder.build()
+            });
         }).catch((e) => { console.log("query failed: " + e)});
         this.updateFacetValues(p);
     }
@@ -73,7 +82,10 @@ class EventHandler {
             {property: p.title, type: p.type, value: v.value, mwTitle:v.mwTitle, range: v.range}
         );
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSearchResult(response);
+            this.setSearchState({
+                documentResponse: response,
+                query: this.currentDocumentsQueryBuilder.build()
+            });
         }).catch((e) => { console.log("query failed: " + e)});
         this.updateFacetValues(p);
 
@@ -86,16 +98,20 @@ class EventHandler {
     onNamespaceClick(n: number) {
         this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder.withNamespaceFacet(n);
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSelectedNamespace(this.currentDocumentsQueryBuilder.build().namespaceFacets[0]);
-            this.setSearchResult(response);
+            this.setSearchState({
+                documentResponse: response,
+                query: this.currentDocumentsQueryBuilder.build()
+            });
         }).catch((e) => { console.log("query failed: " + e)});
     }
 
     onCategoryClick(c: string) {
         this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder.withCategoryFacet(c);
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSelectedCategories(this.currentDocumentsQueryBuilder.build().categoryFacets);
-            this.setSearchResult(response);
+            this.setSearchState({
+                documentResponse: response,
+                query: this.currentDocumentsQueryBuilder.build()
+            });
         }).catch((e) => { console.log("query failed: " + e)});
     }
 
@@ -111,15 +127,19 @@ class EventHandler {
                     this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
                 });
                 this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
-                    this.setSelectedFacetsResults(response);
-                    this.setSelectedFacets(this.currentFacetsQueryBuilder.build().propertyFacets)
+                    this.setFacetState({
+                        facetsResponse: response,
+                        query: this.currentFacetsQueryBuilder.build()
+                    });
                 }).catch((e) => { console.log("query failed: " + e)});
             });
         } else {
             this.currentFacetsQueryBuilder.withFacetProperties({title: p.title, type: p.type})
             this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
-                this.setSelectedFacetsResults(response);
-                this.setSelectedFacets(this.currentFacetsQueryBuilder.build().propertyFacets)
+                this.setFacetState({
+                    facetsResponse: response,
+                    query: this.currentFacetsQueryBuilder.build()
+                });
             }).catch((e) => { console.log("query failed: " + e)});
 
         }

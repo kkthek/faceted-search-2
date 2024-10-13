@@ -1,6 +1,7 @@
 import {CategoryFacetCount, CategoryFacetValue, PropertyResponse, SolrDocumentsResponse} from "../common/datatypes";
 import Tools from "../util/tools";
 import React from "react";
+import {SearchStateDocument} from "./event_handler";
 
 function FacetViewCategory( prop: {
     title: string,
@@ -20,26 +21,25 @@ function FacetViewCategory( prop: {
     </li>
 }
 function CategoryView( prop: {
-    results: SolrDocumentsResponse,
-    selectedCategories: string[],
+    searchStateDocument: SearchStateDocument,
     onCategoryClick: (c: string)=>void,
 
 }) {
-    if (!prop.results) return;
-    let categories = prop.results.docs.flatMap((doc, i) => {
+    if (!prop.searchStateDocument) return;
+    let categories = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
         return doc.categoryFacets;
     });
     const uniqueCategories = Tools.createUniqueArray(categories, (p: CategoryFacetValue) => { return p.category });
 
     const listItems = uniqueCategories.map((category,i) => {
-            const facetCount = Tools.findFirst(prop.results.categoryFacetCounts,
+            const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.categoryFacetCounts,
                 (c) => c.category, category.category);
 
             return <FacetViewCategory key={category.category}
                                       title={category.category}
                                       categoryFacetCount={facetCount}
                                       onCategoryClick={prop.onCategoryClick}
-                                      selectedCategories={prop.selectedCategories}
+                                      selectedCategories={prop.searchStateDocument.query.categoryFacets}
             />
         }
     );

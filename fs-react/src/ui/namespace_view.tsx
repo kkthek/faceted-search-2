@@ -2,6 +2,7 @@ import {NamespaceFacetCount, NamespaceFacetValue, SolrDocumentsResponse} from ".
 import Tools from "../util/tools";
 import React, {useContext} from "react";
 import {WikiContext} from "../index";
+import {SearchStateDocument} from "./event_handler";
 
 function FacetViewNamespace( prop: {
     title: string,
@@ -17,26 +18,26 @@ function FacetViewNamespace( prop: {
     </span>
 }
 function NamespaceView( prop: {
-    results: SolrDocumentsResponse,
-    selectedNamespace: number,
+    searchStateDocument: SearchStateDocument,
     onNamespaceClick: (c: number)=>void,
 
 }) {
-    if (!prop.results) return;
-    let namespaces = prop.results.docs.flatMap((doc, i) => {
+    if (!prop.searchStateDocument) return;
+
+    let namespaces = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
         return doc.namespaceFacet;
     });
     const uniqueNamespaces = Tools.createUniqueArray(namespaces, (p: NamespaceFacetValue) => { return p.namespace.toString() });
 
     const listItems = uniqueNamespaces.map((ns,i) => {
-            const facetCount = Tools.findFirst(prop.results.namespaceFacetCounts,
+            const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.namespaceFacetCounts,
                 (c) => c.namespace.toString(), ns.namespace.toString());
 
             return <FacetViewNamespace key={ns.namespace}
                                       title={ns.displayTitle}
                                        namespaceFacetCount={facetCount}
                                        onNamespaceClick={prop.onNamespaceClick}
-                                       selectedNamespace={prop.selectedNamespace}
+                                       selectedNamespace={prop.searchStateDocument.query.namespaceFacets[0]}
             />
         }
     );

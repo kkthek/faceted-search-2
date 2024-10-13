@@ -1,18 +1,16 @@
 import React from "react";
-import {SolrDocumentsResponse,} from "../common/datatypes";
 
 import Tools from "../util/tools";
+import {SearchStateDocument} from "./event_handler";
 
 
 function SelectedCategoriesView(prop: {
-    results: SolrDocumentsResponse,
-    selectedCategories: string[],
-
+    searchStateDocument: SearchStateDocument
 }) {
-    if (!prop.results) return;
+    if (!prop.searchStateDocument) return;
 
-    const categories = prop.results.categoryFacetCounts.map((v, i) => {
-            let isSelectedFacet = Tools.findFirst(prop.selectedCategories, (e) => e, v.category) !== null;
+    const categories = prop.searchStateDocument.documentResponse.categoryFacetCounts.map((v, i) => {
+            let isSelectedFacet = Tools.findFirst(prop.searchStateDocument.query.categoryFacets, (e) => e, v.category) !== null;
             return (isSelectedFacet ?
                 <li key={v.category}>({v.count}) {v.category}</li> : '');
         }

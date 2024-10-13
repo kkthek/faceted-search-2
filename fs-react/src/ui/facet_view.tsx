@@ -9,46 +9,47 @@ import {
 } from "../common/datatypes";
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
+import {SearchStateDocument, SearchStateFacet} from "./event_handler";
 
 
 function FacetViewProperty(prop: {
     title: string,
     property: PropertyResponse,
-    facets: SolrFacetResponse,
+    searchStateFacets: SolrFacetResponse,
     selectedFacets: PropertyFacet[],
-    PropertyFacetCount: PropertyFacetCount|null,
+    propertyFacetCount: PropertyFacetCount|null,
     onPropertyClick: (p: PropertyResponse)=>void,
     onExpandClick: (p: PropertyResponse)=>void,
     onValueClick: (p: PropertyResponse, v: ValueCount)=>void
 }) {
-    let propertyValueCount = Tools.findFirst(prop.facets?.valueCounts || [], (e) => e.property.title, prop.property.title);
+
+    let propertyValueCount = Tools.findFirst(prop.searchStateFacets?.valueCounts || [], (e) => e.property.title, prop.property.title);
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
 
     return <li className={'fs-facets'}>
         <span onClick={() => prop.onExpandClick(prop.property)}>[e]</span>
-        <span>({prop.PropertyFacetCount?.count})</span>
+        <span>({prop.propertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
         {!isSelectedFacet ? <FacetValues propertyValueCount={propertyValueCount} onValueClick={prop.onValueClick}/> : ''}
     </li>
 }
 
 function FacetView(prop: {
-    results: SolrDocumentsResponse,
-    facets: SolrFacetResponse,
-    selectedFacets: PropertyFacet[],
+    searchStateDocument: SearchStateDocument,
+    searchStateFacets: SearchStateFacet,
     onPropertyClick: (p: PropertyResponse)=>void,
     onExpandClick: (p: PropertyResponse)=>void,
     onValueClick: (p: PropertyResponse, v: ValueCount)=>void
 }) {
-    if (!prop.results) return;
-    let properties = prop.results.docs.flatMap((doc, i) => {
+    if (!prop.searchStateDocument) return;
+    let properties = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
         return doc.properties;
     });
 
     const uniqueProperties = Tools.createUniqueArray(properties, (p: PropertyResponse) => { return p.title });
 
     const listItems = uniqueProperties.map((property,i) => {
-        const facetCount = Tools.findFirst(prop.results.propertyFacetCounts,
+        const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.propertyFacetCounts,
             (c) => c.property.title, property.title);
 
         return <FacetViewProperty key={property.title}
@@ -56,10 +57,10 @@ function FacetView(prop: {
                            property={property}
                            onPropertyClick={prop.onPropertyClick}
                            onExpandClick={prop.onExpandClick}
-                           facets={prop.facets}
-                           selectedFacets={prop.selectedFacets}
-                           PropertyFacetCount={facetCount}
                            onValueClick={prop.onValueClick}
+                           searchStateFacets={prop.searchStateFacets?.facetsResponse}
+                           selectedFacets={prop.searchStateDocument.query.propertyFacets}
+                           propertyFacetCount={facetCount}
         />
     }
     );

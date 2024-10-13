@@ -13,7 +13,7 @@ import Client from "./common/client";
 import DocumentQueryBuilder from "./common/document_query_builder";
 import FacetView from "./ui/facet_view";
 import SelectedFacetsView from "./ui/selected_facets_view";
-import EventHandler from "./ui/event_handler";
+import EventHandler, {SearchStateDocument, SearchStateFacet} from "./ui/event_handler";
 import CategoryView from "./ui/category_view";
 import SelectedCategoriesView from "./ui/selected_categories_view";
 import NamespaceView from "./ui/namespace_view";
@@ -37,19 +37,12 @@ export let WikiContext = createContext(null);
 
 function App() {
 
-    const [searchDocumentResult, setSearchDocumentResult] = useState((): SolrDocumentsResponse => null);
-    const [searchFacetResults, setSearchFacetResults] = useState((): SolrFacetResponse => null);
-    const [selectedFacets, setSelectedFacets] = useState((): PropertyFacet[] => []);
-    const [selectedCategories, setSelectedCategories] = useState((): string[] => []);
-    const [selectedNamespace, setSelectedNamespace] = useState((): number => 0);
-
+    const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
+    const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
 
     const eventHandler = new EventHandler(
-        setSearchDocumentResult,
-        setSearchFacetResults,
-        setSelectedFacets,
-        setSelectedCategories,
-        setSelectedNamespace,
+        setSearchStateDocument,
+        setSearchFacetState,
         client
     );
 
@@ -57,7 +50,12 @@ function App() {
     useEffect(
         () => {
             setInitialSearch(initialSearch);
-            initialSearchState.then(response => setSearchDocumentResult(response))
+            initialSearchState.then(response => {
+                setSearchStateDocument({
+                    documentResponse: response,
+                    query: new DocumentQueryBuilder().build()
+                });
+            })
                 .catch((e) => { console.log("query failed: " + e)});
         },
         [initialSearch]
@@ -67,38 +65,33 @@ function App() {
             <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
                 <SearchBar onClick={eventHandler.onSearchClick.bind(eventHandler)}/>
-                <NamespaceView results={searchDocumentResult}
-                               selectedNamespace={selectedNamespace}
+                <NamespaceView searchStateDocument={searchStateDocument}
                                onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
                 />
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
-                    <SelectedFacetsView selectedFacets={selectedFacets}
-                                        results={searchFacetResults}
+                    <SelectedFacetsView searchStateDocument={searchFacetState}
                                         onPropertyClick={eventHandler.onSelectedPropertyClick.bind(eventHandler)}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                     />
-                    <SelectedCategoriesView results={searchDocumentResult}
-                                            selectedCategories={selectedCategories}
+                    <SelectedCategoriesView searchStateDocument={searchStateDocument}
                     />
                 </div>
                 <div>
-                    <FacetView selectedFacets={selectedFacets}
-                               facets={searchFacetResults}
-                               results={searchDocumentResult}
+                    <FacetView searchStateDocument={searchStateDocument}
+                               searchStateFacets={searchFacetState}
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
                                onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
                                onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                     />
-                    <CategoryView results={searchDocumentResult}
-                                  selectedCategories={selectedCategories}
+                    <CategoryView searchStateDocument={searchStateDocument}
                                   onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                     />
                 </div>
             </div>
             <div id={'fs-results'} className={'fs-boxes fs-body'}>
-                <ResultView results={searchDocumentResult ? searchDocumentResult.docs : []}/>
+                <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}/>
             </div>
             </div>
         </WikiContext.Provider>;
