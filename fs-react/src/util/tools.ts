@@ -1,3 +1,5 @@
+import {BaseQuery, PropertyResponse} from "../common/datatypes";
+
 class Tools {
 
     static createUniqueArray<T>(arr: T[], getKey: (e: T) => string): T[] {
@@ -20,6 +22,14 @@ class Tools {
             }
         }
         return null;
+    }
+
+    static isPropertyFacetSelected(query: BaseQuery, property: PropertyResponse): boolean {
+        return Tools.findFirst(query.propertyFacets, (e) => e.property, property.title) !== null;
+    }
+
+    static isCategoryFacetSelected(query: BaseQuery, category: string): boolean {
+        return Tools.findFirst(query.categoryFacets, (e) => e, category) !== null;
     }
 
 }

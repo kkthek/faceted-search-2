@@ -10,7 +10,7 @@ function SelectedCategoriesView(prop: {
     if (!prop.searchStateDocument) return;
 
     const categories = prop.searchStateDocument.documentResponse.categoryFacetCounts.map((v, i) => {
-            let isSelectedFacet = Tools.findFirst(prop.searchStateDocument.query.categoryFacets, (e) => e, v.category) !== null;
+            let isSelectedFacet = Tools.isCategoryFacetSelected(prop.searchStateDocument.query, v.category);
             return (isSelectedFacet ?
                 <li key={v.category}>({v.count}) {v.category}</li> : '');
         }

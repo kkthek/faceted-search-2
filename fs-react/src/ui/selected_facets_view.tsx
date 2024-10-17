@@ -14,7 +14,7 @@ function SelectedFacetsView(prop: {
     if (!prop.searchStateDocument) return;
 
     const facetValues = prop.searchStateDocument.facetsResponse.valueCounts.map((v, i) => {
-            let isSelectedFacet = Tools.findFirst(prop.searchStateDocument.query.propertyFacets, (e) => e.property, v.property.title) !== null;
+            let isSelectedFacet = Tools.isPropertyFacetSelected(prop.searchStateDocument.query, v.property);
             return (isSelectedFacet ?
                 <FacetValues key={v.property.title} propertyValueCount={v} onValueClick={prop.onValueClick}/> : '');
         }
