@@ -17,6 +17,7 @@ import EventHandler, {SearchStateDocument, SearchStateFacet} from "./ui/event_ha
 import CategoryView from "./ui/category_view";
 import SelectedCategoriesView from "./ui/selected_categories_view";
 import NamespaceView from "./ui/namespace_view";
+import FacetQueryBuilder from "./common/facet_query_builder";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -32,28 +33,30 @@ if (browserWindow.mw) {
 }
 
 const client: Client = new Client(solrProxyUrl);
-const initialSearch = client.searchDocuments(new DocumentQueryBuilder().build());
 export let WikiContext = createContext(null);
 
-function App() {
+const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
+const currentFacetsQueryBuilder = new FacetQueryBuilder();
+const initialSearch = client.searchDocuments(currentDocumentsQueryBuilder.build());
 
+function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
 
     const eventHandler = new EventHandler(
+        currentDocumentsQueryBuilder,
+        currentFacetsQueryBuilder,
         setSearchStateDocument,
         setSearchFacetState,
         client
     );
 
-    const [initialSearchState, setInitialSearch] = useState(initialSearch);
     useEffect(
         () => {
-            setInitialSearch(initialSearch);
-            initialSearchState.then(response => {
+            initialSearch.then(response => {
                 setSearchStateDocument({
                     documentResponse: response,
-                    query: new DocumentQueryBuilder().build()
+                    query: currentDocumentsQueryBuilder.build()
                 });
             })
                 .catch((e) => { console.log("query failed: " + e)});

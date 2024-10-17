@@ -31,11 +31,13 @@ class EventHandler {
     private readonly setSearchState: React.Dispatch<React.SetStateAction<SearchStateDocument>>;
     private readonly setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>;
 
-    constructor(  setDocumentState: React.Dispatch<React.SetStateAction<SearchStateDocument>>,
+    constructor(  currentDocumentsQueryBuilder: DocumentQueryBuilder,
+                  currentFacetsQueryBuilder: FacetQueryBuilder,
+                  setDocumentState: React.Dispatch<React.SetStateAction<SearchStateDocument>>,
                   setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>,
                   client: Client) {
-        this.currentDocumentsQueryBuilder = new DocumentQueryBuilder();
-        this.currentFacetsQueryBuilder = new FacetQueryBuilder();
+        this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
+        this.currentFacetsQueryBuilder = currentFacetsQueryBuilder;
         this.client = client;
         this.setSearchState = setDocumentState;
         this.setFacetState = setFacetState;
@@ -43,8 +45,7 @@ class EventHandler {
     }
 
     onSearchClick(text: string) {
-        this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder
-            .withSearchText(text);
+        this.currentDocumentsQueryBuilder.withSearchText(text);
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
@@ -61,7 +62,7 @@ class EventHandler {
     }
 
     onPropertyClick(p: PropertyResponse) {
-        this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder.withPropertyFacetConstraint(
+        this.currentDocumentsQueryBuilder.withPropertyFacetConstraint(
             {property: p.title, type: p.type, value: null, mwTitle:null, range: null}
         );
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
@@ -78,7 +79,7 @@ class EventHandler {
     }
 
     onValueClick(p: PropertyResponse, v: ValueCount) {
-        this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder.withPropertyFacetConstraint(
+        this.currentDocumentsQueryBuilder.withPropertyFacetConstraint(
             {property: p.title, type: p.type, value: v.value, mwTitle:v.mwTitle, range: v.range}
         );
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
@@ -96,7 +97,7 @@ class EventHandler {
     }
 
     onNamespaceClick(n: number) {
-        this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder.withNamespaceFacet(n);
+        this.currentDocumentsQueryBuilder.withNamespaceFacet(n);
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
@@ -106,7 +107,7 @@ class EventHandler {
     }
 
     onCategoryClick(c: string) {
-        this.currentDocumentsQueryBuilder = this.currentDocumentsQueryBuilder.withCategoryFacet(c);
+        this.currentDocumentsQueryBuilder.withCategoryFacet(c);
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
