@@ -6,20 +6,20 @@ class DocumentQueryBuilder {
     private readonly query: DocumentQuery;
 
     constructor() {
-        this.query = {
-            searchText: "",
-            propertyFacets: [],
-            categoryFacets: [],
-            namespaceFacets: [],
-            extraProperties: [],
-            sorts: [
+        this.query = new DocumentQuery(
+            "",
+            [],
+            [],
+            [],
+            [],
+            [
                 { property: {title:"score", type: Datatype.internal }, order: Order.desc},
                 { property: {title:"displaytitle", type: Datatype.internal }, order: Order.asc}
             ],
 
-            limit: 10,
-            offset: 0
-        }
+            10,
+            0
+        );
     }
 
     withSearchText(text: string): DocumentQueryBuilder {
@@ -27,13 +27,13 @@ class DocumentQueryBuilder {
         return this;
     }
 
-    withPropertyFacetConstraint(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
+    withPropertyFacet(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
         this.query.propertyFacets.push(propertyFacetConstraint);
         return this;
     }
 
-    withoutPropertyFacetConstraint(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
-        Tools.removeFirst(this.query.propertyFacets, (e) => e.property, propertyFacetConstraint.property);
+    clearFacetsForProperty(property: Property): DocumentQueryBuilder {
+        Tools.removeFirst(this.query.propertyFacets, (e) => e.property, property.title);
         return this;
     }
 
@@ -42,8 +42,17 @@ class DocumentQueryBuilder {
         return this;
     }
 
-    withNamespaceFacet(namespace: number): DocumentQueryBuilder {
-        this.query.namespaceFacets.push(namespace);
+    withoutCategoryFacet(category: string): DocumentQueryBuilder {
+        Tools.removeFirst(this.query.categoryFacets, (e) => e, category);
+        return this;
+    }
+
+    toggleNamespaceFacet(namespace: number): DocumentQueryBuilder {
+        if (this.query.namespaceFacets.indexOf(namespace) > -1) {
+            Tools.removeFirst(this.query.namespaceFacets, (e) => e.toString(), namespace.toString());
+        } else {
+            this.query.namespaceFacets.push(namespace);
+        }
         return this;
     }
 

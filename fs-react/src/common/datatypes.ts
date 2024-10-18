@@ -5,39 +5,120 @@
  *
  */
 
+import Tools from "../util/tools";
+
 /**
  * Request types
  */
 
-export interface BaseQuery {
-    searchText: string,
-    categoryFacets: string[],
-    namespaceFacets: number[],
-    propertyFacets: PropertyFacet[]
+export class BaseQuery {
+    searchText: string;
+    categoryFacets: string[];
+    namespaceFacets: number[];
+    propertyFacets: PropertyFacet[];
+    constructor( searchText: string,
+                 propertyFacets: PropertyFacet[],
+                 categoryFacets: string[],
+                 namespaceFacets: number[]) {
+        this.searchText = searchText;
+        this.propertyFacets = propertyFacets.map((e) => new PropertyFacet(e.property, e.type, e.value, e.mwTitle, e.range));
+        this.categoryFacets = categoryFacets;
+        this.namespaceFacets = namespaceFacets;
+    }
+
+    findPropertyFacet(property: Property): PropertyFacet {
+        return Tools.findFirst(this.propertyFacets, (e) => e.property, property.title);
+    }
+
+    isPropertyFacetSelected(property: Property): boolean {
+        return this.findPropertyFacet(property) !== null;
+    }
+
+    isCategoryFacetSelected(category: string): boolean {
+        return Tools.findFirst(this.categoryFacets, (e) => e, category) !== null;
+    }
+
+    static fromQuery(query :BaseQuery): BaseQuery {
+        return new BaseQuery(query.searchText, query.propertyFacets, query.categoryFacets, query.namespaceFacets);
+    }
 }
 
-export interface DocumentQuery extends BaseQuery {
-    extraProperties: Property[],
-    sorts: Sort[],
-    limit: number | null,
-    offset: number | null
+export class DocumentQuery extends BaseQuery {
+    extraProperties: Property[];
+    sorts: Sort[];
+    limit: number | null;
+    offset: number | null;
+
+    constructor( searchText: string,
+                 propertyFacets: PropertyFacet[],
+                 categoryFacets: string[],
+                 namespaceFacets: number[],
+                 extraProperties: Property[],
+                 sorts: Sort[],
+                 limit: number,
+                 offset: number) {
+        super(searchText, propertyFacets, categoryFacets, namespaceFacets);
+
+        this.extraProperties = extraProperties;
+        this.sorts = sorts;
+        this.limit = limit;
+        this.offset = offset;
+    }
+
 }
 
-export interface StatQuery extends BaseQuery {
+export class StatQuery extends BaseQuery {
     statsProperties: Property[]
+
+    constructor(searchText: string,
+                propertyFacets: PropertyFacet[],
+                categoryFacets: string[],
+                namespaceFacets: number[],
+                statsProperties: Property[]) {
+        super(searchText, propertyFacets, categoryFacets, namespaceFacets);
+        this.statsProperties = statsProperties;
+
+    }
+
 }
 
-export interface FacetsQuery extends BaseQuery {
+export class FacetsQuery extends BaseQuery {
     facetQueries: RangeQuery[]
     facetProperties: Property[]
+    constructor( searchText: string,
+                 propertyFacets: PropertyFacet[],
+                 categoryFacets: string[],
+                 namespaceFacets: number[],
+                 facetQueries: RangeQuery[],
+                 facetProperties: Property[]) {
+        super(searchText, propertyFacets, categoryFacets, namespaceFacets);
+        this.facetQueries = facetQueries;
+        this.facetProperties = facetProperties;
+    }
 }
 
-export interface PropertyFacet {
+export class PropertyFacet {
     property: string
     type: Datatype
-    value: ValueType|void,
-    mwTitle: MWTitle|void,
+    value: ValueType|void;
+    mwTitle: MWTitle|void;
     range: Range|void
+
+    constructor(property: string,
+                type: Datatype,
+                value: ValueType|void,
+                mwTitle: MWTitle|void,
+                range: Range|void) {
+        this.property = property;
+        this.type = type;
+        this.value = value;
+        this.mwTitle = mwTitle;
+        this.range = range;
+    }
+
+    hasValue(): boolean {
+        return (this.value && this.value !== null || this.mwTitle && this.mwTitle !== null);
+    }
 }
 
 export type ValueType = string | number | boolean | Date;
@@ -51,29 +132,29 @@ export enum Datatype {
     internal
 }
 
-export interface Range {
+export class Range {
     from: string
     to: string
 }
 
-export interface Property {
+export class Property {
     title: string
     type: Datatype
 }
 
-export interface MWTitle {
+export class MWTitle {
     title: string
     displayTitle: string
 }
 
-export interface RangeQuery {
+export class RangeQuery {
     property: string
     type: Datatype
     range: Range|void
 }
 
-export interface Sort {
-    property: Property,
+export class Sort {
+    property: Property;
     order: Order
 }
 
@@ -85,7 +166,7 @@ export enum Order {
 /**
  * Response types
  */
-export interface SolrDocumentsResponse {
+export class SolrDocumentsResponse {
     numResults: number;
     docs: Document[];
     categoryFacetCounts: CategoryFacetCount[];
@@ -94,22 +175,20 @@ export interface SolrDocumentsResponse {
 
 }
 
-export interface SolrStatsResponse {
+export class SolrStatsResponse {
     stats: Stats[];
 }
 
-export interface SolrFacetResponse {
+export class SolrFacetResponse {
     valueCounts: PropertyValueCount[];
 }
 
-export interface PropertyResponse {
-    title: string,
-    displayTitle: string,
-    type: Datatype,
+export class PropertyResponse extends Property {
+    displayTitle: string;
     url: string
 }
 
-export interface Document {
+export class Document {
     id: string
     propertyFacets: PropertyFacetValues[];
     categoryFacets: CategoryFacetValue[];
@@ -123,7 +202,7 @@ export interface Document {
     highlighting: string | null;
 }
 
-export interface Stats {
+export class Stats {
     property: PropertyResponse;
     min: number;
     max: number;
@@ -132,47 +211,47 @@ export interface Stats {
     clusters: Range[]
 }
 
-export interface PropertyFacetValues {
+export class PropertyFacetValues {
     property: PropertyResponse
     values: string[] | number[] | boolean[] | Date[] | MWTitle[]
 }
 
-export interface CategoryFacetValue {
+export class CategoryFacetValue {
     category: string
     displayTitle: string
     url: string
 }
 
-export interface NamespaceFacetValue {
+export class NamespaceFacetValue {
     namespace: number;
     displayTitle: string
 }
 
-export interface PropertyValueCount {
-    property: PropertyResponse,
+export class PropertyValueCount {
+    property: PropertyResponse;
     values: ValueCount[]
 
 }
 
-export interface ValueCount {
-    value: string|null,
-    mwTitle: MWTitle|null,
-    range: Range|null,
+export class ValueCount {
+    value: string|null;
+    mwTitle: MWTitle|null;
+    range: Range|null;
     count: number
 }
 
-export interface CategoryFacetCount {
+export class CategoryFacetCount {
     category: string;
     displayTitle: string;
     count: number;
 }
 
-export interface PropertyFacetCount {
+export class PropertyFacetCount {
     property: PropertyResponse;
     count: number;
 }
 
-export interface NamespaceFacetCount {
+export class NamespaceFacetCount {
     namespace: number;
     displayTitle: string;
     count: number;

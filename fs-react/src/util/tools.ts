@@ -1,8 +1,6 @@
-import {BaseQuery, FacetsQuery, Property, PropertyFacet, PropertyResponse, ValueCount} from "../common/datatypes";
-
 class Tools {
 
-    static createUniqueArray<T>(arr: T[], getKey: (e: T) => string): T[] {
+    static makeArrayUnique<T>(arr: T[], getKey: (e: T) => string): T[] {
         let mapObj = new Map()
         let result: T[]  = [];
         arr.forEach(v => {
@@ -44,18 +42,6 @@ class Tools {
 
     static removeAll<T>(arr: T[], getKey: (e: T) => string, key: string): void {
         while (this.removeFirst(arr, getKey, key) !== null);
-    }
-
-    static isPropertyFacetSelected(query: BaseQuery, property: PropertyResponse): boolean {
-        return Tools.findFirst(query.propertyFacets, (e) => e.property, property.title) !== null;
-    }
-
-    static isCategoryFacetSelected(query: BaseQuery, category: string): boolean {
-        return Tools.findFirst(query.categoryFacets, (e) => e, category) !== null;
-    }
-
-    static removePropertyFromFacetQuery(query: FacetsQuery, p: Property): void {
-        Tools.removeAll(query.facetQueries, (e) => e.property, p.title);
     }
 
 }

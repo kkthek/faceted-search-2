@@ -54,7 +54,7 @@ describe('document-search', function () {
     it('request document with wikipage property constraint', function () {
         globalResult = null;
         let query = new DocumentQueryBuilder()
-            .withPropertyFacetConstraint({
+            .withPropertyFacet({
                 property: 'Works at', type: Datatype.wikipage,
                 mwTitle: { title: 'DIQA-GmbH', displayTitle: 'DIQA'}, value: null, range: null})
             .build();

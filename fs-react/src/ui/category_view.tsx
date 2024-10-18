@@ -9,7 +9,7 @@ function FacetViewCategory( prop: {
     selectedCategories: string[],
     onCategoryClick: (c: string)=>void,
 }) {
-    let isSelectedFacet = Tools.findFirst(prop.selectedCategories, (e) => e, prop.categoryFacetCount.category) !== null;
+    let isSelectedFacet = prop.selectedCategories.indexOf(prop.categoryFacetCount.category) > -1;
     if (isSelectedFacet) {
         return;
     }
@@ -29,7 +29,7 @@ function CategoryView( prop: {
     let categories = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
         return doc.categoryFacets;
     });
-    const uniqueCategories = Tools.createUniqueArray(categories, (p: CategoryFacetValue) => { return p.category });
+    const uniqueCategories = Tools.makeArrayUnique(categories, (p: CategoryFacetValue) => { return p.category });
 
     const listItems = uniqueCategories.map((category,i) => {
             const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.categoryFacetCounts,

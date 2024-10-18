@@ -1,6 +1,6 @@
 import React from "react";
 import {
-    BaseQuery,
+    BaseQuery, Property,
     PropertyFacet,
     PropertyFacetCount,
     PropertyResponse,
@@ -20,9 +20,9 @@ function FacetViewProperty(prop: {
     searchStateFacets: SolrFacetResponse,
     selectedFacets: PropertyFacet[],
     propertyFacetCount: PropertyFacetCount|null,
-    onPropertyClick: (p: PropertyResponse)=>void,
-    onExpandClick: (p: PropertyResponse)=>void,
-    onValueClick: (p: PropertyResponse, v: ValueCount)=>void,
+    onPropertyClick: (p: Property)=>void,
+    onExpandClick: (p: Property)=>void,
+    onValueClick: (p: PropertyFacet)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
 }) {
 
@@ -45,9 +45,9 @@ function FacetViewProperty(prop: {
 function FacetView(prop: {
     searchStateDocument: SearchStateDocument,
     searchStateFacets: SearchStateFacet,
-    onPropertyClick: (p: PropertyResponse)=>void,
-    onExpandClick: (p: PropertyResponse)=>void,
-    onValueClick: (p: PropertyResponse, v: ValueCount)=>void,
+    onPropertyClick: (p: Property)=>void,
+    onExpandClick: (p: Property)=>void,
+    onValueClick: (p: PropertyFacet)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
 }) {
     if (!prop.searchStateDocument) return;
@@ -55,7 +55,7 @@ function FacetView(prop: {
         return doc.properties;
     });
 
-    const uniqueProperties = Tools.createUniqueArray(properties, (p: PropertyResponse) => { return p.title });
+    const uniqueProperties = Tools.makeArrayUnique(properties, (p: PropertyResponse) => { return p.title });
 
     const listItems = uniqueProperties.map((property,i) => {
         const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.propertyFacetCounts,

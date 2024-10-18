@@ -1,19 +1,20 @@
 import {RangeQuery, Property, PropertyFacet, DocumentQuery, Sort, Datatype, Order, FacetsQuery} from "./datatypes";
 import Tools from "../util/tools";
+import DocumentQueryBuilder from "./document_query_builder";
 
 class FacetQueryBuilder {
 
     private readonly query: FacetsQuery;
 
     constructor() {
-        this.query = {
-            searchText: "",
-            propertyFacets: [],
-            categoryFacets: [],
-            namespaceFacets: [],
-            facetQueries: [],
-            facetProperties: []
-        }
+        this.query = new FacetsQuery(
+            "",
+            [],
+            [],
+            [],
+            [],
+            []
+        );
     }
 
     withFacetQuery(rangeQuery: RangeQuery): FacetQueryBuilder {
@@ -21,8 +22,8 @@ class FacetQueryBuilder {
         return this;
     }
 
-    withoutFacetQuery(p : Property) {
-        Tools.removePropertyFromFacetQuery(this.query, p);
+    clearFacetsForProperty(p : Property) {
+        Tools.removeAll(this.query.facetQueries, (e) => e.property, p.title);
         return this;
     }
 
@@ -31,15 +32,12 @@ class FacetQueryBuilder {
         return this;
     }
 
-    updateFromBaseQuery(base: DocumentQuery): void {
-        this.query.searchText = base.searchText;
-        this.query.propertyFacets = base.propertyFacets;
-        this.query.categoryFacets = base.categoryFacets;
-        this.query.namespaceFacets = base.namespaceFacets;
-    }
-
-    hasPropertyFacet(property: string) {
-        return Tools.findFirst(this.query.propertyFacets, (f) => f.property, property) !== null;
+    updateBaseQuery(base: DocumentQueryBuilder): void {
+        let query = base.build();
+        this.query.searchText = query.searchText;
+        this.query.propertyFacets = query.propertyFacets;
+        this.query.categoryFacets = query.categoryFacets;
+        this.query.namespaceFacets = query.namespaceFacets;
     }
 
     build(): FacetsQuery {

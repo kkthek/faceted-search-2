@@ -3,12 +3,11 @@ import FacetQueryBuilder from "../common/facet_query_builder";
 import {
     BaseQuery,
     Datatype,
+    Property,
     PropertyFacet,
-    PropertyResponse,
     SolrDocumentsResponse,
     SolrFacetResponse,
-    Stats,
-    ValueCount
+    Stats
 } from "../common/datatypes";
 import StatQueryBuilder from "../common/stat_query_builder";
 import Client from "../common/client";
@@ -25,8 +24,8 @@ export interface SearchStateFacet {
 
 class EventHandler {
 
-    private currentDocumentsQueryBuilder: DocumentQueryBuilder;
-    private currentFacetsQueryBuilder: FacetQueryBuilder;
+    private readonly currentDocumentsQueryBuilder: DocumentQueryBuilder;
+    private readonly currentFacetsQueryBuilder: FacetQueryBuilder;
     private readonly client: Client;
     private readonly setSearchState: React.Dispatch<React.SetStateAction<SearchStateDocument>>;
     private readonly setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>;
@@ -46,88 +45,79 @@ class EventHandler {
 
     onSearchClick(text: string) {
         this.currentDocumentsQueryBuilder.withSearchText(text);
-        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSearchState({
-                documentResponse: response,
-                query: this.currentDocumentsQueryBuilder.build()
-            });
-        }).catch((e) => { console.log("query failed: " + e)});
-        this.currentFacetsQueryBuilder.updateFromBaseQuery(this.currentDocumentsQueryBuilder.build());
-        this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
-            this.setFacetState({
-                facetsResponse: response,
-                query: this.currentFacetsQueryBuilder.build()
-            });
-        }).catch((e) => { console.log("query failed: " + e)});
+        this.updateDocuments();
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.updateFacets();
     }
 
-    onPropertyClick(p: PropertyResponse) {
-        this.currentDocumentsQueryBuilder.withPropertyFacetConstraint(
-            {property: p.title, type: p.type, value: null, mwTitle:null, range: null}
-        );
-        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSearchState({
-                documentResponse: response,
-                query: this.currentDocumentsQueryBuilder.build()
-            });
-        }).catch((e) => { console.log("query failed: " + e)});
-        this.updateFacetValues(p);
+    onPropertyClick(p: Property) {
+        let propertyFacet = new PropertyFacet(p.title, p.type, null, null, null);
+        this.currentDocumentsQueryBuilder.withPropertyFacet(propertyFacet);
+        this.updateDocuments();
+        this.updateFacetValuesForProperty(p);
     }
 
-    onExpandClick(p: PropertyResponse) {
-        this.updateFacetValues(p);
+    onExpandClick(p: Property) {
+        this.updateFacetValuesForProperty(p);
     }
 
-    onValueClick(p: PropertyResponse, v: ValueCount) {
-        this.currentDocumentsQueryBuilder.withoutPropertyFacetConstraint({property: p.title, type: p.type, value: null, mwTitle:null, range: null});
-        this.currentDocumentsQueryBuilder.withPropertyFacetConstraint(
-            {property: p.title, type: p.type, value: v.value, mwTitle:v.mwTitle, range: v.range}
-        );
-        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSearchState({
-                documentResponse: response,
-                query: this.currentDocumentsQueryBuilder.build()
-            });
-        }).catch((e) => { console.log("query failed: " + e)});
-        this.updateFacetValues(p);
+    onValueClick(p: PropertyFacet) {
+        let property = {title: p.property, type: p.type};
+        this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
+        this.currentDocumentsQueryBuilder.withPropertyFacet(p);
+        this.updateDocuments();
+        this.updateFacetValuesForProperty(property);
 
-    }
-
-    onSelectedPropertyClick(p: PropertyResponse) {
-        console.log(p);
     }
 
     onRemovePropertyFacet(p: PropertyFacet) {
-        this.currentDocumentsQueryBuilder.withoutPropertyFacetConstraint(p);
-        this.currentFacetsQueryBuilder.withoutFacetQuery({title: p.property, type: p.type});
-        this.currentFacetsQueryBuilder.updateFromBaseQuery(this.currentDocumentsQueryBuilder.build());
+        let property = {title: p.property, type: p.type};
+        this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
+        this.currentFacetsQueryBuilder.clearFacetsForProperty(property);
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
 
-        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSearchState({
-                documentResponse: response,
-                query: this.currentDocumentsQueryBuilder.build()
-            });
-        }).catch((e) => { console.log("query failed: " + e)});
-        this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
-            this.setFacetState({
-                facetsResponse: response,
-                query: this.currentFacetsQueryBuilder.build()
-            });
-        }).catch((e) => { console.log("query failed: " + e)});
+        this.updateDocuments();
+        this.updateFacets();
     }
 
     onNamespaceClick(n: number) {
-        this.currentDocumentsQueryBuilder.withNamespaceFacet(n);
-        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
-            this.setSearchState({
-                documentResponse: response,
-                query: this.currentDocumentsQueryBuilder.build()
-            });
-        }).catch((e) => { console.log("query failed: " + e)});
+        this.currentDocumentsQueryBuilder.toggleNamespaceFacet(n);
+        this.updateDocuments();
     }
 
     onCategoryClick(c: string) {
         this.currentDocumentsQueryBuilder.withCategoryFacet(c);
+        this.updateDocuments();
+    }
+
+    onCategoryRemoveClick(c: string) {
+        this.currentDocumentsQueryBuilder.withoutCategoryFacet(c);
+        this.updateDocuments();
+    }
+
+    private updateFacetValuesForProperty(p: Property) {
+
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        if ((p.type === Datatype.datetime || p.type === Datatype.number) ) {
+            const sqb = new StatQueryBuilder();
+            sqb.updateBaseQuery(this.currentDocumentsQueryBuilder);
+            sqb.withStatField(p);
+            this.client.searchStats(sqb.build()).then((r) => {
+                let stat: Stats = r.stats[0];
+                this.currentFacetsQueryBuilder.clearFacetsForProperty(p);
+                stat.clusters.forEach((r) => {
+                    this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
+                });
+                this.updateFacets();
+            });
+        } else {
+            this.currentFacetsQueryBuilder.withFacetProperties(p);
+            this.updateFacets();
+
+        }
+    }
+
+    private updateDocuments() {
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
@@ -136,35 +126,13 @@ class EventHandler {
         }).catch((e) => { console.log("query failed: " + e)});
     }
 
-    private updateFacetValues(p: PropertyResponse) {
-        this.currentFacetsQueryBuilder.updateFromBaseQuery(this.currentDocumentsQueryBuilder.build());
-        if ((p.type === Datatype.datetime || p.type === Datatype.number) ) {
-            const sqb = new StatQueryBuilder();
-            sqb.update(this.currentDocumentsQueryBuilder.build());
-            sqb.withStatField({title: p.title, type: p.type} );
-            this.client.searchStats(sqb.build()).then((r) => {
-                let stat: Stats = r.stats[0];
-                this.currentFacetsQueryBuilder.withoutFacetQuery({title: p.title, type: p.type})
-                stat.clusters.forEach((r) => {
-                    this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
-                });
-                this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
-                    this.setFacetState({
-                        facetsResponse: response,
-                        query: this.currentFacetsQueryBuilder.build()
-                    });
-                }).catch((e) => { console.log("query failed: " + e)});
+    private updateFacets() {
+        this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
+            this.setFacetState({
+                facetsResponse: response,
+                query: this.currentFacetsQueryBuilder.build()
             });
-        } else {
-            this.currentFacetsQueryBuilder.withFacetProperties({title: p.title, type: p.type})
-            this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
-                this.setFacetState({
-                    facetsResponse: response,
-                    query: this.currentFacetsQueryBuilder.build()
-                });
-            }).catch((e) => { console.log("query failed: " + e)});
-
-        }
+        }).catch((e) => { console.log("query failed: " + e)});
     }
 }
 

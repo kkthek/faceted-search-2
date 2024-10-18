@@ -13,21 +13,21 @@ function FacetViewNamespace( prop: {
     let wikiContext = useContext(WikiContext);
     let namespaces = wikiContext['wgFormattedNamespaces'];
     let isSelected = prop.selectedNamespace == prop.namespaceFacetCount.namespace;
-    return <span className={isSelected ? 'fs-namespace-selected': '' } onClick={() => prop.onNamespaceClick(prop.namespaceFacetCount.namespace)}>
+    return <span className={isSelected ? 'fs-namespace-selected': '' }
+                 onClick={() => prop.onNamespaceClick(prop.namespaceFacetCount.namespace)}>
         ({prop.namespaceFacetCount.count}) {namespaces[prop.namespaceFacetCount.namespace]}
     </span>
 }
 function NamespaceView( prop: {
     searchStateDocument: SearchStateDocument,
     onNamespaceClick: (c: number)=>void,
-
 }) {
     if (!prop.searchStateDocument) return;
 
     let namespaces = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
         return doc.namespaceFacet;
     });
-    const uniqueNamespaces = Tools.createUniqueArray(namespaces, (p: NamespaceFacetValue) => { return p.namespace.toString() });
+    const uniqueNamespaces = Tools.makeArrayUnique(namespaces, (p: NamespaceFacetValue) => { return p.namespace.toString() });
 
     const listItems = uniqueNamespaces.map((ns,i) => {
             const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.namespaceFacetCounts,

@@ -4,10 +4,9 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search_bar_view";
-import {PropertyFacet, SolrDocumentsResponse, SolrFacetResponse} from "./common/datatypes";
 import ResultView from "./ui/result_view";
 import Client from "./common/client";
 import DocumentQueryBuilder from "./common/document_query_builder";
@@ -75,11 +74,11 @@ function App() {
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
                     <SelectedFacetsView searchStateDocument={searchFacetState}
-                                        onPropertyClick={eventHandler.onSelectedPropertyClick.bind(eventHandler)}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                     />
                     <SelectedCategoriesView searchStateDocument={searchStateDocument}
+                                            onCategoryRemove={eventHandler.onCategoryRemoveClick.bind(eventHandler)}
                     />
                 </div>
                 <div>
