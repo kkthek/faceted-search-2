@@ -33,7 +33,7 @@ class DocumentQueryBuilder {
     }
 
     withoutPropertyFacetConstraint(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
-        Tools.removePropertyFacet(this.query, propertyFacetConstraint);
+        Tools.removeFirst(this.query.propertyFacets, (e) => e.property, propertyFacetConstraint.property);
         return this;
     }
 

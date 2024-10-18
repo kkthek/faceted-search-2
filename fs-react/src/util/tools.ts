@@ -24,17 +24,26 @@ class Tools {
         return null;
     }
 
-    static removeFirst<T>(arr: T[], getKey: (e: T) => string, key: string): void {
+    static removeFirst<T>(arr: T[], getKey: (e: T) => string, key: string): T {
         let index = -1;
+        let found;
         for(let i = 0; i < arr.length;i++) {
             if (getKey(arr[i]) === key) {
                 index = i;
+                found = arr[i];
                 break;
             }
         }
+
         if (index > -1) {
             arr.splice(index, 1);
+            return found;
         }
+        return null;
+    }
+
+    static removeAll<T>(arr: T[], getKey: (e: T) => string, key: string): void {
+        while (this.removeFirst(arr, getKey, key) !== null);
     }
 
     static isPropertyFacetSelected(query: BaseQuery, property: PropertyResponse): boolean {
@@ -45,29 +54,8 @@ class Tools {
         return Tools.findFirst(query.categoryFacets, (e) => e, category) !== null;
     }
 
-    static removePropertyFacet(query: BaseQuery, facet: PropertyFacet): void {
-        if (!facet.value && !facet.mwTitle && !facet.range) {
-            Tools.removeFirst(query.propertyFacets, (e) => e.property, facet.property);
-        } else {
-            Tools.removeFirst(query.propertyFacets, (e) => this.serializeFacetValue(e), this.serializeFacetValue(facet));
-        }
-    }
-
     static removePropertyFromFacetQuery(query: FacetsQuery, p: Property): void {
-        Tools.removeFirst(query.facetQueries, (e) => e.property, p.title);
-    }
-
-    private static serializeFacetValue(p: PropertyFacet) {
-        let property = p.property;
-        if (p.value !== null) {
-            return property+p.value;
-        } else if (p.mwTitle instanceof Object) {
-            return property+p.mwTitle.title+":"+p.mwTitle.displayTitle;
-        } else if (p.range instanceof Object) {
-            // range
-            return property+p.range.from + "-" + p.range.to;
-        }
-        return '';
+        Tools.removeAll(query.facetQueries, (e) => e.property, p.title);
     }
 
 }

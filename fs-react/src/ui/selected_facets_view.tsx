@@ -1,5 +1,5 @@
 import React from "react";
-import {Datatype, PropertyResponse, ValueCount,} from "../common/datatypes";
+import {Datatype, PropertyFacet, PropertyResponse, ValueCount,} from "../common/datatypes";
 
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
@@ -11,7 +11,7 @@ function SelectedFacetsView(prop: {
     searchStateDocument: SearchStateFacet,
     onPropertyClick: (p: PropertyResponse) => void
     onValueClick: (p: PropertyResponse, v: ValueCount) => void,
-    onRemoveClick: (p: PropertyResponse, v: ValueCount|null)=>void,
+    onRemoveClick: (p: PropertyFacet)=>void,
 }) {
     if (!prop.searchStateDocument) return;
 
@@ -29,6 +29,7 @@ function SelectedFacetsView(prop: {
                                  propertyValueCount={v}
                                  onValueClick={prop.onValueClick}
                                  removable={true}
+                                 query={prop.searchStateDocument.query}
                                  onRemoveClick={prop.onRemoveClick}
                     /> : '');
             }

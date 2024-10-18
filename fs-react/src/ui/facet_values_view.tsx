@@ -1,11 +1,13 @@
-import {PropertyResponse, PropertyValueCount, ValueCount} from "../common/datatypes";
+import {BaseQuery, PropertyFacet, PropertyResponse, PropertyValueCount, ValueCount} from "../common/datatypes";
 import React from "react";
+import Tools from "../util/tools";
 
 function FacetValues(prop: {
+    query: BaseQuery,
     propertyValueCount: PropertyValueCount|null,
     onValueClick: (p: PropertyResponse, v: ValueCount)=>void,
     removable: boolean
-    onRemoveClick: (p: PropertyResponse, v: ValueCount|null)=>void,
+    onRemoveClick: (p: PropertyFacet)=>void,
 }) {
 
     function serializeFacetValue(p: PropertyResponse, v: ValueCount) {
@@ -22,18 +24,19 @@ function FacetValues(prop: {
     if (prop.propertyValueCount === null) {
         return;
     }
+    let propertyFacet = Tools.findFirst(prop.query.propertyFacets, (e) => e.property, prop.propertyValueCount.property.title);
 
     const listItems = prop.propertyValueCount.values.map((v, i) => {
         let value = serializeFacetValue(prop.propertyValueCount.property, v);
         return <li key={value+v.count}>
             <span onClick={() => prop.onValueClick(prop.propertyValueCount.property, v)}>{value}</span>:<span>{v.count}</span>
-            {prop.removable ? <span onClick={() => prop.onRemoveClick(prop.propertyValueCount.property, v)}>[X]</span> : ''}
+            {prop.removable ? <span onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
         </li>
     });
 
     return <div>
         <span>({prop.propertyValueCount.property.title})</span>
-        {prop.removable ? <span onClick={() => prop.onRemoveClick(prop.propertyValueCount.property, null)}>[X]</span> : ''}
+        {prop.removable ? <span onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
         <ul className={'fs-facets'}>
             {listItems}
         </ul>

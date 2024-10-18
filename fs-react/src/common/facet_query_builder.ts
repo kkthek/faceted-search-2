@@ -31,7 +31,7 @@ class FacetQueryBuilder {
         return this;
     }
 
-    update(base: DocumentQuery): void {
+    updateFromBaseQuery(base: DocumentQuery): void {
         this.query.searchText = base.searchText;
         this.query.propertyFacets = base.propertyFacets;
         this.query.categoryFacets = base.categoryFacets;

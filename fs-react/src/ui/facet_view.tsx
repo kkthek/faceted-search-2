@@ -1,5 +1,6 @@
 import React from "react";
 import {
+    BaseQuery,
     PropertyFacet,
     PropertyFacetCount,
     PropertyResponse,
@@ -13,6 +14,7 @@ import {SearchStateDocument, SearchStateFacet} from "./event_handler";
 
 
 function FacetViewProperty(prop: {
+    query: BaseQuery,
     title: string,
     property: PropertyResponse,
     searchStateFacets: SolrFacetResponse,
@@ -21,7 +23,7 @@ function FacetViewProperty(prop: {
     onPropertyClick: (p: PropertyResponse)=>void,
     onExpandClick: (p: PropertyResponse)=>void,
     onValueClick: (p: PropertyResponse, v: ValueCount)=>void,
-    onRemoveClick: (p: PropertyResponse, v: ValueCount|null)=>void,
+    onRemoveClick: (p: PropertyFacet)=>void,
 }) {
 
     let propertyValueCount = Tools.findFirst(prop.searchStateFacets?.valueCounts || [], (e) => e.property.title, prop.property.title);
@@ -34,6 +36,7 @@ function FacetViewProperty(prop: {
         {!isSelectedFacet ? <FacetValues propertyValueCount={propertyValueCount}
                                          onValueClick={prop.onValueClick}
                                          removable={false}
+                                         query={prop.query}
                                          onRemoveClick={prop.onRemoveClick}
         /> : ''}
     </li>
@@ -45,7 +48,7 @@ function FacetView(prop: {
     onPropertyClick: (p: PropertyResponse)=>void,
     onExpandClick: (p: PropertyResponse)=>void,
     onValueClick: (p: PropertyResponse, v: ValueCount)=>void,
-    onRemoveClick: (p: PropertyResponse, v: ValueCount|null)=>void,
+    onRemoveClick: (p: PropertyFacet)=>void,
 }) {
     if (!prop.searchStateDocument) return;
     let properties = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
@@ -59,6 +62,7 @@ function FacetView(prop: {
             (c) => c.property.title, property.title);
 
         return <FacetViewProperty key={property.title}
+                           query={prop.searchStateDocument.query}
                            title={property.title}
                            property={property}
                            onPropertyClick={prop.onPropertyClick}

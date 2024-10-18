@@ -52,7 +52,7 @@ class EventHandler {
                 query: this.currentDocumentsQueryBuilder.build()
             });
         }).catch((e) => { console.log("query failed: " + e)});
-        this.currentFacetsQueryBuilder.update(this.currentDocumentsQueryBuilder.build());
+        this.currentFacetsQueryBuilder.updateFromBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
             this.setFacetState({
                 facetsResponse: response,
@@ -79,6 +79,7 @@ class EventHandler {
     }
 
     onValueClick(p: PropertyResponse, v: ValueCount) {
+        this.currentDocumentsQueryBuilder.withoutPropertyFacetConstraint({property: p.title, type: p.type, value: null, mwTitle:null, range: null});
         this.currentDocumentsQueryBuilder.withPropertyFacetConstraint(
             {property: p.title, type: p.type, value: v.value, mwTitle:v.mwTitle, range: v.range}
         );
@@ -96,18 +97,17 @@ class EventHandler {
         console.log(p);
     }
 
-    onRemovePropertyFacet(p: PropertyResponse, v: ValueCount) {
-        this.currentDocumentsQueryBuilder.withoutPropertyFacetConstraint(
-            {property: p.title, type: p.type, value: v?.value, mwTitle:v?.mwTitle, range: v?.range})
-        console.log(v);
-        console.log(this.currentDocumentsQueryBuilder);
+    onRemovePropertyFacet(p: PropertyFacet) {
+        this.currentDocumentsQueryBuilder.withoutPropertyFacetConstraint(p);
+        this.currentFacetsQueryBuilder.withoutFacetQuery({title: p.property, type: p.type});
+        this.currentFacetsQueryBuilder.updateFromBaseQuery(this.currentDocumentsQueryBuilder.build());
+
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
                 query: this.currentDocumentsQueryBuilder.build()
             });
         }).catch((e) => { console.log("query failed: " + e)});
-        this.currentFacetsQueryBuilder.update(this.currentDocumentsQueryBuilder.build());
         this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
             this.setFacetState({
                 facetsResponse: response,
@@ -137,7 +137,7 @@ class EventHandler {
     }
 
     private updateFacetValues(p: PropertyResponse) {
-        this.currentFacetsQueryBuilder.update(this.currentDocumentsQueryBuilder.build());
+        this.currentFacetsQueryBuilder.updateFromBaseQuery(this.currentDocumentsQueryBuilder.build());
         if ((p.type === Datatype.datetime || p.type === Datatype.number) ) {
             const sqb = new StatQueryBuilder();
             sqb.update(this.currentDocumentsQueryBuilder.build());
