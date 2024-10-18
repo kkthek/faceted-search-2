@@ -20,7 +20,8 @@ function FacetViewProperty(prop: {
     propertyFacetCount: PropertyFacetCount|null,
     onPropertyClick: (p: PropertyResponse)=>void,
     onExpandClick: (p: PropertyResponse)=>void,
-    onValueClick: (p: PropertyResponse, v: ValueCount)=>void
+    onValueClick: (p: PropertyResponse, v: ValueCount)=>void,
+    onRemoveClick: (p: PropertyResponse, v: ValueCount|null)=>void,
 }) {
 
     let propertyValueCount = Tools.findFirst(prop.searchStateFacets?.valueCounts || [], (e) => e.property.title, prop.property.title);
@@ -30,7 +31,11 @@ function FacetViewProperty(prop: {
         <span onClick={() => prop.onExpandClick(prop.property)}>[e]</span>
         <span>({prop.propertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
-        {!isSelectedFacet ? <FacetValues propertyValueCount={propertyValueCount} onValueClick={prop.onValueClick}/> : ''}
+        {!isSelectedFacet ? <FacetValues propertyValueCount={propertyValueCount}
+                                         onValueClick={prop.onValueClick}
+                                         removable={false}
+                                         onRemoveClick={prop.onRemoveClick}
+        /> : ''}
     </li>
 }
 
@@ -39,7 +44,8 @@ function FacetView(prop: {
     searchStateFacets: SearchStateFacet,
     onPropertyClick: (p: PropertyResponse)=>void,
     onExpandClick: (p: PropertyResponse)=>void,
-    onValueClick: (p: PropertyResponse, v: ValueCount)=>void
+    onValueClick: (p: PropertyResponse, v: ValueCount)=>void,
+    onRemoveClick: (p: PropertyResponse, v: ValueCount|null)=>void,
 }) {
     if (!prop.searchStateDocument) return;
     let properties = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
@@ -61,6 +67,7 @@ function FacetView(prop: {
                            searchStateFacets={prop.searchStateFacets?.facetsResponse}
                            selectedFacets={prop.searchStateDocument.query.propertyFacets}
                            propertyFacetCount={facetCount}
+                           onRemoveClick={prop.onRemoveClick}
         />
     }
     );

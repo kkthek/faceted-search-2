@@ -96,6 +96,26 @@ class EventHandler {
         console.log(p);
     }
 
+    onRemovePropertyFacet(p: PropertyResponse, v: ValueCount) {
+        this.currentDocumentsQueryBuilder.withoutPropertyFacetConstraint(
+            {property: p.title, type: p.type, value: v?.value, mwTitle:v?.mwTitle, range: v?.range})
+        console.log(v);
+        console.log(this.currentDocumentsQueryBuilder);
+        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
+            this.setSearchState({
+                documentResponse: response,
+                query: this.currentDocumentsQueryBuilder.build()
+            });
+        }).catch((e) => { console.log("query failed: " + e)});
+        this.currentFacetsQueryBuilder.update(this.currentDocumentsQueryBuilder.build());
+        this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
+            this.setFacetState({
+                facetsResponse: response,
+                query: this.currentFacetsQueryBuilder.build()
+            });
+        }).catch((e) => { console.log("query failed: " + e)});
+    }
+
     onNamespaceClick(n: number) {
         this.currentDocumentsQueryBuilder.withNamespaceFacet(n);
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
@@ -118,12 +138,13 @@ class EventHandler {
 
     private updateFacetValues(p: PropertyResponse) {
         this.currentFacetsQueryBuilder.update(this.currentDocumentsQueryBuilder.build());
-        if (p.type === Datatype.datetime || p.type === Datatype.number) {
+        if ((p.type === Datatype.datetime || p.type === Datatype.number) ) {
             const sqb = new StatQueryBuilder();
             sqb.update(this.currentDocumentsQueryBuilder.build());
             sqb.withStatField({title: p.title, type: p.type} );
             this.client.searchStats(sqb.build()).then((r) => {
                 let stat: Stats = r.stats[0];
+                this.currentFacetsQueryBuilder.withoutFacetQuery({title: p.title, type: p.type})
                 stat.clusters.forEach((r) => {
                     this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
                 });

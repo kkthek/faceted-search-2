@@ -151,6 +151,9 @@ class SolrResponseParser {
         $ranges = [];
         $properties = [];
         foreach ($this->body->facet_counts->facet_queries as $key => $count) {
+            if ($count === 0) {
+                continue;
+            }
             $propertyRange = explode(':', $key);
             $property = $this->parsePropertyFromStats($propertyRange[0]);
             preg_match_all("/\[(.*) TO (.*)\]/", $propertyRange[1], $range);
@@ -158,7 +161,7 @@ class SolrResponseParser {
             if ($property->getType() === Datatype::DATETIME) {
                 $from = Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $range[1][0]);
                 $to = Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $range[2][0]);
-                $r = new ValueCount(null, null, new Range($from, $to), $count);
+                $r = new ValueCount(null, null, new Range($from->toIso8601ZuluString(), $to->toIso8601ZuluString()), $count);
             } else if ($property->getType() === Datatype::NUMBER) {
                 $r = new ValueCount(null, null, new Range($range[1][0], $range[2][0]), $count);
 
@@ -175,6 +178,9 @@ class SolrResponseParser {
         foreach ($this->body->facet_counts->facet_fields as $p => $values) {
             if ($p === 'smwh_categories' || $p === 'smwh_attributes' || $p === 'smwh_properties' || $p === 'smwh_namespace_id') continue;
             $property = $this->parseProperty($p);
+            if ($property->getType() === Datatype::DATETIME || $property->getType() === Datatype::NUMBER) {
+                continue;
+            }
             $valueCounts = [] /* @var ValueCount[] */;
             foreach($values as $v => $count) {
                 if ($property->getType() === Datatype::WIKIPAGE) {

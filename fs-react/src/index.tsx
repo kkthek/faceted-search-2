@@ -77,6 +77,7 @@ function App() {
                     <SelectedFacetsView searchStateDocument={searchFacetState}
                                         onPropertyClick={eventHandler.onSelectedPropertyClick.bind(eventHandler)}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
+                                        onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                     />
                     <SelectedCategoriesView searchStateDocument={searchStateDocument}
                     />
@@ -87,6 +88,7 @@ function App() {
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
                                onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
                                onValueClick={eventHandler.onValueClick.bind(eventHandler)}
+                               onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                     />
                     <CategoryView searchStateDocument={searchStateDocument}
                                   onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}

@@ -32,6 +32,11 @@ class DocumentQueryBuilder {
         return this;
     }
 
+    withoutPropertyFacetConstraint(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
+        Tools.removePropertyFacet(this.query, propertyFacetConstraint);
+        return this;
+    }
+
     withCategoryFacet(category: string): DocumentQueryBuilder {
         this.query.categoryFacets.push(category);
         return this;

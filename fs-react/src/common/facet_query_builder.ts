@@ -21,6 +21,11 @@ class FacetQueryBuilder {
         return this;
     }
 
+    withoutFacetQuery(p : Property) {
+        Tools.removePropertyFromFacetQuery(this.query, p);
+        return this;
+    }
+
     withFacetProperties(property: Property): FacetQueryBuilder {
         this.query.facetProperties.push(property);
         return this;

@@ -1,22 +1,37 @@
 import React from "react";
-import {PropertyFacet, PropertyResponse, SolrFacetResponse, ValueCount,} from "../common/datatypes";
+import {Datatype, PropertyResponse, ValueCount,} from "../common/datatypes";
 
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
-import {SearchStateDocument, SearchStateFacet} from "./event_handler";
+import {SearchStateFacet} from "./event_handler";
+import FacetRange from "./facet_range";
 
 
 function SelectedFacetsView(prop: {
     searchStateDocument: SearchStateFacet,
     onPropertyClick: (p: PropertyResponse) => void
-    onValueClick: (p: PropertyResponse, v: ValueCount) => void
+    onValueClick: (p: PropertyResponse, v: ValueCount) => void,
+    onRemoveClick: (p: PropertyResponse, v: ValueCount|null)=>void,
 }) {
     if (!prop.searchStateDocument) return;
 
     const facetValues = prop.searchStateDocument.facetsResponse.valueCounts.map((v, i) => {
             let isSelectedFacet = Tools.isPropertyFacetSelected(prop.searchStateDocument.query, v.property);
-            return (isSelectedFacet ?
-                <FacetValues key={v.property.title} propertyValueCount={v} onValueClick={prop.onValueClick}/> : '');
+            if (v.property.type === Datatype.datetime || v.property.type === Datatype.number) {
+                return (isSelectedFacet ? <FacetRange propertyValueCount={v}
+                                   query={prop.searchStateDocument.query}
+                                   onValueClick={prop.onValueClick}
+                                   removable={true} onRemoveClick={prop.onRemoveClick}
+                />: '');
+            } else {
+                return (isSelectedFacet ?
+                    <FacetValues key={v.property.title}
+                                 propertyValueCount={v}
+                                 onValueClick={prop.onValueClick}
+                                 removable={true}
+                                 onRemoveClick={prop.onRemoveClick}
+                    /> : '');
+            }
         }
     );
 

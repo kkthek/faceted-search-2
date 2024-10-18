@@ -3,7 +3,9 @@ import React from "react";
 
 function FacetValues(prop: {
     propertyValueCount: PropertyValueCount|null,
-    onValueClick: (p: PropertyResponse, v: ValueCount)=>void
+    onValueClick: (p: PropertyResponse, v: ValueCount)=>void,
+    removable: boolean
+    onRemoveClick: (p: PropertyResponse, v: ValueCount|null)=>void,
 }) {
 
     function serializeFacetValue(p: PropertyResponse, v: ValueCount) {
@@ -23,11 +25,15 @@ function FacetValues(prop: {
 
     const listItems = prop.propertyValueCount.values.map((v, i) => {
         let value = serializeFacetValue(prop.propertyValueCount.property, v);
-        return <li key={value+v.count} onClick={() => prop.onValueClick(prop.propertyValueCount.property, v)}>{value}:{v.count}</li>
+        return <li key={value+v.count}>
+            <span onClick={() => prop.onValueClick(prop.propertyValueCount.property, v)}>{value}</span>:<span>{v.count}</span>
+            {prop.removable ? <span onClick={() => prop.onRemoveClick(prop.propertyValueCount.property, v)}>[X]</span> : ''}
+        </li>
     });
 
     return <div>
         <span>({prop.propertyValueCount.property.title})</span>
+        {prop.removable ? <span onClick={() => prop.onRemoveClick(prop.propertyValueCount.property, null)}>[X]</span> : ''}
         <ul className={'fs-facets'}>
             {listItems}
         </ul>
