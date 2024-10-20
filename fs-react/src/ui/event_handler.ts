@@ -4,13 +4,14 @@ import {
     BaseQuery,
     Datatype,
     Property,
-    PropertyFacet,
+    PropertyFacet, PropertyFacetClass,
     SolrDocumentsResponse,
     SolrFacetResponse,
     Stats
 } from "../common/datatypes";
 import StatQueryBuilder from "../common/stat_query_builder";
 import Client from "../common/client";
+import Tools from "../util/tools";
 
 export interface SearchStateDocument {
     documentResponse: SolrDocumentsResponse;
@@ -51,7 +52,7 @@ class EventHandler {
     }
 
     onPropertyClick(p: Property) {
-        let propertyFacet = new PropertyFacet(p.title, p.type, null, null, null);
+        let propertyFacet:PropertyFacet = { property: p.title, type: p.type, value: null, mwTitle: null, range: null};
         this.currentDocumentsQueryBuilder.withPropertyFacet(propertyFacet);
         this.updateDocuments();
         this.updateFacetValuesForProperty(p);

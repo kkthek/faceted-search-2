@@ -8,7 +8,7 @@ use DIQA\FacetedSearch2\Utils\NumericClusterer;
 
 class Stats
 {
-    public PropertyResponse $property;
+    public PropertyWithURL $property;
     public ?float $min;
     public ?float $max;
     public ?float $count;
@@ -17,13 +17,13 @@ class Stats
 
     /**
      * Stats constructor.
-     * @param PropertyResponse $property
+     * @param PropertyWithURL $property
      * @param float|null $min
      * @param float|null $max
      * @param float|null $count
      * @param float|null $sum
      */
-    public function __construct(PropertyResponse $property, ?float $min, ?float $max, ?float $count, ?float $sum)
+    public function __construct(PropertyWithURL $property, ?float $min, ?float $max, ?float $count, ?float $sum)
     {
         $this->property = $property;
         $this->min = $min;
@@ -34,9 +34,9 @@ class Stats
     }
 
     /**
-     * @return PropertyResponse
+     * @return PropertyWithURL
      */
-    public function getProperty(): PropertyResponse
+    public function getProperty(): PropertyWithURL
     {
         return $this->property;
     }
@@ -73,7 +73,7 @@ class Stats
         return $this->sum;
     }
 
-    private function makeClusters(PropertyResponse $property, ?float $min, ?float $max)
+    private function makeClusters(PropertyWithURL $property, ?float $min, ?float $max)
     {
         switch($property->getType()) {
             case Datatype::DATETIME:

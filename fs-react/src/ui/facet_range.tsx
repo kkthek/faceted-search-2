@@ -1,6 +1,7 @@
-import {BaseQuery, DocumentQuery, PropertyFacet, PropertyValueCount, Range} from "../common/datatypes";
+import {BaseQuery, BaseQueryClass, DocumentQuery, PropertyFacet, PropertyValueCount, Range} from "../common/datatypes";
 import React from "react";
 import FacetValues from "./facet_values_view";
+import Tools from "../util/tools";
 
 function FacetRange(prop: {
     propertyValueCount: PropertyValueCount|null,
@@ -12,17 +13,17 @@ function FacetRange(prop: {
     if (prop.propertyValueCount === null) {
         return;
     }
-    console.log(prop.query);
-    let propertyFacet = BaseQuery.fromQuery(prop.query).findPropertyFacet(prop.propertyValueCount.property);
+
+    let propertyFacet = Tools.recreate(BaseQueryClass, prop.query).findPropertyFacet(prop.propertyValueCount.property);
     let range: Range = propertyFacet.range ? propertyFacet.range:null;
     let rangeSelected = range !== null;
     let rangeDisplay = rangeSelected ? range.from + " - " + range.to : '';
 
-    return <div>
+    return <div key={propertyFacet.property}>
         <span>({propertyFacet.property})</span>
         {!rangeSelected ? <span onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
         <span>{rangeDisplay}</span>
-        <FacetValues key={propertyFacet.property}
+        <FacetValues
                      propertyValueCount={prop.propertyValueCount}
                      onValueClick={prop.onValueClick}
                      removable={rangeSelected}

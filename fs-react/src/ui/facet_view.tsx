@@ -3,9 +3,9 @@ import {
     BaseQuery, Property,
     PropertyFacet,
     PropertyFacetCount,
-    PropertyResponse,
+    PropertyWithURL,
     SolrDocumentsResponse,
-    SolrFacetResponse,
+    SolrFacetResponse, SolrFacetResponseClass,
     ValueCount
 } from "../common/datatypes";
 import Tools from "../util/tools";
@@ -16,7 +16,7 @@ import {SearchStateDocument, SearchStateFacet} from "./event_handler";
 function FacetViewProperty(prop: {
     query: BaseQuery,
     title: string,
-    property: PropertyResponse,
+    property: PropertyWithURL,
     searchStateFacets: SolrFacetResponse,
     selectedFacets: PropertyFacet[],
     propertyFacetCount: PropertyFacetCount|null,
@@ -26,14 +26,14 @@ function FacetViewProperty(prop: {
     onRemoveClick: (p: PropertyFacet)=>void,
 }) {
 
-    let propertyValueCount = Tools.findFirst(prop.searchStateFacets?.valueCounts || [], (e) => e.property.title, prop.property.title);
+    let solrFacetResponse = Tools.recreate(SolrFacetResponseClass, prop.searchStateFacets);
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
 
     return <li className={'fs-facets'}>
         <span onClick={() => prop.onExpandClick(prop.property)}>[e]</span>
         <span>({prop.propertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
-        {!isSelectedFacet ? <FacetValues propertyValueCount={propertyValueCount}
+        {!isSelectedFacet ? <FacetValues propertyValueCount={solrFacetResponse.getPropertyValueCount(prop.property)}
                                          onValueClick={prop.onValueClick}
                                          removable={false}
                                          query={prop.query}
@@ -55,7 +55,7 @@ function FacetView(prop: {
         return doc.properties;
     });
 
-    const uniqueProperties = Tools.makeArrayUnique(properties, (p: PropertyResponse) => { return p.title });
+    const uniqueProperties = Tools.makeArrayUnique(properties, (p: PropertyWithURL) => { return p.title });
 
     const listItems = uniqueProperties.map((property,i) => {
         const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.propertyFacetCounts,

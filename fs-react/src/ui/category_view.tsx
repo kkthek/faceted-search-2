@@ -1,4 +1,4 @@
-import {CategoryFacetCount, CategoryFacetValue, PropertyResponse, SolrDocumentsResponse} from "../common/datatypes";
+import {CategoryFacetCount, CategoryFacetValue, PropertyWithURL, SolrDocumentsResponse} from "../common/datatypes";
 import Tools from "../util/tools";
 import React from "react";
 import {SearchStateDocument} from "./event_handler";

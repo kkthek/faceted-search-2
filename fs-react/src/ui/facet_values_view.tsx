@@ -2,7 +2,7 @@ import {
     BaseQuery,
     Property,
     PropertyFacet,
-    PropertyResponse,
+    PropertyWithURL,
     PropertyValueCount,
     ValueCount
 } from "../common/datatypes";
@@ -17,7 +17,7 @@ function FacetValues(prop: {
     onRemoveClick: (p: PropertyFacet)=>void,
 }) {
 
-    function serializeFacetValue(p: PropertyResponse, v: ValueCount) {
+    function serializeFacetValue(p: PropertyWithURL, v: ValueCount) {
         if (v.value !== null) {
             return v.value;
         } else if (v.mwTitle !== null) {
@@ -36,10 +36,10 @@ function FacetValues(prop: {
         let value = serializeFacetValue(prop.propertyValueCount.property, v);
 
         let property = prop.propertyValueCount.property;
-        let propertyFacet = new PropertyFacet(
-            property.title,
-            property.type,
-            v.value, v.mwTitle, v.range);
+        let propertyFacet: PropertyFacet = {
+            property: property.title,
+            type: property.type,
+            value: v.value, mwTitle: v.mwTitle, range: v.range};
 
         return <li key={value+v.count}>
             <span onClick={() => prop.onValueClick(propertyFacet)}>{value}</span>

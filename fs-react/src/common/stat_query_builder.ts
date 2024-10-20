@@ -6,13 +6,13 @@ class StatQueryBuilder {
     private readonly query: StatQuery;
 
     constructor() {
-        this.query = new StatQuery(
-            "",
-            [],
-            [],
-            [],
-            [],
-        );
+        this.query = Object.assign(new StatQuery(), {
+            searchText: "",
+            propertyFacets: [],
+            categoryFacets: [],
+            namespaceFacets: [],
+            statsProperties: [],
+        });
     }
 
     withStatField(property: Property): StatQueryBuilder {

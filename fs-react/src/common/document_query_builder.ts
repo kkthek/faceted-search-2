@@ -6,20 +6,20 @@ class DocumentQueryBuilder {
     private readonly query: DocumentQuery;
 
     constructor() {
-        this.query = new DocumentQuery(
-            "",
-            [],
-            [],
-            [],
-            [],
-            [
+        this.query = Object.assign(new DocumentQuery(), {
+            searchText: "",
+            propertyFacets: [],
+            categoryFacets: [],
+            namespaceFacets: [],
+            extraProperties: [],
+            sorts: [
                 { property: {title:"score", type: Datatype.internal }, order: Order.desc},
                 { property: {title:"displaytitle", type: Datatype.internal }, order: Order.asc}
             ],
 
-            10,
-            0
-        );
+            limit: 10,
+            offset: 0
+        });
     }
 
     withSearchText(text: string): DocumentQueryBuilder {

@@ -8,7 +8,7 @@ use Title;
 
 class WikiTools {
 
-    public static function createURLForPage(string $title, int $namespace) {
+    public static function createURLForPage(string $title, int $namespace = 0) {
         if (!defined('MEDIAWIKI')) {
             return 'n/a';
         }

@@ -81,7 +81,6 @@ class SMWDBReader {
                 ->setCategories($doc['smwh_categories']?? [])
                 ->setDirectCategories($doc['smwh_directcategories']?? [])
                 ->setBoost($options['smwh_boost_dummy']['boost'] ?? 1.0);
-        print_r($document);
 
         return $document;
     }

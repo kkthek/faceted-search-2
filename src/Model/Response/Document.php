@@ -13,7 +13,7 @@ class Document
     public array $directCategoryFacets;
     /* @var NamespaceFacetValue[] */
     public $namespaceFacet;
-    /* @var PropertyResponse[] */
+    /* @var PropertyWithURL[] */
     public array $properties;
     public string $title;
     public string $displayTitle;
@@ -28,7 +28,7 @@ class Document
      * @param CategoryFacetValue[] $categoryFacets
      * @param CategoryFacetValue[] $directCategoryFacets
      * @param NamespaceFacetValue $namespaceFacet
-     * @param PropertyResponse[] $properties
+     * @param PropertyWithURL[] $properties
      * @param string $title
      * @param string $displayTitle
      * @param string $url

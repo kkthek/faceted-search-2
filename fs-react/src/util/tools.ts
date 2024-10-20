@@ -44,6 +44,10 @@ class Tools {
         while (this.removeFirst(arr, getKey, key) !== null);
     }
 
+    static recreate<T extends S, S>(type: { new(): T ;}, data: S): T {
+        return Object.assign( new type(), data);
+    }
+
 }
 
 export default Tools;

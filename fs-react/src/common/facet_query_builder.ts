@@ -7,14 +7,14 @@ class FacetQueryBuilder {
     private readonly query: FacetsQuery;
 
     constructor() {
-        this.query = new FacetsQuery(
-            "",
-            [],
-            [],
-            [],
-            [],
-            []
-        );
+        this.query = Object.assign(new FacetsQuery(), {
+            searchText: "",
+            propertyFacets: [],
+            categoryFacets: [],
+            namespaceFacets: [],
+            facetQueries: [],
+            facetProperties: []
+        });
     }
 
     withFacetQuery(rangeQuery: RangeQuery): FacetQueryBuilder {

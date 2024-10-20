@@ -1,8 +1,9 @@
 import React from "react";
-import {BaseQuery, Datatype, PropertyFacet,} from "../common/datatypes";
+import {BaseQuery, BaseQueryClass, Datatype, PropertyFacet, PropertyFacetClass,} from "../common/datatypes";
 import FacetValues from "./facet_values_view";
 import {SearchStateFacet} from "./event_handler";
 import FacetRange from "./facet_range";
+import Tools from "../util/tools";
 
 
 function SelectedFacetsView(prop: {
@@ -14,10 +15,11 @@ function SelectedFacetsView(prop: {
 
     const facetValues = prop.searchStateDocument.facetsResponse.valueCounts.map((v, i) => {
 
-            let query = BaseQuery.fromQuery(prop.searchStateDocument.query);
+            let query = Tools.recreate(BaseQueryClass, prop.searchStateDocument.query);
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (v.property.type === Datatype.datetime || v.property.type === Datatype.number) {
-                return (isSelectedFacet ? <FacetRange propertyValueCount={v}
+                return (isSelectedFacet ? <FacetRange key={v.property.title}
+                                   propertyValueCount={v}
                                    query={prop.searchStateDocument.query}
                                    onValueClick={prop.onValueClick}
                                    onRemoveClick={prop.onRemoveClick}
@@ -26,10 +28,11 @@ function SelectedFacetsView(prop: {
 
                 let propertyFacet = query.findPropertyFacet(v.property);
                 if (!propertyFacet) return '';
-                let hasValue = propertyFacet.hasValue();
+
+                let hasValue = Tools.recreate(PropertyFacetClass, propertyFacet).hasValue();
 
                 return (isSelectedFacet ?
-                    <div>
+                    <div key={v.property.title}>
                         <span>({v.property.title})</span>
                         {!hasValue ? <span onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
                     <FacetValues key={v.property.title}

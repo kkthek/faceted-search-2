@@ -3,15 +3,15 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class PropertyFacetCount
 {
-    public PropertyResponse $property;
+    public PropertyWithURL $property;
     public int $count;
 
     /**
      * PropertyFacetCount constructor.
-     * @param PropertyResponse $property
+     * @param PropertyWithURL $property
      * @param int $count
      */
-    public function __construct(PropertyResponse $property, int $count)
+    public function __construct(PropertyWithURL $property, int $count)
     {
         $this->property = $property;
         $this->count = $count;

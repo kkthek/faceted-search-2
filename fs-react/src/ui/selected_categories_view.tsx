@@ -1,6 +1,7 @@
 import React from "react";
 import {SearchStateDocument} from "./event_handler";
-import {BaseQuery} from "../common/datatypes";
+import {BaseQuery, BaseQueryClass} from "../common/datatypes";
+import Tools from "../util/tools";
 
 
 function SelectedCategoriesView(prop: {
@@ -10,7 +11,7 @@ function SelectedCategoriesView(prop: {
     if (!prop.searchStateDocument) return;
 
     const categories = prop.searchStateDocument.documentResponse.categoryFacetCounts.map((v, i) => {
-            let query = BaseQuery.fromQuery(prop.searchStateDocument.query);
+            let query = Tools.recreate(BaseQueryClass, prop.searchStateDocument.query);
             let isSelectedFacet = query.isCategoryFacetSelected(v.category);
             return (isSelectedFacet ?
                 <li key={v.category}>

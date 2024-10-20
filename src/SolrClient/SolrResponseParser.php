@@ -10,11 +10,12 @@ use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetValue;
 use DIQA\FacetedSearch2\Model\Response\Document;
+use DIQA\FacetedSearch2\Model\Response\MWTitleWithURL;
 use DIQA\FacetedSearch2\Model\Response\NamespaceFacetCount;
 use DIQA\FacetedSearch2\Model\Response\NamespaceFacetValue;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetCount;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetValues;
-use DIQA\FacetedSearch2\Model\Response\PropertyResponse;
+use DIQA\FacetedSearch2\Model\Response\PropertyWithURL;
 use DIQA\FacetedSearch2\Model\Response\PropertyValueCount;
 use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\SolrFacetResponse;
@@ -185,7 +186,7 @@ class SolrResponseParser {
             foreach($values as $v => $count) {
                 if ($property->getType() === Datatype::WIKIPAGE) {
                     list($title, $displayTitle) = explode("|", $v);
-                    $valueCounts[] = new ValueCount(null, new MWTitle($title, $displayTitle), null, $count);
+                    $valueCounts[] = new ValueCount(null, new MWTitleWithURL($title, $displayTitle, WikiTools::createURLForPage($title)), null, $count);
                 } else {
                     $valueCounts[] = new ValueCount($v, null, null, $count);
                 }
@@ -202,17 +203,17 @@ class SolrResponseParser {
         $displayTitle = WikiTools::getDisplayTitleForProperty($name);
         if ($type === Datatype::WIKIPAGE) {
             return new PropertyFacetValues(
-                new PropertyResponse($name, $displayTitle,
+                new PropertyWithURL($name, $displayTitle,
                     Datatype::WIKIPAGE,
                     WikiTools::createURLForProperty($name)
                 ),
                 array_map(function($e) {
                     $parts = explode("|", $e);
-                    return new MWTitle($parts[0], $parts[1]);
+                    return new MWTitleWithURL($parts[0], $parts[1], WikiTools::createURLForPage($parts[0]));
                 }, $values));
         } else {
             return new PropertyFacetValues(
-                new PropertyResponse($name, $displayTitle,
+                new PropertyWithURL($name, $displayTitle,
                     Datatype::NUMBER,
                     WikiTools::createURLForProperty($name)
                 ),
@@ -233,27 +234,27 @@ class SolrResponseParser {
         return $properties;
     }
 
-    private function parseProperty(string $property): ?PropertyResponse {
+    private function parseProperty(string $property): ?PropertyWithURL {
         list($name, $type) = Helper::parseSOLRProperty($property);
         if (is_null($name)) {
             return null;
         }
         $displayTitle = WikiTools::getDisplayTitleForProperty($name);
         if ($type === Datatype::WIKIPAGE) {
-            return new PropertyResponse($name, $displayTitle, Datatype::WIKIPAGE, WikiTools::createURLForProperty($name));
+            return new PropertyWithURL($name, $displayTitle, Datatype::WIKIPAGE, WikiTools::createURLForProperty($name));
         } else {
-            return new PropertyResponse($name, $displayTitle, $type, WikiTools::createURLForProperty($name));
+            return new PropertyWithURL($name, $displayTitle, $type, WikiTools::createURLForProperty($name));
         }
 
     }
 
-    private function parsePropertyFromStats(string $property): ?PropertyResponse {
+    private function parsePropertyFromStats(string $property): ?PropertyWithURL {
         list($name, $type) = Helper::parseSOLRProperty($property);
         if (is_null($name)) {
             return null;
         }
         $displayTitle = WikiTools::getDisplayTitleForProperty($name);
-        return new PropertyResponse($name, $displayTitle, $type, WikiTools::createURLForProperty($name));
+        return new PropertyWithURL($name, $displayTitle, $type, WikiTools::createURLForProperty($name));
     }
 
     private static function startsWith($string, $query){
