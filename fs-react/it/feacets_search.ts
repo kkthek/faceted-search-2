@@ -50,8 +50,8 @@ describe('fecets-search', function () {
             }
             assert.equal(response.valueCounts.length, 1);
             assert.equal(response.valueCounts[0].property.title, "Was born at");
-            assert.equal(response.valueCounts[0].values[0].range.from, "1969-01-01 00:00:00");
-            assert.equal(response.valueCounts[0].values[0].range.to, "1970-01-01 00:00:00");
+            assert.equal(response.valueCounts[0].values[0].range.from, "1969-01-01T00:00:00Z");
+            assert.equal(response.valueCounts[0].values[0].range.to, "1970-01-01T00:00:00Z");
             assert.equal(response.valueCounts[0].values[0].count, 1);
 
 
