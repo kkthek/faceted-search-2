@@ -12,6 +12,7 @@ import {
     SolrStatsResponse,
     StatQuery
 } from "./datatypes";
+import {TypedJSON} from "typedjson";
 
 
 class Client {
@@ -58,7 +59,9 @@ class Client {
             referrerPolicy: "no-referrer",
             body: JSON.stringify(query)
         });
-        return await response.json();
+        const deserializer = new TypedJSON(SolrFacetResponse);
+        const json = await response.json();
+        return deserializer.parse(json);
     }
 
 }

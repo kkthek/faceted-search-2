@@ -1,12 +1,11 @@
 import React from "react";
 import {
-    BaseQuery, Property,
+    BaseQuery,
+    Property,
     PropertyFacet,
-    PropertyFacetCount,
+    PropertyFacetCount, PropertyValueCount,
     PropertyWithURL,
-    SolrDocumentsResponse,
-    SolrFacetResponse, SolrFacetResponseClass,
-    ValueCount
+    SolrFacetResponse
 } from "../common/datatypes";
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
@@ -26,14 +25,14 @@ function FacetViewProperty(prop: {
     onRemoveClick: (p: PropertyFacet)=>void,
 }) {
 
-    let solrFacetResponse = Tools.recreate(SolrFacetResponseClass, prop.searchStateFacets);
+    let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
 
     return <li className={'fs-facets'}>
         <span onClick={() => prop.onExpandClick(prop.property)}>[e]</span>
         <span>({prop.propertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
-        {!isSelectedFacet ? <FacetValues propertyValueCount={solrFacetResponse.getPropertyValueCount(prop.property)}
+        {!isSelectedFacet ? <FacetValues propertyValueCount={propertyValueCount}
                                          onValueClick={prop.onValueClick}
                                          removable={false}
                                          query={prop.query}

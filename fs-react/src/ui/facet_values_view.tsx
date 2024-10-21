@@ -18,9 +18,9 @@ function FacetValues(prop: {
 }) {
 
     function serializeFacetValue(p: PropertyWithURL, v: ValueCount) {
-        if (v.value !== null) {
+        if (v.value) {
             return v.value;
-        } else if (v.mwTitle !== null) {
+        } else if (v.mwTitle) {
             return v.mwTitle.displayTitle;
         } else {
             // range
@@ -36,10 +36,10 @@ function FacetValues(prop: {
         let value = serializeFacetValue(prop.propertyValueCount.property, v);
 
         let property = prop.propertyValueCount.property;
-        let propertyFacet: PropertyFacet = {
-            property: property.title,
-            type: property.type,
-            value: v.value, mwTitle: v.mwTitle, range: v.range};
+        let propertyFacet = new PropertyFacet(
+            property.title,
+            property.type,
+            v.value, v.mwTitle, v.range);
 
         return <li key={value+v.count}>
             <span onClick={() => prop.onValueClick(propertyFacet)}>{value}</span>

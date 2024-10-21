@@ -1,7 +1,6 @@
-import {BaseQuery, BaseQueryClass, DocumentQuery, PropertyFacet, PropertyValueCount, Range} from "../common/datatypes";
+import {BaseQuery, PropertyFacet, PropertyValueCount, Range} from "../common/datatypes";
 import React from "react";
 import FacetValues from "./facet_values_view";
-import Tools from "../util/tools";
 
 function FacetRange(prop: {
     propertyValueCount: PropertyValueCount|null,
@@ -14,7 +13,7 @@ function FacetRange(prop: {
         return;
     }
 
-    let propertyFacet = Tools.recreate(BaseQueryClass, prop.query).findPropertyFacet(prop.propertyValueCount.property);
+    let propertyFacet = prop.query.findPropertyFacet(prop.propertyValueCount.property);
     let range: Range = propertyFacet.range ? propertyFacet.range:null;
     let rangeSelected = range !== null;
     let rangeDisplay = rangeSelected ? range.from + " - " + range.to : '';

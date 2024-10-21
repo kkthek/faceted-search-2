@@ -1,9 +1,8 @@
 import React from "react";
-import {BaseQuery, BaseQueryClass, Datatype, PropertyFacet, PropertyFacetClass,} from "../common/datatypes";
+import {Datatype, PropertyFacet,} from "../common/datatypes";
 import FacetValues from "./facet_values_view";
 import {SearchStateFacet} from "./event_handler";
 import FacetRange from "./facet_range";
-import Tools from "../util/tools";
 
 
 function SelectedFacetsView(prop: {
@@ -15,7 +14,7 @@ function SelectedFacetsView(prop: {
 
     const facetValues = prop.searchStateDocument.facetsResponse.valueCounts.map((v, i) => {
 
-            let query = Tools.recreate(BaseQueryClass, prop.searchStateDocument.query);
+            let query = prop.searchStateDocument.query;
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (v.property.type === Datatype.datetime || v.property.type === Datatype.number) {
                 return (isSelectedFacet ? <FacetRange key={v.property.title}
@@ -29,7 +28,7 @@ function SelectedFacetsView(prop: {
                 let propertyFacet = query.findPropertyFacet(v.property);
                 if (!propertyFacet) return '';
 
-                let hasValue = Tools.recreate(PropertyFacetClass, propertyFacet).hasValue();
+                let hasValue = propertyFacet.hasValue();
 
                 return (isSelectedFacet ?
                     <div key={v.property.title}>

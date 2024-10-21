@@ -6,6 +6,7 @@
  */
 
 import Tools from "../util/tools";
+import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 
 /**
  * Request types
@@ -16,10 +17,15 @@ export class BaseQuery {
     categoryFacets: string[];
     namespaceFacets: number[];
     propertyFacets: PropertyFacet[];
-
-}
-
-export class BaseQueryClass extends BaseQuery{
+    constructor( searchText: string,
+                 propertyFacets: PropertyFacet[],
+                 categoryFacets: string[],
+                 namespaceFacets: number[]) {
+        this.searchText = searchText;
+        this.propertyFacets = propertyFacets;
+        this.categoryFacets = categoryFacets;
+        this.namespaceFacets = namespaceFacets;
+    }
     findPropertyFacet(property: Property): PropertyFacet {
         return Tools.findFirst(this.propertyFacets, (e) => e.property, property.title);
     }
@@ -38,17 +44,50 @@ export class DocumentQuery extends BaseQuery {
     sorts: Sort[];
     limit: number | null;
     offset: number | null;
+    constructor( searchText: string,
+                 propertyFacets: PropertyFacet[],
+                 categoryFacets: string[],
+                 namespaceFacets: number[],
+                 extraProperties: Property[],
+                 sorts: Sort[],
+                 limit: number,
+                 offset: number) {
+        super(searchText, propertyFacets, categoryFacets, namespaceFacets);
 
+        this.extraProperties = extraProperties;
+        this.sorts = sorts;
+        this.limit = limit;
+        this.offset = offset;
+    }
 }
 
 export class StatQuery extends BaseQuery {
     statsProperties: Property[]
+
+    constructor(searchText: string,
+                propertyFacets: PropertyFacet[],
+                categoryFacets: string[],
+                namespaceFacets: number[],
+                statsProperties: Property[]) {
+        super(searchText, propertyFacets, categoryFacets, namespaceFacets);
+        this.statsProperties = statsProperties;
+
+    }
 }
 
 export class FacetsQuery extends BaseQuery {
     facetQueries: RangeQuery[]
     facetProperties: Property[]
-
+    constructor( searchText: string,
+                 propertyFacets: PropertyFacet[],
+                 categoryFacets: string[],
+                 namespaceFacets: number[],
+                 facetQueries: RangeQuery[],
+                 facetProperties: Property[]) {
+        super(searchText, propertyFacets, categoryFacets, namespaceFacets);
+        this.facetQueries = facetQueries;
+        this.facetProperties = facetProperties;
+    }
 }
 
 export class PropertyFacet {
@@ -57,13 +96,22 @@ export class PropertyFacet {
     value: ValueType|void;
     mwTitle: MWTitle|void;
     range: Range|void
+    constructor(property: string,
+                type: Datatype,
+                value: ValueType|void,
+                mwTitle: MWTitle|void,
+                range: Range|void) {
+        this.property = property;
+        this.type = type;
+        this.value = value;
+        this.mwTitle = mwTitle;
+        this.range = range;
+    }
 
-
-}
-export class PropertyFacetClass extends PropertyFacet {
     hasValue(): boolean {
         return (this.value && this.value !== null || this.mwTitle && this.mwTitle !== null);
     }
+
 }
 
 export type ValueType = string | number | boolean | Date;
@@ -77,18 +125,27 @@ export enum Datatype {
     internal
 }
 
+@jsonObject
 export class Range {
+    @jsonMember(String)
     from: string
+    @jsonMember(String)
     to: string
 }
 
+@jsonObject
 export class Property {
+    @jsonMember(String)
     title: string
+    @jsonMember(Number)
     type: Datatype
 }
 
+@jsonObject
 export class MWTitle {
+    @jsonMember(String)
     title: string
+    @jsonMember(String)
     displayTitle: string
 }
 
@@ -112,7 +169,9 @@ export enum Order {
  * Response types
  */
 
+@jsonObject
 export class MWTitleWithURL extends MWTitle {
+    @jsonMember(String)
     url: string;
 }
 
@@ -129,20 +188,46 @@ export class SolrStatsResponse {
     stats: Stats[];
 }
 
-export class SolrFacetResponse {
-    valueCounts: PropertyValueCount[];
+@jsonObject
+export class PropertyWithURL extends Property {
+    @jsonMember(String)
+    displayTitle: string;
+    @jsonMember(String)
+    url: string
+}
+
+@jsonObject
+export class ValueCount {
+    @jsonMember(String)
+    value: string|null;
+    @jsonMember(MWTitleWithURL)
+    mwTitle: MWTitleWithURL|null;
+    @jsonMember(Range)
+    range: Range|null;
+    @jsonMember(Number)
+    count: number;
 
 }
 
-export class SolrFacetResponseClass extends SolrFacetResponse {
+@jsonObject
+export class PropertyValueCount {
+
+    @jsonMember(PropertyWithURL)
+    property: PropertyWithURL;
+    @jsonArrayMember(ValueCount)
+    values: ValueCount[]
+
+}
+
+@jsonObject
+export class SolrFacetResponse {
+
+    @jsonArrayMember(PropertyValueCount)
+    valueCounts: PropertyValueCount[];
+
     getPropertyValueCount(property: Property): PropertyValueCount {
         return Tools.findFirst(this.valueCounts || [], (e) => e.property.title, property.title);
     }
-}
-
-export class PropertyWithURL extends Property {
-    displayTitle: string;
-    url: string
 }
 
 export class Document {
@@ -184,19 +269,9 @@ export class NamespaceFacetValue {
     displayTitle: string
 }
 
-export class PropertyValueCount {
-    property: PropertyWithURL;
-    values: ValueCount[]
 
-}
 
-export class ValueCount {
-    value: string|null;
-    mwTitle: MWTitleWithURL|null;
-    range: Range|null;
-    count: number;
 
-}
 
 export class CategoryFacetCount {
     category: string;
