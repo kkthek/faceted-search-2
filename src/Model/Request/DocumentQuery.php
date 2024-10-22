@@ -24,7 +24,7 @@ class DocumentQuery extends BaseQuery {
     }
 
     /**
-     * @return Property[]
+     * @return \DIQA\FacetedSearch2\Model\Common\Property[]
      */
     public function getExtraProperties(): array
     {
@@ -56,7 +56,7 @@ class DocumentQuery extends BaseQuery {
     }
 
     /**
-     * @param Property[] $extraProperties
+     * @param \DIQA\FacetedSearch2\Model\Common\Property[] $extraProperties
      * @return DocumentQuery
      */
     public function setExtraProperties(array $extraProperties): DocumentQuery
