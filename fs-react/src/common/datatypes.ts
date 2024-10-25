@@ -97,6 +97,7 @@ export class PropertyFacet {
     value: ValueType|void;
     mwTitle: MWTitle|void;
     range: Range|void
+    ORed: boolean = false;
     constructor(property: string,
                 type: Datatype,
                 value: ValueType|void,
@@ -107,6 +108,10 @@ export class PropertyFacet {
         this.value = value;
         this.mwTitle = mwTitle;
         this.range = range;
+    }
+
+    setORed(ORed: boolean) {
+        this.ORed = ORed;
     }
 
     hasValue(): boolean {

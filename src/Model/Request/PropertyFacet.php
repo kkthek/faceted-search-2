@@ -14,6 +14,8 @@ class PropertyFacet {
     public ?MWTitle $mwTitle = null;
     public ?Range $range = null;
 
+    public bool $ORed = false;
+
     /**
      * PropertyFacet constructor.
      * @param string $property
@@ -92,6 +94,24 @@ class PropertyFacet {
     public function setRange(?Range $range): PropertyFacet
     {
         $this->range = $range;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isORed(): bool
+    {
+        return $this->ORed;
+    }
+
+    /**
+     * @param bool $ORed
+     * @return PropertyFacet
+     */
+    public function setORed(bool $ORed): PropertyFacet
+    {
+        $this->ORed = $ORed;
         return $this;
     }
 

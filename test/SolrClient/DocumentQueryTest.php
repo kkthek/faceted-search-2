@@ -33,6 +33,24 @@ final class SolrClientTest extends TestCase {
         $this->assertEquals(1, count($response->docs));
     }
 
+    public function testStringPropertyORConstraint(): void
+    {
+        $q = new DocumentQuery();
+        $p = new PropertyFacet('Has name', Datatype::STRING);
+        $p->setValue('Michael');
+        $p->setORed(true);
+
+        $p2 = new PropertyFacet('Has age', Datatype::NUMBER);
+        $p2->setValue(105);
+        $p2->setORed(true);
+
+        $q->setSearchText('')
+            ->setPropertyFacets([$p, $p2]);
+        $response = $this->client->requestDocuments($q);
+
+        $this->assertEquals(1, count($response->docs));
+    }
+
     public function testStringPropertyConstraintEmpty(): void
     {
         $q = new DocumentQuery();

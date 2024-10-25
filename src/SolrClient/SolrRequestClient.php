@@ -24,6 +24,7 @@ class SolrRequestClient
 {
 
 
+
     public function requestDocuments(DocumentQuery $q): SolrDocumentsResponse
     {
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
@@ -180,7 +181,16 @@ class SolrRequestClient
 
         $params['wt'] = 'json';
 
-        $fq = self::encodePropertyFacetValues($propertyFacetConstraints);
+        $ANDedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => !$e->isORed());
+        $fq = self::encodePropertyFacets($ANDedFacets);
+        $ORedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => $e->isORed());
+        if (count($ORedFacets) > 0) {
+            $oredFacetsGroupedByProperty = Util::groupArray($ORedFacets, fn(PropertyFacet $e) => $e->property);
+            foreach($oredFacetsGroupedByProperty as $items) {
+                $fq[] = "(" . implode(' OR ', self::encodePropertyFacets($items)) . ")";
+            }
+        }
+
         $fq = array_merge($fq, self::encodeCategoryFacets($categoryFacets));
         $fq = array_merge($fq, self::encodeNamespaceFacets($namespaceFacets));
         $params['fq'] = $fq;
@@ -198,11 +208,10 @@ class SolrRequestClient
         return $params;
     }
 
-    private static function encodePropertyFacetValues(array $facets/* @var PropertyFacet[] */): array
+    private static function encodePropertyFacets(array $andedFacets): array
     {
         $facetValues = [];
-
-        foreach ($facets as $f) {
+        foreach ($andedFacets as $f) {
             /* @var $f PropertyFacet */
             if ($f->type === Datatype::WIKIPAGE) {
                 $pAsValue = 'smwh_properties:' . Helper::generateSOLRProperty($f->property, Datatype::WIKIPAGE);
@@ -220,10 +229,9 @@ class SolrRequestClient
                     $facetValues[] = $pAsValue;
                 }
                 $p = Helper::generateSOLRPropertyForSearch($f->property, $f->type);
-                $value = '';
 
                 if (!is_null($f->range)) {
-                    $value = "[".self::encodeRange($f->range, $f->type)."]";
+                    $value = "[" . self::encodeRange($f->range, $f->type) . "]";
                     $facetValues[] = "$p:$value";
                 } else if (!is_null($f->value) && ($f->type === Datatype::STRING || $f->type === Datatype::NUMBER || $f->type === Datatype::BOOLEAN
                         || $f->type === Datatype::DATETIME)) {
@@ -234,6 +242,7 @@ class SolrRequestClient
         }
         return $facetValues;
     }
+
 
     private static function encodeRange(Range $range, $type): string
     {
