@@ -35,7 +35,7 @@ describe('fecets-search', function () {
         globalResult = null;
         let query = new FacetsQueryBuilder()
             .withFacetQuery({property: 'Was born at', type: Datatype.datetime,
-                    range: {from: "1969-01-01T00:00:00Z", to: "1970-01-01T00:00:00Z"} })
+                    range: {from: new Date(Date.parse("1969-01-01T00:00:00Z")), to: new Date(Date.parse("1970-01-01T00:00:00Z"))}})
             .build();
         client.searchFacets(query).then((e) => {
             globalResult = e;
@@ -50,8 +50,8 @@ describe('fecets-search', function () {
             }
             assert.equal(response.valueCounts.length, 1);
             assert.equal(response.valueCounts[0].property.title, "Was born at");
-            assert.equal(response.valueCounts[0].values[0].range.from, "1969-01-01T00:00:00Z");
-            assert.equal(response.valueCounts[0].values[0].range.to, "1970-01-01T00:00:00Z");
+            assert.equal(response.valueCounts[0].values[0].range.from.toISOString(), "1969-01-01T00:00:00.000Z");
+            assert.equal(response.valueCounts[0].values[0].range.to.toISOString(), "1970-01-01T00:00:00.000Z");
             assert.equal(response.valueCounts[0].values[0].count, 1);
 
 
