@@ -10,7 +10,7 @@ final class NumericClustererTest extends TestCase
 
     public function testSmth()
     {
-        $clusterer = new NumericClusterer();
+        $clusterer = new NumericClusterer(true);
         $clusters = $clusterer->makeClusters(50, 500, 10);
 
         $this->assertEquals("50", $clusters[0]->from);

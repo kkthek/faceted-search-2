@@ -8,6 +8,14 @@ use DIQA\FacetedSearch2\Model\Common\Range;
 class NumericClusterer implements Clusterer
 {
 
+    private $isInteger;
+
+    public function __construct($isInteger)
+    {
+        $this->isInteger = $isInteger;
+    }
+
+
     public function makeClusters(int $min, int $max, int $numSteps): array
     {
         $diff = $max - $min;
@@ -16,7 +24,7 @@ class NumericClusterer implements Clusterer
         $incr = $diff / $numSteps;
 
         for ($i = 0; $i < $numSteps; ++$i) {
-            $values[$i] = round($currVal, 2);
+            $values[$i] = round($currVal, $this->isInteger ? 0 : 2);
             $currVal += $incr;
         }
         $values[$i] = $max + 1;

@@ -30,7 +30,7 @@ class Stats
         $this->max = $max;
         $this->count = $count;
         $this->sum = $sum;
-        $this->makeClusters($property, $min, $max);
+        $this->makeClusters($property, $min, $max, $sum);
     }
 
     /**
@@ -73,7 +73,7 @@ class Stats
         return $this->sum;
     }
 
-    private function makeClusters(PropertyWithURL $property, ?float $min, ?float $max)
+    private function makeClusters(PropertyWithURL $property, ?float $min, ?float $max, ?float $sum)
     {
         switch($property->getType()) {
             case Datatype::DATETIME:
@@ -81,7 +81,8 @@ class Stats
                 $this->clusters = $clusterer->makeClusters($min, $max, 10);
                 break;
             case Datatype::NUMBER:
-                $clusterer = new NumericClusterer();
+                $isInteger = ctype_digit("$sum");
+                $clusterer = new NumericClusterer($isInteger);
                 $this->clusters = $clusterer->makeClusters($min, $max, 10);
                 break;
             default:
