@@ -33,7 +33,9 @@ class Client {
             referrerPolicy: "no-referrer",
             body: JSON.stringify(query)
         });
-        return await response.json();
+        const deserializer = new TypedJSON(SolrDocumentsResponse);
+        const json = await response.json();
+        return deserializer.parse(json);
     }
 
     async searchStats(query: StatQuery
@@ -46,7 +48,9 @@ class Client {
             referrerPolicy: "no-referrer",
             body: JSON.stringify(query)
         });
-        return await response.json();
+        const deserializer = new TypedJSON(SolrStatsResponse);
+        const json = await response.json();
+        return deserializer.parse(json);
     }
 
     async searchFacets(query: FacetsQuery

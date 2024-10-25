@@ -7,6 +7,7 @@
 
 import Tools from "../util/tools";
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
+import {CustomDeserializerParams} from "typedjson/lib/types/metadata";
 
 /**
  * Request types
@@ -127,10 +128,10 @@ export enum Datatype {
 
 @jsonObject
 export class Range {
-    @jsonMember(String)
-    from: string
-    @jsonMember(String)
-    to: string
+    @jsonMember({deserializer: value => deserializeValue(value)})
+    from: Date|number
+    @jsonMember({deserializer: value => deserializeValue(value)})
+    to: Date|number
 }
 
 @jsonObject
@@ -147,6 +148,11 @@ export class MWTitle {
     title: string
     @jsonMember(String)
     displayTitle: string
+
+    constructor(title: string, displayTitle: string) {
+        this.title = title;
+        this.displayTitle = displayTitle;
+    }
 }
 
 export class RangeQuery {
@@ -173,19 +179,12 @@ export enum Order {
 export class MWTitleWithURL extends MWTitle {
     @jsonMember(String)
     url: string;
-}
 
-export class SolrDocumentsResponse {
-    numResults: number;
-    docs: Document[];
-    categoryFacetCounts: CategoryFacetCount[];
-    propertyFacetCounts: PropertyFacetCount[];
-    namespaceFacetCounts: NamespaceFacetCount[];
+    constructor(title: string, displayTitle: string, url: string) {
+        super(title, displayTitle);
+        this.url = url;
+    }
 
-}
-
-export class SolrStatsResponse {
-    stats: Stats[];
 }
 
 @jsonObject
@@ -230,63 +229,141 @@ export class SolrFacetResponse {
     }
 }
 
-export class Document {
-    id: string
-    propertyFacets: PropertyFacetValues[];
-    categoryFacets: CategoryFacetValue[];
-    directCategoryFacets: CategoryFacetValue[];
-    namespaceFacet: NamespaceFacetValue;
-    properties: PropertyWithURL[];
-    title: string;
-    displayTitle: string;
-    url: string;
-    score: number;
-    highlighting: string | null;
+function deserializeValue(value: any) {
+
+    if (value.title) {
+        return new MWTitleWithURL(value.title, value.displayTitle, value.url);
+    } else if (typeof(value) === 'string' && value.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)) {
+        return new Date(Date.parse(value))
+    } else return value;
 }
 
-export class Stats {
-    property: PropertyWithURL;
-    min: number;
-    max: number;
-    count: number;
-    sum: number;
-    clusters: Range[]
+function objArrayDeserializer(
+    json: Array<{prop: string; shouldDeserialize: boolean}>,
+    params: CustomDeserializerParams,
+) {
+
+    return json.map(
+        value => deserializeValue(value)
+    );
 }
 
+@jsonObject
 export class PropertyFacetValues {
+    @jsonMember(PropertyWithURL)
     property: PropertyWithURL
+
+    @jsonArrayMember(String,{deserializer: objArrayDeserializer})
     values: string[] | number[] | boolean[] | Date[] | MWTitleWithURL[]
 }
 
+@jsonObject
 export class CategoryFacetValue {
+    @jsonMember(String)
     category: string
+    @jsonMember(String)
     displayTitle: string
+    @jsonMember(String)
     url: string
 }
 
+@jsonObject
 export class NamespaceFacetValue {
+    @jsonMember(Number)
     namespace: number;
+    @jsonMember(String)
     displayTitle: string
 }
 
-
-
-
-
+@jsonObject
 export class CategoryFacetCount {
+    @jsonMember(String)
     category: string;
+    @jsonMember(String)
     displayTitle: string;
+    @jsonMember(Number)
     count: number;
 }
 
+@jsonObject
 export class PropertyFacetCount {
+    @jsonMember(PropertyWithURL)
     property: PropertyWithURL;
+    @jsonMember(Number)
     count: number;
 }
 
+@jsonObject
 export class NamespaceFacetCount {
+    @jsonMember(Number)
     namespace: number;
+    @jsonMember(String)
     displayTitle: string;
+    @jsonMember(Number)
     count: number;
+}
+
+
+@jsonObject
+export class Document {
+    @jsonMember(String)
+    id: string
+    @jsonArrayMember(PropertyFacetValues)
+    propertyFacets: PropertyFacetValues[];
+    @jsonArrayMember(CategoryFacetValue)
+    categoryFacets: CategoryFacetValue[];
+    @jsonArrayMember(CategoryFacetValue)
+    directCategoryFacets: CategoryFacetValue[];
+    @jsonMember(NamespaceFacetValue)
+    namespaceFacet: NamespaceFacetValue;
+    @jsonArrayMember(PropertyWithURL)
+    properties: PropertyWithURL[];
+    @jsonMember(String)
+    title: string;
+    @jsonMember(String)
+    displayTitle: string;
+    @jsonMember(String)
+    url: string;
+    @jsonMember(Number)
+    score: number;
+    @jsonMember(String)
+    highlighting: string | null;
+}
+
+@jsonObject
+export class SolrDocumentsResponse {
+    @jsonMember(Number)
+    numResults: number;
+    @jsonArrayMember(Document)
+    docs: Document[];
+    @jsonArrayMember(CategoryFacetCount)
+    categoryFacetCounts: CategoryFacetCount[];
+    @jsonArrayMember(PropertyFacetCount)
+    propertyFacetCounts: PropertyFacetCount[];
+    @jsonArrayMember(NamespaceFacetCount)
+    namespaceFacetCounts: NamespaceFacetCount[];
+
+}
+
+@jsonObject
+export class Stats {
+    @jsonMember(PropertyWithURL)
+    property: PropertyWithURL;
+    @jsonMember(Number)
+    min: number;
+    @jsonMember(Number)
+    max: number;
+    @jsonMember(Number)
+    count: number;
+    @jsonMember(Number)
+    sum: number;
+    @jsonArrayMember(Range)
+    clusters: Range[]
+}
+
+@jsonObject
+export class SolrStatsResponse {
+    @jsonArrayMember(Stats)
+    stats: Stats[];
 }
 
