@@ -1,9 +1,9 @@
-import React from "react";
+import React, {useRef} from "react";
 import {
     BaseQuery,
     Property,
     PropertyFacet,
-    PropertyFacetCount, PropertyValueCount,
+    PropertyFacetCount,
     PropertyWithURL,
     SolrFacetResponse
 } from "../common/datatypes";
@@ -27,17 +27,26 @@ function FacetViewProperty(prop: {
 
     let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
+    let facetValuesDiv = useRef<any>(null);
 
     return <li className={'fs-facets'}>
-        <span onClick={() => prop.onExpandClick(prop.property)}>[e]</span>
+        <span onClick={() => {
+            if (propertyValueCount === null) {
+                prop.onExpandClick(prop.property);
+                return;
+            }
+            const div = facetValuesDiv.current;
+            div.style.display = div.checkVisibility() ? 'none' :'block';
+        } }>[e]</span>
         <span>({prop.propertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
-        {!isSelectedFacet ? <FacetValues propertyValueCount={propertyValueCount}
+        {!isSelectedFacet ? <div ref={facetValuesDiv}>
+            <FacetValues propertyValueCount={propertyValueCount}
                                          onValueClick={prop.onValueClick}
                                          removable={false}
                                          query={prop.query}
                                          onRemoveClick={prop.onRemoveClick}
-        /> : ''}
+        /></div> : ''}
     </li>
 }
 
