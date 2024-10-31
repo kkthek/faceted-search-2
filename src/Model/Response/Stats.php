@@ -81,7 +81,7 @@ class Stats
                 $this->clusters = $clusterer->makeClusters($min, $max, 10);
                 break;
             case Datatype::NUMBER:
-                $isInteger = ctype_digit("$sum");
+                $isInteger = ctype_digit((string) abs($sum));
                 $clusterer = new NumericClusterer($isInteger);
                 $this->clusters = $clusterer->makeClusters($min, $max, 10);
                 break;

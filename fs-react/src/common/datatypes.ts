@@ -98,6 +98,7 @@ export class PropertyFacet {
     mwTitle: MWTitle|void;
     range: Range|void
     ORed: boolean = false;
+
     constructor(property: string,
                 type: Datatype,
                 value: ValueType|void,
@@ -202,8 +203,8 @@ export class PropertyWithURL extends Property {
 
 @jsonObject
 export class ValueCount {
-    @jsonMember(String)
-    value: string|null;
+    @jsonMember({deserializer: value => deserializeValue(value)})
+    value: string|number|Date|null;
     @jsonMember(MWTitleWithURL)
     mwTitle: MWTitleWithURL|null;
     @jsonMember(Range)
@@ -235,7 +236,9 @@ export class SolrFacetResponse {
 }
 
 function deserializeValue(value: any) {
-
+    if (value == null) {
+        return null;
+    }
     if (value.title) {
         return new MWTitleWithURL(value.title, value.displayTitle, value.url);
     } else if (typeof(value) === 'string' && value.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)) {

@@ -1,13 +1,6 @@
-import {
-    BaseQuery,
-    Property,
-    PropertyFacet,
-    PropertyWithURL,
-    PropertyValueCount,
-    ValueCount
-} from "../common/datatypes";
+import {BaseQuery, Datatype, PropertyFacet, PropertyValueCount, PropertyWithURL, ValueCount} from "../common/datatypes";
 import React from "react";
-import Tools from "../util/tools";
+import DisplayTools from "../util/display_tools";
 
 function FacetValues(prop: {
     query: BaseQuery,
@@ -17,13 +10,19 @@ function FacetValues(prop: {
     onRemoveClick: (p: PropertyFacet)=>void,
 }) {
 
-    function serializeFacetValue(p: PropertyWithURL, v: ValueCount) {
+    function serializeFacetValue(p: PropertyWithURL, v: ValueCount): string {
         if (v.value) {
-            return v.value;
+            if (p.type === Datatype.datetime) {
+                return DisplayTools.displayDate(v.value as Date);
+            }
+            return v.value.toString();
         } else if (v.mwTitle) {
-            return v.mwTitle.displayTitle;
+            return  v.mwTitle.displayTitle;
         } else {
             // range
+            if (p.type === Datatype.datetime) {
+                return DisplayTools.displayDateRange(v.range.from as Date, v.range.to as Date);
+            }
             return v.range.from + "-" + v.range.to;
         }
     }
@@ -41,7 +40,7 @@ function FacetValues(prop: {
             property.type,
             v.value, v.mwTitle, v.range);
 
-        return <li key={value+v.count}>
+        return <li key={value.toString()+v.count}>
             <span onClick={() => prop.onValueClick(propertyFacet)}>{value}</span>
             :
             <span>{v.count}</span>

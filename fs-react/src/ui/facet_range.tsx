@@ -1,6 +1,7 @@
-import {BaseQuery, PropertyFacet, PropertyValueCount, Range} from "../common/datatypes";
+import {BaseQuery, Datatype, PropertyFacet, PropertyValueCount, Range} from "../common/datatypes";
 import React from "react";
 import FacetValues from "./facet_values_view";
+import DisplayTools from "../util/display_tools";
 
 function FacetRange(prop: {
     propertyValueCount: PropertyValueCount|null,
@@ -16,7 +17,13 @@ function FacetRange(prop: {
     let propertyFacet = prop.query.findPropertyFacet(prop.propertyValueCount.property);
     let range: Range = propertyFacet.range ? propertyFacet.range:null;
     let rangeSelected = range !== null;
-    let rangeDisplay = rangeSelected ? range.from + " - " + range.to : '';
+
+    let rangeDisplay;
+    if (prop.propertyValueCount.property.type === Datatype.datetime) {
+        rangeDisplay = rangeSelected ? DisplayTools.displayDateRange(range.from as Date, range.to as Date) : '';
+    } else {
+        rangeDisplay = rangeSelected ? range.from + " - " + range.to : '';
+    }
 
     return <div key={propertyFacet.property}>
         <span>({propertyFacet.property})</span>

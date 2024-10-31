@@ -17,7 +17,7 @@ class DateTimeClusterer implements Clusterer
     private int $numSteps;
     private int $currentStep;
 
-    private const DATETIME_FORMAT = 'Y-m-d\TH:i:s';
+    private const DATETIME_FORMAT = 'Y-m-d\TH:i:s\Z';
 
     public function makeClusters(int $min, int $max, int $numSteps): array
     {
@@ -30,9 +30,12 @@ class DateTimeClusterer implements Clusterer
         $lowerVal = $this->next();
         while (($upperVal = $this->next()) !== null) {
             $temp = clone $upperVal;
+            if ($upperVal->second != 59) {
+                $upperVal->subSecond();
+            }
             $values[] = new Range(
                 $lowerVal->format(self::DATETIME_FORMAT),
-                $upperVal->equalTo($lowerVal) ? $upperVal->format(self::DATETIME_FORMAT) : $upperVal->subSecond()->format(self::DATETIME_FORMAT)
+                $upperVal->format(self::DATETIME_FORMAT)
             );
             $lowerVal = $temp;
         }

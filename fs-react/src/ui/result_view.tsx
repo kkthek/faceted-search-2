@@ -1,10 +1,11 @@
 import React from "react";
 import {Document} from "../common/datatypes";
+import WikiLink from "./wiki_link";
 
 
 function SearchResult(prop: { doc: Document}) {
     return <li className={'fs-search-result'}>
-        <span>{prop.doc.title}</span>
+        <span><WikiLink doc={prop.doc}/></span>
         <div dangerouslySetInnerHTML={{ __html: prop.doc.highlighting }}></div>
     </li>
 }
