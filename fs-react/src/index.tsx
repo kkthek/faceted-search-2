@@ -17,6 +17,7 @@ import CategoryView from "./ui/category_view";
 import SelectedCategoriesView from "./ui/selected_categories_view";
 import NamespaceView from "./ui/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
+import PagingView from "./ui/paging_view";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -96,6 +97,9 @@ function App() {
             </div>
             <div id={'fs-results'} className={'fs-boxes fs-body'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}/>
+                <PagingView searchStateDocument={searchStateDocument}
+                            onPageIndexClick={eventHandler.onPageIndexClick.bind(eventHandler)}
+                />
             </div>
             </div>
         </WikiContext.Provider>;

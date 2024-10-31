@@ -95,6 +95,11 @@ class EventHandler {
         this.updateDocuments();
     }
 
+    onPageIndexClick(offset: number) {
+        this.currentDocumentsQueryBuilder.withOffset(offset);
+        this.updateDocuments();
+    }
+
     private updateFacetValuesForProperty(p: Property) {
 
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
