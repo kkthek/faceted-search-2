@@ -8,7 +8,7 @@ use DIQA\FacetedSearch2\Model\Common\Range;
 class NumericClusterer implements Clusterer
 {
 
-    private $isInteger;
+    private bool $isInteger;
 
     public function __construct($isInteger)
     {

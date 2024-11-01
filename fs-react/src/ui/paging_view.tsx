@@ -4,13 +4,13 @@ import {DocumentQuery} from "../common/datatypes";
 
 function PagingView(prop: {
     searchStateDocument: SearchStateDocument,
-    onPageIndexClick: (offset: number)=>void,
+    onPageIndexClick: (pageIndex: number, limit: number)=>void,
 }) {
     if (!prop.searchStateDocument) {
         return;
     }
-    const NUMBER_RESULTS_ONE_PAGE = 10;
-    const SLIDING_WINDOW_SIZE = 10;
+    const NUMBER_RESULTS_ONE_PAGE = 10; // could come from config
+    const SLIDING_WINDOW_SIZE = 10;     // could come from config
 
     const numPages = Math.round(prop.searchStateDocument.documentResponse.numResults / NUMBER_RESULTS_ONE_PAGE) + 1;
     const slidingWindowSize = Math.min(SLIDING_WINDOW_SIZE, numPages);
@@ -23,11 +23,15 @@ function PagingView(prop: {
     let pageIndexesSlidingWindow = Array.from(Array(slidingWindowSize), (_, i) => +i+1 + start);
 
     const slidingWindow = pageIndexesSlidingWindow.map((pageIndex) => {
-        return <span key={pageIndex} onClick={() => prop.onPageIndexClick((pageIndex-1) * NUMBER_RESULTS_ONE_PAGE)}>[ {pageIndex} ]</span>
+        return <span key={pageIndex} onClick={() => prop.onPageIndexClick((pageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[ {pageIndex} ]</span>
     })
 
     return <div>
+        {currentPageIndex > 0 ? <span onClick={() => prop.onPageIndexClick(0, NUMBER_RESULTS_ONE_PAGE)}>[&lt;&lt;]</span> : ''}
+        {currentPageIndex > 0 ? <span onClick={() => prop.onPageIndexClick((currentPageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[&lt;]</span>: ''}
         {slidingWindow}
+        {currentPageIndex + 1 < numPages - 1 ? <span onClick={() => prop.onPageIndexClick((currentPageIndex+1), NUMBER_RESULTS_ONE_PAGE)}>[&gt;]</span>: ''}
+        {currentPageIndex < numPages - 1 ? <span onClick={() => prop.onPageIndexClick((numPages-1), NUMBER_RESULTS_ONE_PAGE)}>[&gt;&gt;]</span>: ''}
     </div>
 }
 

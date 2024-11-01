@@ -95,8 +95,8 @@ class EventHandler {
         this.updateDocuments();
     }
 
-    onPageIndexClick(offset: number) {
-        this.currentDocumentsQueryBuilder.withOffset(offset);
+    onPageIndexClick(pageIndex: number, limit : number) {
+        this.currentDocumentsQueryBuilder.withOffset(pageIndex*limit);
         this.updateDocuments();
     }
 
