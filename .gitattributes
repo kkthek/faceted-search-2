@@ -1,6 +1,7 @@
 vm-ubuntu export-ignore
 test export-ignore
-fs-react export-ignore
+fs-react/it export-ignore
+fs-react/src export-ignore
 rest.php export-ignore
 runTests.sh export-ignore
 phpunit export-ignore

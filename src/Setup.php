@@ -11,12 +11,22 @@ class Setup {
         global $wgResourceModules;
         global $IP;
 
+        $basePath = "$IP/extensions/FacetedSearch2";
+        if (file_exists("$basePath/fs-react/dist/main.js")) {
+            $reactScript = "fs-react/dist/main.js";
+        } else if (file_exists("$basePath/fs-react/public/main.js")) {
+            $reactScript = "fs-react/public/main.js";
+        } else {
+            trigger_error("No compiled react script found");
+            die();
+        }
+
         $wgResourceModules['ext.diqa.facetedsearch2'] = array(
-            'localBasePath' => "$IP/extensions/FacetedSearch2",
+            'localBasePath' => $basePath,
             'remoteExtPath' => 'FacetedSearch2',
             'position' => 'bottom',
             'scripts' => [
-                'fs-react/dist/main.js',
+                $reactScript,
             ],
             'styles' => [ 'fs-react/public/skins/main.css' ],
             'dependencies' => [],
