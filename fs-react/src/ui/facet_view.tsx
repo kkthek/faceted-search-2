@@ -29,15 +29,17 @@ function FacetViewProperty(prop: {
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
     let facetValuesDiv = useRef<any>(null);
 
+    function handleExpandClick() {
+        if (propertyValueCount === null) {
+            prop.onExpandClick(prop.property);
+            return;
+        }
+        const div = facetValuesDiv.current;
+        div.style.display = div.checkVisibility() ? 'none' : 'block';
+    }
+
     return <li className={'fs-facets'}>
-        <span onClick={() => {
-            if (propertyValueCount === null) {
-                prop.onExpandClick(prop.property);
-                return;
-            }
-            const div = facetValuesDiv.current;
-            div.style.display = div.checkVisibility() ? 'none' :'block';
-        } }>[e]</span>
+        <span onClick={handleExpandClick}>[e]</span>
         <span>({prop.propertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
         {!isSelectedFacet ? <div ref={facetValuesDiv}>
@@ -59,15 +61,11 @@ function FacetView(prop: {
     onRemoveClick: (p: PropertyFacet)=>void,
 }) {
     if (!prop.searchStateDocument) return;
-    let properties = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
-        return doc.properties;
-    });
 
-    const uniqueProperties = Tools.makeArrayUnique(properties, (p: PropertyWithURL) => { return p.title });
+    const uniqueProperties = prop.searchStateDocument.documentResponse.getUniqueProperties();
 
     const listItems = uniqueProperties.map((property,i) => {
-        const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.propertyFacetCounts,
-            (c) => c.property.title, property.title);
+        const facetCount = prop.searchStateDocument.documentResponse.getPropertyFacetCounts(property);
 
         return <FacetViewProperty key={property.title}
                            query={prop.searchStateDocument.query}

@@ -351,6 +351,17 @@ export class SolrDocumentsResponse {
     @jsonArrayMember(NamespaceFacetCount)
     namespaceFacetCounts: NamespaceFacetCount[];
 
+    getPropertyFacetCounts(property: Property) {
+        return Tools.findFirst(this.propertyFacetCounts,(c) => c.property.title, property.title);
+    }
+
+    getUniqueProperties() {
+        let properties =this.docs.flatMap((doc, i) => {
+            return doc.properties;
+        });
+
+        return Tools.makeArrayUnique(properties, (p: PropertyWithURL) => { return p.title });
+    }
 }
 
 @jsonObject
