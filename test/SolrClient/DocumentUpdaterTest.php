@@ -11,10 +11,10 @@ final class DocumentUpdaterTest extends TestCase {
 
     public function testUpdate(): void
     {
-        $document = new Document('4711', "Michael, Erdmann.", "", 0);
+        $document = new Document('4711', "Markus, Schumacher.", "", 0);
         $p = new Property('Has name', Datatype::STRING);
 
-        $pv = new PropertyValues($p, ['Michael']);
+        $pv = new PropertyValues($p, ['Markus']);
         $document->setPropertyValues([$pv]);
 
         $updater = new SolrUpdateClient();

@@ -30,7 +30,7 @@ class DateTimeClusterer implements Clusterer
         $lowerVal = $this->next();
         while (($upperVal = $this->next()) !== null) {
             $temp = clone $upperVal;
-            if ($upperVal->second != 59) {
+            if ($upperVal->second != 59 && !$upperVal->equalTo($lowerVal)) {
                 $upperVal->subSecond();
             }
             $values[] = new Range(

@@ -18,7 +18,7 @@ class DisplayTools {
             let tomMonthStr = toMonth < 10 ? "0"+toMonth:toMonth;
             return from.getUTCFullYear().toString() + "/" + fromMonthStr + " - " + to.getUTCFullYear().toString() + "/" + tomMonthStr;
         } else if (this.isBeginOfDay(from) && this.isEndOfDay(to)) {
-            return from.toDateString() + " - " + to.toDateString();
+            return this.singleDay(from) + " - " + this.singleDay(to);
         } else {
             return from.toTimeString() + " - " + to.toTimeString();
         }
@@ -80,6 +80,9 @@ class DisplayTools {
             && d.getUTCSeconds() === 59;
     }
 
+    private static singleDay(d: Date) {
+        return d.getUTCFullYear() + "-" + (d.getUTCMonth()+1) + "-"+d.getUTCDate();
+    }
 }
 
 export default DisplayTools;

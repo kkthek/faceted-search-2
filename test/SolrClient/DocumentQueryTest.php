@@ -24,7 +24,7 @@ final class SolrClientTest extends TestCase {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet('Has name', Datatype::STRING);
-        $p->setValue('Michael');
+        $p->setValue('Markus');
 
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
@@ -37,7 +37,7 @@ final class SolrClientTest extends TestCase {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet('Has name', Datatype::STRING);
-        $p->setValue('Michael');
+        $p->setValue('Markus');
         $p->setORed(true);
 
         $p2 = new PropertyFacet('Has age', Datatype::NUMBER);

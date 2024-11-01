@@ -44,7 +44,7 @@ describe('document-search', function () {
                 assert.fail(response.detail);
                 return;
             }
-            assert.equal(response.docs[0].title, 'Michael, Erdmann.');
+            assert.equal(response.docs[0].title, 'Markus, Schumacher.');
 
         });
     });
@@ -68,7 +68,7 @@ describe('document-search', function () {
                 assert.fail(response.detail);
                 return;
             }
-            assert.equal(response.docs[0].title, 'Michael, Erdmann.');
+            assert.equal(response.docs[0].title, 'Markus, Schumacher.');
 
         });
     });

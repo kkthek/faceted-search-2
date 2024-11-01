@@ -51,7 +51,7 @@ final class FacetQueryTest extends TestCase {
         $response = $this->client->requestFacet($q);
 
         $this->assertEquals(1, count($response->getValueCounts()));
-        $this->assertEquals('Michael', $response->getValueCounts()[0]->values[0]->value);
+        $this->assertEquals('Markus', $response->getValueCounts()[0]->values[0]->value);
         $this->assertEquals(1, $response->getValueCounts()[0]->values[0]->count);
 
     }
