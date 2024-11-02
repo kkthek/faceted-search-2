@@ -114,6 +114,9 @@ class EventHandler {
                     this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
                 });
                 this.updateFacets();
+            }).catch((e) => {
+                console.error("Request to backend failed");
+                console.error(e);
             });
         } else {
             this.currentFacetsQueryBuilder.withFacetProperties(p);
@@ -128,7 +131,10 @@ class EventHandler {
                 documentResponse: response,
                 query: this.currentDocumentsQueryBuilder.build()
             });
-        }).catch((e) => { console.log("query failed: " + e)});
+        }).catch((e) => {
+            console.error("Request to backend failed");
+            console.error(e);
+        });
     }
 
     private updateFacets() {
@@ -137,7 +143,10 @@ class EventHandler {
                 facetsResponse: response,
                 query: this.currentFacetsQueryBuilder.build()
             });
-        }).catch((e) => { console.log("query failed: " + e)});
+        }).catch((e) => {
+            console.error("Request to backend failed");
+            console.error(e);
+        });
     }
 }
 

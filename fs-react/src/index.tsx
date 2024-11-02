@@ -58,8 +58,10 @@ function App() {
                     documentResponse: response,
                     query: currentDocumentsQueryBuilder.build()
                 });
-            })
-                .catch((e) => { console.log("query failed: " + e)});
+            }).catch((e) => {
+                    console.error("Request to backend failed");
+                    console.error(e);
+            });
         },
         [initialSearch]
     );

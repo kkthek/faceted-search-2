@@ -33,6 +33,7 @@ class Client {
             referrerPolicy: "no-referrer",
             body: JSON.stringify(query)
         });
+        await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(SolrDocumentsResponse);
         const json = await response.json();
         return deserializer.parse(json);
@@ -48,6 +49,7 @@ class Client {
             referrerPolicy: "no-referrer",
             body: JSON.stringify(query)
         });
+        await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(SolrStatsResponse);
         const json = await response.json();
         return deserializer.parse(json);
@@ -63,11 +65,21 @@ class Client {
             referrerPolicy: "no-referrer",
             body: JSON.stringify(query)
         });
+        await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(SolrFacetResponse);
         const json = await response.json();
         return deserializer.parse(json);
     }
 
+    async handleErrorIfAny(response: Response) {
+        if (!response.ok) {
+            throw ({
+                status: response.status,
+                statusText: response.statusText,
+                message: await response.text()
+            });
+        }
+    }
 }
 
 export default Client;
