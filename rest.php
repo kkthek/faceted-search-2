@@ -57,19 +57,28 @@ use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 $entityBody = file_get_contents('php://input');
 
 $url = $_SERVER['REQUEST_URI'];
-
+header('Content-Type: application/json');
 $client = new SolrRequestClient();
-if (endsWith($url, '/FacetedSearch2/v1/proxy/documents')) {
-    $query = DocumentQuery::fromJson($entityBody);
-    echo json_encode($client->requestDocuments($query));
-} else if (endsWith($url, '/FacetedSearch2/v1/proxy/stats')) {
-    $query = StatsQuery::fromJson($entityBody);
-    echo json_encode($client->requestStats($query));
-} else if (endsWith($url, '/FacetedSearch2/v1/proxy/facets')) {
-    $query = FacetQuery::fromJson($entityBody);
-    echo json_encode($client->requestFacet($query));
-} else {
-    throw new Exception('Not yet supported');
+
+try {
+    if (endsWith($url, '/FacetedSearch2/v1/proxy/documents')) {
+        $query = DocumentQuery::fromJson($entityBody);
+        echo json_encode($client->requestDocuments($query));
+    } else if (endsWith($url, '/FacetedSearch2/v1/proxy/stats')) {
+        $query = StatsQuery::fromJson($entityBody);
+        echo json_encode($client->requestStats($query));
+    } else if (endsWith($url, '/FacetedSearch2/v1/proxy/facets')) {
+        $query = FacetQuery::fromJson($entityBody);
+        echo json_encode($client->requestFacet($query));
+    } else {
+        throw new Exception("endpoint '$url' not supported", 400);
+    }
+} catch(JsonMapper_Exception $e) {
+    http_response_code(400);
+    echo $e->getMessage();
+} catch(Exception $e) {
+    http_response_code($e->getCode() !== 0 ? $e->getCode() : 500);
+    echo $e->getMessage();
 }
 
 
