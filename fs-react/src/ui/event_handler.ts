@@ -104,17 +104,7 @@ class EventHandler {
 
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         if ((p.type === Datatype.datetime || p.type === Datatype.number) ) {
-            const sqb = new StatQueryBuilder();
-            sqb.updateBaseQuery(this.currentDocumentsQueryBuilder);
-            sqb.withStatField(p);
-            this.client.searchStats(sqb.build()).then((r) => {
-                let stat: Stats = r.stats[0];
-                this.currentFacetsQueryBuilder.clearFacetsForProperty(p);
-                stat.clusters.forEach((r) => {
-                    this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
-                });
-                this.updateFacets();
-            }).catch((e) => {
+            this.requestRangesAndUpdateFacets(p).catch((e) => {
                 console.error("Request to backend failed");
                 console.error(e);
             });
@@ -123,6 +113,19 @@ class EventHandler {
             this.updateFacets();
 
         }
+    }
+
+    private async requestRangesAndUpdateFacets(p: Property) {
+        const sqb = new StatQueryBuilder();
+        sqb.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        sqb.withStatField(p);
+        let response = await this.client.searchStats(sqb.build());
+        let stat: Stats = response.stats[0];
+        this.currentFacetsQueryBuilder.clearFacetsForProperty(p);
+        stat.clusters.forEach((r) => {
+            this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
+        });
+        this.updateFacets();
     }
 
     private updateDocuments() {
