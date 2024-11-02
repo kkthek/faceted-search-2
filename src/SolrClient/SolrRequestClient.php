@@ -170,9 +170,8 @@ class SolrRequestClient
         $params['facet.mincount'] = '1';
         $params['json.nl'] = 'map';
         $params['fl'] = implode(",", array_merge($defaultProperties, $extraPropertiesAsStrings));
-        if ($searchText !== '') {
-            $params['hl'] = 'true';
-        }
+        $params['hl'] = 'true';
+        $params['hl.method'] = 'unified';
         $params['hl.fl'] = 'smwh_search_field';
         $params['hl.simple-pre'] = '<b>';
         $params['hl.simple-post'] = '</b>';

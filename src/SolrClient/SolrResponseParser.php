@@ -74,6 +74,14 @@ class SolrResponseParser {
                         }
                     }
             }
+            $highlighting = null;
+            if (isset($this->body->highlighting)) {
+                $smwh_search_field = $this->body->highlighting->{$doc->id}->smwh_search_field;
+                $highlighting = $smwh_search_field[0];
+                if ($highlighting === '' && count($smwh_search_field) > 1) {
+                    $highlighting = $smwh_search_field[1];
+                }
+            }
             $docs[] = new Document(
                 $doc->id,
                 $propertyFacets,
@@ -85,7 +93,7 @@ class SolrResponseParser {
                 $doc->smwh_displaytitle,
                 WikiTools::createURLForPage($doc->smwh_title, $namespace->namespace),
                 $doc->score,
-                isset($this->body->highlighting) ? $this->body->highlighting->{$doc->id}->smwh_search_field[0] : null
+                $highlighting
             );
 
         }
