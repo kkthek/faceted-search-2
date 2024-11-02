@@ -1,4 +1,4 @@
-import {BaseQuery, Datatype, PropertyFacet, PropertyValueCount, PropertyWithURL, ValueCount} from "../common/datatypes";
+import {BaseQuery, PropertyFacet, PropertyValueCount} from "../common/datatypes";
 import React from "react";
 import DisplayTools from "../util/display_tools";
 
@@ -10,29 +10,12 @@ function FacetValues(prop: {
     onRemoveClick: (p: PropertyFacet)=>void,
 }) {
 
-    function serializeFacetValue(p: PropertyWithURL, v: ValueCount): string {
-        if (v.value) {
-            if (p.type === Datatype.datetime) {
-                return DisplayTools.displayDate(v.value as Date);
-            }
-            return v.value.toString();
-        } else if (v.mwTitle) {
-            return  v.mwTitle.displayTitle;
-        } else {
-            // range
-            if (p.type === Datatype.datetime) {
-                return DisplayTools.displayDateRange(v.range.from as Date, v.range.to as Date);
-            }
-            return v.range.from + "-" + v.range.to;
-        }
-    }
-
     if (prop.propertyValueCount === null) {
         return;
     }
 
     const listItems = prop.propertyValueCount.values.map((v, i) => {
-        let value = serializeFacetValue(prop.propertyValueCount.property, v);
+        let value = DisplayTools.serializeFacetValue(prop.propertyValueCount.property, v);
 
         let property = prop.propertyValueCount.property;
         let propertyFacet = new PropertyFacet(

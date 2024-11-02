@@ -1,10 +1,12 @@
+import {Datatype, PropertyWithURL, ValueCount} from "../common/datatypes";
+
 class DisplayTools {
 
     static displayDate(d: Date) {
         if (d.getUTCHours() === 0 && d.getUTCMinutes() === 0 && d.getUTCSeconds() === 0) {
-            return d.toDateString();
+            return this.singleDay(d);
         } else {
-            return d.toTimeString();
+            return d.toUTCString();
         }
     }
 
@@ -19,8 +21,27 @@ class DisplayTools {
             return from.getUTCFullYear().toString() + "/" + fromMonthStr + " - " + to.getUTCFullYear().toString() + "/" + tomMonthStr;
         } else if (this.isBeginOfDay(from) && this.isEndOfDay(to)) {
             return this.singleDay(from) + " - " + this.singleDay(to);
+        } else if (from.getTime() === to.getTime()) {
+            return this.singleDay(from)
         } else {
-            return from.toTimeString() + " - " + to.toTimeString();
+            return from.toUTCString() + " - " + to.toUTCString();
+        }
+    }
+
+    static serializeFacetValue(p: PropertyWithURL, v: ValueCount): string {
+        if (v.value) {
+            if (p.type === Datatype.datetime) {
+                return this.displayDate(v.value as Date);
+            }
+            return v.value.toString();
+        } else if (v.mwTitle) {
+            return  v.mwTitle.displayTitle;
+        } else {
+            // range
+            if (p.type === Datatype.datetime) {
+                return this.displayDateRange(v.range.from as Date, v.range.to as Date);
+            }
+            return v.range.from + "-" + v.range.to;
         }
     }
 
@@ -44,24 +65,8 @@ class DisplayTools {
     }
 
     private static isEndOfMonth(d: Date) {
-        const lastDaysOfMonth: any = {
-            0: 31,
-            1: d.getUTCFullYear() % 4 === 0 ? 29 : 28,
-            2: 31,
-            3: 30,
-            4: 31,
-            5: 30,
-            6: 31,
-            7: 31,
-            8: 30,
-            9: 31,
-            10: 30,
-            11: 31
-        }
-        return d.getUTCDate() === lastDaysOfMonth[d.getUTCMonth()]
-            && d.getUTCHours() === 23
-            && d.getUTCMinutes() === 59
-            && d.getUTCSeconds() === 59;
+        let datePlusOneSecond = new Date(d.getTime()+1000);
+        return this.isBeginOfMonth(datePlusOneSecond);
     }
 
     private static isBeginOfYear(d: Date) {

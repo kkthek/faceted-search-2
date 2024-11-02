@@ -1,5 +1,4 @@
-import {CategoryFacetCount, CategoryFacetValue, PropertyWithURL, SolrDocumentsResponse} from "../common/datatypes";
-import Tools from "../util/tools";
+import {CategoryFacetCount} from "../common/datatypes";
 import React from "react";
 import {SearchStateDocument} from "./event_handler";
 
@@ -26,14 +25,11 @@ function CategoryView( prop: {
 
 }) {
     if (!prop.searchStateDocument) return;
-    let categories = prop.searchStateDocument.documentResponse.docs.flatMap((doc, i) => {
-        return doc.categoryFacets;
-    });
-    const uniqueCategories = Tools.makeArrayUnique(categories, (p: CategoryFacetValue) => { return p.category });
+
+    const uniqueCategories = prop.searchStateDocument.documentResponse.getUniqueCategories();
 
     const listItems = uniqueCategories.map((category,i) => {
-            const facetCount = Tools.findFirst(prop.searchStateDocument.documentResponse.categoryFacetCounts,
-                (c) => c.category, category.category);
+            const facetCount = prop.searchStateDocument.documentResponse.getCategoryFacetCount(category.category);
 
             return <FacetViewCategory key={category.category}
                                       title={category.category}

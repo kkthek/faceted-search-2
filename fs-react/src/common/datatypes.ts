@@ -118,7 +118,9 @@ export class PropertyFacet {
     hasValue(): boolean {
         return (this.value && this.value !== null || this.mwTitle && this.mwTitle !== null);
     }
-
+    hasRange(): boolean {
+        return (this.range && this.range !== null);
+    }
 }
 
 export type ValueType = string | number | boolean | Date;
@@ -355,12 +357,36 @@ export class SolrDocumentsResponse {
         return Tools.findFirst(this.propertyFacetCounts,(c) => c.property.title, property.title);
     }
 
+    getNamespaceFacetCount(namespace : number) {
+        return Tools.findFirst(this.namespaceFacetCounts,
+            (c) => c.namespace.toString(), namespace.toString());
+    }
+
+    getCategoryFacetCount(category: string) {
+        return Tools.findFirst(this.categoryFacetCounts,
+            (c) => c.category, category);
+    }
+
     getUniqueProperties() {
         let properties =this.docs.flatMap((doc, i) => {
             return doc.properties;
         });
 
         return Tools.makeArrayUnique(properties, (p: PropertyWithURL) => { return p.title });
+    }
+
+    getUniqueNamespaces() {
+        let namespaces = this.docs.flatMap((doc, i) => {
+            return doc.namespaceFacet;
+        });
+        return Tools.makeArrayUnique(namespaces, (p: NamespaceFacetValue) => { return p.namespace.toString() });
+    }
+
+    getUniqueCategories() {
+        let categories = this.docs.flatMap((doc, i) => {
+            return doc.categoryFacets;
+        });
+        return Tools.makeArrayUnique(categories, (p: CategoryFacetValue) => { return p.category });
     }
 }
 
