@@ -76,7 +76,7 @@ function App() {
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
-                    <SelectedFacetsView searchStateDocument={searchFacetState}
+                    <SelectedFacetsView searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                     />

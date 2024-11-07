@@ -73,11 +73,23 @@ class EventHandler {
     onRemovePropertyFacet(p: PropertyFacet) {
         let property = {title: p.property, type: p.type};
         this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
+        this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(property);
         this.currentFacetsQueryBuilder.clearFacetsForProperty(property);
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
 
         this.updateDocuments();
-        this.updateFacets();
+        const rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
+        if (rangeProperties.length === 0) {
+            this.updateFacets();
+        } else {
+            this.requestNewRanges(rangeProperties)
+                .then((e) => {
+                    this.updateFacets();
+                }).catch((e) => {
+                    console.error("Request to backend failed");
+                    console.error(e);
+                });
+        }
     }
 
     onNamespaceClick(n: number) {
@@ -104,9 +116,13 @@ class EventHandler {
 
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         if ((p.type === Datatype.datetime || p.type === Datatype.number) ) {
-            this.requestRangesAndUpdateFacets(p).catch((e) => {
-                console.error("Request to backend failed");
-                console.error(e);
+            this.requestNewRanges([p])
+                .then(() => {
+                    this.updateFacets();
+                })
+                .catch((e) => {
+                    console.error("Request to backend failed");
+                    console.error(e);
             });
         } else {
             this.currentFacetsQueryBuilder.withFacetProperties(p);
@@ -115,17 +131,20 @@ class EventHandler {
         }
     }
 
-    private async requestRangesAndUpdateFacets(p: Property) {
+    private async requestNewRanges(properties: Property[]) {
         const sqb = new StatQueryBuilder();
         sqb.updateBaseQuery(this.currentDocumentsQueryBuilder);
-        sqb.withStatField(p);
+        properties.forEach((p) => {
+            sqb.withStatField(p);
+        })
         let response = await this.client.searchStats(sqb.build());
-        let stat: Stats = response.stats[0];
-        this.currentFacetsQueryBuilder.clearFacetsForProperty(p);
-        stat.clusters.forEach((r) => {
-            this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
+        response.stats.forEach((stat) => {
+            const p = stat.property;
+            this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(p);
+            stat.clusters.forEach((r) => {
+                this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
+            });
         });
-        this.updateFacets();
     }
 
     private updateDocuments() {

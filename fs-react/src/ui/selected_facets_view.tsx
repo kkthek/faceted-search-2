@@ -5,15 +5,15 @@ import {SearchStateFacet} from "./event_handler";
 
 
 function SelectedFacetsView(prop: {
-    searchStateDocument: SearchStateFacet,
+    searchStateFacet: SearchStateFacet,
     onValueClick: (p: PropertyFacet) => void,
     onRemoveClick: (p: PropertyFacet) => void,
 }) {
-    if (!prop.searchStateDocument) return;
+    if (!prop.searchStateFacet) return;
 
-    const facetValues = prop.searchStateDocument.facetsResponse.valueCounts.map((v, i) => {
+    const facetValues = prop.searchStateFacet.facetsResponse.valueCounts.map((v, i) => {
 
-            let query = prop.searchStateDocument.query;
+            let query = prop.searchStateFacet.query;
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
 
             let propertyFacet = query.findPropertyFacet(v.property);
@@ -28,7 +28,7 @@ function SelectedFacetsView(prop: {
                                  propertyValueCount={v}
                                  onValueClick={prop.onValueClick}
                                  removable={hasValue}
-                                 query={prop.searchStateDocument.query}
+                                 query={prop.searchStateFacet.query}
                                  onRemoveClick={prop.onRemoveClick}
                     />
                 </div> : '');

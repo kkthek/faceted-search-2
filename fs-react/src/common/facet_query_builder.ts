@@ -22,13 +22,18 @@ class FacetQueryBuilder {
         return this;
     }
 
-    clearFacetsForProperty(p : Property) {
+    clearFacetsQueriesForProperty(p : Property) {
         Tools.removeAll(this.query.facetQueries, (e) => e.property, p.title);
         return this;
     }
 
     withFacetProperties(property: Property): FacetQueryBuilder {
         this.query.facetProperties.push(property);
+        return this;
+    }
+
+    clearFacetsForProperty(p : Property) {
+        Tools.removeAll(this.query.facetProperties, (e) => e.title, p.title);
         return this;
     }
 

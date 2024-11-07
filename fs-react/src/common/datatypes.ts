@@ -89,6 +89,14 @@ export class FacetsQuery extends BaseQuery {
         this.facetQueries = facetQueries;
         this.facetProperties = facetProperties;
     }
+
+    getRangeProperties(): Property[] {
+        return this.facetQueries.filter((e) => {
+            return (e.type === Datatype.datetime || e.type === Datatype.number);
+        }).map((e) => {
+            return {title:e.property, type: e.type};
+        })
+    }
 }
 
 export class PropertyFacet {
