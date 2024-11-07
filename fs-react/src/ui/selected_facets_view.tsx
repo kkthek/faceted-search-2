@@ -36,7 +36,7 @@ function SelectedFacetsView(prop: {
     );
 
 
-    return <div id={'fs-selected-facetview'}>
+    return <div>
         <ul>
             {facetValues}
         </ul>

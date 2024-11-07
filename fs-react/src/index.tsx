@@ -76,6 +76,10 @@ function App() {
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
+                    <h3>Selected facets</h3>
+                    {  (searchFacetState == null || searchFacetState.query.isAnyPropertySelected())
+                    && (searchStateDocument == null || searchStateDocument.query.isAnyCategorySelected())
+                        ? '(no facets selected)':''}
                     <SelectedFacetsView searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
@@ -83,8 +87,10 @@ function App() {
                     <SelectedCategoriesView searchStateDocument={searchStateDocument}
                                             onCategoryRemove={eventHandler.onCategoryRemoveClick.bind(eventHandler)}
                     />
+                    <hr className="fs-separatorLine"/>
                 </div>
-                <div>
+                <div id={'fs-facets-existing'}>
+                    <h3>Available properties</h3>
                     <FacetView searchStateDocument={searchStateDocument}
                                searchStateFacets={searchFacetState}
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
@@ -92,6 +98,7 @@ function App() {
                                onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                     />
+                    <h3>Available categories</h3>
                     <CategoryView searchStateDocument={searchStateDocument}
                                   onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                     />

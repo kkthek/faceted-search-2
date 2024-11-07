@@ -14,8 +14,8 @@ function FacetViewCategory( prop: {
     }
     return <li key={prop.categoryFacetCount.category} className={'fs-facets'}>
 
-        <span>({prop.categoryFacetCount?.count})</span>
         <span onClick={() => prop.onCategoryClick(prop.title)}>{prop.title}</span>
+        <span>({prop.categoryFacetCount?.count})</span>
         <span>{prop.categoryFacetCount.displayTitle}</span>
     </li>
 }

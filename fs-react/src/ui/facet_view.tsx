@@ -40,8 +40,8 @@ function FacetViewProperty(prop: {
 
     return <li className={'fs-facets'}>
         <span onClick={handleExpandClick}>[e]</span>
-        <span>({prop.propertyFacetCount?.count})</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
+        <span>({prop.propertyFacetCount?.count})</span>
         {!isSelectedFacet ? <div ref={facetValuesDiv}>
             <FacetValues propertyValueCount={propertyValueCount}
                                          onValueClick={prop.onValueClick}

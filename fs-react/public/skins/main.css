@@ -4,17 +4,17 @@
 
 #fs-header {
     height: 80px;
-    background: lightpink;
+    background: lightgrey;
     align-items: center;
     justify-content: center;
 }
 
 #fs-facets {
-    background: lightblue;
+    background: darkgrey;
 }
 
 #fs-results {
-    background: lightgoldenrodyellow;
+    background: darkgrey;
 }
 
 div.fs-body {
@@ -67,11 +67,64 @@ div.fs-boxes {
 
 }
 
+/**
+ * Searchbar
+ */
+
+#fs-fulltext {
+    width: 300px;
+}
+/**
+ * Results
+ */
+
+#fs-results {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fs-search-result {
+    margin: 10px;
+}
+
+#fs-paginator {
+    margin-bottom: 10px;
+}
+
+/**
+ * Facets
+ */
+
+#fs-facets-existing {
+    padding: 10px;
+}
+
 #fs-facets {
     display: flex;
     flex-direction: column;
 }
 
+
 #fs-selected-facets {
     height: 200px;
+    padding: 10px;
+}
+
+.fs-separatorLine {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    background: none repeat scroll 0 0 #AAAAAA;
+    border-top: medium none;
+    height: 1px;
+}
+
+#fs-facetview li, #fs-categoryview li {
+    margin-top: 5px;
+}
+
+li.fs-facets span {
+    margin-left: 3px;
 }

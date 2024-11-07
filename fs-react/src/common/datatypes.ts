@@ -38,6 +38,14 @@ export class BaseQuery {
     isCategoryFacetSelected(category: string): boolean {
         return Tools.findFirst(this.categoryFacets, (e) => e, category) !== null;
     }
+
+    isAnyCategorySelected() {
+        return (this.categoryFacets || []).length === 0;
+    }
+
+    isAnyPropertySelected() {
+        return (this.propertyFacets || []).length === 0;
+    }
 }
 
 export class DocumentQuery extends BaseQuery {
@@ -243,6 +251,10 @@ export class SolrFacetResponse {
     getPropertyValueCount(property: Property): PropertyValueCount {
         return Tools.findFirst(this.valueCounts || [], (e) => e.property.title, property.title);
     }
+
+    isEmpty() {
+        return (this.valueCounts || []).length === 0;
+    }
 }
 
 function deserializeValue(value: any) {
@@ -396,6 +408,7 @@ export class SolrDocumentsResponse {
         });
         return Tools.makeArrayUnique(categories, (p: CategoryFacetValue) => { return p.category });
     }
+
 }
 
 @jsonObject

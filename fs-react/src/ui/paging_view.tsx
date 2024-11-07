@@ -26,7 +26,7 @@ function PagingView(prop: {
         return <span key={pageIndex} onClick={() => prop.onPageIndexClick((pageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[ {pageIndex} ]</span>
     })
 
-    return <div>
+    return <div id={'fs-paginator'}>
         {currentPageIndex > 0 ? <span onClick={() => prop.onPageIndexClick(0, NUMBER_RESULTS_ONE_PAGE)}>[&lt;&lt;]</span> : ''}
         {currentPageIndex > 0 ? <span onClick={() => prop.onPageIndexClick((currentPageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[&lt;]</span>: ''}
         {slidingWindow}
