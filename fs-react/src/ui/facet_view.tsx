@@ -62,15 +62,14 @@ function FacetView(prop: {
 }) {
     if (!prop.searchStateDocument) return;
 
-    const uniqueProperties = prop.searchStateDocument.documentResponse.getUniqueProperties();
+    const propertyFacetCounts = prop.searchStateDocument.documentResponse.propertyFacetCounts;
 
-    const listItems = uniqueProperties.map((property,i) => {
-        const facetCount = prop.searchStateDocument.documentResponse.getPropertyFacetCounts(property);
+    const listItems = propertyFacetCounts.map((facetCount,i) => {
 
-        return <FacetViewProperty key={property.title}
+        return <FacetViewProperty key={facetCount.property.title}
                            query={prop.searchStateDocument.query}
-                           title={property.title}
-                           property={property}
+                           title={facetCount.property.title}
+                           property={facetCount.property}
                            onPropertyClick={prop.onPropertyClick}
                            onExpandClick={prop.onExpandClick}
                            onValueClick={prop.onValueClick}

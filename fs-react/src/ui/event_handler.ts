@@ -62,7 +62,7 @@ class EventHandler {
     }
 
     onValueClick(p: PropertyFacet) {
-        let property = {title: p.property, type: p.type};
+        let property = new Property(p.property, p.type);
         this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
         this.currentDocumentsQueryBuilder.withPropertyFacet(p);
         this.updateDocuments();
@@ -71,7 +71,7 @@ class EventHandler {
     }
 
     onRemovePropertyFacet(p: PropertyFacet) {
-        let property = {title: p.property, type: p.type};
+        let property = new Property(p.property, p.type);
         this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
         this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(property);
         this.currentFacetsQueryBuilder.clearFacetsForProperty(property);
@@ -95,16 +95,22 @@ class EventHandler {
     onNamespaceClick(n: number) {
         this.currentDocumentsQueryBuilder.toggleNamespaceFacet(n);
         this.updateDocuments();
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.updateFacets();
     }
 
     onCategoryClick(c: string) {
         this.currentDocumentsQueryBuilder.withCategoryFacet(c);
         this.updateDocuments();
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.updateFacets();
     }
 
     onCategoryRemoveClick(c: string) {
         this.currentDocumentsQueryBuilder.withoutCategoryFacet(c);
         this.updateDocuments();
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.updateFacets();
     }
 
     onPageIndexClick(pageIndex: number, limit : number) {
@@ -115,7 +121,7 @@ class EventHandler {
     private updateFacetValuesForProperty(p: Property) {
 
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
-        if ((p.type === Datatype.datetime || p.type === Datatype.number) ) {
+        if (p.isRangeProperty()) {
             this.requestNewRanges([p])
                 .then(() => {
                     this.updateFacets();

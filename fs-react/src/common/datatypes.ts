@@ -99,11 +99,8 @@ export class FacetsQuery extends BaseQuery {
     }
 
     getRangeProperties(): Property[] {
-        return this.facetQueries.filter((e) => {
-            return (e.type === Datatype.datetime || e.type === Datatype.number);
-        }).map((e) => {
-            return {title:e.property, type: e.type};
-        })
+        return this.facetQueries.map((e) => new Property(e.property,e.type))
+            .filter((e) => e.isRangeProperty());
     }
 }
 
@@ -148,6 +145,7 @@ export enum Datatype {
     boolean,
     wikipage,
     internal
+
 }
 
 @jsonObject
@@ -164,6 +162,15 @@ export class Property {
     title: string
     @jsonMember(Number)
     type: Datatype
+
+    constructor(title: string, type: Datatype) {
+        this.title = title;
+        this.type = type;
+    }
+
+    isRangeProperty() {
+        return this.type === Datatype.number || this.type === Datatype.datetime;
+    }
 }
 
 @jsonObject
@@ -372,42 +379,6 @@ export class SolrDocumentsResponse {
     propertyFacetCounts: PropertyFacetCount[];
     @jsonArrayMember(NamespaceFacetCount)
     namespaceFacetCounts: NamespaceFacetCount[];
-
-    getPropertyFacetCounts(property: Property) {
-        return Tools.findFirst(this.propertyFacetCounts,(c) => c.property.title, property.title);
-    }
-
-    getNamespaceFacetCount(namespace : number) {
-        return Tools.findFirst(this.namespaceFacetCounts,
-            (c) => c.namespace.toString(), namespace.toString());
-    }
-
-    getCategoryFacetCount(category: string) {
-        return Tools.findFirst(this.categoryFacetCounts,
-            (c) => c.category, category);
-    }
-
-    getUniqueProperties() {
-        let properties =this.docs.flatMap((doc, i) => {
-            return doc.properties;
-        });
-
-        return Tools.makeArrayUnique(properties, (p: PropertyWithURL) => { return p.title });
-    }
-
-    getUniqueNamespaces() {
-        let namespaces = this.docs.flatMap((doc, i) => {
-            return doc.namespaceFacet;
-        });
-        return Tools.makeArrayUnique(namespaces, (p: NamespaceFacetValue) => { return p.namespace.toString() });
-    }
-
-    getUniqueCategories() {
-        let categories = this.docs.flatMap((doc, i) => {
-            return doc.categoryFacets;
-        });
-        return Tools.makeArrayUnique(categories, (p: CategoryFacetValue) => { return p.category });
-    }
 
 }
 

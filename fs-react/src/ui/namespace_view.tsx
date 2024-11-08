@@ -4,7 +4,6 @@ import {WikiContext} from "../index";
 import {SearchStateDocument} from "./event_handler";
 
 function FacetViewNamespace( prop: {
-    title: string,
     namespaceFacetCount: NamespaceFacetCount|null,
     selectedNamespace: number,
     onNamespaceClick: (c: number)=>void,
@@ -23,13 +22,11 @@ function NamespaceView( prop: {
 }) {
     if (!prop.searchStateDocument) return;
 
-    const uniqueNamespaces = prop.searchStateDocument.documentResponse.getUniqueNamespaces();
+    const namespaceFacetCounts = prop.searchStateDocument.documentResponse.namespaceFacetCounts;
 
-    const listItems = uniqueNamespaces.map((ns,i) => {
-            const facetCount = prop.searchStateDocument.documentResponse.getNamespaceFacetCount(ns.namespace);
+    const listItems = namespaceFacetCounts.map((facetCount,i) => {
 
-            return <FacetViewNamespace key={ns.namespace}
-                                      title={ns.displayTitle}
+            return <FacetViewNamespace key={facetCount.namespace}
                                        namespaceFacetCount={facetCount}
                                        onNamespaceClick={prop.onNamespaceClick}
                                        selectedNamespace={prop.searchStateDocument.query.namespaceFacets[0]}

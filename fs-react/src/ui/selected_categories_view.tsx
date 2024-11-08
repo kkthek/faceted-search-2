@@ -13,8 +13,9 @@ function SelectedCategoriesView(prop: {
             let isSelectedFacet = query.isCategoryFacetSelected(v.category);
             return (isSelectedFacet ?
                 <li key={v.category}>
-                    <span>({v.count}) {v.category}</span>
-                    <span onClick={() => prop.onCategoryRemove(v.category)}>[R]</span>
+                    <span>{v.category}</span>
+                    <span>({v.count})</span>
+                    <span onClick={() => prop.onCategoryRemove(v.category)}>[X]</span>
                 </li> : '');
         }
     );

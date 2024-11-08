@@ -128,3 +128,11 @@ div.fs-boxes {
 li.fs-facets span {
     margin-left: 3px;
 }
+
+#fs-selected-categoriesview li span {
+    margin-left: 3px;
+}
+
+li {
+    cursor: pointer;
+}

@@ -26,13 +26,12 @@ function CategoryView( prop: {
 }) {
     if (!prop.searchStateDocument) return;
 
-    const uniqueCategories = prop.searchStateDocument.documentResponse.getUniqueCategories();
+    const categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
 
-    const listItems = uniqueCategories.map((category,i) => {
-            const facetCount = prop.searchStateDocument.documentResponse.getCategoryFacetCount(category.category);
+    const listItems = categoryFacetCounts.map((facetCount,i) => {
 
-            return <FacetViewCategory key={category.category}
-                                      title={category.category}
+            return <FacetViewCategory key={facetCount.category}
+                                      title={facetCount.category}
                                       categoryFacetCount={facetCount}
                                       onCategoryClick={prop.onCategoryClick}
                                       selectedCategories={prop.searchStateDocument.query.categoryFacets}
