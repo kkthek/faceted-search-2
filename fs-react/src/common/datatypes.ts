@@ -150,9 +150,9 @@ export enum Datatype {
 
 @jsonObject
 export class Range {
-    @jsonMember({deserializer: value => deserializeValue(value)})
+    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
     from: Date|number
-    @jsonMember({deserializer: value => deserializeValue(value)})
+    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
     to: Date|number
 }
 
@@ -228,7 +228,7 @@ export class PropertyWithURL extends Property {
 
 @jsonObject
 export class ValueCount {
-    @jsonMember({deserializer: value => deserializeValue(value)})
+    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
     value: string|number|Date|null;
     @jsonMember(MWTitleWithURL)
     mwTitle: MWTitleWithURL|null;
@@ -264,33 +264,14 @@ export class SolrFacetResponse {
     }
 }
 
-function deserializeValue(value: any) {
-    if (value == null) {
-        return null;
-    }
-    if (value.title) {
-        return new MWTitleWithURL(value.title, value.displayTitle, value.url);
-    } else if (typeof(value) === 'string' && value.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)) {
-        return new Date(Date.parse(value))
-    } else return value;
-}
 
-function objArrayDeserializer(
-    json: Array<{prop: string; shouldDeserialize: boolean}>,
-    params: CustomDeserializerParams,
-) {
-
-    return json.map(
-        value => deserializeValue(value)
-    );
-}
 
 @jsonObject
 export class PropertyFacetValues {
     @jsonMember(PropertyWithURL)
     property: PropertyWithURL
 
-    @jsonArrayMember(String,{deserializer: objArrayDeserializer})
+    @jsonArrayMember(String,{deserializer: Tools.arrayDeserializer})
     values: string[] | number[] | boolean[] | Date[] | MWTitleWithURL[]
 }
 

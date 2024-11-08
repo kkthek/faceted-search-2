@@ -11,9 +11,10 @@ function FacetViewNamespace( prop: {
     let wikiContext = useContext(WikiContext);
     let namespaces = wikiContext['wgFormattedNamespaces'];
     let isSelected = prop.selectedNamespace == prop.namespaceFacetCount.namespace;
+    let namespaceText = namespaces[prop.namespaceFacetCount.namespace] ?? 'unknown namespace';
     return <span className={isSelected ? 'fs-namespace-selected': '' }
                  onClick={() => prop.onNamespaceClick(prop.namespaceFacetCount.namespace)}>
-        ({prop.namespaceFacetCount.count}) {namespaces[prop.namespaceFacetCount.namespace]}
+        ({prop.namespaceFacetCount.count}) {namespaceText}
     </span>
 }
 function NamespaceView( prop: {
