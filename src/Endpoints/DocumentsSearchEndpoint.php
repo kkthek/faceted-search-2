@@ -16,7 +16,9 @@ class DocumentsSearchEndpoint extends Handler
         $jsonBody = $this->getRequest()->getBody();
         $documentQuery = DocumentQuery::fromJson($jsonBody);
         $response = $solrClient->requestDocuments($documentQuery);
-        return new Response(json_encode($response));
+        $r = new Response(json_encode($response));
+        $r->setHeader('Content-Type', 'application/json');
+        return $r;
     }
 
 }

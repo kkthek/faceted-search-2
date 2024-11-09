@@ -12,9 +12,7 @@ class Setup {
         global $IP;
 
         $basePath = "$IP/extensions/FacetedSearch2";
-        if (file_exists("$basePath/fs-react/dist/main.js")) {
-            $reactScript = "fs-react/dist/main.js";
-        } else if (file_exists("$basePath/fs-react/public/main.js")) {
+        if (file_exists("$basePath/fs-react/public/main.js")) {
             $reactScript = "fs-react/public/main.js";
         } else {
             trigger_error("No compiled react script found");
@@ -45,7 +43,7 @@ class Setup {
     private static function checkIfCompiled(): void
     {
         global $IP;
-        if (!file_exists("$IP/extensions/FacetedSearch2/fs-react/dist/main.js")) {
+        if (!file_exists("$IP/extensions/FacetedSearch2/fs-react/public/main.js")) {
             trigger_error("You need to build FacetedSearch2. See README");
             die();
         }

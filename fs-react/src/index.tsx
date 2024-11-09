@@ -25,7 +25,7 @@ let wikiContext = {};
 if (browserWindow.mw) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
-    solrProxyUrl = wgServer + wgScriptPath + "/rest.php/EnhancedRetrieval/v1/proxy";
+    solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
     wikiContext = browserWindow.mw.config.values;
 } else {
     wikiContext = {'wgFormattedNamespaces': {0: 'Main', 14: 'Category', 10: 'Template'}};

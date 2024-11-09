@@ -17,7 +17,9 @@ class StatsSearchEndpoint extends Handler
         $jsonBody = $this->getRequest()->getBody();
         $query = StatsQuery::fromJson($jsonBody);
         $response = $solrClient->requestStats($query);
-        return new Response(json_encode($response));
+        $r = new Response(json_encode($response));
+        $r->setHeader('Content-Type', 'application/json');
+        return $r;
     }
 
 }

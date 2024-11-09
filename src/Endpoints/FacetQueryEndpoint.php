@@ -17,7 +17,9 @@ class FacetQueryEndpoint extends Handler
         $jsonBody = $this->getRequest()->getBody();
         $query = FacetQuery::fromJson($jsonBody);
         $response = $solrClient->requestFacet($query);
-        return new Response(json_encode($response));
+        $r = new Response(json_encode($response));
+        $r->setHeader('Content-Type', 'application/json');
+        return $r;
     }
 
 }
