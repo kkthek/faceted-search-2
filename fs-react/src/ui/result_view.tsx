@@ -4,9 +4,10 @@ import WikiLink from "./wiki_link";
 
 
 function SearchResult(prop: { doc: Document}) {
+    let snippet = prop.doc.highlighting.length > 500 ? prop.doc.highlighting.substring(0, 500)+'...': prop.doc.highlighting;
     return <li className={'fs-search-result'}>
         <span><WikiLink doc={prop.doc}/></span>
-        <div dangerouslySetInnerHTML={{ __html: prop.doc.highlighting }}></div>
+        <div dangerouslySetInnerHTML={{ __html: snippet }}></div>
     </li>
 }
 

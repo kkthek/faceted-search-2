@@ -18,7 +18,11 @@
 }
 
 div.fs-body {
-    height: 650px;
+
+}
+
+.fs-selected {
+    font-weight: bold;
 }
 
 div.fs-boxes {

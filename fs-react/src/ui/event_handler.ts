@@ -1,14 +1,6 @@
 import DocumentQueryBuilder from "../common/document_query_builder";
 import FacetQueryBuilder from "../common/facet_query_builder";
-import {
-    BaseQuery,
-    Datatype,
-    Property,
-    PropertyFacet,
-    SolrDocumentsResponse,
-    SolrFacetResponse,
-    Stats
-} from "../common/datatypes";
+import {BaseQuery, Property, PropertyFacet, SolrDocumentsResponse, SolrFacetResponse} from "../common/datatypes";
 import StatQueryBuilder from "../common/stat_query_builder";
 import Client from "../common/client";
 
@@ -45,6 +37,7 @@ class EventHandler {
 
     onSearchClick(text: string) {
         this.currentDocumentsQueryBuilder.withSearchText(text);
+        this.currentDocumentsQueryBuilder.withOffset(0);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         this.updateFacets();
@@ -53,6 +46,7 @@ class EventHandler {
     onPropertyClick(p: Property) {
         let propertyFacet = new PropertyFacet(p.title, p.type, null, null, null);
         this.currentDocumentsQueryBuilder.withPropertyFacet(propertyFacet);
+        this.currentDocumentsQueryBuilder.withOffset(0);
         this.updateDocuments();
         this.updateFacetValuesForProperty(p);
     }
@@ -63,6 +57,7 @@ class EventHandler {
 
     onValueClick(p: PropertyFacet) {
         let property = new Property(p.property, p.type);
+        this.currentDocumentsQueryBuilder.withOffset(0);
         this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
         this.currentDocumentsQueryBuilder.withPropertyFacet(p);
         this.updateDocuments();
@@ -72,6 +67,7 @@ class EventHandler {
 
     onRemovePropertyFacet(p: PropertyFacet) {
         let property = new Property(p.property, p.type);
+        this.currentDocumentsQueryBuilder.withOffset(0);
         this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
         this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(property);
         this.currentFacetsQueryBuilder.clearFacetsForProperty(property);
@@ -94,12 +90,14 @@ class EventHandler {
 
     onNamespaceClick(n: number) {
         this.currentDocumentsQueryBuilder.toggleNamespaceFacet(n);
+        this.currentDocumentsQueryBuilder.withOffset(0);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         this.updateFacets();
     }
 
     onCategoryClick(c: string) {
+        this.currentDocumentsQueryBuilder.withOffset(0);
         this.currentDocumentsQueryBuilder.withCategoryFacet(c);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
@@ -107,6 +105,7 @@ class EventHandler {
     }
 
     onCategoryRemoveClick(c: string) {
+        this.currentDocumentsQueryBuilder.withOffset(0);
         this.currentDocumentsQueryBuilder.withoutCategoryFacet(c);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
@@ -114,7 +113,7 @@ class EventHandler {
     }
 
     onPageIndexClick(pageIndex: number, limit : number) {
-        this.currentDocumentsQueryBuilder.withOffset(pageIndex*limit);
+        this.currentDocumentsQueryBuilder.withOffset(pageIndex * limit);
         this.updateDocuments();
     }
 

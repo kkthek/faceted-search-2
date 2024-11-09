@@ -49,7 +49,9 @@ class Tools {
         json: Array<{prop: string; shouldDeserialize: boolean}>,
         params: CustomDeserializerParams,
     ) {
-
+        if (!json.map) {
+            return [];
+        }
         return json.map(
             value => this.deserializeValue(value)
         );

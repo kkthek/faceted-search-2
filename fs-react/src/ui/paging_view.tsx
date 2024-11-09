@@ -12,10 +12,10 @@ function PagingView(prop: {
     const NUMBER_RESULTS_ONE_PAGE = 10; // could come from config
     const SLIDING_WINDOW_SIZE = 10;     // could come from config
 
-    const numPages = Math.round(prop.searchStateDocument.documentResponse.numResults / NUMBER_RESULTS_ONE_PAGE) + 1;
+    const numPages = Math.trunc(prop.searchStateDocument.documentResponse.numResults / NUMBER_RESULTS_ONE_PAGE) + 1;
     const slidingWindowSize = Math.min(SLIDING_WINDOW_SIZE, numPages);
     const documentQuery = prop.searchStateDocument.query as DocumentQuery
-    const currentPageIndex  = Math.round(documentQuery.offset / NUMBER_RESULTS_ONE_PAGE);
+    const currentPageIndex  = Math.trunc(documentQuery.offset / NUMBER_RESULTS_ONE_PAGE);
     let start = Math.max(0, currentPageIndex - slidingWindowSize/2);
     if (start + slidingWindowSize > numPages) {
         start = Math.max(0, numPages - slidingWindowSize);
@@ -23,7 +23,8 @@ function PagingView(prop: {
     let pageIndexesSlidingWindow = Array.from(Array(slidingWindowSize), (_, i) => +i+1 + start);
 
     const slidingWindow = pageIndexesSlidingWindow.map((pageIndex) => {
-        return <span key={pageIndex} onClick={() => prop.onPageIndexClick((pageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[ {pageIndex} ]</span>
+        return <span key={pageIndex} className={currentPageIndex===pageIndex-1?'fs-selected':''}
+                     onClick={() => prop.onPageIndexClick((pageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[ {pageIndex} ]</span>
     })
 
     return <div id={'fs-paginator'}>

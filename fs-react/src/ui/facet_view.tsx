@@ -66,7 +66,7 @@ function FacetView(prop: {
 
     const listItems = propertyFacetCounts.map((facetCount,i) => {
 
-        return <FacetViewProperty key={facetCount.property.title}
+        return <FacetViewProperty key={facetCount.property.title+facetCount.property.type}
                            query={prop.searchStateDocument.query}
                            title={facetCount.property.title}
                            property={facetCount.property}
