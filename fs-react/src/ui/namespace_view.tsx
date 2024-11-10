@@ -13,7 +13,7 @@ function FacetViewNamespace( prop: {
     let isSelected = prop.selectedNamespace == prop.namespaceFacetCount.namespace;
     let namespaceText = namespaces[prop.namespaceFacetCount.namespace] ?? 'unknown namespace';
     namespaceText = namespaceText === '' ? 'Main' : namespaceText;
-    return <span className={isSelected ? 'fs-selected': '' }
+    return <span className={'fs-clickable ' + (isSelected ? 'fs-selected': '')}
                  onClick={() => prop.onNamespaceClick(prop.namespaceFacetCount.namespace)}>
         ({prop.namespaceFacetCount.count}) {namespaceText}
     </span>
@@ -35,7 +35,7 @@ function NamespaceView( prop: {
             />
         }
     );
-    return <div id={'fs-categoryview'}>
+    return <div id={'fs-namespaceview'}>
         <ul>
             {listItems}
         </ul>

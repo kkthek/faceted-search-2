@@ -15,7 +15,8 @@ function SelectedCategoriesView(prop: {
                 <li key={v.category}>
                     <span>{v.category}</span>
                     <span>({v.count})</span>
-                    <span onClick={() => prop.onCategoryRemove(v.category)}>[X]</span>
+                    <span className={'fs-clickable'}
+                          onClick={() => prop.onCategoryRemove(v.category)}>[X]</span>
                 </li> : '');
         }
     );

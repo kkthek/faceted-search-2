@@ -104,7 +104,7 @@ function App() {
                     />
                 </div>
             </div>
-            <div id={'fs-results'} className={'fs-boxes fs-body'}>
+            <div id={'fs-results'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}/>
                 <PagingView searchStateDocument={searchStateDocument}
                             onPageIndexClick={eventHandler.onPageIndexClick.bind(eventHandler)}

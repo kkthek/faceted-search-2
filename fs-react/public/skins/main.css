@@ -34,7 +34,7 @@ div.fs-boxes {
 
 @media (min-width: 1000px) {
     #fs-header {
-       width: 100%;
+        width: 100%;
     }
 
     #fs-content {
@@ -83,9 +83,7 @@ div.fs-boxes {
  */
 
 #fs-results {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    margin-top: 3px;
 }
 
 .fs-search-result {
@@ -94,6 +92,7 @@ div.fs-boxes {
 
 #fs-paginator {
     margin-bottom: 10px;
+    margin-left: 30px;
 }
 
 /**
@@ -111,7 +110,6 @@ div.fs-boxes {
 
 
 #fs-selected-facets {
-    height: 200px;
     padding: 10px;
 }
 
@@ -137,6 +135,6 @@ li.fs-facets span {
     margin-left: 3px;
 }
 
-li {
+li, span.fs-clickable {
     cursor: pointer;
 }

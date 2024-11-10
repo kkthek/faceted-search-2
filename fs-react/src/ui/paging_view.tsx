@@ -23,16 +23,16 @@ function PagingView(prop: {
     let pageIndexesSlidingWindow = Array.from(Array(slidingWindowSize), (_, i) => +i+1 + start);
 
     const slidingWindow = pageIndexesSlidingWindow.map((pageIndex) => {
-        return <span key={pageIndex} className={currentPageIndex===pageIndex-1?'fs-selected':''}
+        return <span key={pageIndex} className={'fs-clickable ' + (currentPageIndex===pageIndex-1?'fs-selected':'')}
                      onClick={() => prop.onPageIndexClick((pageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[ {pageIndex} ]</span>
     })
 
     return <div id={'fs-paginator'}>
-        {currentPageIndex > 0 ? <span onClick={() => prop.onPageIndexClick(0, NUMBER_RESULTS_ONE_PAGE)}>[&lt;&lt;]</span> : ''}
-        {currentPageIndex > 0 ? <span onClick={() => prop.onPageIndexClick((currentPageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[&lt;]</span>: ''}
+        {currentPageIndex > 0 ? <span className={'fs-clickable'} onClick={() => prop.onPageIndexClick(0, NUMBER_RESULTS_ONE_PAGE)}>[&lt;&lt;]</span> : ''}
+        {currentPageIndex > 0 ? <span className={'fs-clickable'} onClick={() => prop.onPageIndexClick((currentPageIndex-1), NUMBER_RESULTS_ONE_PAGE)}>[&lt;]</span>: ''}
         {slidingWindow}
-        {currentPageIndex + 1 < numPages - 1 ? <span onClick={() => prop.onPageIndexClick((currentPageIndex+1), NUMBER_RESULTS_ONE_PAGE)}>[&gt;]</span>: ''}
-        {currentPageIndex < numPages - 1 ? <span onClick={() => prop.onPageIndexClick((numPages-1), NUMBER_RESULTS_ONE_PAGE)}>[&gt;&gt;]</span>: ''}
+        {currentPageIndex + 1 < numPages - 1 ? <span className={'fs-clickable'} onClick={() => prop.onPageIndexClick((currentPageIndex+1), NUMBER_RESULTS_ONE_PAGE)}>[&gt;]</span>: ''}
+        {currentPageIndex < numPages - 1 ? <span className={'fs-clickable'} onClick={() => prop.onPageIndexClick((numPages-1), NUMBER_RESULTS_ONE_PAGE)}>[&gt;&gt;]</span>: ''}
     </div>
 }
 

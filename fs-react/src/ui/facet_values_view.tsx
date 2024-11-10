@@ -27,7 +27,8 @@ function FacetValues(prop: {
             <span onClick={() => prop.onValueClick(propertyFacet)}>{value}</span>
             :
             <span>{v.count}</span>
-            {prop.removable ? <span onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
+            {prop.removable ? <span className={'fs-clickable'}
+                                    onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
         </li>
     });
 

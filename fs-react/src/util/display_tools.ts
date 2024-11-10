@@ -6,7 +6,9 @@ class DisplayTools {
         if (d.getUTCHours() === 0 && d.getUTCMinutes() === 0 && d.getUTCSeconds() === 0) {
             return this.singleDay(d);
         } else {
-            return d.toUTCString();
+            let time = d.toLocaleTimeString('de-DE', {timeZone: 'UTC'});
+            let date = d.toLocaleDateString('de-DE', {timeZone: 'UTC'});
+            return date + " " + time;
         }
     }
 
@@ -24,7 +26,11 @@ class DisplayTools {
         } else if (from.getTime() === to.getTime()) {
             return this.singleDay(from)
         } else {
-            return from.toUTCString() + " - " + to.toUTCString();
+            let fromTime = from.toLocaleTimeString('de-DE', {timeZone: 'UTC'});
+            let fromDate = from.toLocaleDateString('de-DE', {timeZone: 'UTC'});
+            let toTime = to.toLocaleTimeString('de-DE', {timeZone: 'UTC'});
+            let toDate = to.toLocaleDateString('de-DE', {timeZone: 'UTC'});
+            return fromDate + " " +fromTime + " - " + toDate + " " +toTime;
         }
     }
 

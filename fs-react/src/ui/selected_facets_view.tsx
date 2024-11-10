@@ -23,7 +23,8 @@ function SelectedFacetsView(prop: {
             return (isSelectedFacet ?
                 <div key={v.property.title}>
                     <span>({v.property.title})</span>
-                    {!hasValue ? <span onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
+                    {!hasValue ? <span className={'fs-clickable'}
+                                       onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
                     <FacetValues key={v.property.title}
                                  propertyValueCount={v}
                                  onValueClick={prop.onValueClick}
