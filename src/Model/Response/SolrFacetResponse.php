@@ -21,5 +21,7 @@ class SolrFacetResponse
         return $this->valueCounts;
     }
 
-
+    public function merge(SolrFacetResponse $response) {
+        $this->valueCounts = array_merge($this->valueCounts, $response->valueCounts);
+    }
 }

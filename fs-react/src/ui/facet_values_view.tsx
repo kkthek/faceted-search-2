@@ -1,6 +1,7 @@
-import {BaseQuery, PropertyFacet, PropertyValueCount} from "../common/datatypes";
+import {BaseQuery, Property, PropertyFacet, PropertyValueCount} from "../common/datatypes";
 import React from "react";
 import DisplayTools from "../util/display_tools";
+import FacetFilter from "./facet_filter";
 
 function FacetValues(prop: {
     query: BaseQuery,
@@ -8,6 +9,7 @@ function FacetValues(prop: {
     onValueClick: (p: PropertyFacet)=>void,
     removable: boolean
     onRemoveClick: (p: PropertyFacet)=>void,
+    onFilterContainsClick: (text: string, property: Property) => void
 }) {
 
     if (prop.propertyValueCount === null) {
@@ -33,7 +35,7 @@ function FacetValues(prop: {
     });
 
     return <div>
-
+        <FacetFilter onFilterContainsClick={prop.onFilterContainsClick} property={prop.propertyValueCount.property}/>
         <ul className={'fs-facets'}>
             {listItems}
         </ul>

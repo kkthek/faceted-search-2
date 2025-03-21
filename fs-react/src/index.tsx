@@ -97,6 +97,7 @@ function App() {
                                onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
                                onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
+                               onFilterContainsClick={eventHandler.onFacetContains.bind(eventHandler)}
                     />
                     <h3>Available categories</h3>
                     <CategoryView searchStateDocument={searchStateDocument}

@@ -1,4 +1,4 @@
-import {RangeQuery, Property, PropertyFacet, DocumentQuery, Sort, Datatype, Order, FacetsQuery} from "./datatypes";
+import {FacetsQuery, Property, PropertyWithConstaint, RangeQuery} from "./datatypes";
 import Tools from "../util/tools";
 import DocumentQueryBuilder from "./document_query_builder";
 
@@ -27,8 +27,12 @@ class FacetQueryBuilder {
         return this;
     }
 
-    withFacetProperties(property: Property): FacetQueryBuilder {
-        this.query.facetProperties.push(property);
+    withFacetProperties(property: PropertyWithConstaint): FacetQueryBuilder {
+
+        let constraint = Tools.replaceFirst(this.query.facetProperties, (e) => e.title, property.title, property);
+        if (constraint === null) {
+            this.query.facetProperties.push(property);
+        }
         return this;
     }
 

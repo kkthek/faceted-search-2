@@ -55,7 +55,9 @@ class SolrRequestClient
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
             $q->namespaceFacets, []);
 
-        foreach ($q->getFacetProperties() as $v) {
+        $facetPropertiesWithoutConstraints = array_filter($q->getFacetProperties(), fn($e) => !$e->hasConstraints());
+
+        foreach ($facetPropertiesWithoutConstraints as $v) {
             /* @var $v Property */
             $queryParams['facet.field'][] = Helper::generateSOLRPropertyForSearch($v->title, $v->type);
         }
@@ -68,7 +70,29 @@ class SolrRequestClient
         }
         $queryParams['facet.query'] = $facetQueries;
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
-        return $response->parseFacetResponse();
+        $result = $response->parseFacetResponse();
+
+        $facetPropertiesWithConstraints = array_filter($q->getFacetProperties(), fn($e) => $e->hasConstraints());
+        foreach ($facetPropertiesWithConstraints as $v) {
+            $singleQueryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
+                $q->namespaceFacets, []);
+            /* @var $v Property */
+            $singleQueryParams['facet.field'] = [Helper::generateSOLRPropertyForSearch($v->title, $v->type)];
+            if (!is_null($v->getFacetContains())) {
+                $singleQueryParams['facet.contains'] = $v->getFacetContains();
+            }
+            if (!is_null($v->getFacetLimit())) {
+                $singleQueryParams['facet.limit'] = $v->getFacetLimit();
+            }
+            if (!is_null($v->getFacetOffset())) {
+                $singleQueryParams['facet.offset'] = $v->getFacetOffset();
+            }
+            $parser = new SolrResponseParser($this->requestSOLR($singleQueryParams));
+            $result->merge($parser->parseFacetResponse());
+
+        }
+
+        return $result;
     }
 
     /**

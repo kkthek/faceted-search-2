@@ -30,6 +30,24 @@ class Tools {
         return null;
     }
 
+    static replaceFirst<T>(arr: T[], getKey: (e: T) => string, key: string, replacement: T): T {
+        let index = -1;
+        let found;
+        for(let i = 0; i < arr.length;i++) {
+            if (getKey(arr[i]) === key) {
+                index = i;
+                found = arr[i];
+                break;
+            }
+        }
+
+        if (index > -1) {
+            arr.splice(index, 1, replacement);
+            return found;
+        }
+        return null;
+    }
+
     static removeAll<T>(arr: T[], getKey: (e: T) => string, key: string): void {
         while (this.removeFirst(arr, getKey, key) !== null);
     }

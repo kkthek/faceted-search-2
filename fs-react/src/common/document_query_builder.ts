@@ -1,4 +1,4 @@
-import {RangeQuery, Property, PropertyFacet, DocumentQuery, Sort, Datatype, Order} from "./datatypes";
+import {Datatype, DocumentQuery, Order, Property, PropertyFacet, Sort} from "./datatypes";
 import Tools from "../util/tools";
 
 class DocumentQueryBuilder {
@@ -13,8 +13,8 @@ class DocumentQueryBuilder {
             [],
             [],
             [
-                { property: {title:"score", type: Datatype.internal }, order: Order.desc},
-                { property: {title:"displaytitle", type: Datatype.internal }, order: Order.asc}
+                { property: new Property("score", Datatype.internal), order: Order.desc},
+                { property: new Property("displaytitle", Datatype.internal), order: Order.asc}
             ],
 
             10,

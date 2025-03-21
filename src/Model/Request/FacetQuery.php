@@ -11,7 +11,7 @@ class FacetQuery extends BaseQuery {
     public $facetQueries = [];
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\Common\Property[]
+     * @var \DIQA\FacetedSearch2\Model\Common\PropertyWithConstraint[]
      */
     public $facetProperties = [];
 
@@ -40,7 +40,7 @@ class FacetQuery extends BaseQuery {
     }
 
     /**
-     * @return \DIQA\FacetedSearch2\Model\Common\Property[]
+     * @return \DIQA\FacetedSearch2\Model\Common\PropertyWithConstraint[]
      */
     public function getFacetProperties(): array
     {
@@ -48,7 +48,7 @@ class FacetQuery extends BaseQuery {
     }
 
     /**
-     * @param \DIQA\FacetedSearch2\Model\Common\Property[] $facetProperties
+     * @param \DIQA\FacetedSearch2\Model\Common\PropertyWithConstraint[] $facetProperties
      * @return FacetQuery
      */
     public function setFacetProperties(array $facetProperties): FacetQuery

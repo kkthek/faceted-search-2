@@ -7,7 +7,6 @@
 
 import Tools from "../util/tools";
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
-import {CustomDeserializerParams} from "typedjson/lib/types/metadata";
 
 /**
  * Request types
@@ -166,6 +165,33 @@ export class Property {
     constructor(title: string, type: Datatype) {
         this.title = title;
         this.type = type;
+    }
+
+    isRangeProperty() {
+        return this.type === Datatype.number || this.type === Datatype.datetime;
+    }
+}
+
+@jsonObject
+export class PropertyWithConstaint {
+    @jsonMember(String)
+    title: string
+    @jsonMember(Number)
+    type: Datatype
+
+    @jsonMember(Number)
+    facetLimit: number
+    @jsonMember(Number)
+    facetOffset: number
+    @jsonMember(String)
+    facetContains: string
+
+    constructor(title: string, type: Datatype, limit: number, offset: number, contains: string) {
+        this.title = title;
+        this.type = type;
+        this.facetLimit = limit;
+        this.facetOffset = offset;
+        this.facetContains = contains;
     }
 
     isRangeProperty() {

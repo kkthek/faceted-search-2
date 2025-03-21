@@ -1,6 +1,13 @@
 import DocumentQueryBuilder from "../common/document_query_builder";
 import FacetQueryBuilder from "../common/facet_query_builder";
-import {BaseQuery, Property, PropertyFacet, SolrDocumentsResponse, SolrFacetResponse} from "../common/datatypes";
+import {
+    BaseQuery,
+    Property,
+    PropertyFacet,
+    PropertyWithConstaint,
+    SolrDocumentsResponse,
+    SolrFacetResponse
+} from "../common/datatypes";
 import StatQueryBuilder from "../common/stat_query_builder";
 import Client from "../common/client";
 
@@ -88,6 +95,12 @@ class EventHandler {
         }
     }
 
+    onFacetContains(text: string, property: Property) {
+        let pwc = new PropertyWithConstaint(property.title, property.type, null, null, text === '' ? null : text);
+        this.currentFacetsQueryBuilder.withFacetProperties(pwc);
+        this.updateFacets();
+    }
+
     onNamespaceClick(n: number) {
         this.currentDocumentsQueryBuilder.toggleNamespaceFacet(n);
         this.currentDocumentsQueryBuilder.withOffset(0);
@@ -130,7 +143,8 @@ class EventHandler {
                     console.error(e);
             });
         } else {
-            this.currentFacetsQueryBuilder.withFacetProperties(p);
+            let pwc = new PropertyWithConstaint(p.title, p.type, null, null, null);
+            this.currentFacetsQueryBuilder.withFacetProperties(pwc);
             this.updateFacets();
 
         }
@@ -175,6 +189,7 @@ class EventHandler {
             console.error(e);
         });
     }
+
 }
 
 export default EventHandler;
