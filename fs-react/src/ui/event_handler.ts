@@ -29,6 +29,7 @@ class EventHandler {
     private readonly setSearchState: React.Dispatch<React.SetStateAction<SearchStateDocument>>;
     private readonly setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>;
 
+
     constructor(  currentDocumentsQueryBuilder: DocumentQueryBuilder,
                   currentFacetsQueryBuilder: FacetQueryBuilder,
                   setDocumentState: React.Dispatch<React.SetStateAction<SearchStateDocument>>,
@@ -58,8 +59,8 @@ class EventHandler {
         this.updateFacetValuesForProperty(p);
     }
 
-    onExpandClick(p: Property) {
-        this.updateFacetValuesForProperty(p);
+    onExpandClick(p: Property, limit: number) {
+        this.updateFacetValuesForProperty(p, limit);
     }
 
     onValueClick(p: PropertyFacet) {
@@ -130,7 +131,7 @@ class EventHandler {
         this.updateDocuments();
     }
 
-    private updateFacetValuesForProperty(p: Property) {
+    private updateFacetValuesForProperty(p: Property, limit: number = null) {
 
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         if (p.isRangeProperty()) {
@@ -143,7 +144,7 @@ class EventHandler {
                     console.error(e);
             });
         } else {
-            let pwc = new PropertyWithConstaint(p.title, p.type, null, null, null);
+            let pwc = new PropertyWithConstaint(p.title, p.type, limit, null, null);
             this.currentFacetsQueryBuilder.withFacetProperties(pwc);
             this.updateFacets();
 

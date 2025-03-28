@@ -28,7 +28,10 @@ if (browserWindow.mw) {
     solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
     wikiContext = browserWindow.mw.config.values;
 } else {
-    wikiContext = {'wgFormattedNamespaces': {0: 'Main', 14: 'Category', 10: 'Template'}};
+    wikiContext = {
+                    'wgFormattedNamespaces': {0: 'Main', 14: 'Category', 10: 'Template'},
+                    'fsgFacetValueLimit': 20
+    };
     solrProxyUrl = "http://localhost:9000";
 }
 

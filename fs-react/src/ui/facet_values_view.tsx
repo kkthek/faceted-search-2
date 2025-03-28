@@ -34,8 +34,12 @@ function FacetValues(prop: {
         </li>
     });
 
-    return <div>
+    let facetFilter = (!prop.removable ?
         <FacetFilter onFilterContainsClick={prop.onFilterContainsClick} property={prop.propertyValueCount.property}/>
+        : <div/>);
+
+    return <div>
+        {facetFilter}
         <ul className={'fs-facets'}>
             {listItems}
         </ul>

@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React, {useContext, useRef} from "react";
 import {
     BaseQuery,
     Property,
@@ -10,6 +10,7 @@ import {
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
 import {SearchStateDocument, SearchStateFacet} from "./event_handler";
+import {WikiContext} from "../index";
 
 
 function FacetViewProperty(prop: {
@@ -20,7 +21,7 @@ function FacetViewProperty(prop: {
     selectedFacets: PropertyFacet[],
     propertyFacetCount: PropertyFacetCount|null,
     onPropertyClick: (p: Property)=>void,
-    onExpandClick: (p: Property)=>void,
+    onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
     onFilterContainsClick: (text: string, property: Property) => void
@@ -29,18 +30,23 @@ function FacetViewProperty(prop: {
     let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
     let facetValuesDiv = useRef<any>(null);
+    let wikiContext = useContext(WikiContext);
+    let showMore = wikiContext.fsgFacetValueLimit === propertyValueCount?.values.length;
 
-    function handleExpandClick() {
+    function handleExpandClick(limit: number) {
         if (propertyValueCount === null) {
-            prop.onExpandClick(prop.property);
+            prop.onExpandClick(prop.property, limit);
             return;
         }
         const div = facetValuesDiv.current;
         div.style.display = div.checkVisibility() ? 'none' : 'block';
     }
+    let showMoreButton = (showMore ? <div>
+        <a onClick={() => prop.onExpandClick(prop.property, null)}>show more...</a> </div>
+        : <div></div>);
 
     return <li className={'fs-facets'}>
-        <span onClick={handleExpandClick}>[e]</span>
+        <span onClick={() => handleExpandClick(wikiContext.fsgFacetValueLimit)}>[e]</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.title}</span>
         <span>({prop.propertyFacetCount?.count})</span>
         {!isSelectedFacet ? <div ref={facetValuesDiv}>
@@ -50,7 +56,9 @@ function FacetViewProperty(prop: {
                                          query={prop.query}
                                          onRemoveClick={prop.onRemoveClick}
                                          onFilterContainsClick={prop.onFilterContainsClick}
-        /></div> : ''}
+        />
+            {showMoreButton}
+        </div> : ''}
     </li>
 }
 
@@ -58,7 +66,7 @@ function FacetView(prop: {
     searchStateDocument: SearchStateDocument,
     searchStateFacets: SearchStateFacet,
     onPropertyClick: (p: Property)=>void,
-    onExpandClick: (p: Property)=>void,
+    onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
     onFilterContainsClick: (text: string, property: Property) => void
