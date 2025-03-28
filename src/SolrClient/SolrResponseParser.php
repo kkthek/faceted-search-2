@@ -100,7 +100,7 @@ class SolrResponseParser {
         $smwh_categories = $this->body->facet_counts->facet_fields->smwh_categories ?? [];
         $categoryFacetCounts = []; /* @var CategoryFacetCount[] */
         foreach ($smwh_categories as $category => $count) {
-            $categoryFacetCounts[] = new CategoryFacetCount($category, $count);
+            $categoryFacetCounts[] = new CategoryFacetCount($category, WikiTools::getDisplayTitleForCategory($category), $count);
         }
         $smwh_properties = $this->body->facet_counts->facet_fields->smwh_properties ?? [];
         $propertyFacetCounts = []; /* @var PropertyFacetCount[] */
