@@ -8,6 +8,11 @@
 import Tools from "../util/tools";
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 
+export interface WikiContextInterface {
+    config: any;
+    msg:  (id:string) => string
+}
+
 /**
  * Request types
  */
@@ -219,6 +224,12 @@ export class RangeQuery {
 }
 
 export class Sort {
+
+    constructor(property: Property, order: Order) {
+        this.property = property;
+        this.order = order;
+    }
+
     property: Property;
     order: Order
 }

@@ -18,17 +18,25 @@ import SelectedCategoriesView from "./ui/selected_categories_view";
 import NamespaceView from "./ui/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
 import PagingView from "./ui/paging_view";
+import SortView from "./ui/sort_view";
+import {Sort, WikiContextInterface} from "./common/datatypes";
 
 const browserWindow = window as any;
 let solrProxyUrl;
-let wikiContext = {};
+
+let wikiContext: WikiContextInterface = {
+    config: {},
+    msg: (id: string) => id
+};
+
 if (browserWindow.mw) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
     solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
-    wikiContext = browserWindow.mw.config.values;
+    wikiContext.config = browserWindow.mw.config.values;
+    wikiContext.msg = browserWindow.mw.msg;
 } else {
-    wikiContext = {
+    wikiContext.config = {
                     'wgFormattedNamespaces': {0: 'Main', 14: 'Category', 10: 'Template'},
                     'fsgFacetValueLimit': 20
     };
@@ -45,12 +53,14 @@ const initialSearch = client.searchDocuments(currentDocumentsQueryBuilder.build(
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
+    const [sortState, setSortState] = useState((): Sort => null);
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
         currentFacetsQueryBuilder,
         setSearchStateDocument,
         setSearchFacetState,
+        setSortState,
         client
     );
 
@@ -76,6 +86,8 @@ function App() {
                 <NamespaceView searchStateDocument={searchStateDocument}
                                onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
                 />
+                <SortView sort={sortState}
+                          onChange={eventHandler.onSortChange.bind(eventHandler)}/>
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>

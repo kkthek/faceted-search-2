@@ -23,6 +23,13 @@ class Setup {
             'localBasePath' => $basePath,
             'remoteExtPath' => 'FacetedSearch2',
             'position' => 'bottom',
+            'messages' => [
+                'score_desc',
+                '_mdat_desc',
+                '_mdat_asc',
+                'displaytitle_desc',
+                'displaytitle_asc'
+            ],
             'scripts' => [
                 $reactScript,
             ],

@@ -5,6 +5,11 @@
 		]
 	},
 	"facetedsearch2-desc": "Faceted search",
-	"facetedsearch2": "Faceted search"
+	"facetedsearch2": "Faceted search",
 
+	"score_desc": "Relevanz",
+	"_mdat_desc": "Änderungsdatum absteigend",
+	"_mdat_asc": "Änderungsdatum aufsteigend",
+	"displaytitle_desc": "Seitentitel absteigend",
+	"displaytitle_asc": "Seitentitel aufsteigend"
 }

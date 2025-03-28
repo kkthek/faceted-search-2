@@ -61,6 +61,11 @@ class DocumentQueryBuilder {
         return this;
     }
 
+    clearSorts(): DocumentQueryBuilder {
+        this.query.sorts = [];
+        return this;
+    }
+
     withSort(sort: Sort): DocumentQueryBuilder {
         this.query.sorts.push(sort);
         return this;
