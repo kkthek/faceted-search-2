@@ -7,10 +7,10 @@
 	"facetedsearch2-desc": "Faceted search",
 	"facetedsearch2": "Faceted search",
 
-	"score_desc": "Relevance",
-	"_mdat_desc": "Modification date descending",
-	"_mdat_asc": "Modification date ascending",
-	"displaytitle_desc": "Page title descending",
-	"displaytitle_asc": "Page title ascending"
+	"score_desc": 			"Relevance",
+	"_mdat_desc": 			"Newest article first",
+	"_mdat_asc": 			"Oldest article first",
+	"displaytitle_desc": 	"Page title descending",
+	"displaytitle_asc": 	"Page title ascending"
 
 }

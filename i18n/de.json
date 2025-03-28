@@ -7,9 +7,9 @@
 	"facetedsearch2-desc": "Faceted search",
 	"facetedsearch2": "Faceted search",
 
-	"score_desc": "Relevanz",
-	"_mdat_desc": "Änderungsdatum absteigend",
-	"_mdat_asc": "Änderungsdatum aufsteigend",
-	"displaytitle_desc": "Seitentitel absteigend",
-	"displaytitle_asc": "Seitentitel aufsteigend"
+	"score_desc": 			"Relevanz",
+	"_mdat_desc": 			"Neuester Artikel zuerst",
+	"_mdat_asc":  			"Ältester Artikel zuerst",
+	"displaytitle_desc": 	"Artikelname absteigend",
+	"displaytitle_asc": 	"Artikelname aufsteigend"
 }
