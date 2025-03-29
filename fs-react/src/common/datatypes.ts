@@ -185,6 +185,10 @@ export class Property {
     isRangeProperty() {
         return this.type === Datatype.number || this.type === Datatype.datetime;
     }
+
+    isBooleanProperty() {
+        return this.type === Datatype.boolean;
+    }
 }
 
 @jsonObject

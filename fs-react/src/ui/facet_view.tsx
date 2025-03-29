@@ -31,7 +31,8 @@ function FacetViewProperty(prop: {
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
     let facetValuesDiv = useRef<any>(null);
     let wikiContext = useContext(WikiContext);
-    let showMore = wikiContext.config.fsgFacetValueLimit === propertyValueCount?.values.length;
+    let showAll = wikiContext.config.fsgFacetValueLimit === propertyValueCount?.values.length
+            && !prop.property.isBooleanProperty() && !prop.property.isRangeProperty();
 
     function handleExpandClick(limit: number) {
         if (propertyValueCount === null) {
@@ -41,8 +42,8 @@ function FacetViewProperty(prop: {
         const div = facetValuesDiv.current;
         div.style.display = div.checkVisibility() ? 'none' : 'block';
     }
-    let showMoreButton = (showMore ? <div>
-        <a onClick={() => prop.onExpandClick(prop.property, null)}>show all...</a> </div>
+    let showMoreButton = (showAll ? <li>
+        <a onClick={() => prop.onExpandClick(prop.property, null)}>show all...</a> </li>
         : <div></div>);
 
     return <li className={'fs-facets'}>
