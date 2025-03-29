@@ -189,6 +189,10 @@ export class Property {
     isBooleanProperty() {
         return this.type === Datatype.boolean;
     }
+
+    isFilterProperty() {
+        return !this.isRangeProperty() && !this.isBooleanProperty();
+    }
 }
 
 @jsonObject

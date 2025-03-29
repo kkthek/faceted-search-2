@@ -3,7 +3,6 @@ import React, {useContext} from "react";
 import DisplayTools from "../util/display_tools";
 import FacetFilter from "./facet_filter";
 import {WikiContext} from "../index";
-import Tools from "../util/tools";
 
 function FacetValues(prop: {
     query: BaseQuery,
@@ -12,11 +11,13 @@ function FacetValues(prop: {
     removable: boolean
     onRemoveClick: (p: PropertyFacet)=>void,
     onFilterContainsClick: (text: string, limit: number, property: Property) => void
+    onExpandClick: (p: Property, limit: number)=>void
 }) {
 
     if (prop.propertyValueCount === null) {
         return;
     }
+
 
     const listItems = prop.propertyValueCount.values.map((v, i) => {
         let value = DisplayTools.serializeFacetValue(prop.propertyValueCount.property, v);
@@ -36,7 +37,15 @@ function FacetValues(prop: {
         </li>
     });
 
+    let wikiContext = useContext(WikiContext);
+    let property = prop.propertyValueCount.property;
+    let showAll = wikiContext.config.fsgFacetValueLimit === prop.propertyValueCount.values.length
+        && property.isFilterProperty();
 
+    if (showAll) {
+        listItems.push(<li key={'showall'}>
+            <a onClick={() => prop.onExpandClick(property, null)}>show all...</a></li>);
+    }
 
     let facetFilter = (!prop.removable ?
         <FacetFilter onFilterContainsClick={prop.onFilterContainsClick}
