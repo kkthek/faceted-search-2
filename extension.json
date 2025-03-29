@@ -14,15 +14,12 @@
 			"php": ">= 7.3"
 		}
 	},
-	"AutoloadNamespaces": {
-		"DIQA\\FacetedSearch2\\": "src/FacetedSearch2/"
-	},
 	"callback" : "DIQA\\FacetedSearch2\\Setup::initModules",
 	"SpecialPages": {
 		"FacetedSearch2": "DIQA\\FacetedSearch2\\Specials\\SpecialFacetedSearch"
 	},
 	"AutoloadNamespaces": {
-		"DIQA\\FacetedSearch2\\": "src/",
+		"DIQA\\FacetedSearch2\\": "src/FacetedSearch2/",
 		"DIQA\\FacetedSearch2\\Maintenance\\": "maintenance/"
 	},
 	"Hooks": {
