@@ -167,23 +167,6 @@ export class Property {
     @jsonMember(Number)
     type: Datatype
 
-    constructor(title: string, type: Datatype) {
-        this.title = title;
-        this.type = type;
-    }
-
-    isRangeProperty() {
-        return this.type === Datatype.number || this.type === Datatype.datetime;
-    }
-}
-
-@jsonObject
-export class PropertyWithConstaint {
-    @jsonMember(String)
-    title: string
-    @jsonMember(Number)
-    type: Datatype
-
     @jsonMember(Number)
     facetLimit: number
     @jsonMember(Number)
@@ -191,7 +174,7 @@ export class PropertyWithConstaint {
     @jsonMember(String)
     facetContains: string
 
-    constructor(title: string, type: Datatype, limit: number, offset: number, contains: string) {
+    constructor(title: string, type: Datatype, limit: number = null, offset: number = null, contains: string = null) {
         this.title = title;
         this.type = type;
         this.facetLimit = limit;

@@ -1,7 +1,9 @@
 import {BaseQuery, Property, PropertyFacet, PropertyValueCount} from "../common/datatypes";
-import React from "react";
+import React, {useContext} from "react";
 import DisplayTools from "../util/display_tools";
 import FacetFilter from "./facet_filter";
+import {WikiContext} from "../index";
+import Tools from "../util/tools";
 
 function FacetValues(prop: {
     query: BaseQuery,
@@ -9,7 +11,7 @@ function FacetValues(prop: {
     onValueClick: (p: PropertyFacet)=>void,
     removable: boolean
     onRemoveClick: (p: PropertyFacet)=>void,
-    onFilterContainsClick: (text: string, property: Property) => void
+    onFilterContainsClick: (text: string, limit: number, property: Property) => void
 }) {
 
     if (prop.propertyValueCount === null) {
@@ -34,8 +36,12 @@ function FacetValues(prop: {
         </li>
     });
 
+
+
     let facetFilter = (!prop.removable ?
-        <FacetFilter onFilterContainsClick={prop.onFilterContainsClick} property={prop.propertyValueCount.property}/>
+        <FacetFilter onFilterContainsClick={prop.onFilterContainsClick}
+                     numberOfValues={prop.propertyValueCount.values.length}
+                     property={prop.propertyValueCount.property}/>
         : <div/>);
 
     return <div>

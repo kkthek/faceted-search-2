@@ -1,15 +1,20 @@
-import React from "react";
+import React, {useContext, useState} from "react";
 import {Property} from "../common/datatypes";
+import {WikiContext} from "../index";
 
 function FacetFilter(prop : {
     property: Property
-    onFilterContainsClick: (text: string, property: Property) => void
+    numberOfValues: number
+    onFilterContainsClick: (text: string, limit: number, property: Property) => void
 }) {
 
-    let text: string = '';
-    return (prop.property.isRangeProperty() ? <div></div> : <div>
-       <input type={'text'} size={30} onChange={(e)=> text = e.target.value}/>
-        <button onClick={() => prop.onFilterContainsClick(text, prop.property)}>Filter</button>
+    let wikiContext = useContext(WikiContext);
+
+    let needsFilter = prop.numberOfValues >= wikiContext.config.fsgFacetValueLimit;
+    const [text, setText] = useState((): string => '')
+    return (prop.property.isRangeProperty() && (text === '' || needsFilter) ? <div></div> : <div>
+       <input type={'text'} value={text} size={30} onChange={(e)=> setText(e.target.value)}/>
+        <button onClick={() => prop.onFilterContainsClick(text, wikiContext.config.fsgFacetValueLimit, prop.property)}>Filter</button>
     </div>)
 }
 

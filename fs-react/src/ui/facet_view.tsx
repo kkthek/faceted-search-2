@@ -24,14 +24,14 @@ function FacetViewProperty(prop: {
     onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
-    onFilterContainsClick: (text: string, property: Property) => void
+    onFilterContainsClick: (text: string, limit: number, property: Property) => void
 }) {
 
     let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
     let facetValuesDiv = useRef<any>(null);
     let wikiContext = useContext(WikiContext);
-    let showMore = wikiContext.fsgFacetValueLimit === propertyValueCount?.values.length;
+    let showMore = wikiContext.config.fsgFacetValueLimit === propertyValueCount?.values.length;
 
     function handleExpandClick(limit: number) {
         if (propertyValueCount === null) {
@@ -42,11 +42,11 @@ function FacetViewProperty(prop: {
         div.style.display = div.checkVisibility() ? 'none' : 'block';
     }
     let showMoreButton = (showMore ? <div>
-        <a onClick={() => prop.onExpandClick(prop.property, null)}>show more...</a> </div>
+        <a onClick={() => prop.onExpandClick(prop.property, null)}>show all...</a> </div>
         : <div></div>);
 
     return <li className={'fs-facets'}>
-        <span onClick={() => handleExpandClick(wikiContext.fsgFacetValueLimit)}>[e]</span>
+        <span onClick={() => handleExpandClick(wikiContext.config.fsgFacetValueLimit)}>[e]</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.property.displayTitle}</span>
         <span>({prop.propertyFacetCount?.count})</span>
         {!isSelectedFacet ? <div ref={facetValuesDiv}>
@@ -69,7 +69,7 @@ function FacetView(prop: {
     onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
-    onFilterContainsClick: (text: string, property: Property) => void
+    onFilterContainsClick: (text: string, limit: number, property: Property) => void
 }) {
     if (!prop.searchStateDocument) return;
 

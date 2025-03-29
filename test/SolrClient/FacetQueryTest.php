@@ -2,7 +2,7 @@
 namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\FacetedSearch2\Model\Common\Datatype;
-use DIQA\FacetedSearch2\Model\Common\PropertyWithConstraint;
+use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
@@ -44,7 +44,7 @@ final class FacetQueryTest extends TestCase {
 
         $q = new FacetQuery();
 
-        $p = new PropertyWithConstraint('Has name', Datatype::STRING, null, null, null);
+        $p = new Property('Has name', Datatype::STRING);
 
         $q->setFacetProperties([$p]);
         $response = $this->client->requestFacet($q);
