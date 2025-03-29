@@ -39,8 +39,9 @@ class EventHandler {
     }
 
     onSearchClick(text: string) {
-        this.currentDocumentsQueryBuilder.withSearchText(text);
-        this.currentDocumentsQueryBuilder.withOffset(0);
+        this.currentDocumentsQueryBuilder
+            .withSearchText(text)
+            .withOffset(0);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         this.updateFacets();
@@ -57,8 +58,9 @@ class EventHandler {
 
     onPropertyClick(p: Property) {
         let propertyFacet = new PropertyFacet(p.title, p.type, null, null, null);
-        this.currentDocumentsQueryBuilder.withPropertyFacet(propertyFacet);
-        this.currentDocumentsQueryBuilder.withOffset(0);
+        this.currentDocumentsQueryBuilder
+            .withPropertyFacet(propertyFacet)
+            .withOffset(0);
         this.updateDocuments();
         this.updateFacetValuesForProperty(p);
     }
@@ -69,9 +71,10 @@ class EventHandler {
 
     onValueClick(p: PropertyFacet) {
         let property = new Property(p.property, p.type);
-        this.currentDocumentsQueryBuilder.withOffset(0);
-        this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
-        this.currentDocumentsQueryBuilder.withPropertyFacet(p);
+        this.currentDocumentsQueryBuilder
+            .withOffset(0)
+            .clearFacetsForProperty(property)
+            .withPropertyFacet(p);
         this.updateDocuments();
         this.updateFacetValuesForProperty(property);
 
@@ -79,11 +82,13 @@ class EventHandler {
 
     onRemovePropertyFacet(p: PropertyFacet) {
         let property = new Property(p.property, p.type);
-        this.currentDocumentsQueryBuilder.withOffset(0);
-        this.currentDocumentsQueryBuilder.clearFacetsForProperty(property);
-        this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(property);
-        this.currentFacetsQueryBuilder.clearFacetsForProperty(property);
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.currentDocumentsQueryBuilder
+            .withOffset(0)
+            .clearFacetsForProperty(property);
+        this.currentFacetsQueryBuilder
+            .clearFacetsQueriesForProperty(property)
+            .clearFacetsForProperty(property)
+            .updateBaseQuery(this.currentDocumentsQueryBuilder);
 
         this.updateDocuments();
         const rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
@@ -101,31 +106,40 @@ class EventHandler {
     }
 
     onFacetContains(text: string, limit: number, property: Property) {
-        limit = text === '' ? limit:null;
-        let pwc = new Property(property.title, property.type, limit, null, text === '' ? null : text);
-        this.currentFacetsQueryBuilder.withFacetProperties(pwc);
+
+        this.currentFacetsQueryBuilder.withFacetProperties(
+            new Property(
+                property.title,
+                property.type,
+                text === '' ? limit : null,
+                null,
+                text === '' ? null : text)
+        );
         this.updateFacets();
     }
 
     onNamespaceClick(n: number) {
-        this.currentDocumentsQueryBuilder.toggleNamespaceFacet(n);
-        this.currentDocumentsQueryBuilder.withOffset(0);
+        this.currentDocumentsQueryBuilder
+            .toggleNamespaceFacet(n)
+            .withOffset(0);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         this.updateFacets();
     }
 
     onCategoryClick(c: string) {
-        this.currentDocumentsQueryBuilder.withOffset(0);
-        this.currentDocumentsQueryBuilder.withCategoryFacet(c);
+        this.currentDocumentsQueryBuilder
+            .withOffset(0)
+            .withCategoryFacet(c);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         this.updateFacets();
     }
 
     onCategoryRemoveClick(c: string) {
-        this.currentDocumentsQueryBuilder.withOffset(0);
-        this.currentDocumentsQueryBuilder.withoutCategoryFacet(c);
+        this.currentDocumentsQueryBuilder
+            .withOffset(0)
+            .withoutCategoryFacet(c);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         this.updateFacets();
