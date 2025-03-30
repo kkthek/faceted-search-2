@@ -90,16 +90,16 @@ export class StatQuery extends BaseQuery {
 
 export class FacetsQuery extends BaseQuery {
     facetQueries: RangeQuery[]
-    facetProperties: Property[]
+    propertyValueConstraints: PropertyValueConstraint[]
     constructor( searchText: string,
                  propertyFacets: PropertyFacet[],
                  categoryFacets: string[],
                  namespaceFacets: number[],
                  facetQueries: RangeQuery[],
-                 facetProperties: Property[]) {
+                 facetProperties: PropertyValueConstraint[]) {
         super(searchText, propertyFacets, categoryFacets, namespaceFacets);
         this.facetQueries = facetQueries;
-        this.facetProperties = facetProperties;
+        this.propertyValueConstraints = facetProperties;
     }
 
     getRangeProperties(): Property[] {
@@ -167,6 +167,31 @@ export class Property {
     @jsonMember(Number)
     type: Datatype
 
+
+    constructor(title: string, type: Datatype) {
+        this.title = title;
+        this.type = type;
+    }
+
+    isRangeProperty() {
+        return this.type === Datatype.number || this.type === Datatype.datetime;
+    }
+
+    isBooleanProperty() {
+        return this.type === Datatype.boolean;
+    }
+
+    isFilterProperty() {
+        return !this.isRangeProperty() && !this.isBooleanProperty();
+    }
+}
+
+export class PropertyValueConstraint {
+    @jsonMember(String)
+    title: string
+    @jsonMember(Number)
+    type: Datatype
+
     @jsonMember(Number)
     facetLimit: number
     @jsonMember(Number)
@@ -180,18 +205,6 @@ export class Property {
         this.facetLimit = limit;
         this.facetOffset = offset;
         this.facetContains = contains;
-    }
-
-    isRangeProperty() {
-        return this.type === Datatype.number || this.type === Datatype.datetime;
-    }
-
-    isBooleanProperty() {
-        return this.type === Datatype.boolean;
-    }
-
-    isFilterProperty() {
-        return !this.isRangeProperty() && !this.isBooleanProperty();
     }
 }
 

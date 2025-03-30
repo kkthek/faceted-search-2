@@ -45,9 +45,9 @@ JSON;
 JSON;
         $statsQuery = FacetQuery::fromJson($json);
 
-        $this->assertEquals(1, count($statsQuery->getFacetProperties()) );
-        $this->assertEquals("Has name", $statsQuery->getFacetProperties()[0]->getTitle() );
-        $this->assertEquals(Datatype::STRING, $statsQuery->getFacetProperties()[0]->getType() );
+        $this->assertEquals(1, count($statsQuery->getPropertyValueConstraints()) );
+        $this->assertEquals("Has name", $statsQuery->getPropertyValueConstraints()[0]->getTitle() );
+        $this->assertEquals(Datatype::STRING, $statsQuery->getPropertyValueConstraints()[0]->getType() );
 
     }
 

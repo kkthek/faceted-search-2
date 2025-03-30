@@ -13,7 +13,7 @@ class FacetQuery extends BaseQuery {
     /**
      * @var \DIQA\FacetedSearch2\Model\Common\Property[]
      */
-    public $facetProperties = [];
+    public $propertyValueConstraints = [];
 
     public static function fromJson($json): FacetQuery
     {
@@ -40,20 +40,20 @@ class FacetQuery extends BaseQuery {
     }
 
     /**
-     * @return \DIQA\FacetedSearch2\Model\Common\Property[]
+     * @return \DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint[]
      */
-    public function getFacetProperties(): array
+    public function getPropertyValueConstraints(): array
     {
-        return $this->facetProperties;
+        return $this->propertyValueConstraints;
     }
 
     /**
-     * @param \DIQA\FacetedSearch2\Model\Common\Property[] $facetProperties
+     * @param \DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint[] $propertyValueConstraints
      * @return FacetQuery
      */
-    public function setFacetProperties(array $facetProperties): FacetQuery
+    public function setPropertyValueConstraints(array $propertyValueConstraints): FacetQuery
     {
-        $this->facetProperties = $facetProperties;
+        $this->propertyValueConstraints = $propertyValueConstraints;
         return $this;
     }
 

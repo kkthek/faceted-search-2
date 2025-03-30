@@ -1,6 +1,14 @@
 import DocumentQueryBuilder from "../common/document_query_builder";
 import FacetQueryBuilder from "../common/facet_query_builder";
-import {BaseQuery, Property, PropertyFacet, SolrDocumentsResponse, SolrFacetResponse, Sort} from "../common/datatypes";
+import {
+    BaseQuery,
+    Property,
+    PropertyFacet,
+    PropertyValueConstraint,
+    SolrDocumentsResponse,
+    SolrFacetResponse,
+    Sort
+} from "../common/datatypes";
 import StatQueryBuilder from "../common/stat_query_builder";
 import Client from "../common/client";
 
@@ -87,7 +95,7 @@ class EventHandler {
             .clearFacetsForProperty(property);
         this.currentFacetsQueryBuilder
             .clearFacetsQueriesForProperty(property)
-            .clearFacetsForProperty(property)
+            .clearPropertyValueConstraintForProperty(property)
             .updateBaseQuery(this.currentDocumentsQueryBuilder);
 
         this.updateDocuments();
@@ -107,8 +115,8 @@ class EventHandler {
 
     onFacetContains(text: string, limit: number, property: Property) {
 
-        this.currentFacetsQueryBuilder.withFacetProperties(
-            new Property(
+        this.currentFacetsQueryBuilder.withPropertyValueConstraint(
+            new PropertyValueConstraint(
                 property.title,
                 property.type,
                 text === '' ? limit : null,
@@ -163,8 +171,8 @@ class EventHandler {
                     console.error(e);
             });
         } else {
-            let pwc = new Property(p.title, p.type, limit, null, null);
-            this.currentFacetsQueryBuilder.withFacetProperties(pwc);
+            let pwc = new PropertyValueConstraint(p.title, p.type, limit, null, null);
+            this.currentFacetsQueryBuilder.withPropertyValueConstraint(pwc);
             this.updateFacets();
 
         }

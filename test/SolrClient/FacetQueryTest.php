@@ -46,7 +46,7 @@ final class FacetQueryTest extends TestCase {
 
         $p = new Property('Has name', Datatype::STRING);
 
-        $q->setFacetProperties([$p]);
+        $q->setPropertyValueConstraints([$p]);
         $response = $this->client->requestFacet($q);
 
         $this->assertEquals(1, count($response->getValueCounts()));
