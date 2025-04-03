@@ -5,7 +5,7 @@ import {
     PropertyFacet,
     PropertyFacetCount,
     PropertyWithURL,
-    SolrFacetResponse
+    FacetResponse
 } from "../common/datatypes";
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
@@ -17,7 +17,7 @@ function FacetViewProperty(prop: {
     query: BaseQuery,
     title: string,
     property: PropertyWithURL,
-    searchStateFacets: SolrFacetResponse,
+    searchStateFacets: FacetResponse,
     selectedFacets: PropertyFacet[],
     propertyFacetCount: PropertyFacetCount|null,
     onPropertyClick: (p: Property)=>void,

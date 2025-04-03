@@ -4,23 +4,22 @@ namespace DIQA\FacetedSearch2\SolrClient;
 
 use Carbon\Carbon;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
-use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetValue;
 use DIQA\FacetedSearch2\Model\Response\Document;
+use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
+use DIQA\FacetedSearch2\Model\Response\FacetResponse;
 use DIQA\FacetedSearch2\Model\Response\MWTitleWithURL;
 use DIQA\FacetedSearch2\Model\Response\NamespaceFacetCount;
 use DIQA\FacetedSearch2\Model\Response\NamespaceFacetValue;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetCount;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetValues;
-use DIQA\FacetedSearch2\Model\Response\PropertyWithURL;
 use DIQA\FacetedSearch2\Model\Response\PropertyValueCount;
-use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
-use DIQA\FacetedSearch2\Model\Response\SolrFacetResponse;
-use DIQA\FacetedSearch2\Model\Response\SolrStatsResponse;
+use DIQA\FacetedSearch2\Model\Response\PropertyWithURL;
 use DIQA\FacetedSearch2\Model\Response\Stats;
+use DIQA\FacetedSearch2\Model\Response\StatsResponse;
 use DIQA\FacetedSearch2\Model\Response\ValueCount;
 use DIQA\FacetedSearch2\Utils\WikiTools;
 
@@ -38,7 +37,7 @@ class SolrResponseParser {
 
     }
 
-    public function parse(): SolrDocumentsResponse {
+    public function parse(): DocumentsResponse {
         $docs = [];
         foreach ($this->body->response->docs as $doc) {
             $propertyFacets = []; /* @var PropertyFacetValues[] */
@@ -123,7 +122,7 @@ class SolrResponseParser {
             $namespaceFacetCounts[] = new NamespaceFacetCount($namespace, WikiTools::getNamespaceName($namespace), $count);
         }
 
-        return new SolrDocumentsResponse(
+        return new DocumentsResponse(
             $this->body->response->numFound,
             $docs,
             $categoryFacetCounts,
@@ -133,7 +132,7 @@ class SolrResponseParser {
 
     }
 
-    public function parseStatsResponse(): SolrStatsResponse {
+    public function parseStatsResponse(): StatsResponse {
 
         $stats = [] /* @var Stats[] */;
         if ( isset($this->body->stats->stats_fields)) {
@@ -151,10 +150,10 @@ class SolrResponseParser {
             }
         }
 
-        return new SolrStatsResponse($stats);
+        return new StatsResponse($stats);
     }
 
-    public function parseFacetResponse(): SolrFacetResponse {
+    public function parseFacetResponse(): FacetResponse {
         $r = null;
         $propertyValueCount = [] /* @var PropertyValueCount[] */;
         $ranges = [];
@@ -201,7 +200,7 @@ class SolrResponseParser {
             }
             $propertyValueCount[] = new PropertyValueCount($property, $valueCounts);
         }
-        return new SolrFacetResponse($propertyValueCount);
+        return new FacetResponse($propertyValueCount);
 
     }
 

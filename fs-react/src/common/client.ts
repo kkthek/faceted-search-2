@@ -7,9 +7,9 @@
 import {
     DocumentQuery,
     FacetsQuery,
-    SolrDocumentsResponse,
-    SolrFacetResponse,
-    SolrStatsResponse,
+    DocumentsResponse,
+    FacetResponse,
+    StatsResponse,
     StatQuery
 } from "./datatypes";
 import {TypedJSON} from "typedjson";
@@ -24,7 +24,7 @@ class Client {
     }
 
     async searchDocuments(query: DocumentQuery
-    ): Promise<SolrDocumentsResponse> {
+    ): Promise<DocumentsResponse> {
         const response = await fetch(this.baseUrl + "/documents", {
             method: "POST",
             cache: "no-cache",
@@ -34,13 +34,13 @@ class Client {
             body: JSON.stringify(query)
         });
         await this.handleErrorIfAny(response);
-        const deserializer = new TypedJSON(SolrDocumentsResponse);
+        const deserializer = new TypedJSON(DocumentsResponse);
         const json = await response.json();
         return deserializer.parse(json);
     }
 
     async searchStats(query: StatQuery
-    ): Promise<SolrStatsResponse> {
+    ): Promise<StatsResponse> {
         const response = await fetch(this.baseUrl + "/stats", {
             method: "POST",
             cache: "no-cache",
@@ -50,13 +50,13 @@ class Client {
             body: JSON.stringify(query)
         });
         await this.handleErrorIfAny(response);
-        const deserializer = new TypedJSON(SolrStatsResponse);
+        const deserializer = new TypedJSON(StatsResponse);
         const json = await response.json();
         return deserializer.parse(json);
     }
 
     async searchFacets(query: FacetsQuery
-    ): Promise<SolrFacetResponse> {
+    ): Promise<FacetResponse> {
         const response = await fetch(this.baseUrl + "/facets", {
             method: "POST",
             cache: "no-cache",
@@ -66,7 +66,7 @@ class Client {
             body: JSON.stringify(query)
         });
         await this.handleErrorIfAny(response);
-        const deserializer = new TypedJSON(SolrFacetResponse);
+        const deserializer = new TypedJSON(FacetResponse);
         const json = await response.json();
         return deserializer.parse(json);
     }

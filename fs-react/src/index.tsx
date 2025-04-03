@@ -38,7 +38,7 @@ if (browserWindow.mw) {
 } else {
     wikiContext.config = {
                     'wgFormattedNamespaces': {0: 'Main', 14: 'Category', 10: 'Template'},
-                    'fsgFacetValueLimit': 2
+                    'fsgFacetValueLimit': 20
     };
     solrProxyUrl = "http://localhost:9000";
 }

@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-class SolrFacetResponse
+class FacetResponse
 {
     /* @var PropertyValueCount[] */
     public array $valueCounts;
@@ -21,7 +21,7 @@ class SolrFacetResponse
         return $this->valueCounts;
     }
 
-    public function merge(SolrFacetResponse $response) {
+    public function merge(FacetResponse $response) {
         $this->valueCounts = array_merge($this->valueCounts, $response->valueCounts);
     }
 }

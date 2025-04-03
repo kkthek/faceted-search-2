@@ -5,20 +5,20 @@ import {
     Property,
     PropertyFacet,
     PropertyValueConstraint,
-    SolrDocumentsResponse,
-    SolrFacetResponse,
+    DocumentsResponse,
+    FacetResponse,
     Sort
 } from "../common/datatypes";
 import StatQueryBuilder from "../common/stat_query_builder";
 import Client from "../common/client";
 
 export interface SearchStateDocument {
-    documentResponse: SolrDocumentsResponse;
+    documentResponse: DocumentsResponse;
     query: BaseQuery
 }
 
 export interface SearchStateFacet {
-    facetsResponse: SolrFacetResponse;
+    facetsResponse: FacetResponse;
     query: BaseQuery
 }
 

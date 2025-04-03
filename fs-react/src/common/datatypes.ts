@@ -288,7 +288,7 @@ export class PropertyValueCount {
 }
 
 @jsonObject
-export class SolrFacetResponse {
+export class FacetResponse {
 
     @jsonArrayMember(PropertyValueCount)
     valueCounts: PropertyValueCount[];
@@ -387,7 +387,7 @@ export class Document {
 }
 
 @jsonObject
-export class SolrDocumentsResponse {
+export class DocumentsResponse {
     @jsonMember(Number)
     numResults: number;
     @jsonArrayMember(Document)
@@ -418,7 +418,7 @@ export class Stats {
 }
 
 @jsonObject
-export class SolrStatsResponse {
+export class StatsResponse {
     @jsonArrayMember(Stats)
     stats: Stats[];
 }

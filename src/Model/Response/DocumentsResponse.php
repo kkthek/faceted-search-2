@@ -4,7 +4,7 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 use DIQA\FacetedSearch2\Model\Response\Document;
 
-class SolrDocumentsResponse
+class DocumentsResponse
 {
     public int $numResults;
     /* @var Document[] */

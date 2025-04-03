@@ -5,9 +5,9 @@ namespace DIQA\FacetedSearch2;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
-use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
-use DIQA\FacetedSearch2\Model\Response\SolrFacetResponse;
-use DIQA\FacetedSearch2\Model\Response\SolrStatsResponse;
+use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
+use DIQA\FacetedSearch2\Model\Response\FacetResponse;
+use DIQA\FacetedSearch2\Model\Response\StatsResponse;
 
 interface FacetedSearchClient
 {
@@ -15,25 +15,25 @@ interface FacetedSearchClient
      * Requests a set of documents.
      *
      * @param DocumentQuery $q
-     * @return SolrDocumentsResponse
+     * @return DocumentsResponse
      */
-    public function requestDocuments(DocumentQuery $q): SolrDocumentsResponse;
+    public function requestDocuments(DocumentQuery $q): DocumentsResponse;
 
     /**
      * Requests a set of facets, ie. a list of properties with values and their frequency.
      *
      * @param FacetQuery $q
-     * @return SolrFacetResponse
+     * @return FacetResponse
      */
-    public function requestFacets(FacetQuery $q): SolrFacetResponse;
+    public function requestFacets(FacetQuery $q): FacetResponse;
 
     /**
      * Requests statistical data about a property, ie. min/max values. Generates and returns
      * pre-calculated clusters from this data.
      * @param StatsQuery $q
-     * @return SolrStatsResponse
+     * @return StatsResponse
      */
-    public function requestStats(StatsQuery $q): SolrStatsResponse;
+    public function requestStats(StatsQuery $q): StatsResponse;
 
     /**
      * Extracts fulltext from a file.

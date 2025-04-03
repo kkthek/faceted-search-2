@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-class SolrStatsResponse
+class StatsResponse
 {
 
     /* @var Stats[] */
