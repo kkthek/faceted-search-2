@@ -10,7 +10,7 @@ function FacetValues(prop: {
     onValueClick: (p: PropertyFacet)=>void,
     removable: boolean
     onRemoveClick: (p: PropertyFacet)=>void,
-    onFilterContainsClick: (text: string, limit: number, property: Property) => void
+    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
     onExpandClick: (p: Property, limit: number)=>void
 }) {
 
@@ -48,7 +48,7 @@ function FacetValues(prop: {
     }
 
     let facetFilter = (!prop.removable ?
-        <FacetFilter onFilterContainsClick={prop.onFilterContainsClick}
+        <FacetFilter onFilterContainsClick={prop.onFacetValueContainsClick}
                      numberOfValues={prop.propertyValueCount.values.length}
                      property={prop.propertyValueCount.property}/>
         : <div/>);

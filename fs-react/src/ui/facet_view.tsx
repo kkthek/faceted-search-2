@@ -24,7 +24,7 @@ function FacetViewProperty(prop: {
     onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
-    onFilterContainsClick: (text: string, limit: number, property: Property) => void
+    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
 }) {
 
     let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
@@ -51,7 +51,7 @@ function FacetViewProperty(prop: {
                                          removable={false}
                                          query={prop.query}
                                          onRemoveClick={prop.onRemoveClick}
-                                         onFilterContainsClick={prop.onFilterContainsClick}
+                                         onFacetValueContainsClick={prop.onFacetValueContainsClick}
                                          onExpandClick={prop.onExpandClick}
         />
 
@@ -66,7 +66,7 @@ function FacetView(prop: {
     onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
-    onFilterContainsClick: (text: string, limit: number, property: Property) => void
+    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
 }) {
     if (!prop.searchStateDocument) return;
 
@@ -85,7 +85,7 @@ function FacetView(prop: {
                            selectedFacets={prop.searchStateDocument.query.propertyFacets}
                            propertyFacetCount={facetCount}
                            onRemoveClick={prop.onRemoveClick}
-                           onFilterContainsClick={prop.onFilterContainsClick}
+                           onFacetValueContainsClick={prop.onFacetValueContainsClick}
         />
     }
     );
