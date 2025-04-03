@@ -17,7 +17,7 @@ final class StatsQueryTest extends TestCase {
     {
         $this->client = new SolrRequestClient();
         $documentUpdater = new SolrUpdateClient();
-        $documentUpdater->clearCore();
+        $documentUpdater->clearAllDocuments();
         $documentUpdater->updateDocument(TestData::generateData());
     }
 

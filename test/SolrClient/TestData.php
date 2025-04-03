@@ -4,8 +4,8 @@ namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Property;
-use DIQA\FacetedSearch2\Model\Document\Document;
-use DIQA\FacetedSearch2\Model\Document\PropertyValues;
+use DIQA\FacetedSearch2\Model\Update\Document;
+use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 
 class TestData {

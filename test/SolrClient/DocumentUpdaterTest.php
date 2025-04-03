@@ -2,9 +2,10 @@
 namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\FacetedSearch2\Model\Common\Property;
-use DIQA\FacetedSearch2\Model\Document\Document;
-use DIQA\FacetedSearch2\Model\Document\PropertyValues;
+
 use DIQA\FacetedSearch2\Model\Common\Datatype;
+use DIQA\FacetedSearch2\Model\Update\Document;
+use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 use PHPUnit\Framework\TestCase;
 
 final class DocumentUpdaterTest extends TestCase {
@@ -18,7 +19,7 @@ final class DocumentUpdaterTest extends TestCase {
         $document->setPropertyValues([$pv]);
 
         $updater = new SolrUpdateClient();
-        $updater->clearCore();
+        $updater->clearAllDocuments();
         $xml = $updater->updateDocument($document);
 
         $this->assertNotEmpty($xml);

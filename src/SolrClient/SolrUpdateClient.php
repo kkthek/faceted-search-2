@@ -2,11 +2,14 @@
 
 namespace DIQA\FacetedSearch2\SolrClient;
 
-use DIQA\FacetedSearch2\Model\Document\Document;
+use DIQA\FacetedSearch2\FacetedSearchUpdateClient;
+
 use DIQA\FacetedSearch2\Model\Common\Datatype;
+use DIQA\FacetedSearch2\Model\Update\Document;
 use Exception;
 
-class SolrUpdateClient {
+class SolrUpdateClient implements FacetedSearchUpdateClient
+{
 
     public function updateDocument(Document $doc) {
         $xml = $this->serializeAsXml($doc);
@@ -14,11 +17,11 @@ class SolrUpdateClient {
         return $xml;
     }
 
-    public function clearCore() {
+    public function clearAllDocuments() {
         $this->updateSOLR("<delete><query>*:*</query></delete>");
     }
 
-    public function serializeAsXml(Document $doc): string
+    private function serializeAsXml(Document $doc): string
     {
         list($wikiPagePropertiesAsXml, $valuePropertiesAsXml) = $this->createPropertyLists($doc);
         $propertiesValuesAsXML = $this->createPropertyValues($doc);

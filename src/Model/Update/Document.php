@@ -1,6 +1,6 @@
 <?php
 
-namespace DIQA\FacetedSearch2\Model\Document;
+namespace DIQA\FacetedSearch2\Model\Update;
 
 class Document {
 

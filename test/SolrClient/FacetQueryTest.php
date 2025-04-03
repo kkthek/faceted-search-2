@@ -6,6 +6,7 @@ use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
+use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
 use PHPUnit\Framework\TestCase;
 
 final class FacetQueryTest extends TestCase {
@@ -16,7 +17,7 @@ final class FacetQueryTest extends TestCase {
     {
         $this->client = new SolrRequestClient();
         $documentUpdater = new SolrUpdateClient();
-        $documentUpdater->clearCore();
+        $documentUpdater->clearAllDocuments();
         $documentUpdater->updateDocument(TestData::generateData());
     }
 
@@ -44,7 +45,7 @@ final class FacetQueryTest extends TestCase {
 
         $q = new FacetQuery();
 
-        $p = new Property('Has name', Datatype::STRING);
+        $p = new PropertyValueConstraint(new Property('Has name', Datatype::STRING));
 
         $q->setPropertyValueConstraints([$p]);
         $response = $this->client->requestFacets($q);

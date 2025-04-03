@@ -12,7 +12,7 @@ final class EndToEnd extends TestCase {
     protected function setUp(): void
     {
         $documentUpdater = new SolrUpdateClient();
-        $documentUpdater->clearCore();
+        $documentUpdater->clearAllDocuments();
         $documentUpdater->updateDocument(TestData::generateData());
     }
 

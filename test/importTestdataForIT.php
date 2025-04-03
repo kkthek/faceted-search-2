@@ -55,6 +55,6 @@ use DIQA\FacetedSearch2\SolrClient\TestData;
 $data1 = TestData::generateData();
 
 $documentUpdater = new SolrUpdateClient();
-$documentUpdater->clearCore();
+$documentUpdater->clearAllDocuments();
 $documentUpdater->updateDocument($data1);
 
