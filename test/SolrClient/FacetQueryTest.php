@@ -7,6 +7,7 @@ use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
+use DIQA\FacetedSearch2\Setup;
 use PHPUnit\Framework\TestCase;
 
 final class FacetQueryTest extends TestCase {
@@ -15,8 +16,8 @@ final class FacetQueryTest extends TestCase {
 
     protected function setUp(): void
     {
-        $this->client = new SolrRequestClient();
-        $documentUpdater = new SolrUpdateClient();
+        $this->client = Setup::getFacetedSearchClient();
+        $documentUpdater = Setup::getFacetedSearchUpdateClient();
         $documentUpdater->clearAllDocuments();
         $documentUpdater->updateDocument(TestData::generateData());
     }

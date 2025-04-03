@@ -49,10 +49,10 @@ unset($options);
 
 require COMPOSER_INSTALL;
 
-use DIQA\FacetedSearch2\SolrClient\SolrUpdateClient;
+use DIQA\FacetedSearch2\Setup;
 use DIQA\FacetedSearch2\SolrClient\TestData;
 
-$documentUpdater = new SolrUpdateClient();
+$documentUpdater = Setup::getFacetedSearchUpdateClient();
 $documentUpdater->clearAllDocuments();
 $documentUpdater->updateDocument(TestData::generateData());
 $documentUpdater->updateDocument(TestData::generateData2());

@@ -1,12 +1,17 @@
 <?php
+
 namespace DIQA\FacetedSearch2;
 
+use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
+use DIQA\FacetedSearch2\SolrClient\SolrUpdateClient;
 use OutputPage;
 use Skin;
 
-class Setup {
+class Setup
+{
 
-    public static function initModules() {
+    public static function initModules()
+    {
 
         global $wgResourceModules;
         global $IP;
@@ -33,13 +38,32 @@ class Setup {
             'scripts' => [
                 $reactScript,
             ],
-            'styles' => [ 'fs-react/public/skins/main.css' ],
+            'styles' => ['fs-react/public/skins/main.css'],
             'dependencies' => [],
         );
 
     }
 
-    public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
+    public static function getFacetedSearchClient(): FacetedSearchClient
+    {
+        global $fsgBackendQueryClient;
+        if (!isset($fsgBackendQueryClient)) {
+            $fsgBackendQueryClient = SolrRequestClient::class;
+        }
+        return new $fsgBackendQueryClient;
+    }
+
+    public static function getFacetedSearchUpdateClient(): FacetedSearchUpdateClient
+    {
+        global $fsgBackendUpdateClient;
+        if (!isset($fsgBackendUpdateClient)) {
+            $fsgBackendUpdateClient = SolrUpdateClient::class;
+        }
+        return new $fsgBackendUpdateClient;
+    }
+
+    public static function onBeforePageDisplay(OutputPage $out, Skin $skin)
+    {
 
         if (!is_null($out->getTitle()) && $out->getTitle()->isSpecial("FacetedSearch2")) {
             self::checkIfCompiled();

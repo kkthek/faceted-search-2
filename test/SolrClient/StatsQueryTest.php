@@ -7,6 +7,7 @@ use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
+use DIQA\FacetedSearch2\Setup;
 use PHPUnit\Framework\TestCase;
 
 final class StatsQueryTest extends TestCase {
@@ -15,8 +16,8 @@ final class StatsQueryTest extends TestCase {
 
     protected function setUp(): void
     {
-        $this->client = new SolrRequestClient();
-        $documentUpdater = new SolrUpdateClient();
+        $this->client = Setup::getFacetedSearchClient();
+        $documentUpdater = Setup::getFacetedSearchUpdateClient();
         $documentUpdater->clearAllDocuments();
         $documentUpdater->updateDocument(TestData::generateData());
     }

@@ -6,6 +6,7 @@ use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Update\Document;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
+use DIQA\FacetedSearch2\Setup;
 use PHPUnit\Framework\TestCase;
 
 final class DocumentUpdaterTest extends TestCase {
@@ -18,7 +19,7 @@ final class DocumentUpdaterTest extends TestCase {
         $pv = new PropertyValues($p, ['Markus']);
         $document->setPropertyValues([$pv]);
 
-        $updater = new SolrUpdateClient();
+        $updater = Setup::getFacetedSearchUpdateClient();
         $updater->clearAllDocuments();
         $xml = $updater->updateDocument($document);
 
