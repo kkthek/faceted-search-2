@@ -2,10 +2,11 @@
 
 namespace DIQA\FacetedSearch2\Model\Request;
 
+use DIQA\FacetedSearch2\Model\Common\Property;
+
 class PropertyValueConstraint {
 
-    public string $title;
-    public int $type;
+    public Property $property;
 
     public ?int $facetLimit = null;
     public ?int $facetOffset = null;
@@ -13,39 +14,28 @@ class PropertyValueConstraint {
 
     /**
      * Property constructor.
-     * @param string $title
-     * @param int $type
+     * @param Property $property
      * @param int|null $facetLimit
      * @param int|null $facetOffset
      * @param string|null $facetContains
      */
-    public function __construct(string $title,
-                                int $type,
+    public function __construct(Property $property,
                                 ?int $facetLimit = null,
                                 ?int $facetOffset = null,
                                 ?string $facetContains = null)
     {
-        $this->title = $title;
-        $this->type = $type;
+        $this->property = $property;
         $this->facetLimit = $facetLimit;
         $this->facetOffset = $facetOffset;
         $this->facetContains = $facetContains;
     }
 
     /**
-     * @return string
+     * @return Property
      */
-    public function getTitle(): string
+    public function getProperty(): Property
     {
-        return $this->title;
-    }
-
-    /**
-     * @return int
-     */
-    public function getType(): int
-    {
-        return $this->type;
+        return $this->property;
     }
 
     /**

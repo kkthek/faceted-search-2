@@ -112,8 +112,7 @@ class EventHandler {
 
         this.currentFacetsQueryBuilder.withPropertyValueConstraint(
             new PropertyValueConstraint(
-                property.title,
-                property.type,
+                property,
                 text === '' ? limit : null,
                 null,
                 text === '' ? null : text)
@@ -162,8 +161,7 @@ class EventHandler {
         } else {
             this.currentFacetsQueryBuilder.withPropertyValueConstraint(
                 new PropertyValueConstraint(
-                    p.title,
-                    p.type,
+                    p,
                     limit,
                     null,
                     null));

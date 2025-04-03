@@ -187,10 +187,8 @@ export class Property {
 }
 
 export class PropertyValueConstraint {
-    @jsonMember(String)
-    title: string
-    @jsonMember(Number)
-    type: Datatype
+    @jsonMember(Property)
+    property: Property
 
     @jsonMember(Number)
     facetLimit: number
@@ -199,9 +197,8 @@ export class PropertyValueConstraint {
     @jsonMember(String)
     facetContains: string
 
-    constructor(title: string, type: Datatype, limit: number = null, offset: number = null, contains: string = null) {
-        this.title = title;
-        this.type = type;
+    constructor(property: Property, limit: number = null, offset: number = null, contains: string = null) {
+        this.property = property;
         this.facetLimit = limit;
         this.facetOffset = offset;
         this.facetContains = contains;

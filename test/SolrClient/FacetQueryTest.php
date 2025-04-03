@@ -32,7 +32,7 @@ final class FacetQueryTest extends TestCase {
         $p2->setRange(new Range('1970-01-01T00:00:00Z', '1971-01-01T00:00:00Z'));
 
         $q->setFacetQueries([$p, $p2]);
-        $response = $this->client->requestFacet($q);
+        $response = $this->client->requestFacets($q);
 
         $this->assertEquals(1, count($response->getValueCounts()));
         $this->assertEquals(1, $response->getValueCounts()[0]->getValues()[0]->count);
@@ -47,7 +47,7 @@ final class FacetQueryTest extends TestCase {
         $p = new Property('Has name', Datatype::STRING);
 
         $q->setPropertyValueConstraints([$p]);
-        $response = $this->client->requestFacet($q);
+        $response = $this->client->requestFacets($q);
 
         $this->assertEquals(1, count($response->getValueCounts()));
         $this->assertEquals('Markus', $response->getValueCounts()[0]->values[0]->value);

@@ -69,7 +69,7 @@ try {
         echo json_encode($client->requestStats($query));
     } else if (endsWith($url, '/FacetedSearch2/v1/proxy/facets')) {
         $query = FacetQuery::fromJson($entityBody);
-        echo json_encode($client->requestFacet($query));
+        echo json_encode($client->requestFacets($query));
     } else {
         throw new Exception("endpoint '$url' not supported", 400);
     }

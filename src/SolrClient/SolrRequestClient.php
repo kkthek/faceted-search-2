@@ -4,6 +4,7 @@ namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\ChemExtension\Pages\ChemForm;
 use DIQA\ChemExtension\Utils\CurlUtil;
+use DIQA\FacetedSearch2\FacetedSearchClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
@@ -11,6 +12,7 @@ use DIQA\FacetedSearch2\Model\Common\Order;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Common\Range;
+use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
 use DIQA\FacetedSearch2\Model\Request\Sort;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Response\SolrDocumentsResponse;
@@ -20,7 +22,7 @@ use Exception;
 use MediaWiki\MediaWikiServices;
 use Title;
 
-class SolrRequestClient
+class SolrRequestClient implements FacetedSearchClient
 {
 
 
@@ -50,7 +52,7 @@ class SolrRequestClient
         return $response->parseStatsResponse();
     }
 
-    public function requestFacet(FacetQuery $q): SolrFacetResponse
+    public function requestFacets(FacetQuery $q): SolrFacetResponse
     {
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
             $q->namespaceFacets, []);
@@ -58,8 +60,8 @@ class SolrRequestClient
         $facetPropertiesWithoutConstraints = array_filter($q->getPropertyValueConstraints(), fn($e) => !$e->hasConstraints());
 
         foreach ($facetPropertiesWithoutConstraints as $v) {
-            /* @var $v Property */
-            $queryParams['facet.field'][] = Helper::generateSOLRPropertyForSearch($v->title, $v->type);
+            /* @var $v PropertyValueConstraint */
+            $queryParams['facet.field'][] = Helper::generateSOLRPropertyForSearch($v->getProperty()->getTitle(), $v->getProperty()->getType());
         }
 
         $facetQueries = [];
@@ -76,8 +78,9 @@ class SolrRequestClient
         foreach ($facetPropertiesWithConstraints as $v) {
             $singleQueryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
                 $q->namespaceFacets, []);
-            /* @var $v Property */
-            $singleQueryParams['facet.field'] = [Helper::generateSOLRPropertyForSearch($v->title, $v->type)];
+            /* @var $v PropertyValueConstraint */
+            $singleQueryParams['facet.field'] = [Helper::generateSOLRPropertyForSearch($v->getProperty()->getTitle(),
+                $v->getProperty()->type)];
             if (!is_null($v->getFacetContains())) {
                 $singleQueryParams['facet.contains'] = $v->getFacetContains();
             }
@@ -142,18 +145,13 @@ class SolrRequestClient
 
         // send document to Tika and extract text
         try {
-            $result = $this->requestSOLRExtract(file_get_contents($filepath), $contentType);
-
-            $xml = $result->{''};
-            $text = strip_tags(str_replace('<', ' <', $xml));
-
-            $text = preg_replace('/\s\s*/', ' ', $text);
+            $text = $this->requestFileExtraction(file_get_contents($filepath), $contentType);
 
             if ($text == '') {
                 throw new Exception(sprintf("\nWARN Kein extrahierter Text gefunden: %s\n", $title->getPrefixedText()));
             }
 
-            return ['xml' => $xml, 'text' => $text];
+            return ['text' => $text];
         } catch (Exception $e) {
             throw new Exception(sprintf("\nERROR Keine Extraktion möglich: %s (HTTP code: %s)\n",
                 $title->getPrefixedText(), $e->getCode()));
@@ -369,7 +367,7 @@ class SolrRequestClient
         }
     }
 
-    private function requestSOLRExtract($queryString, $contentType)
+    public function requestFileExtraction(string $fileContent, string $contentType): string
     {
         try {
             $headerFields = [];
@@ -381,7 +379,7 @@ class SolrRequestClient
 
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $queryString);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fileContent);
             curl_setopt($ch, CURLOPT_HEADER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headerFields);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -398,7 +396,10 @@ class SolrRequestClient
             list($header, $body) = Util::splitResponse($response);
             if ($httpcode >= 200 && $httpcode <= 299) {
 
-                return json_decode($body);
+                $result = json_decode($body);
+                $xml = $result->{''};
+                $text = strip_tags(str_replace('<', ' <', $xml));
+                return preg_replace('/\s\s*/', ' ', $text);
 
             }
             throw new Exception("Error on select-request. HTTP status: $httpcode. Message: $body");
