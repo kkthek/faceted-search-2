@@ -71,10 +71,17 @@ class Tools {
             return [];
         }
         return json.map(
-            value => this.deserializeValue(value)
+            value => Tools.deserializeValue(value)
         );
     }
 
+    static range(limit: number) {
+        return Array(limit).fill(0).map((x,i)=>i);
+    }
+
+    static x() {
+        return "hhh";
+    }
 }
 
 export default Tools;

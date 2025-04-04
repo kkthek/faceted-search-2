@@ -81,6 +81,7 @@ class SolrResponseParser {
                     $highlighting = $smwh_search_field[1];
                 }
             }
+            $propertyFacets = $this->fillEmptyExtraProperties($propertyFacets);
             $docs[] = new Document(
                 $doc->id,
                 $propertyFacets,
@@ -221,7 +222,7 @@ class SolrResponseParser {
         } else {
             return new PropertyFacetValues(
                 new PropertyWithURL($name, $displayTitle,
-                    Datatype::NUMBER,
+                    $type,
                     WikiTools::createURLForProperty($name)
                 ),
                 $values);
@@ -266,5 +267,24 @@ class SolrResponseParser {
 
     private static function startsWith($string, $query){
         return substr($string, 0, strlen($query)) === $query;
+    }
+
+    private function fillEmptyExtraProperties(array $propertyFacetValues)
+    {
+        global $fsgExtraPropertiesToRequest;
+
+        foreach($fsgExtraPropertiesToRequest as $extraProperty) {
+            if (count(array_filter($propertyFacetValues, fn($p) => $p->property->title === $extraProperty->title)) === 0) {
+                $displayTitle = WikiTools::getDisplayTitleForProperty($extraProperty->title);
+                $propertyWithUrl = new PropertyWithURL(
+                    $extraProperty->title,
+                    $displayTitle,
+                    $extraProperty->type,
+                    WikiTools::createURLForProperty($extraProperty->title)
+                );
+                $propertyFacetValues[] = new PropertyFacetValues($propertyWithUrl, []);
+            }
+        }
+        return $propertyFacetValues;
     }
 }

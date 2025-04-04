@@ -13,6 +13,10 @@ export interface WikiContextInterface {
     msg:  (id:string) => string
 }
 
+export interface ElementWithURL {
+    url: string,
+    displayTitle: string
+}
 /**
  * Request types
  */
@@ -245,7 +249,7 @@ export enum Order {
  */
 
 @jsonObject
-export class MWTitleWithURL extends MWTitle {
+export class MWTitleWithURL extends MWTitle implements ElementWithURL {
     @jsonMember(String)
     url: string;
 
@@ -257,7 +261,7 @@ export class MWTitleWithURL extends MWTitle {
 }
 
 @jsonObject
-export class PropertyWithURL extends Property {
+export class PropertyWithURL extends Property implements ElementWithURL {
     @jsonMember(String)
     displayTitle: string;
     @jsonMember(String)
@@ -361,7 +365,7 @@ export class NamespaceFacetCount {
 
 
 @jsonObject
-export class Document {
+export class Document implements ElementWithURL {
     @jsonMember(String)
     id: string
     @jsonArrayMember(PropertyFacetValues)
@@ -384,6 +388,10 @@ export class Document {
     score: number;
     @jsonMember(String)
     highlighting: string | null;
+
+    getPropertyFacetValues(property: string): PropertyFacetValues {
+        return Tools.findFirst(this.propertyFacets, (p) => p.property.title, property);
+    }
 }
 
 @jsonObject

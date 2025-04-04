@@ -1,10 +1,11 @@
-import {Document} from "../common/datatypes";
+import {ElementWithURL} from "../common/datatypes";
 import React from "react";
 
+
 function WikiLink(prop: {
-    doc: Document
+    page: ElementWithURL
 }) {
-    return <a href={prop.doc.url}>{prop.doc.displayTitle}</a>
+    return <a href={prop.page.url}>{prop.page.displayTitle}</a>
 }
 
 export default WikiLink;

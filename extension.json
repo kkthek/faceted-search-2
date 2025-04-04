@@ -22,8 +22,12 @@
 		"DIQA\\FacetedSearch2\\": "src/FacetedSearch2/",
 		"DIQA\\FacetedSearch2\\Maintenance\\": "maintenance/"
 	},
+	"ExtensionFunctions": [
+		"DIQA\\FacetedSearch2\\Setup::setupFacetedSearch"
+	],
 	"Hooks": {
-		"BeforePageDisplay": "DIQA\\FacetedSearch2\\Setup::onBeforePageDisplay"
+		"BeforePageDisplay": "DIQA\\FacetedSearch2\\Setup::onBeforePageDisplay",
+		"ParserFirstCallInit": "DIQA\\FacetedSearch2\\Setup::initializeBeforeParserInit"
 	},
 	"ExtensionMessagesFiles": {
 		"FacetedSearch2Magic": "i18n/MagicWords.php"
@@ -50,5 +54,40 @@
 			"class": "DIQA\\FacetedSearch2\\Endpoints\\FacetQueryEndpoint"
 		}
 	],
+	"config_prefix": "fsg",
+	"config": {
+		"SolrCore": {
+			"value": "mw",
+			"description": "The name of the SOLR core which stores the index data of the wiki. (1 per each wiki)"
+		},
+		"SolrHost": {
+			"value": "localhost",
+			"description": "The hostname of the SOLR server. Default is localhost. It is recommended that SOLR listens only on localhost."
+		},
+		"SolrPort": {
+			"value": 8983,
+			"description": "The port of the SOLR server. Default is 8983"
+		},
+		"SolrUser": {
+			"value": "",
+			"description": "The user of the SOLR server (usually required in multi-tenant environments or if the SOLR server is accessible via internet"
+		},
+		"SolrPass": {
+			"value": "",
+			"description": "The password of the SOLR user (see SolrUser setting)"
+		},
+		"SolrProxyDebug": {
+			"value": false,
+			"description": "Activates maximum PHP error reporting. DO NOT use this for production but only for debugging purposes."
+		},
+		"AnnotationsInSnippet": {
+			"value": [],
+			"description": "Annotations can be shown in the snippet. This config maps category names to lists of property names. Articles from these categories show the values of the given properties in the snippets (if values exist). E.g. $fsgAnnotationsInSnippet[ 'Dokument'=>['Abteilung','Dokumentart' ] ]"
+		},
+		"FacetValueLimit": {
+			"value": 20,
+			"description": "Maximum number of facets values per facet which forces a search field to appear"
+		}
+	},
 	"manifest_version": 2
 }

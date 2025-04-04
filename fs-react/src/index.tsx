@@ -19,7 +19,8 @@ import NamespaceView from "./ui/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
 import PagingView from "./ui/paging_view";
 import SortView from "./ui/sort_view";
-import {Sort, WikiContextInterface} from "./common/datatypes";
+import {Property, Sort, WikiContextInterface} from "./common/datatypes";
+import Config from "./util/defaults";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -36,10 +37,7 @@ if (browserWindow.mw) {
     wikiContext.config = browserWindow.mw.config.values;
     wikiContext.msg = browserWindow.mw.msg;
 } else {
-    wikiContext.config = {
-                    'wgFormattedNamespaces': {0: 'Main', 14: 'Category', 10: 'Template'},
-                    'fsgFacetValueLimit': 20
-    };
+    wikiContext.config = Config.getDevDefaultSettings();
     solrProxyUrl = "http://localhost:9000";
 }
 
@@ -48,8 +46,11 @@ export let WikiContext = createContext(null);
 
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
-const initialSearch = client.searchDocuments(currentDocumentsQueryBuilder.build());
+wikiContext.config.fsgExtraPropertiesToRequest.forEach((p: Property) => {
+    currentDocumentsQueryBuilder.withExtraProperty(p);
+});
 
+const initialSearch = client.searchDocuments(currentDocumentsQueryBuilder.build());
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);

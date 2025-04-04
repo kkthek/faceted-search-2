@@ -2,10 +2,16 @@
 
 namespace DIQA\FacetedSearch2;
 
+use DIQA\FacetedSearch2\Model\Common\Datatype;
+use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 use DIQA\FacetedSearch2\SolrClient\SolrUpdateClient;
+use DIQA\FacetedSearch2\Utils\WikiTools;
 use OutputPage;
 use Skin;
+use RequestContext;
+use SMWDIProperty;
+use DataTypeRegistry;
 
 class Setup
 {
@@ -62,6 +68,37 @@ class Setup
         return new $fsgBackendUpdateClient;
     }
 
+    public static function setupFacetedSearch() {
+
+        // TODO: register update hooks
+    }
+
+    public static function initializeBeforeParserInit() {
+        if( !RequestContext::getMain()->hasTitle() ) {
+            return true;
+        }
+
+        $currentTitle = RequestContext::getMain()->getTitle();
+        if( is_null($currentTitle) ||
+            $currentTitle->getNamespace() != NS_SPECIAL ||
+            ($currentTitle->getText() != 'FacetedSearch2') ) {
+            return true;
+        }
+
+
+        global $fsgFacetValueLimit, $fsgExtraPropertiesToRequest, $fsgAnnotationsInSnippet;
+
+        $jsVars = [];
+        $jsVars["fsgFacetValueLimit"] = $fsgFacetValueLimit;
+        $jsVars["fsgAnnotationsInSnippet"] = $fsgAnnotationsInSnippet;
+        $fsgExtraPropertiesToRequest = self::calculateProperties($fsgAnnotationsInSnippet);
+        $jsVars["fsgExtraPropertiesToRequest"] = $fsgExtraPropertiesToRequest;
+
+        RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
+
+        return true;
+    }
+
     public static function onBeforePageDisplay(OutputPage $out, Skin $skin)
     {
 
@@ -78,6 +115,37 @@ class Setup
             trigger_error("You need to build FacetedSearch2. See README");
             die();
         }
+    }
+
+    private static function calculateProperties($fsgAnnotationsInSnippet)
+    {
+        $result = [];
+        $allExtraProperties = WikiTools::flatten(array_values($fsgAnnotationsInSnippet));
+        foreach($allExtraProperties as $property) {
+            $smwProperty = SMWDIProperty::newFromUserLabel($property);
+            $typeId = $smwProperty->findPropertyValueType();
+            $type = DataTypeRegistry::getInstance()->getDataItemByType($typeId);
+
+            // The property names of all attributes are built based on their type.
+            switch($type) {
+                case SMWDataItem::TYPE_BOOLEAN:
+                    $result[] = new Property($property, Datatype::BOOLEAN);
+                    break;
+                case SMWDataItem::TYPE_NUMBER:
+                    $result[] =  new Property($property, Datatype::NUMBER);
+                    break;
+                case SMWDataItem::TYPE_BLOB:
+                    $result[] =  new Property($property, Datatype::STRING);
+                    break;
+                case SMWDataItem::TYPE_WIKIPAGE:
+                    $result[] =  new Property($property, Datatype::WIKIPAGE);
+                    break;
+                case SMWDataItem::TYPE_TIME:
+                    $result[] =  new Property($property, Datatype::DATETIME);
+                    break;
+            }
+        }
+        return $result;
     }
 
 
