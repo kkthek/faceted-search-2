@@ -127,11 +127,8 @@ class Helper
         global $fsgSOLRPort;
         global $fsgSOLRCore;
 
-        $host = $fsgSOLRHost ?? "http://localhost";
-        $port = $fsgSOLRPort ?? "8983";
-        $core = $fsgSOLRCore ?? "mw";
-
-        return "$host:$port/solr/$core";
+        $protocol = "http";
+        return "$protocol://$fsgSOLRHost:$fsgSOLRPort/solr/$fsgSOLRCore";
     }
 
 }

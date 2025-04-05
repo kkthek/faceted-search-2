@@ -3,6 +3,7 @@ test export-ignore
 fs-react/it export-ignore
 fs-react/src export-ignore
 rest.php export-ignore
+dev-config.php export-ignore
 runTests.sh export-ignore
 phpunit export-ignore
 composer.lock export-ignore

@@ -1,21 +1,20 @@
 <?php
 namespace DIQA\FacetedSearch2\SolrClient;
 
-use DIQA\FacetedSearch2\Model\Common\Property;
-use DIQA\FacetedSearch2\Model\Common\Range;
+
 use DIQA\FacetedSearch2\Model\Common\Datatype;
-use DIQA\FacetedSearch2\Model\Request\FacetQuery;
-use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
+use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Setup;
-use PHPUnit\Framework\TestCase;
 
-final class StatsQueryTest extends TestCase {
+
+final class StatsQueryTest extends BaseTest {
 
     private $client;
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->client = Setup::getFacetedSearchClient();
         $documentUpdater = Setup::getFacetedSearchUpdateClient();
         $documentUpdater->clearAllDocuments();

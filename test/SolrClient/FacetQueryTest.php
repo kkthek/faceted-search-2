@@ -8,14 +8,14 @@ use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
 use DIQA\FacetedSearch2\Setup;
-use PHPUnit\Framework\TestCase;
 
-final class FacetQueryTest extends TestCase {
+final class FacetQueryTest extends BaseTest {
 
     private $client;
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->client = Setup::getFacetedSearchClient();
         $documentUpdater = Setup::getFacetedSearchUpdateClient();
         $documentUpdater->clearAllDocuments();

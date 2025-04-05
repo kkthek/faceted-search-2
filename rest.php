@@ -53,9 +53,8 @@ use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
-use DIQA\FacetedSearch2\Model\Common\Property;
-use DIQA\FacetedSearch2\Model\Common\Datatype;
 
+require_once 'dev-config.php';
 setDefaultConfig();
 
 $entityBody = file_get_contents('php://input');
@@ -94,15 +93,3 @@ function endsWith( $haystack, $needle ) {
     return substr( $haystack, -$length ) === $needle;
 }
 
-function setDefaultConfig() {
-    // set development settings ------------------------------
-    global $fsgExtraPropertiesToRequest;
-    $fsgExtraPropertiesToRequest = [];
-    $fsgExtraPropertiesToRequest[] = new Property("Has spouse", Datatype::WIKIPAGE);
-    $fsgExtraPropertiesToRequest[] = new Property("Has age", Datatype::NUMBER);
-    $fsgExtraPropertiesToRequest[] = new Property("Was born at", Datatype::DATETIME);
-
-    global $fsgAnnotationsInSnippet;
-    $fsgAnnotationsInSnippet[] = [ 'Employee' => ['Has spouse', "Has age", "Was born at"]];
-// -------------------------------------------------------
-}

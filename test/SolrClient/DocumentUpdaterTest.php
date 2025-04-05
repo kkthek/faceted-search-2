@@ -1,15 +1,13 @@
 <?php
 namespace DIQA\FacetedSearch2\SolrClient;
 
-use DIQA\FacetedSearch2\Model\Common\Property;
-
 use DIQA\FacetedSearch2\Model\Common\Datatype;
+use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Update\Document;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 use DIQA\FacetedSearch2\Setup;
-use PHPUnit\Framework\TestCase;
 
-final class DocumentUpdaterTest extends TestCase {
+final class DocumentUpdaterTest extends BaseTest {
 
     public function testUpdate(): void
     {
