@@ -5,10 +5,10 @@ use DIQA\FacetedSearch2\Model\Common\Property;
 
 function setDefaultConfig() {
     // set development settings ------------------------------
-    global $fsgSOLRHost, $fsgSOLRPort, $fsgSOLRCore;
-    $fsgSOLRHost = "localhost";
-    $fsgSOLRPort = "8983";
-    $fsgSOLRCore = "mw";
+    global $fsgSolrHost, $fsgSolrPort, $fsgSolrCore;
+    $fsgSolrHost = "localhost";
+    $fsgSolrPort = "8983";
+    $fsgSolrCore = "mw";
 
     global $fsgExtraPropertiesToRequest;
     $fsgExtraPropertiesToRequest = [];

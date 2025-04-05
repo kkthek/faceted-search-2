@@ -2,16 +2,17 @@
 
 namespace DIQA\FacetedSearch2;
 
+use SMW\DataTypeRegistry;
+use SMWDataItem;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 use DIQA\FacetedSearch2\SolrClient\SolrUpdateClient;
-use DIQA\FacetedSearch2\Utils\WikiTools;
+use DIQA\FacetedSearch2\Utils\ArrayTools;
 use OutputPage;
-use Skin;
 use RequestContext;
+use Skin;
 use SMWDIProperty;
-use DataTypeRegistry;
 
 class Setup
 {
@@ -79,9 +80,12 @@ class Setup
         }
 
         $currentTitle = RequestContext::getMain()->getTitle();
-        if( is_null($currentTitle) ||
-            $currentTitle->getNamespace() != NS_SPECIAL ||
-            ($currentTitle->getText() != 'FacetedSearch2') ) {
+        $requestUrl = RequestContext::getMain()->getRequest()->getRequestURL();
+        $isFacetedSearch2Page = !is_null($currentTitle)
+            && $currentTitle->getNamespace() === NS_SPECIAL
+            && $currentTitle->getText() === 'FacetedSearch2';
+        $isProxyEndpoint = strpos($requestUrl, '/FacetedSearch2/v1/proxy') > -1;
+        if( !$isFacetedSearch2Page && !$isProxyEndpoint) {
             return true;
         }
 
@@ -120,7 +124,7 @@ class Setup
     private static function calculateProperties($fsgAnnotationsInSnippet)
     {
         $result = [];
-        $allExtraProperties = WikiTools::flatten(array_values($fsgAnnotationsInSnippet));
+        $allExtraProperties = ArrayTools::flatten(array_values($fsgAnnotationsInSnippet));
         foreach($allExtraProperties as $property) {
             $smwProperty = SMWDIProperty::newFromUserLabel($property);
             $typeId = $smwProperty->findPropertyValueType();
