@@ -37,6 +37,9 @@
 			"i18n"
 		]
 	},
+	"JobClasses": {
+		"UpdateSolrWithDependantJob": "DIQA\\FacetedSearch2\\Update\\UpdateSolrWithDependantJob"
+	},
 	"RestRoutes": [
 		{
 			"path": "/FacetedSearch2/v1/proxy/documents",
@@ -87,6 +90,10 @@
 		"FacetValueLimit": {
 			"value": 20,
 			"description": "Maximum number of facets values per facet which forces a search field to appear"
+		},
+		"CreateUpdateJob": {
+			"value": true,
+			"description": "Creates async index update job after a page was saved. If false, update is done synchronously."
 		}
 	},
 	"manifest_version": 2

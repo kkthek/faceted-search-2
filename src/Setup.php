@@ -71,7 +71,14 @@ class Setup
 
     public static function setupFacetedSearch() {
 
-        // TODO: register update hooks
+        global $wgHooks;
+        $wgHooks['SMW::SQLStore::AfterDataUpdateComplete'][] = 'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onUpdateDataAfter';
+        $wgHooks['UploadComplete'][] =                         'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onUploadComplete';
+        $wgHooks['AfterImportPage'][] =                        'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onAfterImportPage';
+        $wgHooks['PageMoveCompleting'][] =                     'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onTitleMoveComplete';
+        $wgHooks['PageDelete'][] =                             'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onPageDelete';
+        $wgHooks['ApprovedRevsRevisionApproved'][] =           'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onRevisionApproved';
+        $wgHooks['PageSaveComplete'][] =                       'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onPageSaveComplete';
     }
 
     public static function initializeBeforeParserInit() {
