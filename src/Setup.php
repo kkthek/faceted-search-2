@@ -71,6 +71,8 @@ class Setup
 
     public static function setupFacetedSearch() {
 
+        define('FS2_EXTENSION_VERSION', true);
+
         global $wgHooks;
         $wgHooks['SMW::SQLStore::AfterDataUpdateComplete'][] = 'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onUpdateDataAfter';
         $wgHooks['UploadComplete'][] =                         'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onUploadComplete';

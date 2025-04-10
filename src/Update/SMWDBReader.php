@@ -46,8 +46,8 @@ class SMWDBReader {
             throw new Exception("invalid page ID for $pagePrefixedTitle");
         }
 
-        global $fsgBlacklistPages;
-        if (in_array($pagePrefixedTitle, $fsgBlacklistPages)) {
+        global $fsg2BlacklistPages;
+        if (in_array($pagePrefixedTitle, $fsg2BlacklistPages)) {
             throw new Exception("blacklisted page: $pagePrefixedTitle");
         }
 
@@ -145,7 +145,7 @@ class SMWDBReader {
             }
             $client = Setup::getFacetedSearchClient();
             $metadata = $this->getDocumentMetadata($pageTitle);
-            if (is_null($metadata)) return;
+            if (is_null($metadata)) return '';
             $docData = $client->requestFileExtraction( file_get_contents($metadata['filePath']), $metadata['contentType'] );
             if( array_key_exists('text', $docData) ) {
                 $text = $docData['text'] ?? '';

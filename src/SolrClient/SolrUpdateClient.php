@@ -144,7 +144,7 @@ XML;
             $headerFields = [];
             $headerFields[] = "Content-Type: text/xml";
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
-            $url = "http://localhost:8983/solr/mw/update?commit=true&overwrite=true&wt=json";  //TODO: make configurable
+            $url = Helper::getSOLRBaseUrl() . "/update?commit=true&overwrite=true&wt=json";
             $ch = curl_init($url);
 
 

@@ -45,8 +45,8 @@ class UpdateSolr extends \Maintenance
 
     public function execute()
     {
-        if( !defined( 'ER_EXTENSION_VERSION' ) ) {
-            echo("ERROR: The enhanced retrieval extension is not properly installed or configured.\n");
+        if( !defined( 'FS2_EXTENSION_VERSION' ) ) {
+            echo("ERROR: The FacetedSearch2 extension is not properly installed or configured.\n");
             die(1);
         }
 

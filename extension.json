@@ -94,6 +94,10 @@
 		"CreateUpdateJob": {
 			"value": true,
 			"description": "Creates async index update job after a page was saved. If false, update is done synchronously."
+		},
+		"BlacklistPages": {
+			"value": [],
+			"description": "All pages listed here are ignored by EnhancedRetrieval. Specify prefixed page titles, e.g. Property:Name or Category:People"
 		}
 	},
 	"manifest_version": 2

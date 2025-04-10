@@ -199,8 +199,8 @@ class FSIncrementalUpdater  {
     }
 
     private static function shouldCreateUpdateJob() {
-        global $fsgCreateUpdateJob;
-        if (isset($fsgCreateUpdateJob) && $fsgCreateUpdateJob === false) {
+        global $fsg2CreateUpdateJob;
+        if (isset($fsg2CreateUpdateJob) && $fsg2CreateUpdateJob === false) {
             return false;
         } else {
             return true;
