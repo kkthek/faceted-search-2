@@ -118,6 +118,10 @@
 		"PlaceholderText": {
 			"value": "",
 			"description": "Place holder used in the search box of Special:Search."
+		},
+		"ShowCategories": {
+			"value": true,
+			"description": "Show/hide categories in the facets section"
 		}
 	},
 	"manifest_version": 2

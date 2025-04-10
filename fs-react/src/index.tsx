@@ -124,7 +124,6 @@ function App() {
                                onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                     />
-                    <h3>Available categories</h3>
                     {useCategoryDropdown ?
                         <CategoryView searchStateDocument={searchStateDocument}
                                       onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}

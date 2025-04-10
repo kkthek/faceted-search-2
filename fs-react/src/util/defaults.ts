@@ -19,7 +19,8 @@ class Config {
             'fsg2DefaultSortOrder' : 'newest',
             'fsg2CategoryFilter': {'': '-no filter-', 'Employee': 'Employee'},
             'fsg2HitsPerPage': 10,
-            'fsg2PlaceholderText': 'Suche...'
+            'fsg2PlaceholderText': 'Suche...',
+            'fsg2ShowCategories': true
         }
     }
 }

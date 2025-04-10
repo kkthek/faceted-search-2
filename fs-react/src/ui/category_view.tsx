@@ -1,6 +1,7 @@
 import {CategoryFacetCount} from "../common/datatypes";
-import React from "react";
+import React, {useContext} from "react";
 import {SearchStateDocument} from "./event_handler";
+import {WikiContext} from "../index";
 
 function FacetViewCategory( prop: {
     title: string,
@@ -24,7 +25,9 @@ function CategoryView( prop: {
     onCategoryClick: (c: string)=>void,
 
 }) {
-    if (!prop.searchStateDocument) return;
+    let wikiContext = useContext(WikiContext);
+    let showCategories = wikiContext.config['fsg2ShowCategories'];
+    if (!prop.searchStateDocument || !showCategories) return;
 
     const categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
 
@@ -39,6 +42,7 @@ function CategoryView( prop: {
         }
     );
     return <div id={'fs-categoryview'}>
+        <h3>Available categories</h3>
         <ul>
             {listItems}
         </ul>

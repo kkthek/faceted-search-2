@@ -17,13 +17,18 @@ function CategoryDropdown(prop: {
 }) {
     let wikiContext = useContext(WikiContext);
     let categoryFilter = wikiContext.config['fsg2CategoryFilter'];
+    let showCategories = wikiContext.config['fsg2ShowCategories'];
+
+    if (!showCategories) return;
 
     let entries = [];
     for(let category in categoryFilter) {
         entries.push(new DropdownEntry(category, categoryFilter[category]));
     }
     let categoryOptions = entries.map((entry) => <option key={entry.id} value={entry.id}>{entry.label}</option>);
-    return <div><select onChange={(option) => prop.onCategoryClick(option.target.value)}>
+    return <div>
+        <h3>Available categories</h3>
+        <select onChange={(option) => prop.onCategoryClick(option.target.value)}>
         {categoryOptions}
     </select></div>
 }

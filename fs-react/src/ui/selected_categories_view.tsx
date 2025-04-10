@@ -1,12 +1,15 @@
-import React from "react";
+import React, {useContext} from "react";
 import {SearchStateDocument} from "./event_handler";
+import {WikiContext} from "../index";
 
 
 function SelectedCategoriesView(prop: {
     searchStateDocument: SearchStateDocument,
     onCategoryRemove: (c: string) => void
 }) {
-    if (!prop.searchStateDocument) return;
+    let wikiContext = useContext(WikiContext);
+    let showCategories = wikiContext.config['fsg2ShowCategories'];
+    if (!prop.searchStateDocument || !showCategories) return;
 
     const categories = prop.searchStateDocument.documentResponse.categoryFacetCounts.map((v, i) => {
             let query = prop.searchStateDocument.query;
