@@ -318,7 +318,7 @@ export class PropertyFacetValues {
 }
 
 @jsonObject
-export class CategoryFacetValue {
+export class CategoryFacetValue implements ElementWithURL {
     @jsonMember(String)
     category: string
     @jsonMember(String)
@@ -391,6 +391,10 @@ export class Document implements ElementWithURL {
 
     getPropertyFacetValues(property: string): PropertyFacetValues {
         return Tools.findFirst(this.propertyFacets, (p) => p.property.title, property);
+    }
+
+    getCategoryFacetValue(category: string) {
+        return Tools.findFirst(this.categoryFacets, (c) => c.category, category);
     }
 }
 

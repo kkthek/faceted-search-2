@@ -3,6 +3,10 @@
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 
+/**
+ * This is ONLY for development necessary. The settings are used in the rest.php wiki-mock endpoint
+ *
+ */
 function setDefaultConfig() {
     // set development settings ------------------------------
     global $fsg2SolrHost, $fsg2SolrPort, $fsg2SolrCore;
@@ -16,7 +20,6 @@ function setDefaultConfig() {
     $fsg2ExtraPropertiesToRequest[] = new Property("Has age", Datatype::NUMBER);
     $fsg2ExtraPropertiesToRequest[] = new Property("Was born at", Datatype::DATETIME);
 
-    global $fsg2AnnotationsInSnippet;
-    $fsg2AnnotationsInSnippet[] = [ 'Employee' => ['Has spouse', "Has age", "Was born at"]];
+
 // -------------------------------------------------------
 }

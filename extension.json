@@ -98,6 +98,10 @@
 		"BlacklistPages": {
 			"value": [],
 			"description": "All pages listed here are ignored by EnhancedRetrieval. Specify prefixed page titles, e.g. Property:Name or Category:People"
+		},
+		"CategoriesToShowInTitle": {
+			"value": [],
+			"description": "List of categories which should be shown in the title of search hit"
 		}
 	},
 	"manifest_version": 2

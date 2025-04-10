@@ -2,6 +2,7 @@ import React from "react";
 import {Document} from "../common/datatypes";
 import WikiLink from "./wiki_link";
 import Annotations from "./annotations_snippets";
+import CategoriesInTitle from "./categories_in_title";
 
 
 function SearchResult(prop: { doc: Document}) {
@@ -10,6 +11,7 @@ function SearchResult(prop: { doc: Document}) {
     return <li className={'fs-search-result'}>
         <span><WikiLink page={prop.doc}/></span>
         <div dangerouslySetInnerHTML={{ __html: snippet }}></div>
+        <CategoriesInTitle doc={prop.doc}/>
         <Annotations doc={prop.doc}/>
     </li>
 }

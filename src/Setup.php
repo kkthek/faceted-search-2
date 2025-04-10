@@ -99,13 +99,14 @@ class Setup
         }
 
 
-        global $fsgFacetValueLimit, $fsg2ExtraPropertiesToRequest, $fsg2AnnotationsInSnippet;
+        global $fsgFacetValueLimit, $fsg2ExtraPropertiesToRequest, $fsg2AnnotationsInSnippet, $fsg2CategoriesToShowInTitle;
 
         $jsVars = [];
         $jsVars["fsg2FacetValueLimit"] = $fsgFacetValueLimit;
         $jsVars["fsg2AnnotationsInSnippet"] = $fsg2AnnotationsInSnippet;
         $fsg2ExtraPropertiesToRequest = self::calculateProperties($fsg2AnnotationsInSnippet);
         $jsVars["fsg2ExtraPropertiesToRequest"] = $fsg2ExtraPropertiesToRequest;
+        $jsVars["fsg2CategoriesToShowInTitle"] = $fsg2CategoriesToShowInTitle;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 
@@ -132,6 +133,7 @@ class Setup
 
     private static function calculateProperties($fsg2AnnotationsInSnippet)
     {
+        //FIXME: store in MW-object cache
         $result = [];
         $allExtraProperties = ArrayTools::flatten(array_values($fsg2AnnotationsInSnippet));
         foreach($allExtraProperties as $property) {
