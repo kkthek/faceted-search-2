@@ -81,6 +81,10 @@ function App() {
         [initialSearch]
     );
 
+    let anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
+        || searchStateDocument?.query.isAnyCategorySelected();
+    let useCategoryDropdown = wikiContext.config.fsg2CategoryFilter.length === 0;
+
     return <WikiContext.Provider value={wikiContext}>
             <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
@@ -94,9 +98,7 @@ function App() {
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
                     <h3>Selected facets</h3>
-                    {  (searchFacetState == null || searchFacetState.query.isAnyPropertySelected())
-                    && (searchStateDocument == null || searchStateDocument.query.isAnyCategorySelected())
-                        ? '(no facets selected)':''}
+                    {  anyFacetSelected ? '':'(no facets selected)'}
                     <SelectedFacetsView searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
@@ -119,7 +121,7 @@ function App() {
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                     />
                     <h3>Available categories</h3>
-                    {wikiContext.config.fsg2CategoryFilter.length === 0 ?
+                    {useCategoryDropdown ?
                         <CategoryView searchStateDocument={searchStateDocument}
                                       onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                         /> :

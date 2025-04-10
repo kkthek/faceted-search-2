@@ -48,11 +48,11 @@ export class BaseQuery {
     }
 
     isAnyCategorySelected() {
-        return (this.categoryFacets || []).length === 0;
+        return (this.categoryFacets || []).length > 0;
     }
 
     isAnyPropertySelected() {
-        return (this.propertyFacets || []).length === 0;
+        return (this.propertyFacets || []).length > 0;
     }
 }
 
