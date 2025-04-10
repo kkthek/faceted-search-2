@@ -2,12 +2,12 @@
 
 namespace DIQA\FacetedSearch2\Update;
 
+use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Update\Document;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
-use DIQA\FacetedSearch2\Model\Common\Datatype;
-use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
+use DIQA\FacetedSearch2\Setup;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
@@ -136,16 +136,17 @@ class SMWDBReader {
 
         $text = '';
         $pageDbKey  = $pageTitle->getDBkey();
-        $db = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 
-        global $fsgIndexImageURL;
+        global $fsg2IndexImageURL;
 
         try {
-            if (isset($fsgIndexImageURL) && $fsgIndexImageURL === true) {
-                $this->retrieveFileSystemPath($db, $pageNamespace, $pageDbKey, $doc);
+            if (isset($fsg2IndexImageURL) && $fsg2IndexImageURL === true) {
+                $this->retrieveFileSystemPath($pageNamespace, $pageDbKey, $doc);
             }
-            $client = new SolrRequestClient();
-            $docData = $client->extractDocument( $pageTitle );
+            $client = Setup::getFacetedSearchClient();
+            $metadata = $this->getDocumentMetadata($pageTitle);
+            if (is_null($metadata)) return;
+            $docData = $client->requestFileExtraction( file_get_contents($metadata['filePath']), $metadata['contentType'] );
             if( array_key_exists('text', $docData) ) {
                 $text = $docData['text'] ?? '';
             }
@@ -157,7 +158,49 @@ class SMWDBReader {
         return $text;
     }
 
-    /**
+    private function getDocumentMetadata($title)
+    {
+        if ($title instanceof Title) {
+            $file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($title);
+            $filepath = $file->getLocalRefPath();
+        } else {
+            $filepath = $title;
+        }
+
+        // get file and extension
+        $ext = pathinfo($filepath, PATHINFO_EXTENSION);
+
+        // choose content type
+        if ($ext == 'pdf') {
+            $contentType = 'application/pdf';
+        } else if ($ext == 'doc' || $ext == 'docx') {
+            $contentType = 'application/msword';
+        } else if ($ext == 'ppt' || $ext == 'pptx') {
+            $contentType = 'application/vnd.ms-powerpoint';
+        } else if ($ext == 'xls' || $ext == 'xlsx') {
+            $contentType = 'application/vnd.ms-excel';
+        } else {
+            // general binary data as fallback (don't know if Tika accepts it)
+            $contentType = 'application/octet-stream';
+        }
+
+        // do not index unknown formats
+        if ($contentType == 'application/octet-stream') {
+            return null;
+        }
+
+        // send document to Tika and extract text
+        if ($filepath == '') {
+            if (PHP_SAPI === 'cli' && !defined('UNITTEST_MODE')) {
+                throw new Exception(sprintf("\nWARN  Empty file path for '%s'. Can not index document properly.\n", $title->getPrefixedText()));
+            }
+            return null;
+        }
+
+        return ['filePath' => $filepath, 'contentType' => $contentType];
+    }
+
+        /**
      * Will update the $options['smwh_boost_dummy']['boost'] field with the accumulated boost value
      * from namespaces, templates and categories of the wiki page.
      */
@@ -237,39 +280,6 @@ class SMWDBReader {
         return $revision;
     }
 
-    /**
-     * Updates the index for a moved article.
-     *
-     * @param int $oldid
-     *         Old page ID of the article
-     * @param int $newid
-     *         New page ID of the article
-     * @return bool
-     *         <true> if the document in the index for the article was moved successfully
-     *         <false> otherwise
-     */
-    public function updateIndexForMovedArticle($oldid, $newid) {
-        if( $this->deleteDocument($oldid) ) {
-            // The article with the new name has the same page id as before
-            $wp = MediaWikiServices::getInstance()->getWikiPageFactory()->newFromID( $oldid );
-
-            $content = $wp->getContent(RevisionRecord::RAW);
-            if($content == null) {
-                $text = '';
-            } else  {
-                $text = MediaWikiServices::getInstance()->getContentRenderer()->getParserOutput( $content, $wp );
-                $text = $text->getText() ?? '';
-                $text = Sanitizer::stripAllTags( $text );
-            }
-
-            try {
-                $this->updateIndexForArticle($wp, $text);
-            } catch( Exception $e) {
-                // TODO error logging
-            }
-        }
-        return false;
-    }
 
     //--- Private methods ---
 
@@ -359,19 +369,16 @@ class SMWDBReader {
     /**
      * Retrieves full URL of the file resource attached to this title.
      *
-     * @param IDatabase $db
      * @param int $namespace namespace-id
      * @param string $title dbkey
      * @param array $doc (out)
      */
-    private function retrieveFileSystemPath($db, $namespace, $title, array &$doc) {
+    private function retrieveFileSystemPath($namespace, $title, array &$doc) {
         $title = Title::newFromText($title, $namespace);
         $file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($title);
         $filepath = $file->getFullUrl();
 
-        $propXSD = "smwh_diqa_import_fullpath_xsdvalue_t";
-        $doc[$propXSD] = $filepath;
-        $doc['smwh_attributes'][] = $propXSD;
+        $doc['smwh_properties'][] = new PropertyValues(new Property("diqa_import_fullpath", Datatype::STRING), [$filepath]);
     }
 
     /**

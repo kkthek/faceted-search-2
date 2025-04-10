@@ -15,6 +15,13 @@ interface FacetedSearchUpdateClient
     public function updateDocument(Document $doc);
 
     /**
+     * Deletes a wiki page with the given page-ID from the index
+     * @param string $id
+     * @return mixed result ignored for now
+     */
+    public function deleteDocument(string $id);
+
+    /**
      * Clears ALL documents from the index.
      *
      * @return mixed result ignored for now

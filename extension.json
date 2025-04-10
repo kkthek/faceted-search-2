@@ -38,7 +38,7 @@
 		]
 	},
 	"JobClasses": {
-		"UpdateSolrWithDependantJob": "DIQA\\FacetedSearch2\\Update\\UpdateSolrWithDependantJob"
+		"UpdateIndexJob": "DIQA\\FacetedSearch2\\Update\\UpdateIndexJob"
 	},
 	"RestRoutes": [
 		{

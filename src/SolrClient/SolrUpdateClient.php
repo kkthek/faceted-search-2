@@ -17,6 +17,11 @@ class SolrUpdateClient implements FacetedSearchUpdateClient
         return $xml;
     }
 
+    public function deleteDocument(string $id)
+    {
+        $this->updateSOLR("<delete><query>id:$id</query></delete>");
+    }
+
     public function clearAllDocuments() {
         $this->updateSOLR("<delete><query>*:*</query></delete>");
     }
@@ -171,4 +176,6 @@ XML;
             curl_close($ch);
         }
     }
+
+
 }

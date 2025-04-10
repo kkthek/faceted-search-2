@@ -4,6 +4,7 @@ namespace DIQA\FacetedSearch2\Maintenance;
 
 use DIQA\FacetedSearch2\Setup;
 use DIQA\FacetedSearch2\Update\SMWDBReader;
+use DIQA\FacetedSearch2\Update\FSIndexer;
 use MediaWiki\MediaWikiServices;
 use Title;
 use WikiPage;
@@ -160,12 +161,10 @@ class UpdateSolr extends \Maintenance
      * @param Title $title
      */
     private function updateIndex($title) {
-        $client = Setup::getFacetedSearchUpdateClient();
-        $indexer = new SMWDBReader();
+
         try {
             $messages = [];
-            $document = $indexer->getIndexDocumentFromWikiPage(new WikiPage($title), null, $messages);
-            $client->updateDocument($document);
+            FSIndexer::indexArticle($title, $messages);
             if (count($messages) > 0) {
                 print implode("\t\n", $messages);
             }

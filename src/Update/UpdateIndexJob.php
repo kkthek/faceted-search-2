@@ -11,14 +11,14 @@ use Title;
 use SMW\DIWikiPage as SMWDIWikiPage;
 
 /**
- * Asynchronous updates for SOLR
- * Updates a page in SOLR and also updates dependant pages
+ * Asynchronous updates for Index
+ * Updates a page in the backend Index and also updates dependant pages
  * (= pages with an incoming relation)
  *
  * @author Kai
  *
  */
-class UpdateSolrWithDependantJob extends Job
+class UpdateIndexJob extends Job
 {
 
     /**
@@ -27,7 +27,7 @@ class UpdateSolrWithDependantJob extends Job
      */
     function __construct($title, $params)
     {
-        parent::__construct('UpdateSolrWithDependantJob', $title, $params);
+        parent::__construct('UpdateIndexJob', $title, $params);
         $this->removeDuplicates = true;
     }
 
@@ -48,11 +48,11 @@ class UpdateSolrWithDependantJob extends Job
 
         $dependantPages = $this->retrieveDependent($title);
         try {
-            $indexer = FSIndexerFactory::create();
-            $this->updatePageInSolr($title, $indexer, $consoleMode);
+
+            $this->updatePageInIndex($title, $consoleMode);
 
             foreach ($dependantPages as $dp) {
-                $this->updatePageInSolr($dp, $indexer, $consoleMode);
+                $this->updatePageInIndex($dp, $consoleMode);
             }
         } catch (Exception $e) {
             if ($consoleMode) {
@@ -82,13 +82,12 @@ class UpdateSolrWithDependantJob extends Job
         return array_unique($dependant);
     }
 
-    private function updatePageInSolr(Title $title, FSSolrIndexer $indexer, bool $consoleMode): void
+    private function updatePageInIndex(Title $title, bool $consoleMode): void
     {
         try {
 
-            $wp = new WikiPage($title);
             $messages = [];
-            $indexer->updateIndexForArticle($wp, null, $messages);
+            FSIndexer::indexArticle($title, $messages);
             if ($consoleMode && count($messages) > 0) {
                 print implode("\t\n", $messages);
             }
@@ -99,7 +98,7 @@ class UpdateSolrWithDependantJob extends Job
 
         }
         if ($consoleMode) {
-            echo "Updated (SOLR): $title\n";
+            echo "Updated (Index): $title\n";
         }
     }
 

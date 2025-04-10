@@ -18,51 +18,13 @@ use StatusValue;
 use Title;
 use WikiPage;
 
-/*
- * Copyright (C) Vulcan Inc., DIQA-Projektmanagement GmbH
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program.If not, see <http://www.gnu.org/licenses/>.
- *
- */
 
-/**
- * @file
- * @ingroup FacetedSearch
- *
- * This file contains the class FSIncrementalUpdater.
- *
- * @author Thomas Schweitzer
- * Date: 23.02.2011
- *
- */
 if ( !defined( 'MEDIAWIKI' ) ) {
     die( "This file is part of the Enhanced Retrieval Extension extension. It is not a valid entry point.\n" );
 }
 
-
-/**
- * Listens to changes, deletes and moves of articles in MediaWiki and updates
- * the index accordingly.
- *
- * @author Thomas Schweitzer
- *
- */
 class FSIncrementalUpdater  {
 
-    /**
-     * Constructor for  FSIncrementalUpdater
-     */
     private function __construct() {
     }
 
@@ -108,22 +70,6 @@ class FSIncrementalUpdater  {
 
     }
 
-    private static function createUpdateJob(Title $title ) : void {
-        $params = [];
-        $params['title'] = $title;
-        $job = new UpdateSolrWithDependantJob($title, $params);
-        MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup()->push( $job );
-    }
-
-    private static function shouldCreateUpdateJob() {
-        global $fsgCreateUpdateJob;
-        if (isset($fsgCreateUpdateJob) && $fsgCreateUpdateJob === false) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     /**
      * Called when image upload is complete.
      *
@@ -132,11 +78,11 @@ class FSIncrementalUpdater  {
      */
     public static function onUploadComplete( &$image ) {
         try {
-            $wikiPage = new WikiPage($image->getLocalFile()->getTitle());
-            $indexer = FSIndexerFactory::create();
-            $indexer->updateIndexForArticle( $wikiPage );
+
+            FSIndexer::indexArticle($image->getLocalFile()->getTitle());
+
         } catch(Exception $e) {
-            wfDebugLog("EnhancedRetrieval", "Could not update article in SOLR. Reason: ".$e->getMessage());
+            wfDebugLog("FacetedSearch2", "Could not update article in Index. Reason: ".$e->getMessage());
         }
         return true;
     }
@@ -160,11 +106,10 @@ class FSIncrementalUpdater  {
      */
     public static function onAfterImportPage(Title $title, ForeignTitle $origTitle, $revCount, $sRevCount, $pageInfo) {
         try {
-            $indexer = FSIndexerFactory::create();
-            $wikiPage = new WikiPage( $title );
-            $indexer->updateIndexForArticle( $wikiPage );
+            FSIndexer::indexArticle($title);
+
         } catch(Exception $e) {
-            wfDebugLog("EnhancedRetrieval", "Could not update article on import operation in SOLR. Reason: ".$e->getMessage());
+            wfDebugLog("FacetedSearch2", "Could not update article on import operation in Index. Reason: ".$e->getMessage());
         }
         return true;
     }
@@ -186,10 +131,9 @@ class FSIncrementalUpdater  {
 
     public static function onPageMoveCompleting( $old, $new, $user, $pageid, $redirid, $reason, $revision ) {
         try {
-            $indexer = FSIndexerFactory::create();
-            $indexer->updateIndexForMovedArticle( $pageid, $redirid );
+            FSIndexer::updateIndexForMovedArticle($old, $new);
         } catch(Exception $e) {
-            wfDebugLog("EnhancedRetrieval", "Could not move article in SOLR. Reason: ".$e->getMessage());
+            wfDebugLog("FacetedSearch2", "Could not move article in Index. Reason: ".$e->getMessage());
         }
         return true;
     }
@@ -213,10 +157,10 @@ class FSIncrementalUpdater  {
             bool $suppress ) {
 
         try {
-            $indexer = FSIndexerFactory::create();
-            $indexer->deleteDocument( $page->getID() );
+            FSIndexer::deleteArticleFromIndex($page->getID());
+
         } catch(Exception $e) {
-            wfDebugLog("EnhancedRetrieval", "Could not delete article in SOLR. Reason: ".$e->getMessage());
+            wfDebugLog("FacetedSearch2", "Could not delete article in Index. Reason: ".$e->getMessage());
         }
         return true;
     }
@@ -239,37 +183,27 @@ class FSIncrementalUpdater  {
 
         $content = $revision->getContent(SlotRecord::MAIN, RevisionRecord::RAW)->serialize();
         try {
-            $indexer = FSIndexerFactory::create();
-            $indexer->updateIndexForArticle( new WikiPage($title), $content );
+
+            FSIndexer::indexArticleWithText($title, $content);
         } catch(Exception $e) {
-            wfDebugLog("EnhancedRetrieval", "Could not update article in SOLR. Reason: ".$e->getMessage());
+            wfDebugLog("FacetedSearch2", "Could not update article in Index. Reason: ".$e->getMessage());
         }
         return true;
     }
 
-    //--- Private methods ---
+    private static function createUpdateJob(Title $title ) : void {
+        $params = [];
+        $params['title'] = $title;
+        $job = new UpdateIndexJob($title, $params);
+        MediaWikiServices::getInstance()->getJobQueueGroupFactory()->makeJobQueueGroup()->push( $job );
+    }
 
-    /**
-     * Updates article in SOLR backend.
-     *
-     * @param Title $wikiTitle
-     * @return bool
-     */
-    private static function updateArticle(Title $wikiTitle): bool {
-        $store = MediaWikiServices::getInstance()->getRevisionStore();
-        $revision = $store->getRevisionByTitle($wikiTitle);
-        if (is_null($revision)) {
+    private static function shouldCreateUpdateJob() {
+        global $fsgCreateUpdateJob;
+        if (isset($fsgCreateUpdateJob) && $fsgCreateUpdateJob === false) {
+            return false;
+        } else {
             return true;
         }
-
-        $content = $revision->getContent(SlotRecord::MAIN, RevisionRecord::RAW)->serialize();
-        try {
-            $indexer = FSIndexerFactory::create();
-            $indexer->updateIndexForArticle( new WikiPage($wikiTitle), $content );
-        } catch(Exception $e) {
-            wfDebugLog("EnhancedRetrieval", "Could not update article in SOLR. Reason: ".$e->getMessage());
-        }
-        return true;
     }
-
 }
