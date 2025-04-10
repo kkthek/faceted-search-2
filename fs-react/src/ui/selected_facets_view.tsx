@@ -1,5 +1,5 @@
 import React from "react";
-import {PropertyFacet,} from "../common/datatypes";
+import {Property, PropertyFacet,} from "../common/datatypes";
 import FacetValues from "./facet_values_view";
 import {SearchStateFacet} from "./event_handler";
 
@@ -8,6 +8,8 @@ function SelectedFacetsView(prop: {
     searchStateFacet: SearchStateFacet,
     onValueClick: (p: PropertyFacet) => void,
     onRemoveClick: (p: PropertyFacet) => void,
+    onExpandClick: (p: Property, limit: number)=>void,
+    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
 }) {
     if (!prop.searchStateFacet) return;
 
@@ -31,7 +33,8 @@ function SelectedFacetsView(prop: {
                                  removable={hasValue}
                                  query={prop.searchStateFacet.query}
                                  onRemoveClick={prop.onRemoveClick}
-                    />
+                                 onExpandClick={prop.onExpandClick}
+                                 onFacetValueContainsClick={prop.onFacetValueContainsClick}/>
                 </div> : '');
         }
     );

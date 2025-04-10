@@ -99,6 +99,8 @@ function App() {
                     <SelectedFacetsView searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
+                                        onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
+                                        onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
                     />
                     <SelectedCategoriesView searchStateDocument={searchStateDocument}
                                             onCategoryRemove={eventHandler.onCategoryRemoveClick.bind(eventHandler)}
