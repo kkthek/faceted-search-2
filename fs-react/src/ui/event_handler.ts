@@ -130,9 +130,15 @@ class EventHandler {
     }
 
     onCategoryClick(category: string) {
-        this.currentDocumentsQueryBuilder
-            .withOffset(0)
-            .withCategoryFacet(category);
+        if (category === '') {
+            this.currentDocumentsQueryBuilder
+                .withOffset(0)
+                .clearCategoryFacets();
+        } else {
+            this.currentDocumentsQueryBuilder
+                .withOffset(0)
+                .withCategoryFacet(category);
+        }
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
         this.updateFacets();

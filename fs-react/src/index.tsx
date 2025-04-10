@@ -21,6 +21,7 @@ import PagingView from "./ui/paging_view";
 import SortView from "./ui/sort_view";
 import {Property, Sort, WikiContextInterface} from "./common/datatypes";
 import Config from "./util/defaults";
+import CategoryDropdown from "./ui/category_dropdown";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -118,9 +119,13 @@ function App() {
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                     />
                     <h3>Available categories</h3>
-                    <CategoryView searchStateDocument={searchStateDocument}
-                                  onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
-                    />
+                    {wikiContext.config.fsg2CategoryFilter.length === 0 ?
+                        <CategoryView searchStateDocument={searchStateDocument}
+                                      onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
+                        /> :
+                        <CategoryDropdown onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)} />
+                    }
+
                 </div>
             </div>
             <div id={'fs-results'}>

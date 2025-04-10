@@ -103,6 +103,10 @@
 			"value": [],
 			"description": "List of categories which should be shown in the title of search hit"
 		},
+		"CategoryFilter": {
+			"value": [],
+			"description": "Configuration for the category drop-down list of the form ['category'=>'label'] The first entry determines the default. The entry with an empty key '' represents 'no selected category filter'"
+		},
 		"DefaultSortOrder": {
 			"value": "score",
 			"description": "Default sort order. Possible values: score, newest, oldest, ascending, descending"

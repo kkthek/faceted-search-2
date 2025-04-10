@@ -47,6 +47,11 @@ class DocumentQueryBuilder {
         return this;
     }
 
+    clearCategoryFacets(): DocumentQueryBuilder {
+        this.query.categoryFacets = [];
+        return this;
+    }
+
     toggleNamespaceFacet(namespace: number): DocumentQueryBuilder {
         if (this.query.namespaceFacets.indexOf(namespace) > -1) {
             Tools.removeFirst(this.query.namespaceFacets, (e) => e.toString(), namespace.toString());
