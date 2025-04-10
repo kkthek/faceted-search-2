@@ -7,26 +7,35 @@ function SortView(prop : {
     onChange: (sort: Sort) => void
 }) {
     let wikiContext = useContext(WikiContext);
+    let defaultSortOrder = wikiContext.config['fsg2DefaultSortOrder'];
 
-    let sorts = [];
-    sorts.push(new Sort(new Property('score', Datatype.internal), Order.desc))
-    sorts.push(new Sort(new Property('_MDAT', Datatype.datetime), Order.desc))
-    sorts.push(new Sort(new Property('_MDAT', Datatype.datetime), Order.asc))
-    sorts.push(new Sort(new Property('displaytitle', Datatype.internal), Order.desc))
-    sorts.push(new Sort(new Property('displaytitle', Datatype.internal), Order.asc))
+    let sorts = [
+        getSortByName('score'),
+        getSortByName('newest'),
+        getSortByName('oldest'),
+        getSortByName('ascending'),
+        getSortByName('descending')
+    ];
 
     let sortOptions = sorts.map((sort) => {
        let sortKey = sort.property.title + "_" + (sort.order === Order.desc ? 'desc' : 'asc');
-       return <option key={sortKey}
-                      value={JSON.stringify(sort)}
-              >
-           {wikiContext.msg(sortKey)}
-       </option>
+       return <option key={sortKey} value={JSON.stringify(sort)}>{wikiContext.msg(sortKey)}</option>
     });
-    return <div><select value={JSON.stringify(prop.sort)}
+    return <div><select defaultValue={JSON.stringify(getSortByName(defaultSortOrder))}
                         onChange={(option) => prop.onChange(JSON.parse(option.target.value))}>
         {sortOptions}
     </select></div>
+}
+
+let getSortByName = function(name: string): Sort {
+    switch(name) {
+        case 'newest': return new Sort(new Property('_MDAT', Datatype.datetime), Order.desc);
+        case 'oldest': return new Sort(new Property('_MDAT', Datatype.datetime), Order.asc);
+        case 'ascending': return new Sort(new Property('displaytitle', Datatype.internal), Order.asc);
+        case 'descending': return new Sort(new Property('displaytitle', Datatype.internal), Order.desc);
+        default:
+        case 'score': return new Sort(new Property('score', Datatype.internal), Order.desc);
+    }
 }
 
 export default SortView;

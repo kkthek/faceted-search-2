@@ -102,6 +102,10 @@
 		"CategoriesToShowInTitle": {
 			"value": [],
 			"description": "List of categories which should be shown in the title of search hit"
+		},
+		"DefaultSortOrder": {
+			"value": "score",
+			"description": "Default sort order. Possible values: score, newest, oldest, ascending, descending"
 		}
 	},
 	"manifest_version": 2

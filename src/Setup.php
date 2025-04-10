@@ -98,8 +98,11 @@ class Setup
             return true;
         }
 
-
-        global $fsgFacetValueLimit, $fsg2ExtraPropertiesToRequest, $fsg2AnnotationsInSnippet, $fsg2CategoriesToShowInTitle;
+        global $fsgFacetValueLimit,
+               $fsg2ExtraPropertiesToRequest,
+               $fsg2AnnotationsInSnippet,
+               $fsg2CategoriesToShowInTitle,
+               $fsg2DefaultSortOrder;
 
         $jsVars = [];
         $jsVars["fsg2FacetValueLimit"] = $fsgFacetValueLimit;
@@ -107,6 +110,7 @@ class Setup
         $fsg2ExtraPropertiesToRequest = self::calculateProperties($fsg2AnnotationsInSnippet);
         $jsVars["fsg2ExtraPropertiesToRequest"] = $fsg2ExtraPropertiesToRequest;
         $jsVars["fsg2CategoriesToShowInTitle"] = $fsg2CategoriesToShowInTitle;
+        $jsVars["fsg2DefaultSortOrder"] = $fsg2DefaultSortOrder;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 

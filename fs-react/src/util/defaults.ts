@@ -15,7 +15,8 @@ class Config {
             'fsg2ExtraPropertiesToRequest': [ new Property("Has spouse", Datatype.wikipage),
                 new Property("Has age", Datatype.number), new Property("Was born at", Datatype.datetime)],
             'fsg2AnnotationsInSnippet' : { 'Employee': ['Has spouse', 'Has age', 'Was born at'] },
-            'fsg2CategoriesToShowInTitle': ['Employee']
+            'fsg2CategoriesToShowInTitle': ['Employee'],
+            'fsg2DefaultSortOrder' : 'newest'
         }
     }
 }
