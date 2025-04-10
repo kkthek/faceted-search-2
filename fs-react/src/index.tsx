@@ -46,7 +46,7 @@ export let WikiContext = createContext(null);
 
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
-wikiContext.config.fsgExtraPropertiesToRequest.forEach((p: Property) => {
+wikiContext.config.fsg2ExtraPropertiesToRequest.forEach((p: Property) => {
     currentDocumentsQueryBuilder.withExtraProperty(p);
 });
 

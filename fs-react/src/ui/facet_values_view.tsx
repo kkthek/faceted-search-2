@@ -39,7 +39,7 @@ function FacetValues(prop: {
 
     let wikiContext = useContext(WikiContext);
     let property = prop.propertyValueCount.property;
-    let showAll = wikiContext.config.fsgFacetValueLimit === prop.propertyValueCount.values.length
+    let showAll = wikiContext.config.fsg2FacetValueLimit === prop.propertyValueCount.values.length
         && property.isFilterProperty();
 
     if (showAll) {

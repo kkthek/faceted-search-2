@@ -97,13 +97,13 @@ class Setup
         }
 
 
-        global $fsgFacetValueLimit, $fsgExtraPropertiesToRequest, $fsgAnnotationsInSnippet;
+        global $fsgFacetValueLimit, $fsg2ExtraPropertiesToRequest, $fsg2AnnotationsInSnippet;
 
         $jsVars = [];
-        $jsVars["fsgFacetValueLimit"] = $fsgFacetValueLimit;
-        $jsVars["fsgAnnotationsInSnippet"] = $fsgAnnotationsInSnippet;
-        $fsgExtraPropertiesToRequest = self::calculateProperties($fsgAnnotationsInSnippet);
-        $jsVars["fsgExtraPropertiesToRequest"] = $fsgExtraPropertiesToRequest;
+        $jsVars["fsg2FacetValueLimit"] = $fsgFacetValueLimit;
+        $jsVars["fsg2AnnotationsInSnippet"] = $fsg2AnnotationsInSnippet;
+        $fsg2ExtraPropertiesToRequest = self::calculateProperties($fsg2AnnotationsInSnippet);
+        $jsVars["fsg2ExtraPropertiesToRequest"] = $fsg2ExtraPropertiesToRequest;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 
@@ -128,10 +128,10 @@ class Setup
         }
     }
 
-    private static function calculateProperties($fsgAnnotationsInSnippet)
+    private static function calculateProperties($fsg2AnnotationsInSnippet)
     {
         $result = [];
-        $allExtraProperties = ArrayTools::flatten(array_values($fsgAnnotationsInSnippet));
+        $allExtraProperties = ArrayTools::flatten(array_values($fsg2AnnotationsInSnippet));
         foreach($allExtraProperties as $property) {
             $smwProperty = SMWDIProperty::newFromUserLabel($property);
             $typeId = $smwProperty->findPropertyValueType();

@@ -271,9 +271,9 @@ class SolrResponseParser {
 
     private function fillEmptyExtraProperties(array $propertyFacetValues)
     {
-        global $fsgExtraPropertiesToRequest;
+        global $fsg2ExtraPropertiesToRequest;
 
-        foreach($fsgExtraPropertiesToRequest as $extraProperty) {
+        foreach($fsg2ExtraPropertiesToRequest as $extraProperty) {
             if (count(array_filter($propertyFacetValues, fn($p) => $p->property->title === $extraProperty->title)) === 0) {
                 $displayTitle = WikiTools::getDisplayTitleForProperty($extraProperty->title);
                 $propertyWithUrl = new PropertyWithURL(

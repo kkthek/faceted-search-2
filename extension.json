@@ -57,7 +57,7 @@
 			"class": "DIQA\\FacetedSearch2\\Endpoints\\FacetQueryEndpoint"
 		}
 	],
-	"config_prefix": "fsg",
+	"config_prefix": "fsg2",
 	"config": {
 		"SolrCore": {
 			"value": "mw",
@@ -85,7 +85,7 @@
 		},
 		"AnnotationsInSnippet": {
 			"value": [],
-			"description": "Annotations can be shown in the snippet. This config maps category names to lists of property names. Articles from these categories show the values of the given properties in the snippets (if values exist). E.g. $fsgAnnotationsInSnippet[ 'Dokument'=>['Abteilung','Dokumentart' ] ]"
+			"description": "Annotations can be shown in the snippet. This config maps category names to lists of property names. Articles from these categories show the values of the given properties in the snippets (if values exist). E.g. $fsg2AnnotationsInSnippet[ 'Dokument'=>['Abteilung','Dokumentart' ] ]"
 		},
 		"FacetValueLimit": {
 			"value": 20,

@@ -42,7 +42,7 @@ function FacetViewProperty(prop: {
     }
 
     return <li className={'fs-facets'}>
-        <span onClick={() => handleExpandClick(wikiContext.config.fsgFacetValueLimit)}>[e]</span>
+        <span onClick={() => handleExpandClick(wikiContext.config.fsg2FacetValueLimit)}>[e]</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.property.displayTitle}</span>
         <span>({prop.propertyFacetCount?.count})</span>
         {!isSelectedFacet ? <div ref={facetValuesDiv}>

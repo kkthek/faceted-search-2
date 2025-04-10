@@ -8,7 +8,7 @@ import Tools from "../util/tools";
 
 function Annotations(prop: {doc: Document}) {
     let wikiContext = useContext(WikiContext);
-    let annotationsInSnippets = wikiContext.config['fsgAnnotationsInSnippet'];
+    let annotationsInSnippets = wikiContext.config['fsg2AnnotationsInSnippet'];
 
     for(let category in annotationsInSnippets) {
         let categoryFound = Tools.findFirst(prop.doc.categoryFacets, (c) => c.category, category) != null;

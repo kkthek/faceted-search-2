@@ -7,10 +7,11 @@ class Config {
             'wgFormattedNamespaces': {0: 'Main', 14: 'Category', 10: 'Template'},
 
             // FacetedSearch options
-            'fsgFacetValueLimit': 20,
-            'fsgExtraPropertiesToRequest': [ new Property("Has spouse", Datatype.wikipage),
+            'fsg2FacetValueLimit': 20,
+            'fsg2ExtraPropertiesToRequest': [ new Property("Has spouse", Datatype.wikipage),
                 new Property("Has age", Datatype.number), new Property("Was born at", Datatype.datetime)],
-            'fsgAnnotationsInSnippet' : { 'Employee': ['Has spouse', 'Has age', 'Was born at'] }
+            'fsg2AnnotationsInSnippet' : { 'Employee': ['Has spouse', 'Has age', 'Was born at'] },
+            '': 8
         }
     }
 }
