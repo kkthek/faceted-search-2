@@ -103,7 +103,9 @@ class Setup
                $fsg2AnnotationsInSnippet,
                $fsg2CategoriesToShowInTitle,
                $fsg2DefaultSortOrder,
-               $fsg2CategoryFilter;
+               $fsg2CategoryFilter,
+               $fsg2HitsPerPage
+               ;
 
         $jsVars = [];
         $jsVars["fsg2FacetValueLimit"] = $fsgFacetValueLimit;
@@ -113,6 +115,7 @@ class Setup
         $jsVars["fsg2CategoriesToShowInTitle"] = $fsg2CategoriesToShowInTitle;
         $jsVars["fsg2DefaultSortOrder"] = $fsg2DefaultSortOrder;
         $jsVars["fsg2CategoryFilter"] = $fsg2CategoryFilter;
+        $jsVars["fsg2HitsPerPage"] = $fsg2HitsPerPage;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 

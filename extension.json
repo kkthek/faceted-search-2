@@ -110,6 +110,10 @@
 		"DefaultSortOrder": {
 			"value": "score",
 			"description": "Default sort order. Possible values: score, newest, oldest, ascending, descending"
+		},
+		"HitsPerPage": {
+			"value": 10,
+			"description": "Maximum number of search hits to show at once on the search page."
 		}
 	},
 	"manifest_version": 2

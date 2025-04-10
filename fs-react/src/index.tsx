@@ -47,9 +47,13 @@ export let WikiContext = createContext(null);
 
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
+
+// START: set query parameters defined by config ---------------------------------
 wikiContext.config.fsg2ExtraPropertiesToRequest.forEach((p: Property) => {
     currentDocumentsQueryBuilder.withExtraProperty(p);
 });
+currentDocumentsQueryBuilder.withLimit(wikiContext.config['fsg2HitsPerPage']);
+// END: set query parameters defined by config ---------------------------------
 
 const initialSearch = client.searchDocuments(currentDocumentsQueryBuilder.build());
 function App() {

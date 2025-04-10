@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useContext} from "react";
 import {SearchStateDocument} from "./event_handler";
 import {DocumentQuery} from "../common/datatypes";
+import {WikiContext} from "../index";
 
 function PagingView(prop: {
     searchStateDocument: SearchStateDocument,
@@ -9,7 +10,9 @@ function PagingView(prop: {
     if (!prop.searchStateDocument) {
         return;
     }
-    const NUMBER_RESULTS_ONE_PAGE = 10; // could come from config
+    let wikiContext = useContext(WikiContext);
+
+    const NUMBER_RESULTS_ONE_PAGE = wikiContext.config['fsg2HitsPerPage'];
     const SLIDING_WINDOW_SIZE = 10;     // could come from config
 
     const numPages = Math.trunc(prop.searchStateDocument.documentResponse.numResults / NUMBER_RESULTS_ONE_PAGE) + 1;

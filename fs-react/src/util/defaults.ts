@@ -17,7 +17,8 @@ class Config {
             'fsg2AnnotationsInSnippet' : { 'Employee': ['Has spouse', 'Has age', 'Was born at'] },
             'fsg2CategoriesToShowInTitle': ['Employee'],
             'fsg2DefaultSortOrder' : 'newest',
-            'fsg2CategoryFilter': {'': '-no filter-', 'Employee': 'Employee'}
+            'fsg2CategoryFilter': {'': '-no filter-', 'Employee': 'Employee'},
+            'fsg2HitsPerPage': 10
         }
     }
 }
