@@ -114,6 +114,10 @@
 		"HitsPerPage": {
 			"value": 10,
 			"description": "Maximum number of search hits to show at once on the search page."
+		},
+		"PlaceholderText": {
+			"value": "",
+			"description": "Place holder used in the search box of Special:Search."
 		}
 	},
 	"manifest_version": 2
