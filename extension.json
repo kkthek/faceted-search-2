@@ -122,6 +122,10 @@
 		"ShowCategories": {
 			"value": true,
 			"description": "Show/hide categories in the facets section"
+		},
+		"ShowSortOrder": {
+			"value": true,
+			"description": "Show/hide UI element for selecting the sort order of search hits"
 		}
 	},
 	"manifest_version": 2

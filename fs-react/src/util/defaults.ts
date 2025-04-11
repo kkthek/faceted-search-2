@@ -20,7 +20,8 @@ class Config {
             'fsg2CategoryFilter': {'': '-no filter-', 'Employee': 'Employee'},
             'fsg2HitsPerPage': 10,
             'fsg2PlaceholderText': 'Suche...',
-            'fsg2ShowCategories': true
+            'fsg2ShowCategories': true,
+            'fsg2ShowSortOrder': false
         }
     }
 }

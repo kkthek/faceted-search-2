@@ -8,6 +8,8 @@ function SortView(prop : {
 }) {
     let wikiContext = useContext(WikiContext);
     let defaultSortOrder = wikiContext.config['fsg2DefaultSortOrder'];
+    let showSortView = wikiContext.config['fsg2ShowSortOrder'];
+    if (!showSortView) return;
 
     let sorts = [
         getSortByName('score'),
