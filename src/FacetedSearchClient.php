@@ -5,6 +5,7 @@ namespace DIQA\FacetedSearch2;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
+use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\FacetResponse;
 use DIQA\FacetedSearch2\Model\Response\StatsResponse;
@@ -43,4 +44,12 @@ interface FacetedSearchClient
      * @return string The extracted full-text
      */
     public function requestFileExtraction(string $fileContent, string $contentType): string;
+
+    /**
+     * Returns a single document by ID with ALL its properties.
+     *
+     * @param string $id
+     * @return Document
+     */
+    public function requestDocument(string $id): Document;
 }

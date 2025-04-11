@@ -5,6 +5,7 @@ import Annotations from "./annotations_snippets";
 import CategoriesInTitle from "./categories_in_title";
 import ArticleProperties from "./article_properties";
 import {WikiContext} from "../index";
+import Client from "../common/client";
 
 function containsTrueFacetValue(doc: Document, property: string) {
     let propertyFacetValues = doc.getPropertyFacetValues(property);
@@ -13,7 +14,7 @@ function containsTrueFacetValue(doc: Document, property: string) {
     return values.includes(true);
 }
 
-function SearchResult(prop: { doc: Document}) {
+function SearchResult(prop: { doc: Document, client: Client}) {
     let wikiContext = useContext(WikiContext);
     let promotionProperty = wikiContext.config['fsg2PromotionProperty'];
     let demotionProperty = wikiContext.config['fsg2DemotionProperty'];
@@ -31,14 +32,14 @@ function SearchResult(prop: { doc: Document}) {
         <div dangerouslySetInnerHTML={{ __html: snippet }}></div>
         <CategoriesInTitle doc={prop.doc}/>
         <Annotations doc={prop.doc}/>
-        <ArticleProperties doc={prop.doc}/>
+        <ArticleProperties doc={prop.doc} client={prop.client}/>
     </li>
 }
 
 
-function ResultView(prop: {results: Document[]}) {
+function ResultView(prop: {results: Document[], client: Client}) {
     const listItems = prop.results.map((doc,i) =>
-        <SearchResult key={doc.id} doc={doc} />
+        <SearchResult key={doc.id} doc={doc} client={prop.client} />
     );
     return <div id={'fs-resultview'}>
         <ul>

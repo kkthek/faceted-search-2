@@ -10,7 +10,7 @@ import {
     DocumentsResponse,
     FacetResponse,
     StatsResponse,
-    StatQuery
+    StatQuery, Document
 } from "./datatypes";
 import {TypedJSON} from "typedjson";
 
@@ -35,6 +35,22 @@ class Client {
         });
         await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(DocumentsResponse);
+        const json = await response.json();
+        return deserializer.parse(json);
+    }
+
+    async getDocumentById(id: string
+    ): Promise<Document> {
+        const response = await fetch(this.baseUrl + "/document-by-id", {
+            method: "POST",
+            cache: "no-cache",
+            credentials: "same-origin",
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify({id: id})
+        });
+        await this.handleErrorIfAny(response);
+        const deserializer = new TypedJSON(Document);
         const json = await response.json();
         return deserializer.parse(json);
     }

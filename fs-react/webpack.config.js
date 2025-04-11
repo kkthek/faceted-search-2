@@ -40,6 +40,11 @@ module.exports = {
         changeOrigin: true,
       },
       {
+        context: ['/document-by-id'],
+        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
+        changeOrigin: true,
+      },
+      {
         context: ['/settings'],
         target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1',
         changeOrigin: true,

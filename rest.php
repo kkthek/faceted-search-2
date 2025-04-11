@@ -52,6 +52,7 @@ require COMPOSER_INSTALL;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
+use DIQA\FacetedSearch2\Model\Request\DocumentByIdQuery;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 
 require_once 'dev-config.php';
@@ -75,6 +76,9 @@ try {
         echo json_encode($client->requestFacets($query));
     } else if (endsWith($url, '/FacetedSearch2/v1/settings')) {
         echo json_encode(getConfigForDevContext());
+    } else if (endsWith($url, '/FacetedSearch2/v1/proxy/document-by-id')) {
+        $query = DocumentByIdQuery::fromJson($entityBody);
+        echo json_encode($client->requestDocument($query->getId()));
     } else {
         throw new Exception("endpoint '$url' not supported", 400);
     }

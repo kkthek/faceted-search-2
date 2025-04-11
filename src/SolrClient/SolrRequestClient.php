@@ -2,8 +2,6 @@
 
 namespace DIQA\FacetedSearch2\SolrClient;
 
-use DIQA\ChemExtension\Pages\ChemForm;
-use DIQA\ChemExtension\Utils\CurlUtil;
 use DIQA\FacetedSearch2\FacetedSearchClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
@@ -15,6 +13,7 @@ use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
 use DIQA\FacetedSearch2\Model\Request\Sort;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
+use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\FacetResponse;
 use DIQA\FacetedSearch2\Model\Response\StatsResponse;
@@ -25,7 +24,15 @@ use Title;
 class SolrRequestClient implements FacetedSearchClient
 {
 
-
+    public function requestDocument(string $id): Document
+    {
+        $response =  new SolrResponseParser($this->requestSOLR(['q' => "id:$id"]));
+        $documentsResponse = $response->parse();
+        if (count($documentsResponse->docs) === 0) {
+            throw new Exception("No document with ID $id found", 400);
+        }
+        return $documentsResponse->docs[0];
+    }
 
     public function requestDocuments(DocumentQuery $q): DocumentsResponse
     {

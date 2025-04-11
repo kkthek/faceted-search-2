@@ -66,6 +66,8 @@ class SolrResponseParser {
                         $properties = array_merge($properties, $this->parseProperties($value));
                     } else if (self::startsWith($property, "smwh_properties")) {
                         $properties = array_merge($properties, $this->parseProperties($value));
+                    } else if (self::endsWith($property, "_s") || self::endsWith($property, "_datevalue_l")) {
+                        continue;
                     } else if (self::startsWith($property, "smwh_")) {
                         $item = $this->parsePropertyWithValues($property, $value);
                         if (!is_null($item)) {
@@ -92,7 +94,7 @@ class SolrResponseParser {
                 $doc->smwh_title,
                 $doc->smwh_displaytitle,
                 WikiTools::createURLForPage($doc->smwh_title, $namespace->namespace),
-                $doc->score,
+                $doc->score ?? 0,
                 $highlighting
             );
 
@@ -267,6 +269,14 @@ class SolrResponseParser {
 
     private static function startsWith($string, $query){
         return substr($string, 0, strlen($query)) === $query;
+    }
+
+    private static function endsWith( $haystack, $needle ) {
+        $length = strlen( $needle );
+        if( !$length ) {
+            return true;
+        }
+        return substr( $haystack, -$length ) === $needle;
     }
 
     private function fillEmptyExtraProperties(array & $propertyFacetValues)
