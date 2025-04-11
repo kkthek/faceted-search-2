@@ -110,7 +110,8 @@ class Setup
                $fsg2ShowSortOrder,
                $fsg2ShowNamespaces,
                $fsg2ShowArticleProperties,
-               $fsg2ShownFacets
+               $fsg2ShownFacets,
+               $fsg2ShownCategoryFacets
                ;
 
         $jsVars = [];
@@ -128,6 +129,7 @@ class Setup
         $jsVars["fsg2ShowNamespaces"] = $fsg2ShowNamespaces;
         $jsVars["fsg2ShowArticleProperties"] = $fsg2ShowArticleProperties;
         $jsVars["fsg2ShownFacets"] = $fsg2ShownFacets;
+        $jsVars["fsg2ShownCategoryFacets"] = $fsg2ShownCategoryFacets;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 

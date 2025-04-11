@@ -27,11 +27,14 @@ function CategoryView( prop: {
 }) {
     let wikiContext = useContext(WikiContext);
     let showCategories = wikiContext.config['fsg2ShowCategories'];
+    let shownCategoryFacets = wikiContext.config['fsg2ShownCategoryFacets'];
     if (!prop.searchStateDocument || !showCategories) return;
 
     const categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
 
-    const listItems = categoryFacetCounts.map((facetCount,i) => {
+    const listItems = categoryFacetCounts
+        .filter((facetCount) => shownCategoryFacets.includes(facetCount.category) || shownCategoryFacets.length === 0)
+        .map((facetCount,i) => {
 
             return <FacetViewCategory key={facetCount.category}
                                       title={facetCount.category}

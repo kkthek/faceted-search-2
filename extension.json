@@ -138,6 +138,10 @@
 		"ShownFacets": {
 			"value": [],
 			"description": "This config maps category names to lists of property names. If the category is selected in the category drop-down, (only) the configured facets are shown in the facet list (even if other values exist), e.g. $fsgShownFacets[ 'Person'=>['Name','Country','Age'], 'Company'=>['CEO','City','BusinessArea'] ]"
+		},
+		"ShownCategoryFacets": {
+			"value": [],
+			"description": "List of categories to show in the category facet (if empty, all categories are shown)"
 		}
 	},
 	"manifest_version": 2

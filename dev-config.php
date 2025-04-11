@@ -32,10 +32,10 @@ function setConfigForDevContext() {
 
     global $fsg2DefaultSortOrder, $fsg2CategoryFilter, $fsg2HitsPerPage, $fsg2PlaceholderText,
            $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces,
-           $fsg2ShowArticleProperties, $fsg2ShownFacets;
+           $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets;
 
     $fsg2DefaultSortOrder = 'newest';
-    $fsg2CategoryFilter = ['' => '-no filter-', 'Employee' => 'Employee' ];
+    $fsg2CategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
     $fsg2HitsPerPage = 10;
     $fsg2PlaceholderText = 'Suche...';
     $fsg2ShowCategories = true;
@@ -46,6 +46,8 @@ function setConfigForDevContext() {
     $fsg2ShowArticleProperties = true;
 
     $fsg2ShownFacets = []; //['Employee' => ['Works at'] ];
+
+    $fsg2ShownCategoryFacets = []; //['Employee'];
 // -------------------------------------------------------
 }
 
