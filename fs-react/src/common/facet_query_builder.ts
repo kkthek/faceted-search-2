@@ -30,7 +30,7 @@ class FacetQueryBuilder {
     withPropertyValueConstraint(propertyValueConstraint: PropertyValueConstraint): FacetQueryBuilder {
 
         let constraint = Tools.replaceFirst(this.query.propertyValueConstraints,
-            (e) => e.title, propertyValueConstraint.title, propertyValueConstraint);
+            (e) => e.property.title, propertyValueConstraint.property.title, propertyValueConstraint);
         if (constraint === null) {
             this.query.propertyValueConstraints.push(propertyValueConstraint);
         }
@@ -38,7 +38,7 @@ class FacetQueryBuilder {
     }
 
     clearPropertyValueConstraintForProperty(p : Property) {
-        Tools.removeAll(this.query.propertyValueConstraints, (e) => e.title, p.title);
+        Tools.removeAll(this.query.propertyValueConstraints, (e) => e.property.title, p.title);
         return this;
     }
 
