@@ -20,7 +20,6 @@ import FacetQueryBuilder from "./common/facet_query_builder";
 import PagingView from "./ui/paging_view";
 import SortView from "./ui/sort_view";
 import {Property, Sort, WikiContextInterface} from "./common/datatypes";
-import Config from "./util/defaults";
 import CategoryDropdown from "./ui/category_dropdown";
 
 const browserWindow = window as any;
@@ -31,14 +30,15 @@ let wikiContext: WikiContextInterface = {
     msg: (id: string) => id
 };
 
-if (browserWindow.mw) {
+const isInWikiContext = browserWindow.mw !== undefined;
+
+if (isInWikiContext) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
     solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
     wikiContext.config = browserWindow.mw.config.values;
     wikiContext.msg = browserWindow.mw.msg;
 } else {
-    wikiContext.config = Config.getDevDefaultSettings();
     solrProxyUrl = "http://localhost:9000";
 }
 
@@ -48,14 +48,9 @@ export let WikiContext = createContext(null);
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
 
-// START: set query parameters defined by config ---------------------------------
-wikiContext.config.fsg2ExtraPropertiesToRequest.forEach((p: Property) => {
-    currentDocumentsQueryBuilder.withExtraProperty(p);
-});
-currentDocumentsQueryBuilder.withLimit(wikiContext.config['fsg2HitsPerPage']);
-// END: set query parameters defined by config ---------------------------------
 
 const initialSearch = client.searchDocuments(currentDocumentsQueryBuilder.build());
+
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
@@ -78,8 +73,8 @@ function App() {
                     query: currentDocumentsQueryBuilder.build()
                 });
             }).catch((e) => {
-                    console.error("Request to backend failed");
-                    console.error(e);
+                console.error("Request to backend failed");
+                console.error(e);
             });
         },
         [initialSearch]
@@ -90,7 +85,7 @@ function App() {
     let useCategoryDropdown = wikiContext.config.fsg2CategoryFilter.length === 0;
 
     return <WikiContext.Provider value={wikiContext}>
-            <div id={'fs-content'}>
+        <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
                 <SearchBar onClick={eventHandler.onSearchClick.bind(eventHandler)}/>
                 <NamespaceView searchStateDocument={searchStateDocument}
@@ -102,7 +97,7 @@ function App() {
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
                     <h3>Selected facets</h3>
-                    {  anyFacetSelected ? '':'(no facets selected)'}
+                    {anyFacetSelected ? '' : '(no facets selected)'}
                     <SelectedFacetsView searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
@@ -128,7 +123,7 @@ function App() {
                         <CategoryView searchStateDocument={searchStateDocument}
                                       onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                         /> :
-                        <CategoryDropdown onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)} />
+                        <CategoryDropdown onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}/>
                     }
 
                 </div>
@@ -139,10 +134,32 @@ function App() {
                             onPageIndexClick={eventHandler.onPageIndexClick.bind(eventHandler)}
                 />
             </div>
-            </div>
-        </WikiContext.Provider>;
+        </div>
+    </WikiContext.Provider>;
 }
 
-const container = document.getElementById('root');
-const root = ReactDOM.createRoot(container);
-root.render(<App />);
+async function getSettingsForDevContext() {
+    let settings = await client.getSettingsForDevContext();
+    wikiContext.config = settings;
+    applyQueryConstraintsFromConfig();
+}
+
+function applyQueryConstraintsFromConfig() {
+    wikiContext.config.fsg2ExtraPropertiesToRequest.forEach((p: Property) => {
+        currentDocumentsQueryBuilder.withExtraProperty(p);
+    });
+    currentDocumentsQueryBuilder.withLimit(wikiContext.config['fsg2HitsPerPage']);
+}
+
+function startApp() {
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App/>);
+}
+
+if (isInWikiContext) {
+    applyQueryConstraintsFromConfig();
+    startApp();
+} else {
+    getSettingsForDevContext().then(() => startApp());
+}

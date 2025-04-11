@@ -38,6 +38,11 @@ module.exports = {
         context: ['/facets'],
         target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
         changeOrigin: true,
+      },
+      {
+        context: ['/settings'],
+        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1',
+        changeOrigin: true,
       }
     ],
   }

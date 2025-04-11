@@ -71,6 +71,18 @@ class Client {
         return deserializer.parse(json);
     }
 
+    async getSettingsForDevContext(): Promise<any> {
+        const response = await fetch(this.baseUrl + "/settings", {
+            method: "POST",
+            cache: "no-cache",
+            credentials: "same-origin",
+            redirect: "follow",
+            referrerPolicy: "no-referrer"
+        });
+        await this.handleErrorIfAny(response);
+        return await response.json();
+    }
+
     async handleErrorIfAny(response: Response) {
         if (!response.ok) {
             throw ({

@@ -55,7 +55,7 @@ use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 
 require_once 'dev-config.php';
-setDefaultConfig();
+setConfigForDevContext();
 
 $entityBody = file_get_contents('php://input');
 
@@ -73,6 +73,8 @@ try {
     } else if (endsWith($url, '/FacetedSearch2/v1/proxy/facets')) {
         $query = FacetQuery::fromJson($entityBody);
         echo json_encode($client->requestFacets($query));
+    } else if (endsWith($url, '/FacetedSearch2/v1/settings')) {
+        echo json_encode(getConfigForDevContext());
     } else {
         throw new Exception("endpoint '$url' not supported", 400);
     }
