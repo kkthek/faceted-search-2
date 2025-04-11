@@ -126,6 +126,10 @@
 		"ShowSortOrder": {
 			"value": true,
 			"description": "Show/hide UI element for selecting the sort order of search hits"
+		},
+		"ShowNamespaces": {
+			"value": true,
+			"description": "Show/hide UI element for selecting namespace filters"
 		}
 	},
 	"manifest_version": 2

@@ -31,14 +31,15 @@ function setConfigForDevContext() {
     $fsg2CategoriesToShowInTitle = ['Employee'];
 
     global $fsg2DefaultSortOrder, $fsg2CategoryFilter, $fsg2HitsPerPage, $fsg2PlaceholderText,
-           $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit;
+           $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces;
 
     $fsg2DefaultSortOrder = 'newest';
     $fsg2CategoryFilter = ['' => '-no filter-', 'Employee' => 'Employee' ];
     $fsg2HitsPerPage = 10;
     $fsg2PlaceholderText = 'Suche...';
     $fsg2ShowCategories = true;
-    $fsg2ShowSortOrder = false;
+    $fsg2ShowSortOrder = true;
+    $fsg2ShowNamespaces = true;
 
     $fsg2FacetValueLimit = 20;
 // -------------------------------------------------------

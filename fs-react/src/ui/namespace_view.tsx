@@ -10,6 +10,9 @@ function FacetViewNamespace( prop: {
 }) {
     let wikiContext = useContext(WikiContext);
     let namespaces = wikiContext.config['wgFormattedNamespaces'];
+    let showNamespaces = wikiContext.config['fsg2ShowNamespaces'];
+    if (!showNamespaces) return;
+
     let isSelected = prop.selectedNamespace == prop.namespaceFacetCount.namespace;
     let namespaceText = namespaces[prop.namespaceFacetCount.namespace] ?? 'unknown namespace';
     namespaceText = namespaceText === '' ? 'Main' : namespaceText;
