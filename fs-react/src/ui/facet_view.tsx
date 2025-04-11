@@ -11,6 +11,7 @@ import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
 import {SearchStateDocument, SearchStateFacet} from "./event_handler";
 import {WikiContext} from "../index";
+import ConfigUtils from "../util/config_utils";
 
 
 function FacetViewProperty(prop: {
@@ -71,8 +72,12 @@ function FacetView(prop: {
     if (!prop.searchStateDocument) return;
 
     const propertyFacetCounts = prop.searchStateDocument.documentResponse.propertyFacetCounts;
+    let wikiContext = useContext(WikiContext);
+    let shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fsg2ShownFacets'], prop.searchStateDocument.query);
 
-    const listItems = propertyFacetCounts.map((facetCount,i) => {
+    const listItems = propertyFacetCounts
+        .filter((facetCount) => shownFacets.includes(facetCount.property.title) || shownFacets.length === 0 )
+        .map((facetCount,i) => {
 
         return <FacetViewProperty key={facetCount.property.title+facetCount.property.type}
                            query={prop.searchStateDocument.query}
