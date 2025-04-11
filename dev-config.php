@@ -32,7 +32,8 @@ function setConfigForDevContext() {
 
     global $fsg2DefaultSortOrder, $fsg2CategoryFilter, $fsg2HitsPerPage, $fsg2PlaceholderText,
            $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces,
-           $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets;
+           $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets, $fsg2PromotionProperty,
+           $fsg2DemotionProperty;
 
     $fsg2DefaultSortOrder = 'newest';
     $fsg2CategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
@@ -48,6 +49,15 @@ function setConfigForDevContext() {
     $fsg2ShownFacets = []; //['Employee' => ['Works at'] ];
 
     $fsg2ShownCategoryFacets = []; //['Employee'];
+
+    $fsg2PromotionProperty = false;
+    if ($fsg2PromotionProperty !== false) {
+        $fsg2ExtraPropertiesToRequest[] = new Property($fsg2PromotionProperty, Datatype::BOOLEAN);
+    }
+    $fsg2DemotionProperty = false;
+    if ($fsg2DemotionProperty !== false) {
+        $fsg2ExtraPropertiesToRequest[] = new Property($fsg2DemotionProperty, Datatype::BOOLEAN);
+    }
 // -------------------------------------------------------
 }
 

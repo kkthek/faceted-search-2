@@ -111,7 +111,9 @@ class Setup
                $fsg2ShowNamespaces,
                $fsg2ShowArticleProperties,
                $fsg2ShownFacets,
-               $fsg2ShownCategoryFacets
+               $fsg2ShownCategoryFacets,
+               $fsg2PromotionProperty,
+               $fsg2DemotionProperty
                ;
 
         $jsVars = [];
@@ -130,6 +132,14 @@ class Setup
         $jsVars["fsg2ShowArticleProperties"] = $fsg2ShowArticleProperties;
         $jsVars["fsg2ShownFacets"] = $fsg2ShownFacets;
         $jsVars["fsg2ShownCategoryFacets"] = $fsg2ShownCategoryFacets;
+        $jsVars["fsg2PromotionProperty"] = $fsg2PromotionProperty;
+        if ($fsg2PromotionProperty !== false) {
+            $fsg2ExtraPropertiesToRequest[] = new Property($fsg2PromotionProperty, Datatype::BOOLEAN);
+        }
+        $jsVars["fsg2DemotionProperty"] = $fsg2DemotionProperty;
+        if ($fsg2DemotionProperty !== false) {
+            $fsg2ExtraPropertiesToRequest[] = new Property($fsg2DemotionProperty, Datatype::BOOLEAN);
+        }
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 
