@@ -81,7 +81,7 @@ class SolrResponseParser {
                     $highlighting = $smwh_search_field[1];
                 }
             }
-            $propertyFacets = $this->fillEmptyExtraProperties($propertyFacets);
+            $this->fillEmptyExtraProperties($propertyFacets);
             $docs[] = new Document(
                 $doc->id,
                 $propertyFacets,
@@ -269,7 +269,7 @@ class SolrResponseParser {
         return substr($string, 0, strlen($query)) === $query;
     }
 
-    private function fillEmptyExtraProperties(array $propertyFacetValues)
+    private function fillEmptyExtraProperties(array & $propertyFacetValues)
     {
         global $fsg2ExtraPropertiesToRequest;
 

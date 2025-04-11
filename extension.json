@@ -130,6 +130,10 @@
 		"ShowNamespaces": {
 			"value": true,
 			"description": "Show/hide UI element for selecting namespace filters"
+		},
+		"ShowArticleProperties": {
+			"value": true,
+			"description": "Show the article properties button under each search hit."
 		}
 	},
 	"manifest_version": 2

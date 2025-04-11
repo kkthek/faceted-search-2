@@ -48,9 +48,6 @@ export let WikiContext = createContext(null);
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
 
-
-const initialSearch = client.searchDocuments(currentDocumentsQueryBuilder.build());
-
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
@@ -67,17 +64,19 @@ function App() {
 
     useEffect(
         () => {
-            initialSearch.then(response => {
-                setSearchStateDocument({
-                    documentResponse: response,
-                    query: currentDocumentsQueryBuilder.build()
-                });
+
+            client.searchDocuments(currentDocumentsQueryBuilder.build())
+                .then(response => {
+                    setSearchStateDocument({
+                        documentResponse: response,
+                        query: currentDocumentsQueryBuilder.build()
+                    });
             }).catch((e) => {
                 console.error("Request to backend failed");
                 console.error(e);
             });
         },
-        [initialSearch]
+        []
     );
 
     let anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
@@ -149,6 +148,7 @@ function applyQueryConstraintsFromConfig() {
         currentDocumentsQueryBuilder.withExtraProperty(p);
     });
     currentDocumentsQueryBuilder.withLimit(wikiContext.config['fsg2HitsPerPage']);
+
 }
 
 function startApp() {

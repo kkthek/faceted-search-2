@@ -107,7 +107,9 @@ class Setup
                $fsg2HitsPerPage,
                $fsg2PlaceholderText,
                $fsg2ShowCategories,
-               $fsg2ShowSortOrder
+               $fsg2ShowSortOrder,
+               $fsg2ShowNamespaces,
+               $fsg2ShowArticleProperties
                ;
 
         $jsVars = [];
@@ -122,6 +124,8 @@ class Setup
         $jsVars["fsg2PlaceholderText"] = $fsg2PlaceholderText;
         $jsVars["fsg2ShowCategories"] = $fsg2ShowCategories;
         $jsVars["fsg2ShowSortOrder"] = $fsg2ShowSortOrder;
+        $jsVars["fsg2ShowNamespaces"] = $fsg2ShowNamespaces;
+        $jsVars["fsg2ShowArticleProperties"] = $fsg2ShowArticleProperties;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 

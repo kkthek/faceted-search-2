@@ -3,6 +3,7 @@ import {Document} from "../common/datatypes";
 import WikiLink from "./wiki_link";
 import Annotations from "./annotations_snippets";
 import CategoriesInTitle from "./categories_in_title";
+import ArticleProperties from "./article_properties";
 
 
 function SearchResult(prop: { doc: Document}) {
@@ -13,6 +14,7 @@ function SearchResult(prop: { doc: Document}) {
         <div dangerouslySetInnerHTML={{ __html: snippet }}></div>
         <CategoriesInTitle doc={prop.doc}/>
         <Annotations doc={prop.doc}/>
+        <ArticleProperties doc={prop.doc}/>
     </li>
 }
 
