@@ -52,6 +52,9 @@ require COMPOSER_INSTALL;
 use DIQA\FacetedSearch2\Setup;
 use DIQA\FacetedSearch2\SolrClient\TestData;
 
+require_once '../dev-config.php';
+setConfigForDevContext();
+
 $documentUpdater = Setup::getFacetedSearchUpdateClient();
 $documentUpdater->clearAllDocuments();
 $documentUpdater->updateDocument(TestData::generateData());
