@@ -36,7 +36,8 @@ class NumericClusterer implements Clusterer
         return $values;
     }
 
-    public function makeClustersWithStep(int $lowerBound, int $upperBound, int $interval, int $min = null, int $max = null): array
+    public function makeClustersWithFixedInterval(int $lowerBound, int $upperBound, int $interval,
+                                                  int $min = null, int $max = null): array
     {
         $ranges = [];
         if (!is_null($min)) {

@@ -159,6 +159,10 @@
 		"NumericPropertyClusters": {
 			"value": [],
 			"description": "Configures grouping of numeric facets. Example: $fsgNumericPropertyClusters['BaujahrMin'] = ['min'=>-9999, 'max'=>9999, 'lowerBound'=>1700, 'upperBound'=>2030, 'interval'=>10]; means that the given property gets a minimum cluster value of -9999, a maximum of 9999 and 33*10 year-clusters from 1700 to 2030. min and max is optional."
+		},
+		"DateTimePropertyClusters": {
+			"value": [],
+			"description": "Configures grouping of dateTime facets. Example: $fsgDateTimePropertyClusters['Freigegeben am']=['min'=>'1990-01-01-00:00:00','max'=>'2030-12-31-23:59:59']"
 		}
 	},
 	"manifest_version": 2

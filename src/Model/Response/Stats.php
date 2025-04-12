@@ -78,6 +78,12 @@ class Stats
         switch($property->getType()) {
             case Datatype::DATETIME:
                 $clusterer = new DateTimeClusterer();
+                global $fsg2DateTimePropertyClusters;
+                if (array_key_exists($property->getTitle(), $fsg2DateTimePropertyClusters)) {
+                    $constraints = $fsg2DateTimePropertyClusters[$property->getTitle()];
+                    $min = str_replace([':', '-'], '', $constraints['min']);
+                    $max = str_replace([':', '-'], '', $constraints['max']);
+                }
                 $this->clusters = $clusterer->makeClusters($min, $max, 10);
                 break;
             case Datatype::NUMBER:
@@ -86,7 +92,7 @@ class Stats
                 global $fsg2NumericPropertyClusters;
                 if (array_key_exists($property->getTitle(), $fsg2NumericPropertyClusters)) {
                     $constraints = $fsg2NumericPropertyClusters[$property->getTitle()];
-                    $this->clusters = $clusterer->makeClustersWithStep(
+                    $this->clusters = $clusterer->makeClustersWithFixedInterval(
                         $constraints['lowerBound'],
                         $constraints['upperBound'],
                         $constraints['interval'],
