@@ -35,4 +35,19 @@ class NumericClusterer implements Clusterer
 
         return $values;
     }
+
+    public function makeClustersWithStep(int $lowerBound, int $upperBound, int $interval, int $min = null, int $max = null): array
+    {
+        $ranges = [];
+        if (!is_null($min)) {
+            $ranges[] = new Range($min, $lowerBound - 1);
+        }
+        for($i = $lowerBound; $i <= $upperBound - $interval; $i += $interval) {
+            $ranges[] = new Range($i, $i + $interval - 1);
+        }
+        if (!is_null($max)) {
+            $ranges[] = new Range($upperBound, $max);
+        }
+        return $ranges;
+    }
 }

@@ -33,7 +33,7 @@ function setConfigForDevContext() {
     global $fsg2DefaultSortOrder, $fsg2CategoryFilter, $fsg2HitsPerPage, $fsg2PlaceholderText,
            $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces,
            $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets, $fsg2PromotionProperty,
-           $fsg2DemotionProperty;
+           $fsg2DemotionProperty, $fsg2NumericPropertyClusters;
 
     $fsg2DefaultSortOrder = 'newest';
     $fsg2CategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
@@ -58,6 +58,8 @@ function setConfigForDevContext() {
     if ($fsg2DemotionProperty !== false) {
         $fsg2ExtraPropertiesToRequest[] = new Property($fsg2DemotionProperty, Datatype::BOOLEAN);
     }
+
+    $fsg2NumericPropertyClusters = [];// ['Has age' => ['min'=> 0 , 'max'=>100, 'lowerBound'=>20, 'upperBound'=>70, 'interval'=>5] ];
 // -------------------------------------------------------
 }
 

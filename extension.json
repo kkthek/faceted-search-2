@@ -150,11 +150,15 @@
 		},
 		"PromotionProperty": {
 			"value": false,
-			"description": "Boolean property indicating that a search hit should be highlighted (promoted). Use the SOLR field names here, e.g. 'smwh_HatInventarbeschrieb_xsdvalue_b' or false to turn it off."
+			"description": "Boolean property indicating that a search hit should be highlighted (promoted). Use the Wiki property names here, e.g. 'HatInventarbeschrieb' or false to turn it off."
 		},
 		"DemotionProperty": {
 			"value": false,
-			"description": "Boolean property indicating that a search hit should be greyed out (demoted). Use the SOLR field names here, e.g. 'smwh_HatInventarbeschrieb_xsdvalue_b' or false to turn it off."
+			"description": "Boolean property indicating that a search hit should be greyed out (demoted). Use the Wiki property names here, e.g. 'HatInventarbeschrieb' or false to turn it off."
+		},
+		"NumericPropertyClusters": {
+			"value": [],
+			"description": "Configures grouping of numeric facets. Example: $fsgNumericPropertyClusters['BaujahrMin'] = ['min'=>-9999, 'max'=>9999, 'lowerBound'=>1700, 'upperBound'=>2030, 'interval'=>10]; means that the given property gets a minimum cluster value of -9999, a maximum of 9999 and 33*10 year-clusters from 1700 to 2030. min and max is optional."
 		}
 	},
 	"manifest_version": 2

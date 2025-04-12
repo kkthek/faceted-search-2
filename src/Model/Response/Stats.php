@@ -83,7 +83,18 @@ class Stats
             case Datatype::NUMBER:
                 $isInteger = ctype_digit((string) abs($sum));
                 $clusterer = new NumericClusterer($isInteger);
-                $this->clusters = $clusterer->makeClusters($min, $max, 10);
+                global $fsg2NumericPropertyClusters;
+                if (array_key_exists($property->getTitle(), $fsg2NumericPropertyClusters)) {
+                    $constraints = $fsg2NumericPropertyClusters[$property->getTitle()];
+                    $this->clusters = $clusterer->makeClustersWithStep(
+                        $constraints['lowerBound'],
+                        $constraints['upperBound'],
+                        $constraints['interval'],
+                        $constraints['min'] ?? null,
+                        $constraints['max'] ?? null);
+                } else {
+                    $this->clusters = $clusterer->makeClusters($min, $max, 10);
+                }
                 break;
             default:
                 $this->clusters = [];
