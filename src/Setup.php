@@ -113,7 +113,8 @@ class Setup
                $fsg2ShownFacets,
                $fsg2ShownCategoryFacets,
                $fsg2PromotionProperty,
-               $fsg2DemotionProperty
+               $fsg2DemotionProperty,
+               $fsg2FacetsWithOR
                ;
 
         $jsVars = [];
@@ -140,6 +141,7 @@ class Setup
         if ($fsg2DemotionProperty !== false) {
             $fsg2ExtraPropertiesToRequest[] = new Property($fsg2DemotionProperty, Datatype::BOOLEAN);
         }
+        $jsVars["fsg2FacetsWithOR"] = $fsg2FacetsWithOR;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 

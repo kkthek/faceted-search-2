@@ -187,6 +187,10 @@
 		"TemplateBoosts": {
 			"value": [],
 			"description": "All pages using one of the templates are boosted by the given value, e.g. $fsg2TemplateBoosts=['MyTemplate'=>2.0]"
+		},
+		"FacetsWithOR": {
+			"value": [],
+			"description": "List of properties for which EnhancedRetrieval will offer a selection dialog for 'OR'."
 		}
 	},
 	"manifest_version": 2

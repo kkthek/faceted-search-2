@@ -33,7 +33,8 @@ function setConfigForDevContext() {
     global $fsg2DefaultSortOrder, $fsg2CategoryFilter, $fsg2HitsPerPage, $fsg2PlaceholderText,
            $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces,
            $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets, $fsg2PromotionProperty,
-           $fsg2DemotionProperty, $fsg2NumericPropertyClusters, $fsg2DateTimePropertyClusters, $fsg2NamespaceConstraint;
+           $fsg2DemotionProperty, $fsg2NumericPropertyClusters, $fsg2DateTimePropertyClusters, $fsg2NamespaceConstraint,
+           $fsg2FacetsWithOR;
 
     $fsg2DefaultSortOrder = 'newest';
     $fsg2CategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
@@ -64,6 +65,8 @@ function setConfigForDevContext() {
     $fsg2DateTimePropertyClusters = []; //['Was born at']=['min'=>'1970-01-01-00:00:00','max'=>'2000-12-31-23:59:59'];
 
     $fsg2NamespaceConstraint = []; // ['sysop' => [ 0, 10, 14] ];
+
+    $fsg2FacetsWithOR = []; //['Has name'];
 // -------------------------------------------------------
 }
 

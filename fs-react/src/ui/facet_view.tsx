@@ -34,6 +34,7 @@ function FacetViewProperty(prop: {
 
     let facetValuesDiv = useRef<any>(null);
     let wikiContext = useContext(WikiContext);
+    let facetsWithOr = wikiContext.config['fsg2FacetsWithOR'].includes(prop.property.title);
 
     function handleExpandClick(limit: number) {
         if (propertyValueCount === null) {
@@ -49,6 +50,7 @@ function FacetViewProperty(prop: {
         <span onClick={() => handleExpandClick(wikiContext.config.fsg2FacetValueLimit)}>[e]</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.property.displayTitle}</span>
         <span>({prop.propertyFacetCount?.count})</span>
+        { facetsWithOr ? <span onClick={()=>alert(prop.property.title)}>[OR]</span> : ''}
          <div ref={facetValuesDiv}>
             <FacetValues propertyValueCount={propertyValueCount}
                                          onValueClick={prop.onValueClick}
