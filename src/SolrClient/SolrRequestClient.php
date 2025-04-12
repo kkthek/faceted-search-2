@@ -17,6 +17,7 @@ use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\FacetResponse;
 use DIQA\FacetedSearch2\Model\Response\StatsResponse;
+use DIQA\FacetedSearch2\Utils\WikiTools;
 use Exception;
 use MediaWiki\MediaWikiServices;
 use Title;
@@ -221,11 +222,36 @@ class SolrRequestClient implements FacetedSearchClient
 
         $fq = array_merge($fq, self::encodeCategoryFacets($categoryFacets));
         $fq = array_merge($fq, self::encodeNamespaceFacets($namespaceFacets));
+        $fq = array_merge($fq, self::encodeNamespaceConstraints());
         $params['fq'] = $fq;
 
         $params['q.alt'] = $searchText === '' ? 'smwh_search_field:(*)' : self::encodeQuery(preg_split("/\s+/", $searchText));
 
         return $params;
+    }
+
+    private static function encodeNamespaceConstraints() {
+        global $fsg2NamespaceConstraint;
+        if (! isset($fsg2NamespaceConstraint) || count($fsg2NamespaceConstraint) === 0) {
+            return [];
+        }
+
+        $userGroups = WikiTools::getUserGroups();
+
+        $constraints = [];
+        foreach ($fsg2NamespaceConstraint as $group => $namespaces) {
+            if (in_array($group, $userGroups)) {
+                foreach ($namespaces as $namespace) {
+                    $constraints[] = "smwh_namespace_id:$namespace";
+                }
+            }
+        }
+        $constraints = array_unique($constraints);
+        if (count($constraints) > 0) {
+            return [implode(' OR ', $constraints)];
+        }
+
+        return [];
     }
 
     private function getSortsAndLimits(array $sorts /* @var Sort[] */, $limit, $offset) {

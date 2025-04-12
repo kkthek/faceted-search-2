@@ -5,6 +5,7 @@ namespace DIQA\FacetedSearch2\Utils;
 use DIQA\FacetedSearch2\Update\FacetedSearchUtil;
 use MediaWiki\MediaWikiServices;
 use Title;
+use RequestContext;
 
 class WikiTools {
 
@@ -52,6 +53,21 @@ class WikiTools {
             return $title;
         }
         return FacetedSearchUtil::findDisplayTitle(Title::newFromText($title, NS_CATEGORY));
+    }
+
+    public static function getUserGroups() {
+        if (!defined('MEDIAWIKI')) {
+            return ['sysop', 'user'];
+        }
+        $user = RequestContext::getMain()->getUser();
+        $userGroups = MediaWikiServices::getInstance()
+            ->getUserGroupManager()
+            ->getUserGroups( $user );
+        // every users is treated as being a member of "user"
+        if (! in_array('user', $userGroups)) {
+            $userGroups[] = 'user';
+        }
+        return $userGroups;
     }
 
 }

@@ -158,11 +158,15 @@
 		},
 		"NumericPropertyClusters": {
 			"value": [],
-			"description": "Configures grouping of numeric facets. Example: $fsgNumericPropertyClusters['BaujahrMin'] = ['min'=>-9999, 'max'=>9999, 'lowerBound'=>1700, 'upperBound'=>2030, 'interval'=>10]; means that the given property gets a minimum cluster value of -9999, a maximum of 9999 and 33*10 year-clusters from 1700 to 2030. min and max is optional."
+			"description": "Configures grouping of numeric facets. Example: $fsg2NumericPropertyClusters['BaujahrMin'] = ['min'=>-9999, 'max'=>9999, 'lowerBound'=>1700, 'upperBound'=>2030, 'interval'=>10]; means that the given property gets a minimum cluster value of -9999, a maximum of 9999 and 33*10 year-clusters from 1700 to 2030. min and max is optional."
 		},
 		"DateTimePropertyClusters": {
 			"value": [],
-			"description": "Configures grouping of dateTime facets. Example: $fsgDateTimePropertyClusters['Freigegeben am']=['min'=>'1990-01-01-00:00:00','max'=>'2030-12-31-23:59:59']"
+			"description": "Configures grouping of dateTime facets. Example: $fsg2DateTimePropertyClusters['Freigegeben am']=['min'=>'1990-01-01-00:00:00','max'=>'2030-12-31-23:59:59']"
+		},
+		"NamespaceConstraint": {
+			"value": [],
+			"description": "Specifies the visible namespace for groups. group => array of namespaces-IDs, e.g. $fsg2NamespaceConstraint = ['sysop' => [ 0, 10, 14 ] ]; sysop users may only see Main, Template and Category pages. 'user' is default group if a user is in no other group."
 		}
 	},
 	"manifest_version": 2
