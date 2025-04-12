@@ -205,14 +205,14 @@ class SMWDBReader {
      * from namespaces, templates and categories of the wiki page.
      */
     private function calculateBoosting(WikiPage $wikiPage, array &$options, array $doc) {
-        global $fsgActivateBoosting;
-        if (! isset($fsgActivateBoosting) || !$fsgActivateBoosting ) {
+        global $fsg2ActivateBoosting;
+        if (! isset($fsg2ActivateBoosting) || !$fsg2ActivateBoosting ) {
             return;
         }
 
-        global $fsgDefaultBoost;
-        if($fsgDefaultBoost) {
-            $options['smwh_boost_dummy']['boost'] = $fsgDefaultBoost;
+        global $fsg2DefaultBoost;
+        if($fsg2DefaultBoost) {
+            $options['smwh_boost_dummy']['boost'] = $fsg2DefaultBoost;
         } else {
             $options['smwh_boost_dummy']['boost'] = 1.0;
         }
@@ -222,31 +222,31 @@ class SMWDBReader {
         $pid = $wikiPage->getId();
 
         // add boost according to namespace
-        global $fsgNamespaceBoosts;
-        if( array_key_exists($namespace, $fsgNamespaceBoosts) ) {
-            $this->updateBoostFactor($options, $fsgNamespaceBoosts[$namespace]);
+        global $fsg2NamespaceBoosts;
+        if( array_key_exists($namespace, $fsg2NamespaceBoosts) ) {
+            $this->updateBoostFactor($options, $fsg2NamespaceBoosts[$namespace]);
         }
 
         $db = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 
         // add boost according to templates
-        global $fsgTemplateBoosts;
+        global $fsg2TemplateBoosts;
         $templates = $this->retrieveTemplates($db, $pid, $doc, $options);
-        $templates = array_intersect(array_keys($fsgTemplateBoosts), $templates);
+        $templates = array_intersect(array_keys($fsg2TemplateBoosts), $templates);
         foreach($templates as $template) {
-            $this->updateBoostFactor($options, $fsgTemplateBoosts[$template]);
+            $this->updateBoostFactor($options, $fsg2TemplateBoosts[$template]);
         }
 
         // add boost according to categories
-        global $fsgCategoryBoosts;
+        global $fsg2CategoryBoosts;
         $categoriesIterator = $wikiPage->getCategories();
         $categories = array();
         foreach ($categoriesIterator as $categoryTitle) {
             $categories[] = $categoryTitle;
         }
-        $categories = array_intersect(array_keys($fsgCategoryBoosts), $categories);
+        $categories = array_intersect(array_keys($fsg2CategoryBoosts), $categories);
         foreach($categories as $category) {
-            $this->updateBoostFactor($options, $fsgCategoryBoosts[$category]);
+            $this->updateBoostFactor($options, $fsg2CategoryBoosts[$category]);
         }
     }
 

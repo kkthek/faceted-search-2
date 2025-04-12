@@ -167,6 +167,26 @@
 		"NamespaceConstraint": {
 			"value": [],
 			"description": "Specifies the visible namespace for groups. group => array of namespaces-IDs, e.g. $fsg2NamespaceConstraint = ['sysop' => [ 0, 10, 14 ] ]; sysop users may only see Main, Template and Category pages. 'user' is default group if a user is in no other group."
+		},
+		"ActivateBoosting": {
+			"value": false,
+			"description": "Activates boosting, yes or no"
+		},
+		"DefaultBoost": {
+			"value": 1.0,
+			"description": "The default boost factor for all pages that are not boosted otherwise"
+		},
+		"CategoryBoosts": {
+			"value": [],
+			"description": "All pages belonging to the categories are boosted by the given value, e.g. $fsg2CategoryBoosts=['People'=>2.0]. Do not add category prefix before the page title."
+		},
+		"NamespaceBoosts": {
+			"value": [],
+			"description": "All pages in the namespaces are boosted by the given value, e.g. $fsg2NamespaceBoosts=[0=>2.0]. Use the namespace numbers here, not their names."
+		},
+		"TemplateBoosts": {
+			"value": [],
+			"description": "All pages using one of the templates are boosted by the given value, e.g. $fsg2TemplateBoosts=['MyTemplate'=>2.0]"
 		}
 	},
 	"manifest_version": 2
