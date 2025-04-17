@@ -3,6 +3,9 @@
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
+
 /**
  * This is ONLY for development necessary. The settings are used in the rest.php wiki-mock endpoint
  *

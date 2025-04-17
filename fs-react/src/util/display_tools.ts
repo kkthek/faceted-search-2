@@ -1,4 +1,4 @@
-import {Datatype, PropertyWithURL, ValueCount} from "../common/datatypes";
+import {Datatype, Property, PropertyWithURL, ValueCount} from "../common/datatypes";
 
 class DisplayTools {
 
@@ -34,7 +34,7 @@ class DisplayTools {
         }
     }
 
-    static serializeFacetValue(p: PropertyWithURL, v: ValueCount): string {
+    static serializeFacetValue(p: Property, v: ValueCount): string {
         if (v.value) {
             if (p.type === Datatype.datetime) {
                 return this.displayDate(v.value as Date);

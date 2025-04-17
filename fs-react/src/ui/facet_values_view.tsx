@@ -6,6 +6,7 @@ import {WikiContext} from "../index";
 
 function FacetValues(prop: {
     query: BaseQuery,
+    selectedPropertyFacet: PropertyFacet,
     propertyValueCount: PropertyValueCount|null,
     onValueClick: (p: PropertyFacet)=>void,
     removable: boolean
@@ -18,16 +19,17 @@ function FacetValues(prop: {
         return;
     }
 
-
     const listItems = prop.propertyValueCount.values.map((v, i) => {
         let value = DisplayTools.serializeFacetValue(prop.propertyValueCount.property, v);
 
-        let property = prop.propertyValueCount.property;
-        let propertyFacet = new PropertyFacet(
-            property.title,
-            property.type,
-            v.value, v.mwTitle, v.range);
-
+        let propertyFacet = prop.selectedPropertyFacet;
+        if (!propertyFacet) {
+            let property = prop.propertyValueCount.property;
+            propertyFacet = new PropertyFacet(
+                property.title,
+                property.type,
+                v.value, v.mwTitle, v.range);
+        }
         return <li key={value.toString()+v.count}>
             <span onClick={() => prop.onValueClick(propertyFacet)}>{value}</span>
             :

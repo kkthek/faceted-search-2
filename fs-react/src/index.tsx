@@ -115,6 +115,7 @@ function App() {
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
                                onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
                                onValueClick={eventHandler.onValueClick.bind(eventHandler)}
+                               onValuesClick={eventHandler.onValuesClick.bind(eventHandler)}
                                onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                     />

@@ -37,6 +37,15 @@ class DocumentQueryBuilder {
         return this;
     }
 
+    withoutPropertyFacet(pf: PropertyFacet) {
+        Tools.removeFirstByPredicate(this.query.propertyFacets, (e) => e.equals(pf));
+        return this;
+    }
+
+    existsPropertyFacetForProperty(p: Property): boolean {
+        return Tools.findFirst(this.query.propertyFacets, (e) => e.property, p.title) != null;
+    }
+
     withCategoryFacet(category: string): DocumentQueryBuilder {
         this.query.categoryFacets.push(category);
         return this;

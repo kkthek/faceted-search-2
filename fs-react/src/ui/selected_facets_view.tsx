@@ -28,10 +28,11 @@ function SelectedFacetsView(prop: {
                     {!hasValue ? <span className={'fs-clickable'}
                                        onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
                     <FacetValues key={v.property.title}
-                                 propertyValueCount={v}
-                                 onValueClick={prop.onValueClick}
-                                 removable={hasValue}
                                  query={prop.searchStateFacet.query}
+                                 selectedPropertyFacet={propertyFacet}
+                                 propertyValueCount={v}
+                                 removable={hasValue}
+                                 onValueClick={prop.onValueClick}
                                  onRemoveClick={prop.onRemoveClick}
                                  onExpandClick={prop.onExpandClick}
                                  onFacetValueContainsClick={prop.onFacetValueContainsClick}/>

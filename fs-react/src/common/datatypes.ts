@@ -142,6 +142,16 @@ export class PropertyFacet {
     hasRange(): boolean {
         return (this.range && this.range !== null);
     }
+    equals(that: PropertyFacet) {
+
+        return this.property === that.property
+            && this.type === that.type
+            && this.value === that.value
+            && (this.mwTitle === that.mwTitle || (this.mwTitle as MWTitle).equals(that.mwTitle))
+            && (this.value === that.value || (this.range as Range).equals(that.range))
+            && this.ORed === that.ORed
+            ;
+    }
 }
 
 export type ValueType = string | number | boolean | Date;
@@ -162,6 +172,11 @@ export class Range {
     from: Date|number
     @jsonMember({deserializer: value => Tools.deserializeValue(value)})
     to: Date|number
+
+    equals(that: Range|void) {
+        if (!that) return false;
+        return this.from === (that as Range).from && this.to === (that as Range).to;
+    }
 }
 
 @jsonObject
@@ -219,6 +234,11 @@ export class MWTitle {
     constructor(title: string, displayTitle: string) {
         this.title = title;
         this.displayTitle = displayTitle;
+    }
+
+    equals(that: MWTitle|void) {
+        if (!that) return false;
+        return this.title === (that as MWTitle).title && this.displayTitle === (that as MWTitle).displayTitle;
     }
 }
 
