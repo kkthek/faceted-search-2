@@ -393,7 +393,7 @@ class SMWDBReader {
      *         relation with the value of the relation.
      */
     private function retrievePropertyValues( $title, array &$doc ) {
-        global $fsgIndexPredefinedProperties;
+        global $fsg2IndexPredefinedProperties;
 
         $store = smwfGetStore();
         $propertyValuesToAdd = [];
@@ -412,7 +412,7 @@ class SMWDBReader {
             $p = $property; //SMWDIProperty::newFromUserLabel($prop);
             if (!empty($predefPropType)) {
                 // This is a predefined property
-                if (isset($fsgIndexPredefinedProperties) && $fsgIndexPredefinedProperties === false) {
+                if (isset($fsg2IndexPredefinedProperties) && $fsg2IndexPredefinedProperties === false) {
                     continue;
                 }
             }
@@ -433,8 +433,8 @@ class SMWDBReader {
 
                     if ($value->getSubobjectName() != "") {
 
-                        global $fsgIndexSubobjects;
-                        if ($fsgIndexSubobjects !== true) {
+                        global $fsg2IndexSubobjects;
+                        if ($fsg2IndexSubobjects !== true) {
                             continue;
                         }
 

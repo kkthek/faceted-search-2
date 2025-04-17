@@ -191,6 +191,22 @@
 		"FacetsWithOR": {
 			"value": [],
 			"description": "List of properties for which EnhancedRetrieval will offer a selection dialog for 'OR'."
+		},
+		"IndexImageURL": {
+			"value": false,
+			"description": "Indexes the image URL as separate attribute"
+		},
+		"IndexPredefinedProperties": {
+			"value": true,
+			"description": "If TRUE, SMW's pre-defined properties will be indexed too. Single properties can be excluded from the facets via [[Ignore as facet::true]]"
+		},
+		"IndexSubobjects": {
+			"value": true,
+			"description": "Also index SMW subobjects (not only full wiki articles)."
+		},
+		"EnableIncrementalIndexer": {
+			"value": true,
+			"description": "If TRUE, changed pages will be indexed incrementally i.e. when they are saved, moved or deleted. Setting it to FALSE can make sense for example during the installation when SOLR is not yet running."
 		}
 	},
 	"manifest_version": 2
