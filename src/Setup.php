@@ -73,6 +73,12 @@ class Setup
 
         define('FS2_EXTENSION_VERSION', true);
 
+        global $fsg2FacetedSearchForMW;
+        if (!$fsg2FacetedSearchForMW) {
+            global $wgSpecialPages;
+            unset($wgSpecialPages['Search']);
+        }
+
         global $fsg2EnableIncrementalIndexer;
 
         if ($fsg2EnableIncrementalIndexer) {
@@ -96,7 +102,7 @@ class Setup
         $requestUrl = RequestContext::getMain()->getRequest()->getRequestURL();
         $isFacetedSearch2Page = !is_null($currentTitle)
             && $currentTitle->getNamespace() === NS_SPECIAL
-            && $currentTitle->getText() === 'FacetedSearch2';
+            && ($currentTitle->getText() === 'FacetedSearch2' || $currentTitle->getText() === 'Search');
         $isProxyEndpoint = strpos($requestUrl, '/FacetedSearch2/v1/proxy') > -1;
         if( !$isFacetedSearch2Page && !$isProxyEndpoint) {
             return true;
@@ -159,7 +165,8 @@ class Setup
     public static function onBeforePageDisplay(OutputPage $out, Skin $skin)
     {
 
-        if (!is_null($out->getTitle()) && $out->getTitle()->isSpecial("FacetedSearch2")) {
+        if (!is_null($out->getTitle())
+            && ($out->getTitle()->isSpecial("FacetedSearch2") || $out->getTitle()->isSpecial("Search"))) {
             self::checkIfCompiled();
             $out->addModules('ext.diqa.facetedsearch2');
         }

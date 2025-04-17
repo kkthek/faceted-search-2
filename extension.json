@@ -16,7 +16,8 @@
 	},
 	"callback" : "DIQA\\FacetedSearch2\\Setup::initModules",
 	"SpecialPages": {
-		"FacetedSearch2": "DIQA\\FacetedSearch2\\Specials\\SpecialFacetedSearch"
+		"FacetedSearch2": "DIQA\\FacetedSearch2\\Specials\\SpecialFacetedSearch",
+		"Search": "DIQA\\FacetedSearch2\\Specials\\SpecialFacetedSearch"
 	},
 	"AutoloadNamespaces": {
 		"DIQA\\FacetedSearch2\\": "src/FacetedSearch2/",
@@ -215,6 +216,10 @@
 		"CreateNewPageLink": {
 			"value": "?action=edit",
 			"description": "This is the pattern for the link that leads to the creation of new pages. EnhancedRetrieval checks if the entered search term is the name of an existing article. If this is not the case it offers a link for creating this article. The variable {article} will be replaced by the actual article name. The link will be appended to the base URL like \"http://localhost/mediawiki/index.php\""
+		},
+		"FacetedSearchForMW": {
+			"value": true,
+			"description": "If TRUE, a search in the MediaWiki search field is redirected to the faceted search special page."
 		}
 	},
 	"manifest_version": 2
