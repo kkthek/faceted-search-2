@@ -37,7 +37,7 @@ function setConfigForDevContext() {
            $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces,
            $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets, $fsg2PromotionProperty,
            $fsg2DemotionProperty, $fsg2NumericPropertyClusters, $fsg2DateTimePropertyClusters, $fsg2NamespaceConstraint,
-           $fsg2FacetsWithOR;
+           $fsg2FacetsWithOR, $fsg2ShowSolrScore;
 
     $fsg2DefaultSortOrder = 'newest';
     $fsg2CategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
@@ -70,6 +70,9 @@ function setConfigForDevContext() {
     $fsg2NamespaceConstraint = []; // ['sysop' => [ 0, 10, 14] ];
 
     $fsg2FacetsWithOR = []; //['Has name'];
+
+    $fsg2ShowSolrScore = true;
+
 // -------------------------------------------------------
 }
 

@@ -118,7 +118,8 @@ class Setup
                $fsg2ShownCategoryFacets,
                $fsg2PromotionProperty,
                $fsg2DemotionProperty,
-               $fsg2FacetsWithOR
+               $fsg2FacetsWithOR,
+               $fsg2ShowSolrScore;
                ;
 
         $jsVars = [];
@@ -146,6 +147,7 @@ class Setup
             $fsg2ExtraPropertiesToRequest[] = new Property($fsg2DemotionProperty, Datatype::BOOLEAN);
         }
         $jsVars["fsg2FacetsWithOR"] = $fsg2FacetsWithOR;
+        $jsVars["fsg2ShowSolrScore"] = $fsg2ShowSolrScore;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 
