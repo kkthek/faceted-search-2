@@ -119,7 +119,8 @@ class Setup
                $fsg2PromotionProperty,
                $fsg2DemotionProperty,
                $fsg2FacetsWithOR,
-               $fsg2ShowSolrScore;
+               $fsg2ShowSolrScore,
+               $fsg2CreateNewPageLink;
                ;
 
         $jsVars = [];
@@ -148,6 +149,7 @@ class Setup
         }
         $jsVars["fsg2FacetsWithOR"] = $fsg2FacetsWithOR;
         $jsVars["fsg2ShowSolrScore"] = $fsg2ShowSolrScore;
+        $jsVars["fsg2CreateNewPageLink"] = $fsg2CreateNewPageLink;
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 

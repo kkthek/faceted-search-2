@@ -12,8 +12,10 @@ use DIQA\FacetedSearch2\Model\Common\Property;
  */
 function setConfigForDevContext() {
 
-    global $wgFormattedNamespaces;
+    global $wgFormattedNamespaces, $wgServer, $wgArticlePath;
     $wgFormattedNamespaces = [0 => 'Main', 14 => 'Category', 10 => 'Template'];
+    $wgServer = "http://localhost";
+    $wgArticlePath = '/main/mediawiki/$1';
 
     // set development settings ------------------------------
     global $fsg2SolrHost, $fsg2SolrPort, $fsg2SolrCore;
@@ -37,7 +39,7 @@ function setConfigForDevContext() {
            $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces,
            $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets, $fsg2PromotionProperty,
            $fsg2DemotionProperty, $fsg2NumericPropertyClusters, $fsg2DateTimePropertyClusters, $fsg2NamespaceConstraint,
-           $fsg2FacetsWithOR, $fsg2ShowSolrScore;
+           $fsg2FacetsWithOR, $fsg2ShowSolrScore, $fsg2CreateNewPageLink;
 
     $fsg2DefaultSortOrder = 'newest';
     $fsg2CategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
@@ -73,6 +75,7 @@ function setConfigForDevContext() {
 
     $fsg2ShowSolrScore = true;
 
+    $fsg2CreateNewPageLink = '?action=edit';
 // -------------------------------------------------------
 }
 
