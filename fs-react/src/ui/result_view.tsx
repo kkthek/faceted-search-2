@@ -6,6 +6,7 @@ import CategoriesInTitle from "./categories_in_title";
 import ArticleProperties from "./article_properties";
 import {WikiContext} from "../index";
 import Client from "../common/client";
+import PreviewPopup from "./preview_popup";
 
 function containsTrueFacetValue(doc: Document, property: string) {
     let propertyFacetValues = doc.getPropertyFacetValues(property);
@@ -19,6 +20,7 @@ function SearchResult(prop: { doc: Document, client: Client}) {
     let promotionProperty = wikiContext.config['fsg2PromotionProperty'];
     let demotionProperty = wikiContext.config['fsg2DemotionProperty'];
     let showSolrScore = wikiContext.config['fsg2ShowSolrScore'];
+
     let classNames = ['fs-search-result'];
     if (promotionProperty !== false && containsTrueFacetValue(prop.doc, promotionProperty)) {
         classNames.push('promoted');
@@ -29,7 +31,10 @@ function SearchResult(prop: { doc: Document, client: Client}) {
 
     let snippet = prop.doc.highlighting.length > 500 ? prop.doc.highlighting.substring(0, 500)+'...': prop.doc.highlighting;
     return <li className={classNames.join(' ')}>
-        <span title={showSolrScore ? "score: " + prop.doc.score : ''}><WikiLink page={prop.doc}/></span>
+        <span title={showSolrScore ? "score: " + prop.doc.score : ''}>
+            <WikiLink page={prop.doc}/>
+            <PreviewPopup doc={prop.doc} />
+        </span>
         <div dangerouslySetInnerHTML={{ __html: snippet }}></div>
         <CategoriesInTitle doc={prop.doc}/>
         <Annotations doc={prop.doc}/>

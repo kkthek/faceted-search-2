@@ -220,6 +220,10 @@
 		"FacetedSearchForMW": {
 			"value": true,
 			"description": "If TRUE, a search in the MediaWiki search field is redirected to the faceted search special page."
+		},
+		"ShowFileInOverlay": {
+			"value": false,
+			"description": "Show some files in an overlay. Either 'false' or array of file types ['pdf', 'png',...]"
 		}
 	},
 	"manifest_version": 2

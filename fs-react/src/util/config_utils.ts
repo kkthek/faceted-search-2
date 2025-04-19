@@ -12,6 +12,12 @@ class ConfigUtils {
         // @ts-ignore
         return [...new Set(results)]
     }
+
+    static getFileExtension(url: string) {
+        let u = (URL as any).parse(url);
+        if (u === null) return '';
+        return u['pathname'].toLowerCase().split('.').pop();
+    }
 }
 
 export default ConfigUtils;

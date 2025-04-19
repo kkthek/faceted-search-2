@@ -39,7 +39,7 @@ function setConfigForDevContext() {
            $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces,
            $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets, $fsg2PromotionProperty,
            $fsg2DemotionProperty, $fsg2NumericPropertyClusters, $fsg2DateTimePropertyClusters, $fsg2NamespaceConstraint,
-           $fsg2FacetsWithOR, $fsg2ShowSolrScore, $fsg2CreateNewPageLink;
+           $fsg2FacetsWithOR, $fsg2ShowSolrScore, $fsg2CreateNewPageLink, $fsg2ShowFileInOverlay;
 
     $fsg2DefaultSortOrder = 'newest';
     $fsg2CategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
@@ -76,6 +76,11 @@ function setConfigForDevContext() {
     $fsg2ShowSolrScore = true;
 
     $fsg2CreateNewPageLink = '?action=edit';
+
+    $fsg2ShowFileInOverlay =  ['pdf'];
+    if ($fsg2ShowFileInOverlay) {
+        $fsg2ExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
+    }
 // -------------------------------------------------------
 }
 

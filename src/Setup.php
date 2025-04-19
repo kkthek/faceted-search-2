@@ -126,7 +126,8 @@ class Setup
                $fsg2DemotionProperty,
                $fsg2FacetsWithOR,
                $fsg2ShowSolrScore,
-               $fsg2CreateNewPageLink;
+               $fsg2CreateNewPageLink,
+               $fsg2ShowFileInOverlay
                ;
 
         $jsVars = [];
@@ -156,6 +157,10 @@ class Setup
         $jsVars["fsg2FacetsWithOR"] = $fsg2FacetsWithOR;
         $jsVars["fsg2ShowSolrScore"] = $fsg2ShowSolrScore;
         $jsVars["fsg2CreateNewPageLink"] = $fsg2CreateNewPageLink;
+        $jsVars["fsg2ShowFileInOverlay"] = $fsg2ShowFileInOverlay;
+        if ($fsg2ShowFileInOverlay !== false) {
+            $fsg2ExtraPropertiesToRequest[] = new Property("diqa_import_fullpath", Datatype::STRING);
+        }
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 
