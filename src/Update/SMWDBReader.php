@@ -46,8 +46,8 @@ class SMWDBReader {
             throw new Exception("invalid page ID for $pagePrefixedTitle");
         }
 
-        global $fsg2BlacklistPages;
-        if (in_array($pagePrefixedTitle, $fsg2BlacklistPages)) {
+        global $fs2gBlacklistPages;
+        if (in_array($pagePrefixedTitle, $fs2gBlacklistPages)) {
             throw new Exception("blacklisted page: $pagePrefixedTitle");
         }
 
@@ -137,10 +137,10 @@ class SMWDBReader {
         $text = '';
         $pageDbKey  = $pageTitle->getDBkey();
 
-        global $fsg2IndexImageURL;
+        global $fs2gIndexImageURL;
 
         try {
-            if (isset($fsg2IndexImageURL) && $fsg2IndexImageURL === true) {
+            if (isset($fs2gIndexImageURL) && $fs2gIndexImageURL === true) {
                 $this->retrieveFileSystemPath($pageNamespace, $pageDbKey, $doc);
             }
             $client = Setup::getFacetedSearchClient();
@@ -205,14 +205,14 @@ class SMWDBReader {
      * from namespaces, templates and categories of the wiki page.
      */
     private function calculateBoosting(WikiPage $wikiPage, array &$options, array $doc) {
-        global $fsg2ActivateBoosting;
-        if (! isset($fsg2ActivateBoosting) || !$fsg2ActivateBoosting ) {
+        global $fs2gActivateBoosting;
+        if (! isset($fs2gActivateBoosting) || !$fs2gActivateBoosting ) {
             return;
         }
 
-        global $fsg2DefaultBoost;
-        if($fsg2DefaultBoost) {
-            $options['smwh_boost_dummy']['boost'] = $fsg2DefaultBoost;
+        global $fs2gDefaultBoost;
+        if($fs2gDefaultBoost) {
+            $options['smwh_boost_dummy']['boost'] = $fs2gDefaultBoost;
         } else {
             $options['smwh_boost_dummy']['boost'] = 1.0;
         }
@@ -222,31 +222,31 @@ class SMWDBReader {
         $pid = $wikiPage->getId();
 
         // add boost according to namespace
-        global $fsg2NamespaceBoosts;
-        if( array_key_exists($namespace, $fsg2NamespaceBoosts) ) {
-            $this->updateBoostFactor($options, $fsg2NamespaceBoosts[$namespace]);
+        global $fs2gNamespaceBoosts;
+        if( array_key_exists($namespace, $fs2gNamespaceBoosts) ) {
+            $this->updateBoostFactor($options, $fs2gNamespaceBoosts[$namespace]);
         }
 
         $db = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA );
 
         // add boost according to templates
-        global $fsg2TemplateBoosts;
+        global $fs2gTemplateBoosts;
         $templates = $this->retrieveTemplates($db, $pid, $doc, $options);
-        $templates = array_intersect(array_keys($fsg2TemplateBoosts), $templates);
+        $templates = array_intersect(array_keys($fs2gTemplateBoosts), $templates);
         foreach($templates as $template) {
-            $this->updateBoostFactor($options, $fsg2TemplateBoosts[$template]);
+            $this->updateBoostFactor($options, $fs2gTemplateBoosts[$template]);
         }
 
         // add boost according to categories
-        global $fsg2CategoryBoosts;
+        global $fs2gCategoryBoosts;
         $categoriesIterator = $wikiPage->getCategories();
         $categories = array();
         foreach ($categoriesIterator as $categoryTitle) {
             $categories[] = $categoryTitle;
         }
-        $categories = array_intersect(array_keys($fsg2CategoryBoosts), $categories);
+        $categories = array_intersect(array_keys($fs2gCategoryBoosts), $categories);
         foreach($categories as $category) {
-            $this->updateBoostFactor($options, $fsg2CategoryBoosts[$category]);
+            $this->updateBoostFactor($options, $fs2gCategoryBoosts[$category]);
         }
     }
 
@@ -393,7 +393,7 @@ class SMWDBReader {
      *         relation with the value of the relation.
      */
     private function retrievePropertyValues( $title, array &$doc ) {
-        global $fsg2IndexPredefinedProperties;
+        global $fs2gIndexPredefinedProperties;
 
         $store = smwfGetStore();
         $propertyValuesToAdd = [];
@@ -412,7 +412,7 @@ class SMWDBReader {
             $p = $property; //SMWDIProperty::newFromUserLabel($prop);
             if (!empty($predefPropType)) {
                 // This is a predefined property
-                if (isset($fsg2IndexPredefinedProperties) && $fsg2IndexPredefinedProperties === false) {
+                if (isset($fs2gIndexPredefinedProperties) && $fs2gIndexPredefinedProperties === false) {
                     continue;
                 }
             }
@@ -433,8 +433,8 @@ class SMWDBReader {
 
                     if ($value->getSubobjectName() != "") {
 
-                        global $fsg2IndexSubobjects;
-                        if ($fsg2IndexSubobjects !== true) {
+                        global $fs2gIndexSubobjects;
+                        if ($fs2gIndexSubobjects !== true) {
                             continue;
                         }
 

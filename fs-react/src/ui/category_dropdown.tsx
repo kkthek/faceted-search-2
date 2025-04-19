@@ -16,8 +16,8 @@ function CategoryDropdown(prop: {
     onCategoryClick: (c: string)=>void
 }) {
     let wikiContext = useContext(WikiContext);
-    let categoryFilter = wikiContext.config['fsg2CategoryFilter'];
-    let showCategories = wikiContext.config['fsg2ShowCategories'];
+    let categoryFilter = wikiContext.config['fs2gCategoryFilter'];
+    let showCategories = wikiContext.config['fs2gShowCategories'];
 
     if (!showCategories) return;
 

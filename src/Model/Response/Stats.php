@@ -78,9 +78,9 @@ class Stats
         switch($property->getType()) {
             case Datatype::DATETIME:
                 $clusterer = new DateTimeClusterer();
-                global $fsg2DateTimePropertyClusters;
-                if (array_key_exists($property->getTitle(), $fsg2DateTimePropertyClusters)) {
-                    $constraints = $fsg2DateTimePropertyClusters[$property->getTitle()];
+                global $fs2gDateTimePropertyClusters;
+                if (array_key_exists($property->getTitle(), $fs2gDateTimePropertyClusters)) {
+                    $constraints = $fs2gDateTimePropertyClusters[$property->getTitle()];
                     $min = str_replace([':', '-'], '', $constraints['min']);
                     $max = str_replace([':', '-'], '', $constraints['max']);
                 }
@@ -89,9 +89,9 @@ class Stats
             case Datatype::NUMBER:
                 $isInteger = ctype_digit((string) abs($sum));
                 $clusterer = new NumericClusterer($isInteger);
-                global $fsg2NumericPropertyClusters;
-                if (array_key_exists($property->getTitle(), $fsg2NumericPropertyClusters)) {
-                    $constraints = $fsg2NumericPropertyClusters[$property->getTitle()];
+                global $fs2gNumericPropertyClusters;
+                if (array_key_exists($property->getTitle(), $fs2gNumericPropertyClusters)) {
+                    $constraints = $fs2gNumericPropertyClusters[$property->getTitle()];
                     $this->clusters = $clusterer->makeClustersWithFixedInterval(
                         $constraints['lowerBound'],
                         $constraints['upperBound'],

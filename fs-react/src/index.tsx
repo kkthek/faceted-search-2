@@ -81,7 +81,7 @@ function App() {
 
     let anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
-    let useCategoryDropdown = wikiContext.config.fsg2CategoryFilter.length === 0;
+    let useCategoryDropdown = wikiContext.config.fs2gCategoryFilter.length === 0;
 
     return <WikiContext.Provider value={wikiContext}>
         <div id={'fs-content'}>
@@ -145,10 +145,10 @@ async function getSettingsForDevContext() {
 }
 
 function applyQueryConstraintsFromConfig() {
-    wikiContext.config.fsg2ExtraPropertiesToRequest.forEach((p: Property) => {
+    wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: Property) => {
         currentDocumentsQueryBuilder.withExtraProperty(p);
     });
-    currentDocumentsQueryBuilder.withLimit(wikiContext.config['fsg2HitsPerPage']);
+    currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
 
 }
 

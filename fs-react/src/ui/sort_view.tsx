@@ -7,8 +7,8 @@ function SortView(prop : {
     onChange: (sort: Sort) => void
 }) {
     let wikiContext = useContext(WikiContext);
-    let defaultSortOrder = wikiContext.config['fsg2DefaultSortOrder'];
-    let showSortView = wikiContext.config['fsg2ShowSortOrder'];
+    let defaultSortOrder = wikiContext.config['fs2gDefaultSortOrder'];
+    let showSortView = wikiContext.config['fs2gShowSortOrder'];
     if (!showSortView) return;
 
     let sorts = [

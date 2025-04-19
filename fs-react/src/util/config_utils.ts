@@ -2,11 +2,11 @@ import {BaseQuery} from "../common/datatypes";
 
 class ConfigUtils {
 
-    static getShownFacets(fsg2ShownFacets: any, query: BaseQuery): string[] {
+    static getShownFacets(fs2gShownFacets: any, query: BaseQuery): string[] {
 
         let results: string[] = [];
         query.categoryFacets.forEach((category) => {
-            let propertiesOfCategory = fsg2ShownFacets[category] || [];
+            let propertiesOfCategory = fs2gShownFacets[category] || [];
             results = [...results, ...propertiesOfCategory];
         });
         // @ts-ignore

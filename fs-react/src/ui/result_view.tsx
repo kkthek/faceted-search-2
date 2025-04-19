@@ -17,9 +17,9 @@ function containsTrueFacetValue(doc: Document, property: string) {
 
 function SearchResult(prop: { doc: Document, client: Client}) {
     let wikiContext = useContext(WikiContext);
-    let promotionProperty = wikiContext.config['fsg2PromotionProperty'];
-    let demotionProperty = wikiContext.config['fsg2DemotionProperty'];
-    let showSolrScore = wikiContext.config['fsg2ShowSolrScore'];
+    let promotionProperty = wikiContext.config['fs2gPromotionProperty'];
+    let demotionProperty = wikiContext.config['fs2gDemotionProperty'];
+    let showSolrScore = wikiContext.config['fs2gShowSolrScore'];
 
     let classNames = ['fs-search-result'];
     if (promotionProperty !== false && containsTrueFacetValue(prop.doc, promotionProperty)) {

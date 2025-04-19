@@ -18,68 +18,68 @@ function setConfigForDevContext() {
     $wgArticlePath = '/main/mediawiki/$1';
 
     // set development settings ------------------------------
-    global $fsg2SolrHost, $fsg2SolrPort, $fsg2SolrCore;
-    $fsg2SolrHost = "localhost";
-    $fsg2SolrPort = "8983";
-    $fsg2SolrCore = "mw";
+    global $fs2gSolrHost, $fs2gSolrPort, $fs2gSolrCore;
+    $fs2gSolrHost = "localhost";
+    $fs2gSolrPort = "8983";
+    $fs2gSolrCore = "mw";
 
-    global $fsg2ExtraPropertiesToRequest;
-    $fsg2ExtraPropertiesToRequest = [];
-    $fsg2ExtraPropertiesToRequest[] = new Property("Has spouse", Datatype::WIKIPAGE);
-    $fsg2ExtraPropertiesToRequest[] = new Property("Has age", Datatype::NUMBER);
-    $fsg2ExtraPropertiesToRequest[] = new Property("Was born at", Datatype::DATETIME);
+    global $fs2gExtraPropertiesToRequest;
+    $fs2gExtraPropertiesToRequest = [];
+    $fs2gExtraPropertiesToRequest[] = new Property("Has spouse", Datatype::WIKIPAGE);
+    $fs2gExtraPropertiesToRequest[] = new Property("Has age", Datatype::NUMBER);
+    $fs2gExtraPropertiesToRequest[] = new Property("Was born at", Datatype::DATETIME);
 
-    global $fsg2AnnotationsInSnippet;
-    $fsg2AnnotationsInSnippet = [ 'Employee' => ['Has spouse', 'Has age', 'Was born at'] ];
+    global $fs2gAnnotationsInSnippet;
+    $fs2gAnnotationsInSnippet = [ 'Employee' => ['Has spouse', 'Has age', 'Was born at'] ];
 
-    global $fsg2CategoriesToShowInTitle;
-    $fsg2CategoriesToShowInTitle = ['Employee'];
+    global $fs2gCategoriesToShowInTitle;
+    $fs2gCategoriesToShowInTitle = ['Employee'];
 
-    global $fsg2DefaultSortOrder, $fsg2CategoryFilter, $fsg2HitsPerPage, $fsg2PlaceholderText,
-           $fsg2ShowCategories, $fsg2ShowSortOrder, $fsg2FacetValueLimit, $fsg2ShowNamespaces,
-           $fsg2ShowArticleProperties, $fsg2ShownFacets, $fsg2ShownCategoryFacets, $fsg2PromotionProperty,
-           $fsg2DemotionProperty, $fsg2NumericPropertyClusters, $fsg2DateTimePropertyClusters, $fsg2NamespaceConstraint,
-           $fsg2FacetsWithOR, $fsg2ShowSolrScore, $fsg2CreateNewPageLink, $fsg2ShowFileInOverlay;
+    global $fs2gDefaultSortOrder, $fs2gCategoryFilter, $fs2gHitsPerPage, $fs2gPlaceholderText,
+           $fs2gShowCategories, $fs2gShowSortOrder, $fs2gFacetValueLimit, $fs2gShowNamespaces,
+           $fs2gShowArticleProperties, $fs2gShownFacets, $fs2gShownCategoryFacets, $fs2gPromotionProperty,
+           $fs2gDemotionProperty, $fs2gNumericPropertyClusters, $fs2gDateTimePropertyClusters, $fs2gNamespaceConstraint,
+           $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay;
 
-    $fsg2DefaultSortOrder = 'newest';
-    $fsg2CategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
-    $fsg2HitsPerPage = 10;
-    $fsg2PlaceholderText = 'Suche...';
-    $fsg2ShowCategories = true;
-    $fsg2ShowSortOrder = true;
-    $fsg2ShowNamespaces = true;
+    $fs2gDefaultSortOrder = 'newest';
+    $fs2gCategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
+    $fs2gHitsPerPage = 10;
+    $fs2gPlaceholderText = 'Suche...';
+    $fs2gShowCategories = true;
+    $fs2gShowSortOrder = true;
+    $fs2gShowNamespaces = true;
 
-    $fsg2FacetValueLimit = 20;
-    $fsg2ShowArticleProperties = true;
+    $fs2gFacetValueLimit = 20;
+    $fs2gShowArticleProperties = true;
 
-    $fsg2ShownFacets = []; //['Employee' => ['Works at'] ];
+    $fs2gShownFacets = []; //['Employee' => ['Works at'] ];
 
-    $fsg2ShownCategoryFacets = []; //['Employee'];
+    $fs2gShownCategoryFacets = []; //['Employee'];
 
-    $fsg2PromotionProperty = false;
-    if ($fsg2PromotionProperty !== false) {
-        $fsg2ExtraPropertiesToRequest[] = new Property($fsg2PromotionProperty, Datatype::BOOLEAN);
+    $fs2gPromotionProperty = false;
+    if ($fs2gPromotionProperty !== false) {
+        $fs2gExtraPropertiesToRequest[] = new Property($fs2gPromotionProperty, Datatype::BOOLEAN);
     }
-    $fsg2DemotionProperty = false;
-    if ($fsg2DemotionProperty !== false) {
-        $fsg2ExtraPropertiesToRequest[] = new Property($fsg2DemotionProperty, Datatype::BOOLEAN);
+    $fs2gDemotionProperty = false;
+    if ($fs2gDemotionProperty !== false) {
+        $fs2gExtraPropertiesToRequest[] = new Property($fs2gDemotionProperty, Datatype::BOOLEAN);
     }
 
-    $fsg2NumericPropertyClusters = [];// ['Has age' => ['min'=> 0 , 'max'=>100, 'lowerBound'=>20, 'upperBound'=>70, 'interval'=>5] ];
+    $fs2gNumericPropertyClusters = [];// ['Has age' => ['min'=> 0 , 'max'=>100, 'lowerBound'=>20, 'upperBound'=>70, 'interval'=>5] ];
 
-    $fsg2DateTimePropertyClusters = []; //['Was born at']=['min'=>'1970-01-01-00:00:00','max'=>'2000-12-31-23:59:59'];
+    $fs2gDateTimePropertyClusters = []; //['Was born at']=['min'=>'1970-01-01-00:00:00','max'=>'2000-12-31-23:59:59'];
 
-    $fsg2NamespaceConstraint = []; // ['sysop' => [ 0, 10, 14] ];
+    $fs2gNamespaceConstraint = []; // ['sysop' => [ 0, 10, 14] ];
 
-    $fsg2FacetsWithOR = []; //['Has name'];
+    $fs2gFacetsWithOR = []; //['Has name'];
 
-    $fsg2ShowSolrScore = true;
+    $fs2gShowSolrScore = true;
 
-    $fsg2CreateNewPageLink = false;//'?action=edit';
+    $fs2gCreateNewPageLink = false;//'?action=edit';
 
-    $fsg2ShowFileInOverlay =  ['pdf'];
-    if ($fsg2ShowFileInOverlay) {
-        $fsg2ExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
+    $fs2gShowFileInOverlay =  ['pdf'];
+    if ($fs2gShowFileInOverlay) {
+        $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
     }
 // -------------------------------------------------------
 }
@@ -88,7 +88,7 @@ function getConfigForDevContext(): array
 {
     $settings = [];
     foreach($GLOBALS as $var => $value) {
-        if (strpos($var, 'fsg2') === 0 || strpos($var, 'wg') === 0) {
+        if (strpos($var, 'fs2g') === 0 || strpos($var, 'wg') === 0) {
             $settings[$var] = $value;
         }
     }

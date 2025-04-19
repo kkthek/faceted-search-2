@@ -73,15 +73,15 @@ class Setup
 
         define('FS2_EXTENSION_VERSION', true);
 
-        global $fsg2FacetedSearchForMW;
-        if (!$fsg2FacetedSearchForMW) {
+        global $fs2gFacetedSearchForMW;
+        if (!$fs2gFacetedSearchForMW) {
             global $wgSpecialPages;
             unset($wgSpecialPages['Search']);
         }
 
-        global $fsg2EnableIncrementalIndexer;
+        global $fs2gEnableIncrementalIndexer;
 
-        if ($fsg2EnableIncrementalIndexer) {
+        if ($fs2gEnableIncrementalIndexer) {
             global $wgHooks;
             $wgHooks['SMW::SQLStore::AfterDataUpdateComplete'][] = 'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onUpdateDataAfter';
             $wgHooks['UploadComplete'][] = 'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onUploadComplete';
@@ -109,57 +109,57 @@ class Setup
         }
 
         global $fsgFacetValueLimit,
-               $fsg2ExtraPropertiesToRequest,
-               $fsg2AnnotationsInSnippet,
-               $fsg2CategoriesToShowInTitle,
-               $fsg2DefaultSortOrder,
-               $fsg2CategoryFilter,
-               $fsg2HitsPerPage,
-               $fsg2PlaceholderText,
-               $fsg2ShowCategories,
-               $fsg2ShowSortOrder,
-               $fsg2ShowNamespaces,
-               $fsg2ShowArticleProperties,
-               $fsg2ShownFacets,
-               $fsg2ShownCategoryFacets,
-               $fsg2PromotionProperty,
-               $fsg2DemotionProperty,
-               $fsg2FacetsWithOR,
-               $fsg2ShowSolrScore,
-               $fsg2CreateNewPageLink,
-               $fsg2ShowFileInOverlay
+               $fs2gExtraPropertiesToRequest,
+               $fs2gAnnotationsInSnippet,
+               $fs2gCategoriesToShowInTitle,
+               $fs2gDefaultSortOrder,
+               $fs2gCategoryFilter,
+               $fs2gHitsPerPage,
+               $fs2gPlaceholderText,
+               $fs2gShowCategories,
+               $fs2gShowSortOrder,
+               $fs2gShowNamespaces,
+               $fs2gShowArticleProperties,
+               $fs2gShownFacets,
+               $fs2gShownCategoryFacets,
+               $fs2gPromotionProperty,
+               $fs2gDemotionProperty,
+               $fs2gFacetsWithOR,
+               $fs2gShowSolrScore,
+               $fs2gCreateNewPageLink,
+               $fs2gShowFileInOverlay
                ;
 
         $jsVars = [];
-        $jsVars["fsg2FacetValueLimit"] = $fsgFacetValueLimit;
-        $jsVars["fsg2AnnotationsInSnippet"] = $fsg2AnnotationsInSnippet;
-        $fsg2ExtraPropertiesToRequest = self::getPropertiesForAnnotations($fsg2AnnotationsInSnippet);
-        $jsVars["fsg2ExtraPropertiesToRequest"] = $fsg2ExtraPropertiesToRequest;
-        $jsVars["fsg2CategoriesToShowInTitle"] = $fsg2CategoriesToShowInTitle;
-        $jsVars["fsg2DefaultSortOrder"] = $fsg2DefaultSortOrder;
-        $jsVars["fsg2CategoryFilter"] = $fsg2CategoryFilter;
-        $jsVars["fsg2HitsPerPage"] = $fsg2HitsPerPage;
-        $jsVars["fsg2PlaceholderText"] = $fsg2PlaceholderText;
-        $jsVars["fsg2ShowCategories"] = $fsg2ShowCategories;
-        $jsVars["fsg2ShowSortOrder"] = $fsg2ShowSortOrder;
-        $jsVars["fsg2ShowNamespaces"] = $fsg2ShowNamespaces;
-        $jsVars["fsg2ShowArticleProperties"] = $fsg2ShowArticleProperties;
-        $jsVars["fsg2ShownFacets"] = $fsg2ShownFacets;
-        $jsVars["fsg2ShownCategoryFacets"] = $fsg2ShownCategoryFacets;
-        $jsVars["fsg2PromotionProperty"] = $fsg2PromotionProperty;
-        if ($fsg2PromotionProperty !== false) {
-            $fsg2ExtraPropertiesToRequest[] = new Property($fsg2PromotionProperty, Datatype::BOOLEAN);
+        $jsVars["fs2gFacetValueLimit"] = $fsgFacetValueLimit;
+        $jsVars["fs2gAnnotationsInSnippet"] = $fs2gAnnotationsInSnippet;
+        $fs2gExtraPropertiesToRequest = self::getPropertiesForAnnotations($fs2gAnnotationsInSnippet);
+        $jsVars["fs2gExtraPropertiesToRequest"] = $fs2gExtraPropertiesToRequest;
+        $jsVars["fs2gCategoriesToShowInTitle"] = $fs2gCategoriesToShowInTitle;
+        $jsVars["fs2gDefaultSortOrder"] = $fs2gDefaultSortOrder;
+        $jsVars["fs2gCategoryFilter"] = $fs2gCategoryFilter;
+        $jsVars["fs2gHitsPerPage"] = $fs2gHitsPerPage;
+        $jsVars["fs2gPlaceholderText"] = $fs2gPlaceholderText;
+        $jsVars["fs2gShowCategories"] = $fs2gShowCategories;
+        $jsVars["fs2gShowSortOrder"] = $fs2gShowSortOrder;
+        $jsVars["fs2gShowNamespaces"] = $fs2gShowNamespaces;
+        $jsVars["fs2gShowArticleProperties"] = $fs2gShowArticleProperties;
+        $jsVars["fs2gShownFacets"] = $fs2gShownFacets;
+        $jsVars["fs2gShownCategoryFacets"] = $fs2gShownCategoryFacets;
+        $jsVars["fs2gPromotionProperty"] = $fs2gPromotionProperty;
+        if ($fs2gPromotionProperty !== false) {
+            $fs2gExtraPropertiesToRequest[] = new Property($fs2gPromotionProperty, Datatype::BOOLEAN);
         }
-        $jsVars["fsg2DemotionProperty"] = $fsg2DemotionProperty;
-        if ($fsg2DemotionProperty !== false) {
-            $fsg2ExtraPropertiesToRequest[] = new Property($fsg2DemotionProperty, Datatype::BOOLEAN);
+        $jsVars["fs2gDemotionProperty"] = $fs2gDemotionProperty;
+        if ($fs2gDemotionProperty !== false) {
+            $fs2gExtraPropertiesToRequest[] = new Property($fs2gDemotionProperty, Datatype::BOOLEAN);
         }
-        $jsVars["fsg2FacetsWithOR"] = $fsg2FacetsWithOR;
-        $jsVars["fsg2ShowSolrScore"] = $fsg2ShowSolrScore;
-        $jsVars["fsg2CreateNewPageLink"] = $fsg2CreateNewPageLink;
-        $jsVars["fsg2ShowFileInOverlay"] = $fsg2ShowFileInOverlay;
-        if ($fsg2ShowFileInOverlay !== false) {
-            $fsg2ExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
+        $jsVars["fs2gFacetsWithOR"] = $fs2gFacetsWithOR;
+        $jsVars["fs2gShowSolrScore"] = $fs2gShowSolrScore;
+        $jsVars["fs2gCreateNewPageLink"] = $fs2gCreateNewPageLink;
+        $jsVars["fs2gShowFileInOverlay"] = $fs2gShowFileInOverlay;
+        if ($fs2gShowFileInOverlay !== false) {
+            $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
         }
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
@@ -186,11 +186,11 @@ class Setup
         }
     }
 
-    private static function getPropertiesForAnnotations($fsg2AnnotationsInSnippet)
+    private static function getPropertiesForAnnotations($fs2gAnnotationsInSnippet)
     {
         //FIXME: store in MW-object cache
         $result = [];
-        $allExtraProperties = ArrayTools::flatten(array_values($fsg2AnnotationsInSnippet));
+        $allExtraProperties = ArrayTools::flatten(array_values($fs2gAnnotationsInSnippet));
         foreach($allExtraProperties as $property) {
             $smwProperty = SMWDIProperty::newFromUserLabel($property);
             $typeId = $smwProperty->findPropertyValueType();

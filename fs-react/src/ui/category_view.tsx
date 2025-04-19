@@ -26,8 +26,8 @@ function CategoryView( prop: {
 
 }) {
     let wikiContext = useContext(WikiContext);
-    let showCategories = wikiContext.config['fsg2ShowCategories'];
-    let shownCategoryFacets = wikiContext.config['fsg2ShownCategoryFacets'];
+    let showCategories = wikiContext.config['fs2gShowCategories'];
+    let shownCategoryFacets = wikiContext.config['fs2gShownCategoryFacets'];
     if (!prop.searchStateDocument || !showCategories) return;
 
     const categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;

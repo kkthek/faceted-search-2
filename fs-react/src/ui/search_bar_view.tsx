@@ -3,7 +3,7 @@ import {WikiContext} from "../index";
 
 function SearchBar(prop: {onClick: (text: string)=>void}) {
     let wikiContext = useContext(WikiContext);
-    let placeholderText = wikiContext.config['fsg2PlaceholderText'];
+    let placeholderText = wikiContext.config['fs2gPlaceholderText'];
 
     const [text, setText] = useState('');
 
@@ -21,7 +21,7 @@ function CreateArticleLink(prop: {
     searchText: string
 }) {
     let wikiContext = useContext(WikiContext);
-    let createNewPageLink = wikiContext.config['fsg2CreateNewPageLink'];
+    let createNewPageLink = wikiContext.config['fs2gCreateNewPageLink'];
     if (!createNewPageLink) return;
     let wgServer = wikiContext.config['wgServer'];
     let wgArticlePath = wikiContext.config['wgArticlePath'];

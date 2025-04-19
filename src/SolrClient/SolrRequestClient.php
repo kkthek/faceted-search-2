@@ -231,15 +231,15 @@ class SolrRequestClient implements FacetedSearchClient
     }
 
     private static function encodeNamespaceConstraints() {
-        global $fsg2NamespaceConstraint;
-        if (! isset($fsg2NamespaceConstraint) || count($fsg2NamespaceConstraint) === 0) {
+        global $fs2gNamespaceConstraint;
+        if (! isset($fs2gNamespaceConstraint) || count($fs2gNamespaceConstraint) === 0) {
             return [];
         }
 
         $userGroups = WikiTools::getUserGroups();
 
         $constraints = [];
-        foreach ($fsg2NamespaceConstraint as $group => $namespaces) {
+        foreach ($fs2gNamespaceConstraint as $group => $namespaces) {
             if (in_array($group, $userGroups)) {
                 foreach ($namespaces as $namespace) {
                     $constraints[] = "smwh_namespace_id:$namespace";

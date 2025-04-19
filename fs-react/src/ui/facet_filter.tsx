@@ -10,7 +10,7 @@ function FacetFilter(prop : {
 
     let wikiContext = useContext(WikiContext);
 
-    let needsNoFilter = prop.numberOfValues < wikiContext.config.fsg2FacetValueLimit;
+    let needsNoFilter = prop.numberOfValues < wikiContext.config.fs2gFacetValueLimit;
     let unsuitableProperty = prop.property.isRangeProperty() || prop.property.isBooleanProperty();
     const [text, setText] = useState((): string => '');
     const [unchanged, setUnchanged] = useState((): boolean => true);
@@ -24,7 +24,7 @@ function FacetFilter(prop : {
            setText(e.target.value);
            setUnchanged(false);
        }}/>
-        <button onClick={() => prop.onFilterContainsClick(text, wikiContext.config.fsg2FacetValueLimit, prop.property)}>Filter</button>
+        <button onClick={() => prop.onFilterContainsClick(text, wikiContext.config.fs2gFacetValueLimit, prop.property)}>Filter</button>
     </div>
 }
 

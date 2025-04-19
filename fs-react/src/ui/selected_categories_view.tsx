@@ -8,7 +8,7 @@ function SelectedCategoriesView(prop: {
     onCategoryRemove: (c: string) => void
 }) {
     let wikiContext = useContext(WikiContext);
-    let showCategories = wikiContext.config['fsg2ShowCategories'];
+    let showCategories = wikiContext.config['fs2gShowCategories'];
     if (!prop.searchStateDocument || !showCategories) return;
 
     const categories = prop.searchStateDocument.documentResponse.categoryFacetCounts.map((v, i) => {

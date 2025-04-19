@@ -43,8 +43,8 @@ class UpdateIndexJob extends Job
         $title = $this->params['title'];
 
         // when indexing with jobs, we must assure not to create new updating jobs
-        global $fsg2CreateUpdateJob;
-        $fsg2CreateUpdateJob = false;
+        global $fs2gCreateUpdateJob;
+        $fs2gCreateUpdateJob = false;
 
         $dependantPages = $this->retrieveDependent($title);
         try {

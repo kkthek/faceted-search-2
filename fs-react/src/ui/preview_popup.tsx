@@ -13,13 +13,13 @@ function PopupComponent(prop: {
 
 }) {
     let wikiContext = useContext(WikiContext);
-    let fileTypesToShowInOverlay = wikiContext.config['fsg2ShowFileInOverlay'];
+    let fileTypesToShowInOverlay = wikiContext.config['fs2gShowFileInOverlay'];
 
     const [openDialog, setOpenDialog] = useState(false);
 
     let validConfig = (typeof fileTypesToShowInOverlay === 'boolean' || fileTypesToShowInOverlay.length);
     if (!validConfig || fileTypesToShowInOverlay === true) {
-        console.warn('fsg2ShowFileInOverlay can either be set to "false" or to an array of file types, eg. ["pdf","png",... ].')
+        console.warn('fs2gShowFileInOverlay can either be set to "false" or to an array of file types, eg. ["pdf","png",... ].')
         return;
     }
 

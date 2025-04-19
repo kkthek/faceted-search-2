@@ -12,7 +12,7 @@ function PagingView(prop: {
     }
     let wikiContext = useContext(WikiContext);
 
-    const NUMBER_RESULTS_ONE_PAGE = wikiContext.config['fsg2HitsPerPage'];
+    const NUMBER_RESULTS_ONE_PAGE = wikiContext.config['fs2gHitsPerPage'];
     const SLIDING_WINDOW_SIZE = 10;     // could come from config
 
     const numPages = Math.trunc(prop.searchStateDocument.documentResponse.numResults / NUMBER_RESULTS_ONE_PAGE) + 1;

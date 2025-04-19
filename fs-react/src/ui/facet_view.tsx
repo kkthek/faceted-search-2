@@ -36,7 +36,7 @@ function FacetViewProperty(prop: {
 
     let facetValuesDiv = useRef<any>(null);
     let wikiContext = useContext(WikiContext);
-    let facetsWithOr = wikiContext.config['fsg2FacetsWithOR'].includes(prop.property.title);
+    let facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(prop.property.title);
 
     const [openOrDialog, setOpenOrDialog] = useState(false);
 
@@ -54,11 +54,11 @@ function FacetViewProperty(prop: {
 
 
     return <li className={'fs-facets'}>
-        <span onClick={() => handleExpandClick(wikiContext.config.fsg2FacetValueLimit)}>[e]</span>
+        <span onClick={() => handleExpandClick(wikiContext.config.fs2gFacetValueLimit)}>[e]</span>
         <span onClick={() => prop.onPropertyClick(prop.property)}>{prop.property.displayTitle}</span>
         <span>({prop.propertyFacetCount?.count})</span>
         { facetsWithOr ? <span onClick={()=>{
-            handleExpandClick(wikiContext.config.fsg2FacetValueLimit);
+            handleExpandClick(wikiContext.config.fs2gFacetValueLimit);
             setOpenOrDialog(true);
         } }>[OR]</span> : ''}
         <FacetOrDialog open={openOrDialog}
@@ -97,7 +97,7 @@ function FacetView(prop: {
 
     const propertyFacetCounts = prop.searchStateDocument.documentResponse.propertyFacetCounts;
     let wikiContext = useContext(WikiContext);
-    let shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fsg2ShownFacets'], prop.searchStateDocument.query);
+    let shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fs2gShownFacets'], prop.searchStateDocument.query);
 
     const listItems = propertyFacetCounts
         .filter((facetCount) => shownFacets.includes(facetCount.property.title) || shownFacets.length === 0 )

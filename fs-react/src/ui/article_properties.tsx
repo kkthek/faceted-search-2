@@ -11,7 +11,7 @@ function ArticleProperties(prop: {
     client: Client
 }) {
     let wikiContext = useContext(WikiContext);
-    let showArticleProperties = wikiContext.config['fsg2ShowArticleProperties'];
+    let showArticleProperties = wikiContext.config['fs2gShowArticleProperties'];
     if (!showArticleProperties) return;
     let articlePropertiesDiv = useRef<any>(null);
     const [documentById, setDocumentById] = useState((): Document => null);

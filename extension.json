@@ -63,7 +63,7 @@
 			"class": "DIQA\\FacetedSearch2\\Endpoints\\FacetQueryEndpoint"
 		}
 	],
-	"config_prefix": "fsg2",
+	"config_prefix": "fs2g",
 	"config": {
 		"SolrCore": {
 			"value": "mw",
@@ -91,7 +91,7 @@
 		},
 		"AnnotationsInSnippet": {
 			"value": [],
-			"description": "Annotations can be shown in the snippet. This config maps category names to lists of property names. Articles from these categories show the values of the given properties in the snippets (if values exist). E.g. $fsg2AnnotationsInSnippet[ 'Dokument'=>['Abteilung','Dokumentart' ] ]"
+			"description": "Annotations can be shown in the snippet. This config maps category names to lists of property names. Articles from these categories show the values of the given properties in the snippets (if values exist). E.g. $fs2gAnnotationsInSnippet[ 'Dokument'=>['Abteilung','Dokumentart' ] ]"
 		},
 		"FacetValueLimit": {
 			"value": 20,
@@ -159,15 +159,15 @@
 		},
 		"NumericPropertyClusters": {
 			"value": [],
-			"description": "Configures grouping of numeric facets. Example: $fsg2NumericPropertyClusters['BaujahrMin'] = ['min'=>-9999, 'max'=>9999, 'lowerBound'=>1700, 'upperBound'=>2030, 'interval'=>10]; means that the given property gets a minimum cluster value of -9999, a maximum of 9999 and 33*10 year-clusters from 1700 to 2030. min and max is optional."
+			"description": "Configures grouping of numeric facets. Example: $fs2gNumericPropertyClusters['BaujahrMin'] = ['min'=>-9999, 'max'=>9999, 'lowerBound'=>1700, 'upperBound'=>2030, 'interval'=>10]; means that the given property gets a minimum cluster value of -9999, a maximum of 9999 and 33*10 year-clusters from 1700 to 2030. min and max is optional."
 		},
 		"DateTimePropertyClusters": {
 			"value": [],
-			"description": "Configures grouping of dateTime facets. Example: $fsg2DateTimePropertyClusters['Freigegeben am']=['min'=>'1990-01-01-00:00:00','max'=>'2030-12-31-23:59:59']"
+			"description": "Configures grouping of dateTime facets. Example: $fs2gDateTimePropertyClusters['Freigegeben am']=['min'=>'1990-01-01-00:00:00','max'=>'2030-12-31-23:59:59']"
 		},
 		"NamespaceConstraint": {
 			"value": [],
-			"description": "Specifies the visible namespace for groups. group => array of namespaces-IDs, e.g. $fsg2NamespaceConstraint = ['sysop' => [ 0, 10, 14 ] ]; sysop users may only see Main, Template and Category pages. 'user' is default group if a user is in no other group."
+			"description": "Specifies the visible namespace for groups. group => array of namespaces-IDs, e.g. $fs2gNamespaceConstraint = ['sysop' => [ 0, 10, 14 ] ]; sysop users may only see Main, Template and Category pages. 'user' is default group if a user is in no other group."
 		},
 		"ActivateBoosting": {
 			"value": false,
@@ -179,15 +179,15 @@
 		},
 		"CategoryBoosts": {
 			"value": [],
-			"description": "All pages belonging to the categories are boosted by the given value, e.g. $fsg2CategoryBoosts=['People'=>2.0]. Do not add category prefix before the page title."
+			"description": "All pages belonging to the categories are boosted by the given value, e.g. $fs2gCategoryBoosts=['People'=>2.0]. Do not add category prefix before the page title."
 		},
 		"NamespaceBoosts": {
 			"value": [],
-			"description": "All pages in the namespaces are boosted by the given value, e.g. $fsg2NamespaceBoosts=[0=>2.0]. Use the namespace numbers here, not their names."
+			"description": "All pages in the namespaces are boosted by the given value, e.g. $fs2gNamespaceBoosts=[0=>2.0]. Use the namespace numbers here, not their names."
 		},
 		"TemplateBoosts": {
 			"value": [],
-			"description": "All pages using one of the templates are boosted by the given value, e.g. $fsg2TemplateBoosts=['MyTemplate'=>2.0]"
+			"description": "All pages using one of the templates are boosted by the given value, e.g. $fs2gTemplateBoosts=['MyTemplate'=>2.0]"
 		},
 		"FacetsWithOR": {
 			"value": [],

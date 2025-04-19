@@ -6,7 +6,7 @@ import WikiLink from "./wiki_link";
 
 function CategoriesInTitle(prop: { doc: Document }) {
     let wikiContext = useContext(WikiContext);
-    let categoriesInTitle = wikiContext.config['fsg2CategoriesToShowInTitle'];
+    let categoriesInTitle = wikiContext.config['fs2gCategoriesToShowInTitle'];
     let categoryElements = categoriesInTitle
         .filter((c: string) => prop.doc.getCategoryFacetValue(c) != null)
         .map((c: string) => <span><WikiLink page={prop.doc.getCategoryFacetValue(c)}/></span>);

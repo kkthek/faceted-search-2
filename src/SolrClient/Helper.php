@@ -123,12 +123,12 @@ class Helper
 
     public static function getSOLRBaseUrl() {
 
-        global $fsg2SolrHost;
-        global $fsg2SolrPort;
-        global $fsg2SolrCore;
+        global $fs2gSolrHost;
+        global $fs2gSolrPort;
+        global $fs2gSolrCore;
 
         $protocol = "http";
-        return "$protocol://$fsg2SolrHost:$fsg2SolrPort/solr/$fsg2SolrCore";
+        return "$protocol://$fs2gSolrHost:$fs2gSolrPort/solr/$fs2gSolrCore";
     }
 
 }

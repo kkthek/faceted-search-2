@@ -7,7 +7,7 @@ import ValueSerializer from "../util/value_serializer";
 
 function Annotations(prop: {doc: Document}) {
     let wikiContext = useContext(WikiContext);
-    let annotationsInSnippets = wikiContext.config['fsg2AnnotationsInSnippet'];
+    let annotationsInSnippets = wikiContext.config['fs2gAnnotationsInSnippet'];
 
     for(let category in annotationsInSnippets) {
         let categoryFound = prop.doc.getCategoryFacetValue(category) != null;
