@@ -18,6 +18,17 @@ class ConfigUtils {
         if (u === null) return '';
         return u['pathname'].toLowerCase().split('.').pop();
     }
+
+    static getFileType(ext: string) {
+        switch (ext) {
+            case 'pdf': return "application/pdf";
+            case 'png': return "image/png";
+            case 'jpeg':
+            case 'jpg': return "image/jpeg";
+            default:
+                return 'application/text';
+        }
+    }
 }
 
 export default ConfigUtils;
