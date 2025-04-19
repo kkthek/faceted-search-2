@@ -41,6 +41,7 @@ function FacetOrDialog(prop: {
 
         values = prop.searchStateFacets?.getPropertyValueCount(prop.property).values.map((value) => {
             let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
+            selectedValue += "("+value.count+")";
             return <FormControlLabel key={selectedValue} control={<Checkbox/>}
                                      onChange={(event, checked) => {
                                          onChange(event, checked, value)
