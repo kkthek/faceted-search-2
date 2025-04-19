@@ -75,7 +75,7 @@ function setConfigForDevContext() {
 
     $fsg2ShowSolrScore = true;
 
-    $fsg2CreateNewPageLink = '?action=edit';
+    $fsg2CreateNewPageLink = false;//'?action=edit';
 
     $fsg2ShowFileInOverlay =  ['pdf'];
     if ($fsg2ShowFileInOverlay) {

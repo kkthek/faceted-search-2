@@ -133,7 +133,7 @@ class Setup
         $jsVars = [];
         $jsVars["fsg2FacetValueLimit"] = $fsgFacetValueLimit;
         $jsVars["fsg2AnnotationsInSnippet"] = $fsg2AnnotationsInSnippet;
-        $fsg2ExtraPropertiesToRequest = self::calculateProperties($fsg2AnnotationsInSnippet);
+        $fsg2ExtraPropertiesToRequest = self::getPropertiesForAnnotations($fsg2AnnotationsInSnippet);
         $jsVars["fsg2ExtraPropertiesToRequest"] = $fsg2ExtraPropertiesToRequest;
         $jsVars["fsg2CategoriesToShowInTitle"] = $fsg2CategoriesToShowInTitle;
         $jsVars["fsg2DefaultSortOrder"] = $fsg2DefaultSortOrder;
@@ -159,7 +159,7 @@ class Setup
         $jsVars["fsg2CreateNewPageLink"] = $fsg2CreateNewPageLink;
         $jsVars["fsg2ShowFileInOverlay"] = $fsg2ShowFileInOverlay;
         if ($fsg2ShowFileInOverlay !== false) {
-            $fsg2ExtraPropertiesToRequest[] = new Property("diqa_import_fullpath", Datatype::STRING);
+            $fsg2ExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
         }
 
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
@@ -186,7 +186,7 @@ class Setup
         }
     }
 
-    private static function calculateProperties($fsg2AnnotationsInSnippet)
+    private static function getPropertiesForAnnotations($fsg2AnnotationsInSnippet)
     {
         //FIXME: store in MW-object cache
         $result = [];
