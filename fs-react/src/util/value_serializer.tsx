@@ -10,6 +10,7 @@ class ValueSerializer {
     }
 
     static getValues(pfv: PropertyFacetValues): ReactElement {
+        if (!pfv) return <span/>
         let items: ReactElement[] = [];
 
         if (pfv.property.type === Datatype.wikipage) {

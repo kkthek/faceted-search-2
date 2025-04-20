@@ -110,6 +110,23 @@ class Tools {
         return Array(limit).fill(0).map((x,i)=>i);
     }
 
+    static arrayOf2Tuples<T>(arr: T[]): Tuple<T>[] {
+        let results: Tuple<T>[] = [];
+        for(let i = 0; i < arr.length; i+=2) {
+            results.push(new Tuple<T>(arr[i], arr[i+1] ? arr[i+1] : null));
+        }
+        return results;
+    }
 }
 
 export default Tools;
+
+export class Tuple<T> {
+    public readonly first: T;
+    public readonly second: T;
+
+    constructor(first: T, second: T) {
+        this.first = first;
+        this.second = second;
+    }
+}

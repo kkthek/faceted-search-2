@@ -8,6 +8,7 @@ import CategoriesInTitle from "./categories_in_title";
 import Annotations from "./annotations_snippets";
 import ArticleProperties from "./article_properties";
 import ConfigUtils from "../util/config_utils";
+import {ListItem, ListItemText} from "@mui/material";
 
 function SearchResult(prop: { doc: Document, client: Client}) {
     let wikiContext = useContext(WikiContext);
@@ -24,16 +25,19 @@ function SearchResult(prop: { doc: Document, client: Client}) {
     }
 
     let snippet = prop.doc.highlighting.length > 500 ? prop.doc.highlighting.substring(0, 500)+'...': prop.doc.highlighting;
-    return <li className={classNames.join(' ')}>
-        <span title={showSolrScore ? "score: " + prop.doc.score : ''}>
+    return <ListItem className={classNames.join(' ')}>
+
+        <ListItemText primary={<span title={showSolrScore ? "score: " + prop.doc.score : ''}>
             <WikiLink page={prop.doc}/>
             <PreviewPopup doc={prop.doc} />
-        </span>
-        <div dangerouslySetInnerHTML={{ __html: snippet }}></div>
-        <CategoriesInTitle doc={prop.doc}/>
-        <Annotations doc={prop.doc}/>
+
+        </span>} secondary={<div><div dangerouslySetInnerHTML={{ __html: snippet }}></div>
+            <CategoriesInTitle doc={prop.doc}/>
+            <Annotations doc={prop.doc}/>
+        </div>}></ListItemText>
+
         <ArticleProperties doc={prop.doc} client={prop.client}/>
-    </li>
-}
+    </ListItem>
+};
 
 export default SearchResult;

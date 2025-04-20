@@ -10,11 +10,11 @@
 }
 
 #fs-facets {
-    background: darkgrey;
+    #background: darkgrey;
 }
 
 #fs-results {
-    background: darkgrey;
+    #background: darkgrey;
 }
 
 div.fs-body {

@@ -36,20 +36,14 @@ function SortView(prop : {
             label="Sort order"
             onChange={handleChange}
         >
-            <MenuItem value={'score'}>{wikiContext.msg(getMsgKey(sorts.score))}</MenuItem>
-            <MenuItem value={'newest'}>{wikiContext.msg(getMsgKey(sorts.newest))}</MenuItem>
-            <MenuItem value={'oldest'}>{wikiContext.msg(getMsgKey(sorts.oldest))}</MenuItem>
-            <MenuItem value={'ascending'}>{wikiContext.msg(getMsgKey(sorts.ascending))}</MenuItem>
-            <MenuItem value={'descending'}>{wikiContext.msg(getMsgKey(sorts.descending))}</MenuItem>
-
-
+            <MenuItem value={'score'}>{wikiContext.msg('score_desc')}</MenuItem>
+            <MenuItem value={'newest'}>{wikiContext.msg('_MDAT_desc')}</MenuItem>
+            <MenuItem value={'oldest'}>{wikiContext.msg('_MDAT_asc')}</MenuItem>
+            <MenuItem value={'ascending'}>{wikiContext.msg('displaytitle_asc')}</MenuItem>
+            <MenuItem value={'descending'}>{wikiContext.msg('displaytitle_desc')}</MenuItem>
         </Select>
     </FormControl>
 
-}
-
-let getMsgKey = function(sort: Sort) {
-    return sort.property.title + "_" + (sort.order === Order.desc ? 'desc' : 'asc');
 }
 
 let getSortByName = function(name: string): Sort {
