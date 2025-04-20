@@ -1,5 +1,6 @@
 import React, {useContext, useState} from "react";
 import {WikiContext} from "../index";
+import {Button, TextField} from "@mui/material";
 
 function SearchBar(prop: {onClick: (text: string)=>void}) {
     let wikiContext = useContext(WikiContext);
@@ -8,11 +9,15 @@ function SearchBar(prop: {onClick: (text: string)=>void}) {
     const [text, setText] = useState('');
 
     return <div id={'fs-searchbar'}>
-        <input type={'text'} id={'fs-fulltext'}
-               onChange={(e)=> setText(e.target.value)}
-               placeholder={placeholderText}
+        <TextField id="outlined-basic"
+                   label={placeholderText}
+                   size={'small'}
+                   variant="outlined"
+                   onKeyDown={(e) => { if (e.key === 'Enter') prop.onClick(text) } }
+                   onChange={(e)=> setText(e.target.value)}
         />
-        <button id={'fs-fulltext-button'} onClick={() => prop.onClick(text)}>Search</button>
+
+        <Button variant="outlined" sx={{"margin-top": "2px"}} onClick={() => prop.onClick(text)}>Search</Button>
         <CreateArticleLink searchText={text}/>
     </div>;
 }
