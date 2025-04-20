@@ -1,4 +1,4 @@
-import {BaseQuery} from "../common/datatypes";
+import {BaseQuery, Document} from "../common/datatypes";
 
 class ConfigUtils {
 
@@ -29,6 +29,14 @@ class ConfigUtils {
                 return 'application/text';
         }
     }
+
+    static containsTrueFacetValue(doc: Document, property: string) {
+        let propertyFacetValues = doc.getPropertyFacetValues(property);
+        if (propertyFacetValues === null) return false;
+        let values = propertyFacetValues.values as boolean[];
+        return values.includes(true);
+    }
+
 }
 
 export default ConfigUtils;

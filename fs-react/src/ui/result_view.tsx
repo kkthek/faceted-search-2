@@ -1,56 +1,41 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {Document} from "../common/datatypes";
-import WikiLink from "./wiki_link";
-import Annotations from "./annotations_snippets";
-import CategoriesInTitle from "./categories_in_title";
-import ArticleProperties from "./article_properties";
 import {WikiContext} from "../index";
 import Client from "../common/client";
-import PreviewPopup from "./preview_popup";
+import {Pagination, Typography} from "@mui/material";
+import SearchResult from "./search_result";
 
-function containsTrueFacetValue(doc: Document, property: string) {
-    let propertyFacetValues = doc.getPropertyFacetValues(property);
-    if (propertyFacetValues === null) return false;
-    let values = propertyFacetValues.values as boolean[];
-    return values.includes(true);
-}
 
-function SearchResult(prop: { doc: Document, client: Client}) {
+function ResultView(prop: {
+    results: Document[],
+    numResults: number,
+    onPageIndexClick: (pageIndex: number, limit: number)=>void,
+    client: Client}) {
+
+    const [pageIndex, setPageIndex] = useState(1);
     let wikiContext = useContext(WikiContext);
-    let promotionProperty = wikiContext.config['fs2gPromotionProperty'];
-    let demotionProperty = wikiContext.config['fs2gDemotionProperty'];
-    let showSolrScore = wikiContext.config['fs2gShowSolrScore'];
 
-    let classNames = ['fs-search-result'];
-    if (promotionProperty !== false && containsTrueFacetValue(prop.doc, promotionProperty)) {
-        classNames.push('promoted');
-    }
-    if (demotionProperty !== false&& containsTrueFacetValue(prop.doc, demotionProperty)) {
-        classNames.push('demoted');
-    }
+    const NUMBER_RESULTS_ONE_PAGE = wikiContext.config['fs2gHitsPerPage'];
+    const totalNumberOfPages = Math.trunc(prop.numResults / NUMBER_RESULTS_ONE_PAGE) + 1;
 
-    let snippet = prop.doc.highlighting.length > 500 ? prop.doc.highlighting.substring(0, 500)+'...': prop.doc.highlighting;
-    return <li className={classNames.join(' ')}>
-        <span title={showSolrScore ? "score: " + prop.doc.score : ''}>
-            <WikiLink page={prop.doc}/>
-            <PreviewPopup doc={prop.doc} />
-        </span>
-        <div dangerouslySetInnerHTML={{ __html: snippet }}></div>
-        <CategoriesInTitle doc={prop.doc}/>
-        <Annotations doc={prop.doc}/>
-        <ArticleProperties doc={prop.doc} client={prop.client}/>
-    </li>
-}
-
-
-function ResultView(prop: {results: Document[], client: Client}) {
     const listItems = prop.results.map((doc,i) =>
         <SearchResult key={doc.id} doc={doc} client={prop.client} />
     );
+    let from = (pageIndex-1)*NUMBER_RESULTS_ONE_PAGE+1;
+    let to = from + NUMBER_RESULTS_ONE_PAGE - 1;
+
     return <div id={'fs-resultview'}>
+        <Typography>Results {from} to {to} of {prop.numResults}</Typography>
         <ul>
             {listItems}
         </ul>
+        <Pagination count={totalNumberOfPages}
+                    defaultPage={1}
+                    siblingCount={2}
+                    onChange={(e, pageIndex) => {
+                        prop.onPageIndexClick(pageIndex, NUMBER_RESULTS_ONE_PAGE);
+                        setPageIndex(pageIndex);
+                    }  }/>
     </div>;
 }
 

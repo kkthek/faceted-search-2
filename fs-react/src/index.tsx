@@ -17,7 +17,6 @@ import CategoryView from "./ui/category_view";
 import SelectedCategoriesView from "./ui/selected_categories_view";
 import NamespaceView from "./ui/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
-import PagingView from "./ui/paging_view";
 import SortView from "./ui/sort_view";
 import {Property, Sort, WikiContextInterface} from "./common/datatypes";
 import CategoryDropdown from "./ui/category_dropdown";
@@ -129,10 +128,11 @@ function App() {
                 </div>
             </div>
             <div id={'fs-results'}>
-                <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []} client={client}/>
-                <PagingView searchStateDocument={searchStateDocument}
+                <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}
+                            numResults={searchStateDocument ? searchStateDocument.documentResponse.numResults : 0}
                             onPageIndexClick={eventHandler.onPageIndexClick.bind(eventHandler)}
-                />
+                            client={client}/>
+
             </div>
         </div>
     </WikiContext.Provider>;
