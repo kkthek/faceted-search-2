@@ -22,7 +22,7 @@ function ResultView(prop: {
         <SearchResult key={doc.id} doc={doc} client={prop.client} />
     );
     let from = (pageIndex-1)*NUMBER_RESULTS_ONE_PAGE+1;
-    let to = from + NUMBER_RESULTS_ONE_PAGE - 1;
+    let to = Math.min(from + NUMBER_RESULTS_ONE_PAGE - 1, prop.numResults);
 
     return <div id={'fs-resultview'}>
         <Typography>Results {from} to {to} of {prop.numResults}</Typography>

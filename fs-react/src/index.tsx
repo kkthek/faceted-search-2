@@ -50,14 +50,12 @@ const currentFacetsQueryBuilder = new FacetQueryBuilder();
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
-    const [sortState, setSortState] = useState((): Sort => null);
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
         currentFacetsQueryBuilder,
         setSearchStateDocument,
         setSearchFacetState,
-        setSortState,
         client
     );
 
@@ -89,8 +87,7 @@ function App() {
                 <NamespaceView searchStateDocument={searchStateDocument}
                                onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
                 />
-                <SortView sort={sortState}
-                          onChange={eventHandler.onSortChange.bind(eventHandler)}/>
+                <SortView onChange={eventHandler.onSortChange.bind(eventHandler)}/>
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>

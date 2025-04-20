@@ -31,21 +31,17 @@ class EventHandler {
     private readonly client: Client;
     private readonly setSearchState: React.Dispatch<React.SetStateAction<SearchStateDocument>>;
     private readonly setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>;
-    private readonly setSortState: React.Dispatch<React.SetStateAction<Sort>>;
-
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
                 currentFacetsQueryBuilder: FacetQueryBuilder,
                 setDocumentState: React.Dispatch<React.SetStateAction<SearchStateDocument>>,
                 setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>,
-                setSortState: React.Dispatch<React.SetStateAction<Sort>>,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
         this.currentFacetsQueryBuilder = currentFacetsQueryBuilder;
         this.client = client;
         this.setSearchState = setDocumentState;
         this.setFacetState = setFacetState;
-        this.setSortState = setSortState;
     }
 
     onSearchClick(text: string) {
@@ -62,7 +58,6 @@ class EventHandler {
             .clearSorts()
             .withSort(sort);
 
-        this.setSortState(sort);
         this.updateDocuments();
     }
 
