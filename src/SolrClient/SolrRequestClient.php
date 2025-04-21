@@ -332,7 +332,7 @@ class SolrRequestClient implements FacetedSearchClient
                 $facetValues[] = $pAsValue;
             }
         }
-        return $facetValues;
+        return [join(' OR ', $facetValues)];
     }
 
     private static function serializeSorts(array $sorts): string

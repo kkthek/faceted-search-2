@@ -381,6 +381,13 @@ export class NamespaceFacetCount {
     displayTitle: string;
     @jsonMember(Number)
     count: number;
+
+
+    constructor(namespace: number, displayTitle: string, count: number) {
+        this.namespace = namespace;
+        this.displayTitle = displayTitle;
+        this.count = count;
+    }
 }
 
 
@@ -431,6 +438,9 @@ export class DocumentsResponse {
     @jsonArrayMember(NamespaceFacetCount)
     namespaceFacetCounts: NamespaceFacetCount[];
 
+    containsNamespace(ns: number): boolean {
+        return Tools.findFirst(this.namespaceFacetCounts, (e) => e.namespace.toString(), ns.toString()) != null;
+    }
 }
 
 @jsonObject

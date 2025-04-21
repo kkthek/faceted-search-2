@@ -61,12 +61,8 @@ class DocumentQueryBuilder {
         return this;
     }
 
-    toggleNamespaceFacet(namespace: number): DocumentQueryBuilder {
-        if (this.query.namespaceFacets.indexOf(namespace) > -1) {
-            Tools.removeFirst(this.query.namespaceFacets, (e) => e.toString(), namespace.toString());
-        } else {
-            this.query.namespaceFacets.push(namespace);
-        }
+    toggleNamespacesFacet(namespaces: number[]): DocumentQueryBuilder {
+        this.query.namespaceFacets = namespaces;
         return this;
     }
 

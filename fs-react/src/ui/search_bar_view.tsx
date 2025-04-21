@@ -13,11 +13,12 @@ function SearchBar(prop: {onClick: (text: string)=>void}) {
                    label={placeholderText}
                    size={'small'}
                    variant="outlined"
+                   sx={{"marginLeft": "10px", "width": "75%"}}
                    onKeyDown={(e) => { if (e.key === 'Enter') prop.onClick(text) } }
                    onChange={(e)=> setText(e.target.value)}
         />
 
-        <Button variant="outlined" sx={{"margin-top": "2px"}} onClick={() => prop.onClick(text)}>Search</Button>
+        <Button size={'medium'} variant="outlined" sx={{"marginTop": "2px", "marginLeft": "10px"}} onClick={() => prop.onClick(text)}>Search</Button>
         <CreateArticleLink searchText={text}/>
     </div>;
 }

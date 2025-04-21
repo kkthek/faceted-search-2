@@ -33,7 +33,7 @@ function Annotations(prop: {doc: Document}) {
         return <Table size="small" aria-label="simple table"><TableBody>{rows}</TableBody></Table>
 
     }
-    return <div></div>;
+
 }
 
 export default Annotations;

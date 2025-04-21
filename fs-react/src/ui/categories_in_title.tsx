@@ -11,7 +11,7 @@ function CategoriesInTitle(prop: { doc: Document }) {
         .filter((c: string) => prop.doc.getCategoryFacetValue(c) != null)
         .map((c: string) => <span><WikiLink page={prop.doc.getCategoryFacetValue(c)}/></span>);
 
-    return <div>{ValueSerializer.join(categoryElements)}</div>;
+    return <div>is in category: {ValueSerializer.join(categoryElements)}</div>;
 }
 
 export default CategoriesInTitle;

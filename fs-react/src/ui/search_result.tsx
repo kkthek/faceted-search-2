@@ -25,19 +25,20 @@ function SearchResult(prop: { doc: Document, client: Client}) {
     }
 
     let snippet = prop.doc.highlighting.length > 500 ? prop.doc.highlighting.substring(0, 500)+'...': prop.doc.highlighting;
-    return <ListItem className={classNames.join(' ')}>
-
-        <ListItemText primary={<span title={showSolrScore ? "score: " + prop.doc.score : ''}>
+    return <div className={classNames.join(' ')}>
+        <div title={showSolrScore ? "score: " + prop.doc.score : ''}>
             <WikiLink page={prop.doc}/>
             <PreviewPopup doc={prop.doc} />
 
-        </span>} secondary={<div><div dangerouslySetInnerHTML={{ __html: snippet }}></div>
+        </div>
+        <div><span dangerouslySetInnerHTML={{ __html: snippet }}></span>
             <CategoriesInTitle doc={prop.doc}/>
             <Annotations doc={prop.doc}/>
-        </div>}></ListItemText>
+            <ArticleProperties doc={prop.doc} client={prop.client}/>
+        </div>
 
-        <ArticleProperties doc={prop.doc} client={prop.client}/>
-    </ListItem>
+
+    </div>
 };
 
 export default SearchResult;

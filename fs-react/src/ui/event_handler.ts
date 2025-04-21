@@ -138,9 +138,9 @@ class EventHandler {
         this.updateFacets();
     }
 
-    onNamespaceClick(namespace: number) {
+    onNamespaceClick(namespaces: number[]) {
         this.currentDocumentsQueryBuilder
-            .toggleNamespaceFacet(namespace)
+            .toggleNamespacesFacet(namespaces)
             .withOffset(0);
         this.updateDocuments();
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);

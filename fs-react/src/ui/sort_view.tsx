@@ -34,6 +34,8 @@ function SortView(prop : {
             id="sort-order-select"
             value={sort}
             label="Sort order"
+            size={'small'}
+            sx={{"marginLeft": "10px"}}
             onChange={handleChange}
         >
             <MenuItem value={'score'}>{wikiContext.msg('score_desc')}</MenuItem>

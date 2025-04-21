@@ -5,6 +5,7 @@ import WikiLink from "./wiki_link";
 import ValueSerializer from "../util/value_serializer";
 import {SearchStateDocument} from "./event_handler";
 import Client from "../common/client";
+import {Button, Table, TableBody, TableCell, TableRow} from "@mui/material";
 
 function ArticleProperties(prop: {
     doc: Document,
@@ -32,16 +33,20 @@ function ArticleProperties(prop: {
     }
 
     return <div>
-        <span onClick={() => handleExpandClick()}>Show properties...</span>
-        <div ref={articlePropertiesDiv} hidden={true}><table><tbody>{rows}</tbody></table></div>
+        <Button onClick={() => handleExpandClick()} variant="text">Show properties...</Button>
+        <div ref={articlePropertiesDiv} hidden={true}>
+            <Table size="small" aria-label="simple table">
+                <TableBody>{rows}</TableBody>
+            </Table>
+        </div>
     </div>;
 }
 
 function Row(prop: {pfv: PropertyFacetValues}) {
-    return <tr>
-        <td><WikiLink page={prop.pfv.property}/></td>
-        <td>{ValueSerializer.getValues(prop.pfv)}</td>
-    </tr>
+    return <TableRow>
+        <TableCell><WikiLink page={prop.pfv.property}/></TableCell>
+        <TableCell>{ValueSerializer.getValues(prop.pfv)}</TableCell>
+    </TableRow>
 }
 
 export default ArticleProperties;

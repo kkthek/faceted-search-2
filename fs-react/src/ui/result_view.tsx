@@ -2,7 +2,7 @@ import React, {useContext, useState} from "react";
 import {Document} from "../common/datatypes";
 import {WikiContext} from "../index";
 import Client from "../common/client";
-import {Divider, List, Pagination, Typography} from "@mui/material";
+import {Divider, List, Pagination, Stack, Typography} from "@mui/material";
 import SearchResult from "./search_result";
 
 
@@ -27,9 +27,9 @@ function ResultView(prop: {
     return <div id={'fs-resultview'}>
         <Typography>Results {from} to {to} of {prop.numResults}</Typography>
         <Divider/>
-        <List>
+        <Stack>
             {listItems}
-        </List>
+        </Stack>
         <Divider/>
         <Pagination count={totalNumberOfPages}
                     defaultPage={1}

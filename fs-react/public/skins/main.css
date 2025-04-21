@@ -6,7 +6,11 @@
     height: 80px;
     background: lightgrey;
     align-items: center;
-    justify-content: center;
+
+}
+
+#fs-searchbar {
+    width: 50%;
 }
 
 #fs-facets {

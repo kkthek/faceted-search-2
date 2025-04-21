@@ -83,11 +83,11 @@ function App() {
     return <WikiContext.Provider value={wikiContext}>
         <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
+                <SortView onChange={eventHandler.onSortChange.bind(eventHandler)}/>
                 <SearchBar onClick={eventHandler.onSearchClick.bind(eventHandler)}/>
                 <NamespaceView searchStateDocument={searchStateDocument}
                                onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
                 />
-                <SortView onChange={eventHandler.onSortChange.bind(eventHandler)}/>
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
