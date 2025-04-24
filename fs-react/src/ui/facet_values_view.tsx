@@ -1,66 +1,45 @@
-import {BaseQuery, Property, PropertyFacet, PropertyValueCount} from "../common/datatypes";
+import {BaseQuery, Property, PropertyFacet, PropertyValueCount, ValueCount} from "../common/datatypes";
 import React, {useContext} from "react";
 import DisplayTools from "../util/display_tools";
 import FacetFilter from "./facet_filter";
 import {WikiContext} from "../index";
+import {TreeItem} from "@mui/x-tree-view";
 
 function FacetValues(prop: {
     query: BaseQuery,
     selectedPropertyFacet: PropertyFacet,
-    propertyValueCount: PropertyValueCount|null,
-    onValueClick: (p: PropertyFacet)=>void,
+    property: Property
+    propertyValueCount: ValueCount | null,
+    onValueClick: (p: PropertyFacet) => void,
     removable: boolean
-    onRemoveClick: (p: PropertyFacet)=>void,
+    onRemoveClick: (p: PropertyFacet) => void,
     onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
-    onExpandClick: (p: Property, limit: number)=>void
+    onExpandClick: (p: Property, limit: number) => void
 }) {
 
-    if (prop.propertyValueCount === null) {
+    if (prop.propertyValueCount === null || !prop.property) {
         return;
     }
 
-    const listItems = prop.propertyValueCount.values.map((v, i) => {
-        let value = DisplayTools.serializeFacetValue(prop.propertyValueCount.property, v);
+    let value = DisplayTools.serializeFacetValue(prop.property, prop.propertyValueCount);
 
-        let propertyFacet = prop.selectedPropertyFacet;
-        if (!propertyFacet) {
-            let property = prop.propertyValueCount.property;
-            propertyFacet = new PropertyFacet(
-                property.title,
-                property.type,
-                v.value, v.mwTitle, v.range);
-        }
-        return <li key={value.toString()+v.count}>
-            <span onClick={() => prop.onValueClick(propertyFacet)}>{value}</span>
-            :
-            <span>{v.count}</span>
-            {prop.removable ? <span className={'fs-clickable'}
-                                    onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
-        </li>
-    });
-
-    let wikiContext = useContext(WikiContext);
-    let property = prop.propertyValueCount.property;
-    let showAll = wikiContext.config.fs2gFacetValueLimit === prop.propertyValueCount.values.length
-        && property.isFilterProperty();
-
-    if (showAll) {
-        listItems.push(<li key={'showall'}>
-            <a onClick={() => prop.onExpandClick(property, null)}>show all...</a></li>);
+    let propertyFacet = prop.selectedPropertyFacet;
+    if (!propertyFacet) {
+        let property = prop.property;
+        propertyFacet = new PropertyFacet(
+            property.title,
+            property.type,
+            prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
     }
 
-    let facetFilter = (!prop.removable ?
-        <FacetFilter onFilterContainsClick={prop.onFacetValueContainsClick}
-                     numberOfValues={prop.propertyValueCount.values.length}
-                     property={prop.propertyValueCount.property}/>
-        : <div/>);
+    return <TreeItem itemId={value.toString() + prop.propertyValueCount.count}
+                     label={value + " : " + prop.propertyValueCount.count}
+                     onClick={() => prop.onValueClick(propertyFacet)}>
+        {prop.removable ? <span className={'fs-clickable'}
+                                onClick={() => prop.onRemoveClick(propertyFacet)}>[X]</span> : ''}
+    </TreeItem>
 
-    return <div>
-        {facetFilter}
-        <ul className={'fs-facets'}>
-            {listItems}
-        </ul>
-    </div>
+
 };
 
 export default FacetValues;
