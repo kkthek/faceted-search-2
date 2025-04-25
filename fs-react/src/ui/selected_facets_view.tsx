@@ -3,6 +3,9 @@ import {Property, PropertyFacet, PropertyValueCount,} from "../common/datatypes"
 import FacetValues from "./facet_values_view";
 import {SearchStateFacet} from "./event_handler";
 import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
+import CustomTreeItem from "../custom_ui/custom_tree_item";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SelectedFacetValues from "./selected_facet_values_view";
 
 function SelectedFacets(prop: {
     propertyValueCount: PropertyValueCount
@@ -20,7 +23,7 @@ function SelectedFacets(prop: {
 
     const itemlist = prop.propertyValueCount.values.map((v) => {
 
-        return <FacetValues key={prop.propertyValueCount.property.title}
+        return <SelectedFacetValues key={prop.propertyValueCount.property.title}
                      query={prop.searchStateFacet.query}
                      selectedPropertyFacet={propertyFacet}
                      propertyValueCount={v}
@@ -32,10 +35,11 @@ function SelectedFacets(prop: {
                      onFacetValueContainsClick={prop.onFacetValueContainsClick}/>
     });
 
-    return <TreeItem itemId={prop.propertyValueCount.property.title}
+    return <CustomTreeItem itemId={prop.propertyValueCount.property.title}
                      label={prop.propertyValueCount.property.displayTitle}
-
-            >{itemlist}</TreeItem>
+                     action={() => prop.onRemoveClick(propertyFacet)}
+                     actionIcon={!hasValue ? DeleteIcon : null}
+            >{itemlist}</CustomTreeItem>
 }
 
 function SelectedFacetsView(prop: {

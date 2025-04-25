@@ -105,6 +105,7 @@ class EventHandler {
     }
 
     onRemovePropertyFacet(p: PropertyFacet) {
+
         let property = new Property(p.property, p.type);
         this.currentDocumentsQueryBuilder
             .withOffset(0)

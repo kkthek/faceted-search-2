@@ -36,9 +36,11 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
+    "@mui/styled-engine-sc": "^7.0.2",
     "@mui/x-tree-view": "^8.0.0-beta.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "styled-components": "^6.1.17",
     "tsx": "^4.10.5",
     "typedjson": "^1.8.0"
   }

@@ -20,6 +20,9 @@ module.exports = {
   ],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    alias: {
+        '@mui/styled-engine': '@mui/styled-engine-sc'
+    }
   },
   devServer: {
     port: 9000,

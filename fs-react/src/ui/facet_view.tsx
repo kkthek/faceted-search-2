@@ -14,6 +14,8 @@ import {WikiContext} from "../index";
 import ConfigUtils from "../util/config_utils";
 import FacetOrDialog from "./facet_or_dialog";
 import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
+import CustomTreeItem from "../custom_ui/custom_tree_item";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 
 function FacetViewProperty(prop: {
@@ -56,7 +58,6 @@ function FacetViewProperty(prop: {
     const values = propertyValueCount?.values.map((v, i) => {
         return <FacetValues propertyValueCount={v}
                             property={prop.property}
-                     selectedPropertyFacet={null}
                      onValueClick={prop.onValueClick}
                      removable={false}
                      query={prop.query}
@@ -67,10 +68,9 @@ function FacetViewProperty(prop: {
     });
 
 
-    return <TreeItem itemId={prop.property.title}
-                     //onClick={() => prop.onPropertyClick(prop.property)}
-
+    return <CustomTreeItem itemId={prop.property.title}
                      label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
+                           itemAction={() => prop.onPropertyClick(prop.property)}
                      className={'fs-facets'}>
 
         { facetsWithOr ? <span onClick={()=>{
@@ -88,7 +88,7 @@ function FacetViewProperty(prop: {
 
 
 
-    </TreeItem>
+    </CustomTreeItem>
 }
 
 function FacetView(prop: {

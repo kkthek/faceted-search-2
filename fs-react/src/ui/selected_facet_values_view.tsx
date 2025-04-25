@@ -7,8 +7,9 @@ import {TreeItem} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-function FacetValues(prop: {
+function SelectedFacetValues(prop: {
     query: BaseQuery,
+    selectedPropertyFacet: PropertyFacet,
     property: Property
     propertyValueCount: ValueCount | null,
     onValueClick: (p: PropertyFacet) => void,
@@ -41,4 +42,4 @@ function FacetValues(prop: {
 
 };
 
-export default FacetValues;
+export default SelectedFacetValues;

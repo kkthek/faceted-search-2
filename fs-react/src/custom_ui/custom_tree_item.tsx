@@ -1,27 +1,17 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import MailIcon from '@mui/icons-material/Mail';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Label from '@mui/icons-material/Label';
-import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import InfoIcon from '@mui/icons-material/Info';
-import ForumIcon from '@mui/icons-material/Forum';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import { SvgIconProps } from '@mui/material/SvgIcon';
-import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
+import {SvgIconProps} from '@mui/material/SvgIcon';
 import {
     TreeItemContent,
+    TreeItemGroupTransition,
     TreeItemIconContainer,
     TreeItemRoot,
-    TreeItemGroupTransition,
 } from '@mui/x-tree-view/TreeItem';
-import { useTreeItem, UseTreeItemParameters } from '@mui/x-tree-view/useTreeItem';
-import { TreeItemProvider } from '@mui/x-tree-view/TreeItemProvider';
-import { TreeItemIcon } from '@mui/x-tree-view/TreeItemIcon';
+import {useTreeItem, UseTreeItemParameters} from '@mui/x-tree-view/useTreeItem';
+import {TreeItemProvider} from '@mui/x-tree-view/TreeItemProvider';
+import {TreeItemIcon} from '@mui/x-tree-view/TreeItemIcon';
 
 declare module 'react' {
     interface CSSProperties {
@@ -37,8 +27,11 @@ interface StyledTreeItemProps
     bgColorForDarkMode?: string;
     color?: string;
     colorForDarkMode?: string;
-    labelIcon: React.ElementType<SvgIconProps>;
+    labelIcon?: React.ElementType<SvgIconProps>;
+    actionIcon?: React.ElementType<SvgIconProps>;
     labelInfo?: string;
+    action?: () => void;
+    itemAction?: () => void;
 }
 
 type CustomTreeItemRootOwnerState = Pick<
@@ -51,7 +44,7 @@ const CustomTreeItemRoot = styled(TreeItemRoot)<{
 }>(({ theme, ownerState }) => ({
     '--tree-view-color': ownerState.color,
     '--tree-view-bg-color': ownerState.bgColor,
-    color: (theme.vars || theme).palette.text.secondary,
+    color: ((theme as any).vars || theme).palette.text.secondary,
     ...theme.applyStyles('dark', {
         '--tree-view-color': ownerState.colorForDarkMode,
         '--tree-view-bg-color': ownerState.bgColorForDarkMode,
@@ -60,7 +53,7 @@ const CustomTreeItemRoot = styled(TreeItemRoot)<{
 
 const CustomTreeItemContent = styled(TreeItemContent)(({ theme }) => ({
     marginBottom: theme.spacing(0.3),
-    color: (theme.vars || theme).palette.text.secondary,
+    color: ((theme as any).vars || theme).palette.text.secondary,
     borderRadius: theme.spacing(2),
     paddingRight: theme.spacing(1),
     paddingLeft: `calc(${theme.spacing(1)} + var(--TreeView-itemChildrenIndentation) * var(--TreeView-itemDepth))`,
@@ -69,10 +62,10 @@ const CustomTreeItemContent = styled(TreeItemContent)(({ theme }) => ({
         fontWeight: theme.typography.fontWeightRegular,
     },
     '&:hover': {
-        backgroundColor: (theme.vars || theme).palette.action.hover,
+        backgroundColor: ((theme as any).vars || theme).palette.action.hover,
     },
     '&[data-focused], &[data-selected], &[data-selected][data-focused]': {
-        backgroundColor: `var(--tree-view-bg-color, ${(theme.vars || theme).palette.action.selected})`,
+        backgroundColor: `var(--tree-view-bg-color, ${((theme as any).vars || theme).palette.action.selected})`,
         color: 'var(--tree-view-color)',
     },
 }));
@@ -94,6 +87,9 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
         bgColor,
         color,
         labelIcon: LabelIcon,
+        actionIcon: ActionIcon,
+        action,
+        itemAction,
         labelInfo,
         colorForDarkMode,
         bgColorForDarkMode,
@@ -136,16 +132,16 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
                             pr: 0,
                         }}
                     >
-                        <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} />
-                        <Typography
+                        {LabelIcon ? <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} /> : ''}
+                        <Typography onClick={itemAction}
                             {...getLabelProps({
                                 variant: 'body2',
                                 sx: { display: 'flex', fontWeight: 'inherit', flexGrow: 1 },
                             })}
                         />
-                        <Typography variant="caption" color="inherit">
-                            {labelInfo}
-                        </Typography>
+                        <span onClick={action}>
+                        {ActionIcon ? <Box component={ActionIcon} color="inherit" sx={{ mr: 1 }} /> : ''}
+                            </span>
                     </Box>
                 </CustomTreeItemContent>
                 {children && <TreeItemGroupTransition {...getGroupTransitionProps()} />}
@@ -153,5 +149,7 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
         </TreeItemProvider>
     );
 });
+
+export default CustomTreeItem;
 
 
