@@ -2,6 +2,8 @@ import {CategoryFacetCount} from "../common/datatypes";
 import React, {useContext} from "react";
 import {SearchStateDocument} from "./event_handler";
 import {WikiContext} from "../index";
+import CustomTreeItem from "../custom_ui/custom_tree_item";
+import {SimpleTreeView} from "@mui/x-tree-view";
 
 function FacetViewCategory( prop: {
     title: string,
@@ -13,12 +15,14 @@ function FacetViewCategory( prop: {
     if (isSelectedFacet) {
         return;
     }
-    return <li key={prop.categoryFacetCount.category} className={'fs-facets'}>
+    let title = prop.categoryFacetCount.displayTitle != '' ? prop.categoryFacetCount.displayTitle : prop.title;
+    let count = prop.categoryFacetCount?.count;
+    return <CustomTreeItem itemId={prop.categoryFacetCount.category}
+                           label={title + " (" + count + ")"}
+                           onClick={() => prop.onCategoryClick(prop.title)}
+                     className={'fs-facets'}>
 
-        <span onClick={() => prop.onCategoryClick(prop.title)}>{prop.categoryFacetCount.displayTitle != '' ?
-            prop.categoryFacetCount.displayTitle : prop.title}</span>
-        <span>({prop.categoryFacetCount?.count})</span>
-    </li>
+    </CustomTreeItem>
 }
 function CategoryView( prop: {
     searchStateDocument: SearchStateDocument,
@@ -46,9 +50,9 @@ function CategoryView( prop: {
     );
     return <div id={'fs-categoryview'}>
         <h3>Available categories</h3>
-        <ul>
+        <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
             {listItems}
-        </ul>
+        </SimpleTreeView>
     </div>;
 }
 

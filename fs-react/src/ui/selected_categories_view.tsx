@@ -1,6 +1,9 @@
 import React, {useContext} from "react";
 import {SearchStateDocument} from "./event_handler";
 import {WikiContext} from "../index";
+import {SimpleTreeView} from "@mui/x-tree-view";
+import CustomTreeItem from "../custom_ui/custom_tree_item";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 
 function SelectedCategoriesView(prop: {
@@ -14,20 +17,18 @@ function SelectedCategoriesView(prop: {
     const categories = prop.searchStateDocument.documentResponse.categoryFacetCounts.map((v, i) => {
             let query = prop.searchStateDocument.query;
             let isSelectedFacet = query.isCategoryFacetSelected(v.category);
-            return (isSelectedFacet ?
-                <li key={v.category}>
-                    <span>{v.category}</span>
-                    <span>({v.count})</span>
-                    <span className={'fs-clickable'}
-                          onClick={() => prop.onCategoryRemove(v.category)}>[X]</span>
-                </li> : '');
+            if (!isSelectedFacet) return;
+            return  <CustomTreeItem itemId={v.category}
+                                    actionIcon={DeleteIcon}
+                                    label={v.category}
+                                    action={() => prop.onCategoryRemove(v.category)} />
         }
     );
 
     return <div id={'fs-selected-categoriesview'}>
-        <ul>
+        <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
             {categories}
-        </ul>
+        </SimpleTreeView>
     </div>;
 }
 
