@@ -17,6 +17,7 @@ import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ChecklistIcon from '@mui/icons-material/Checklist';
+import FacetFilter from "./facet_filter";
 
 function FacetViewProperty(prop: {
     query: BaseQuery,
@@ -73,7 +74,9 @@ function FacetViewProperty(prop: {
                                prop.onOrDialogClick(prop.property);
                            } }
                      className={'fs-facets'}>
-            <p></p>
+        <FacetFilter onFilterContainsClick={prop.onFacetValueContainsClick}
+                     numberOfValues={propertyValueCount?.values.length}
+                     property={propertyValueCount?.property}/>
 
         {values}
 
@@ -160,7 +163,7 @@ function FacetView(prop: {
 
 
     return <div id={'fs-facetview'}>
-        <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection
+        <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable
                         onItemExpansionToggle={handleItemExpansionToggle}
                         onItemClick={handleItemClick}
         >

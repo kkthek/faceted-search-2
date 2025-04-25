@@ -1,6 +1,8 @@
-import React, {useContext, useState} from "react";
+import React, {KeyboardEvent, useContext, useState} from "react";
 import {Property} from "../common/datatypes";
 import {WikiContext} from "../index";
+import {Button, TextField} from "@mui/material";
+import CustomTreeItem from "../custom_ui/custom_tree_item";
 
 function FacetFilter(prop : {
     property: Property
@@ -8,24 +10,35 @@ function FacetFilter(prop : {
     onFilterContainsClick: (text: string, limit: number, property: Property) => void
 }) {
 
+    if (!prop.numberOfValues || !prop.property) return;
     let wikiContext = useContext(WikiContext);
-
     let needsNoFilter = prop.numberOfValues < wikiContext.config.fs2gFacetValueLimit;
     let unsuitableProperty = prop.property.isRangeProperty() || prop.property.isBooleanProperty();
     const [text, setText] = useState((): string => '');
     const [unchanged, setUnchanged] = useState((): boolean => true);
 
     if (unsuitableProperty || (unchanged && needsNoFilter)) {
-        return <div/>
+        return;
     }
 
-    return <div>
-       <input type={'text'} value={text} size={30} onChange={(e)=> {
-           setText(e.target.value);
-           setUnchanged(false);
-       }}/>
-        <button onClick={() => prop.onFilterContainsClick(text, wikiContext.config.fs2gFacetValueLimit, prop.property)}>Filter</button>
-    </div>
+    const onChange = function(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
+        setText(e.target.value);
+        setUnchanged(false);
+    }
+
+    const onKeyDown = function(e: KeyboardEvent<HTMLDivElement>) {
+        if (e.key === "Enter") {
+            prop.onFilterContainsClick(text, wikiContext.config.fs2gFacetValueLimit, prop.property);
+        }
+        e.stopPropagation();
+    }
+    return <input type={'text'}
+                  style={{marginLeft: '50px'}}
+                  placeholder={'Filter...'}
+                  value={text}
+                  onChange={onChange}
+                  onKeyDown={onKeyDown}/>;
+
 }
 
 
