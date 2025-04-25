@@ -113,8 +113,7 @@ class EventHandler {
 
         if (!this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property)) {
             this.currentFacetsQueryBuilder
-            .clearFacetsQueriesForProperty(property)
-            .clearPropertyValueConstraintForProperty(property);
+            .clearFacetsQueriesForProperty(property);
         }
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
 

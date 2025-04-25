@@ -18,6 +18,7 @@ function FacetOrDialog(prop: {
         property: Property,
         onValuesClick: (p: PropertyFacet[])=>void
 }) {
+    if (!prop.property) return;
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
 
@@ -70,7 +71,10 @@ function FacetOrDialog(prop: {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={prop.handleClose}>Cancel</Button>
-                    <Button onClick={() => prop.onValuesClick(selectedFacets)} autoFocus>Ok</Button>
+                    <Button onClick={() => {
+                        prop.onValuesClick(selectedFacets);
+                        prop.handleClose();
+                    }} autoFocus>Ok</Button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>

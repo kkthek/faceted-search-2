@@ -16,7 +16,7 @@ import FacetOrDialog from "./facet_or_dialog";
 import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import ChecklistIcon from '@mui/icons-material/Checklist';
 
 function FacetViewProperty(prop: {
     query: BaseQuery,
@@ -30,7 +30,8 @@ function FacetViewProperty(prop: {
     onValueClick: (p: PropertyFacet)=>void,
     onValuesClick: (p: PropertyFacet[])=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
-    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
+    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void,
+    onOrDialogClick: (property: Property) => void
 }) {
 
     let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
@@ -40,12 +41,6 @@ function FacetViewProperty(prop: {
 
     let wikiContext = useContext(WikiContext);
     let facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(prop.property.title);
-
-    const [openOrDialog, setOpenOrDialog] = useState(false);
-
-    const handleCloseFacetOrDialog = () => {
-        setOpenOrDialog(false);
-    };
 
     function handleExpandClick(limit: number) {
         if (propertyValueCount === null) {
@@ -69,21 +64,17 @@ function FacetViewProperty(prop: {
 
 
     return <CustomTreeItem itemId={prop.property.title}
-                     label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
+                           label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
                            itemAction={() => prop.onPropertyClick(prop.property)}
-                     className={'fs-facets'}>
+                           actionIcon={facetsWithOr ? ChecklistIcon : null}
+                           action={() => {
 
-        { facetsWithOr ? <span onClick={()=>{
-            handleExpandClick(wikiContext.config.fs2gFacetValueLimit);
-            setOpenOrDialog(true);
-        } }>[OR]</span> : ''}
-        <FacetOrDialog open={openOrDialog}
-                       handleClose={handleCloseFacetOrDialog}
-                       searchStateFacets={prop.searchStateFacets}
-                       selectedFacets={prop.selectedFacets}
-                       property={prop.property}
-                       onValuesClick={prop.onValuesClick}
-        />
+                               handleExpandClick(wikiContext.config.fs2gFacetValueLimit);
+                               prop.onOrDialogClick(prop.property);
+                           } }
+                     className={'fs-facets'}>
+            <p></p>
+
         {values}
 
 
@@ -111,6 +102,18 @@ function FacetView(prop: {
     propertyFacetCounts.forEach((pfc) => {
         propertyMap[pfc.property.title] = pfc.property;
     });
+
+    const [openOrDialog, setOpenOrDialog] = useState({ open: false, property: null});
+
+    const handleCloseFacetOrDialog = () => {
+        setOpenOrDialog({ open: false, property: null});
+    };
+
+
+    const onOrDialogClick = function(p: Property) {
+        setOpenOrDialog({ open: true, property: p});
+    }
+
     const listItems = propertyFacetCounts
         .filter((facetCount) => shownFacets.includes(facetCount.property.title) || shownFacets.length === 0 )
         .map((facetCount,i) => {
@@ -128,6 +131,7 @@ function FacetView(prop: {
                            propertyFacetCount={facetCount}
                            onRemoveClick={prop.onRemoveClick}
                            onFacetValueContainsClick={prop.onFacetValueContainsClick}
+                           onOrDialogClick={onOrDialogClick}
         />
     }
     );
@@ -151,6 +155,10 @@ function FacetView(prop: {
         prop.onPropertyClick(propertyMap[itemId])
     };
 
+
+
+
+
     return <div id={'fs-facetview'}>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection
                         onItemExpansionToggle={handleItemExpansionToggle}
@@ -158,6 +166,13 @@ function FacetView(prop: {
         >
             {listItems}
         </SimpleTreeView>
+        <FacetOrDialog open={openOrDialog.open}
+                       handleClose={handleCloseFacetOrDialog}
+                       searchStateFacets={prop.searchStateFacets?.facetsResponse}
+                       selectedFacets={prop.searchStateDocument.query.propertyFacets}
+                       property={openOrDialog.property}
+                       onValuesClick={prop.onValuesClick}
+        />
     </div>;
 }
 
