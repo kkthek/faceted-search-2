@@ -1,5 +1,6 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {WikiContext} from "../index";
+import {InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 
 class DropdownEntry {
 
@@ -23,14 +24,31 @@ function CategoryDropdown(prop: {
 
     let entries = [];
     for(let category in categoryFilter) {
-        entries.push(new DropdownEntry(category, categoryFilter[category]));
+        let id = category === '' ? '-no-filter-' : category;
+        entries.push(new DropdownEntry(id, categoryFilter[category]));
     }
-    let categoryOptions = entries.map((entry) => <option key={entry.id} value={entry.id}>{entry.label}</option>);
+
+    const [category, setCategory] = useState('-no-filter-');
+
+    const handleChange = (event: SelectChangeEvent) => {
+        prop.onCategoryClick(event.target.value === '-no-filter-' ? '' : event.target.value);
+        setCategory(event.target.value);
+    };
+
+    let categoryOptions = entries.map((entry) => <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>);
     return <div>
         <h3>Available categories</h3>
-        <select onChange={(option) => prop.onCategoryClick(option.target.value)}>
-        {categoryOptions}
-    </select></div>
+
+        <Select
+            labelId="sort-order-select-label"
+            id="sort-order-select"
+            value={category}
+            size={'small'}
+            sx={{"marginLeft": "10px"}}
+            onChange={handleChange}
+
+        >{categoryOptions}</Select>
+    </div>
 }
 
 export default CategoryDropdown;
