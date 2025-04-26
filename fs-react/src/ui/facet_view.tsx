@@ -52,8 +52,9 @@ function FacetViewProperty(prop: {
     }
 
     const values = propertyValueCount?.values.map((v, i) => {
-        return <FacetValues propertyValueCount={v}
-                            property={prop.property}
+        return <FacetValues key={prop.property.title + i}
+                     propertyValueCount={v}
+                     property={prop.property}
                      onValueClick={prop.onValueClick}
                      removable={false}
                      query={prop.query}

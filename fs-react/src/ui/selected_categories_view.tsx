@@ -18,7 +18,8 @@ function SelectedCategoriesView(prop: {
             let query = prop.searchStateDocument.query;
             let isSelectedFacet = query.isCategoryFacetSelected(v.category);
             if (!isSelectedFacet) return;
-            return  <CustomTreeItem itemId={v.category}
+            return  <CustomTreeItem key={v.category}
+                                    itemId={v.category}
                                     actionIcon={DeleteIcon}
                                     label={v.category}
                                     action={() => prop.onCategoryRemove(v.category)} />

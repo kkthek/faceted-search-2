@@ -31,7 +31,8 @@ function SelectedFacetValues(prop: {
         property.type,
         prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
 
-    return <CustomTreeItem itemId={value.toString() + prop.propertyValueCount.count}
+    return <CustomTreeItem key={value + prop.propertyValueCount.count}
+                            itemId={value + prop.propertyValueCount.count}
                            actionIcon={prop.removable ? DeleteIcon : null}
                            action={() => prop.onRemoveClick(prop.selectedPropertyFacet)}
                            label={value + " : " + prop.propertyValueCount.count}

@@ -21,9 +21,10 @@ function SelectedFacets(prop: {
     if (!propertyFacet) return;
     let hasValue = propertyFacet.hasValue() || propertyFacet.hasRange();
 
-    const itemlist = prop.propertyValueCount.values.map((v) => {
 
-        return <SelectedFacetValues key={prop.propertyValueCount.property.title}
+    const itemlist = prop.propertyValueCount.values.map((v,i ) => {
+
+        return <SelectedFacetValues key={prop.propertyValueCount.property.title + i}
                      query={prop.searchStateFacet.query}
                      selectedPropertyFacet={propertyFacet}
                      propertyValueCount={v}
@@ -35,7 +36,8 @@ function SelectedFacets(prop: {
                      onFacetValueContainsClick={prop.onFacetValueContainsClick}/>
     });
 
-    return <CustomTreeItem itemId={prop.propertyValueCount.property.title}
+    return <CustomTreeItem key={prop.propertyValueCount.property.title}
+                           itemId={prop.propertyValueCount.property.title}
                      label={prop.propertyValueCount.property.displayTitle}
                      action={() => prop.onRemoveClick(propertyFacet)}
                      actionIcon={!hasValue ? DeleteIcon : null}
@@ -59,7 +61,8 @@ function SelectedFacetsView(prop: {
 
             if (!isSelectedFacet) return;
             expandedProperties.push(v.property.title);
-            return <SelectedFacets propertyValueCount={v}
+            return <SelectedFacets key={v.property.title}
+                                    propertyValueCount={v}
                                    searchStateFacet={prop.searchStateFacet}
                                    onValueClick={prop.onValueClick}
                                    onRemoveClick={prop.onRemoveClick}
