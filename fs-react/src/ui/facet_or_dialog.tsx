@@ -7,8 +7,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Datatype, FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
-import {Checkbox, FormControlLabel, FormGroup} from "@mui/material";
+import {Checkbox, FormControlLabel, FormGroup, Grid} from "@mui/material";
 import DisplayTools from "../util/display_tools";
+import Tools from "../util/tools";
 
 function FacetOrDialog(prop: {
         open: boolean,
@@ -33,28 +34,42 @@ function FacetOrDialog(prop: {
 
     }
 
-    let values;
+    let values = [];
+    const valueCounts = prop.searchStateFacets?.getPropertyValueCount(prop.property).values;
     if (prop.property.type === Datatype.boolean
         || prop.property.type === Datatype.datetime
         || prop.property.type === Datatype.number) {
-        values = <div>Properties of type "datetime", "number" or "boolean" cannot be used with OR</div>
+        values.push(<div>Properties of type "datetime", "number" or "boolean" cannot be used with OR</div>)
     } else {
 
-        values = prop.searchStateFacets?.getPropertyValueCount(prop.property).values.map((value) => {
-            let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
-            selectedValue += "("+value.count+")";
-            return <FormControlLabel key={selectedValue} control={<Checkbox/>}
-                                     onChange={(event, checked) => {
-                                         onChange(event, checked, value)
-                                     }}
-                                     label={selectedValue}/>;
+        let rows: ValueCount[][] = Tools.splitArray2NTuples(valueCounts, 3);
+
+        rows.forEach((row) => {
+            values.push(row.map((value) => {
+                let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
+                selectedValue += "("+value.count+")";
+                return <Grid size={4}>
+                            <FormControlLabel
+                                key={selectedValue}
+                                control={<Checkbox/>}
+                                onChange={(event, checked) => {
+                                             onChange(event, checked, value)
+                                         }}
+                                label={selectedValue}/>
+                </Grid>;
+            }));
+
         });
-    }
+
+    };
+
     return (
         <React.Fragment>
             <Dialog
                 open={prop.open}
                 onClose={prop.handleClose}
+                maxWidth={'md'}
+
                 aria-labelledby="facet-or-dialog-title"
                 aria-describedby="facet-or-dialog-description"
             >
@@ -66,7 +81,9 @@ function FacetOrDialog(prop: {
                         Select facet values
                     </DialogContentText>
                     <FormGroup>
+                        <Grid container spacing={2}>
                         {values}
+                        </Grid>
                     </FormGroup>
                 </DialogContent>
                 <DialogActions>

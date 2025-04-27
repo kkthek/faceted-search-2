@@ -3,8 +3,8 @@ import React, {useContext} from "react";
 import {WikiContext} from "../index";
 import WikiLink from "./wiki_link";
 import ValueSerializer from "../util/value_serializer";
-import {Box, Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
-import Tools, {Tuple} from "../util/tools";
+import {Box, Table, TableBody, TableCell, TableRow} from "@mui/material";
+import Tools from "../util/tools";
 
 
 function Annotations(prop: {doc: Document}) {
@@ -15,11 +15,13 @@ function Annotations(prop: {doc: Document}) {
         let categoryFound = prop.doc.getCategoryFacetValue(category) != null;
         if (!categoryFound) continue;
 
-        let rows = Tools.arrayOf2Tuples(annotationsInSnippets[category]).map((tuples: Tuple<string>) => {
-            let pfvCell1 = prop.doc.getPropertyFacetValues(tuples.first);
-            let pfvCell2 = tuples.second ? prop.doc.getPropertyFacetValues(tuples.second) : null;
+        let rows = Tools.splitArray2NTuples(annotationsInSnippets[category], 2)
+            .map((tuples: string[]) => {
 
-            return  <TableRow key={'annotation-'+prop.doc.id+'-'+tuples.first}>
+            let pfvCell1 = prop.doc.getPropertyFacetValues(tuples[0]);
+            let pfvCell2 = tuples[1] ? prop.doc.getPropertyFacetValues(tuples[1]) : null;
+
+            return  <TableRow key={'annotation-'+prop.doc.id+'-'+tuples[0]}>
                         <TableCell>
                             <WikiLink page={pfvCell1.property}/>:
                             {ValueSerializer.getValues(pfvCell1)}

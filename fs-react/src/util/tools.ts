@@ -110,23 +110,21 @@ class Tools {
         return Array(limit).fill(0).map((x,i)=>i);
     }
 
-    static arrayOf2Tuples<T>(arr: T[]): Tuple<T>[] {
-        let results: Tuple<T>[] = [];
-        for(let i = 0; i < arr.length; i+=2) {
-            results.push(new Tuple<T>(arr[i], arr[i+1] ? arr[i+1] : null));
+    static splitArray2NTuples<T>(arr: T[], size: number): T[][] {
+        let results: T[][] = [];
+        let length = Math.trunc(arr.length / size);
+        length += arr.length % size === 0 ? 0 : 1;
+        for(let i = 0; i < length; i++) {
+            let row: T[] = [];
+            for(let j = 0; j < size; j++) {
+                if (arr[i*size+j]) {
+                    row.push(arr[i*size+j]);
+                }
+            }
+            results.push(row);
         }
         return results;
     }
 }
 
 export default Tools;
-
-export class Tuple<T> {
-    public readonly first: T;
-    public readonly second: T;
-
-    constructor(first: T, second: T) {
-        this.first = first;
-        this.second = second;
-    }
-}
