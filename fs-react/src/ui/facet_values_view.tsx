@@ -13,9 +13,7 @@ function FacetValues(prop: {
     propertyValueCount: ValueCount | null,
     onValueClick: (p: PropertyFacet) => void,
     removable: boolean
-    onRemoveClick: (p: PropertyFacet) => void,
-    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
-    onExpandClick: (p: Property, limit: number) => void
+    onRemoveClick: (p: PropertyFacet) => void
 }) {
 
     if (prop.propertyValueCount === null || !prop.property) {

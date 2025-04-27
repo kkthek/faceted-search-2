@@ -1,11 +1,11 @@
-import React, {useContext, useRef, useState} from "react";
+import React, {useContext, useState} from "react";
 import {
     BaseQuery,
+    FacetResponse,
     Property,
     PropertyFacet,
     PropertyFacetCount,
-    PropertyWithURL,
-    FacetResponse
+    PropertyWithURL
 } from "../common/datatypes";
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
@@ -13,9 +13,8 @@ import {SearchStateDocument, SearchStateFacet} from "./event_handler";
 import {WikiContext} from "../index";
 import ConfigUtils from "../util/config_utils";
 import FacetOrDialog from "./facet_or_dialog";
-import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
+import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
 import {Typography} from "@mui/material";
@@ -60,11 +59,11 @@ function FacetViewProperty(prop: {
                      removable={false}
                      query={prop.query}
                      onRemoveClick={prop.onRemoveClick}
-                     onFacetValueContainsClick={prop.onFacetValueContainsClick}
-                     onExpandClick={prop.onExpandClick}
         />
     });
 
+    let showAll = propertyValueCount?.values.length <= wikiContext.config.fs2gFacetValueLimit &&
+                !(prop.property.isRangeProperty() || prop.property.isBooleanProperty());
 
     return <CustomTreeItem itemId={prop.property.title}
                            label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
@@ -72,7 +71,7 @@ function FacetViewProperty(prop: {
                            actionIcon={facetsWithOr ? ChecklistIcon : null}
                            action={() => {
 
-                               handleExpandClick(wikiContext.config.fs2gFacetValueLimit);
+                               handleExpandClick(null);
                                prop.onOrDialogClick(prop.property);
                            } }
                      className={'fs-facets'}>
@@ -81,7 +80,14 @@ function FacetViewProperty(prop: {
                      property={propertyValueCount?.property}/>
 
         {values}
-
+        { showAll ?
+        <CustomTreeItem itemId={prop.property.title + "-showall"}
+                        label={"[Show all...]"}
+                        itemAction={() => {
+                            prop.onFacetValueContainsClick('', null, prop.property);
+                        }
+                        }
+        /> : '' }
 
 
     </CustomTreeItem>
@@ -159,10 +165,6 @@ function FacetView(prop: {
         if (!target.classList.contains('MuiTreeItem-label')) return;
         prop.onPropertyClick(propertyMap[itemId])
     };
-
-
-
-
 
     return <div id={'fs-facetview'}>
         <Typography>Available properties</Typography>

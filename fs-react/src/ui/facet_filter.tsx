@@ -10,7 +10,7 @@ function FacetFilter(prop : {
     onFilterContainsClick: (text: string, limit: number, property: Property) => void
 }) {
 
-    if (!prop.numberOfValues || !prop.property) return;
+    if (!prop.property) return;
     let wikiContext = useContext(WikiContext);
     let needsNoFilter = prop.numberOfValues < wikiContext.config.fs2gFacetValueLimit;
     let unsuitableProperty = prop.property.isRangeProperty() || prop.property.isBooleanProperty();

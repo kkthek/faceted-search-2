@@ -28,7 +28,7 @@ function SearchResult(prop: { doc: Document, client: Client}) {
     return <Box className={classNames.join(' ')}>
         <Box className={'fs-search-result'} title={showSolrScore ? "score: " + prop.doc.score : ''}>
             <Typography>
-                <span class={'fs-search-result-title'}><WikiLink page={prop.doc}/></span>
+                <span className={'fs-search-result-title'}><WikiLink page={prop.doc}/></span>
                 <PreviewPopup doc={prop.doc} />
             </Typography>
 
