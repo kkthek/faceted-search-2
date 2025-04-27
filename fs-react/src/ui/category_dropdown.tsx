@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import {WikiContext} from "../index";
-import {InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import {Box, InputLabel, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 
 class DropdownEntry {
 
@@ -36,9 +36,8 @@ function CategoryDropdown(prop: {
     };
 
     let categoryOptions = entries.map((entry) => <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>);
-    return <div>
-        <h3>Available categories</h3>
-
+    return <Box className={'fs-category-dropdown'}>
+        <Typography>Available categories</Typography>
         <Select
             labelId="sort-order-select-label"
             id="sort-order-select"
@@ -48,7 +47,7 @@ function CategoryDropdown(prop: {
             onChange={handleChange}
 
         >{categoryOptions}</Select>
-    </div>
+    </Box>
 }
 
 export default CategoryDropdown;

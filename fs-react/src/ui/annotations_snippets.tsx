@@ -3,7 +3,7 @@ import React, {useContext} from "react";
 import {WikiContext} from "../index";
 import WikiLink from "./wiki_link";
 import ValueSerializer from "../util/value_serializer";
-import {Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
+import {Box, Table, TableBody, TableCell, TableContainer, TableRow} from "@mui/material";
 import Tools, {Tuple} from "../util/tools";
 
 
@@ -30,10 +30,14 @@ function Annotations(prop: {doc: Document}) {
                         </TableCell>
             </TableRow>
         });
-        return <Table size="small" aria-label="simple table"><TableBody>{rows}</TableBody></Table>
+        return <Box className={'fs-annotation-snippet'}>
+            <Table size="small" aria-label="simple table">
+            <TableBody>{rows}</TableBody>
+        </Table>
+        </Box>
 
     }
 
-}
+};
 
 export default Annotations;

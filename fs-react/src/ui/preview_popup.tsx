@@ -7,6 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
+import PreviewIcon from '@mui/icons-material/Preview';
 
 function PopupComponent(prop: {
     doc: Document,
@@ -30,7 +31,7 @@ function PopupComponent(prop: {
         previewPopup = <span>
             <span
             onClick={() => setOpenDialog(true) }
-        >[show preview]</span>;
+        ><PreviewIcon/></span>;
         <PreviewPopup open={openDialog}
                       handleClose={() => setOpenDialog(false)}
                       url={previewUrlPropertyValues.values[0] as string}

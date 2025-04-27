@@ -6,7 +6,7 @@ function WikiLink(prop: {
     page: ElementWithURL
 }) {
     if (!prop.page) return;
-    return <a href={prop.page.url}>{prop.page.displayTitle}</a>
+    return <a className={'fs-wiki-title'} href={prop.page.url}>{prop.page.displayTitle}</a>
 }
 
 export default WikiLink;

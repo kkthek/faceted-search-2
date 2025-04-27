@@ -18,6 +18,7 @@ import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
+import {Typography} from "@mui/material";
 
 function FacetViewProperty(prop: {
     query: BaseQuery,
@@ -164,6 +165,7 @@ function FacetView(prop: {
 
 
     return <div id={'fs-facetview'}>
+        <Typography>Available properties</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable
                         onItemExpansionToggle={handleItemExpansionToggle}
                         onItemClick={handleItemClick}

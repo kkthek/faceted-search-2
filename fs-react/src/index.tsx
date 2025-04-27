@@ -20,6 +20,7 @@ import FacetQueryBuilder from "./common/facet_query_builder";
 import SortView from "./ui/sort_view";
 import {Property, Sort, WikiContextInterface} from "./common/datatypes";
 import CategoryDropdown from "./ui/category_dropdown";
+import {Divider, Typography} from "@mui/material";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -91,7 +92,7 @@ function App() {
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
-                    <h3>Selected facets</h3>
+                    <Typography>Selected facets</Typography>
                     {anyFacetSelected ? '' : '(no facets selected)'}
                     <SelectedFacetsView searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
@@ -102,10 +103,10 @@ function App() {
                     <SelectedCategoriesView searchStateDocument={searchStateDocument}
                                             onCategoryRemove={eventHandler.onCategoryRemoveClick.bind(eventHandler)}
                     />
-                    <hr className="fs-separatorLine"/>
+                    <Divider/>
                 </div>
                 <div id={'fs-facets-existing'}>
-                    <h3>Available properties</h3>
+
                     <FacetView searchStateDocument={searchStateDocument}
                                searchStateFacets={searchFacetState}
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
@@ -115,6 +116,7 @@ function App() {
                                onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                     />
+
                     {useCategoryDropdown ?
                         <CategoryView searchStateDocument={searchStateDocument}
                                       onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}

@@ -42,7 +42,7 @@ function setConfigForDevContext() {
            $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay;
 
     $fs2gDefaultSortOrder = 'newest';
-    $fs2gCategoryFilter = [];// ['' => '-no filter-', 'Employee' => 'Employee' ];
+    $fs2gCategoryFilter =  ['' => 'all categories', 'Employee' => 'Employee' ];
     $fs2gHitsPerPage = 10;
     $fs2gPlaceholderText = 'Suche...';
     $fs2gShowCategories = true;
@@ -71,7 +71,7 @@ function setConfigForDevContext() {
 
     $fs2gNamespaceConstraint = []; // ['sysop' => [ 0, 10, 14] ];
 
-    $fs2gFacetsWithOR = []; //['Has name'];
+    $fs2gFacetsWithOR = ['Has name'];
 
     $fs2gShowSolrScore = true;
 

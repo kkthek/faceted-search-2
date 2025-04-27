@@ -13,22 +13,6 @@
     width: 50%;
 }
 
-#fs-facets {
-    #background: darkgrey;
-}
-
-#fs-results {
-    #background: darkgrey;
-}
-
-div.fs-body {
-
-}
-
-.fs-selected {
-    font-weight: bold;
-}
-
 div.fs-boxes {
     margin-top: 3px;
 
@@ -79,24 +63,32 @@ div.fs-boxes {
  * Searchbar
  */
 
-#fs-fulltext {
-    width: 300px;
-}
+
 /**
  * Results
  */
 
 #fs-results {
-    margin-top: 3px;
+    margin-top: 20px;
 }
 
 .fs-search-result {
-    margin: 10px;
+    margin-top: 10px;
 }
 
-#fs-paginator {
-    margin-bottom: 10px;
-    margin-left: 30px;
+.fs-search-result-title {
+    font-weight: bold;
+
+}
+
+.fs-annotation-snippet {
+    border: grey solid 1px;
+    margin-top: 10px;
+    max-width: 800px;
+}
+
+#fs-results nav {
+    margin-top: 15px;
 }
 
 /**
@@ -112,33 +104,7 @@ div.fs-boxes {
     flex-direction: column;
 }
 
-
 #fs-selected-facets {
     padding: 10px;
 }
 
-.fs-separatorLine {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    border: 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    background: none repeat scroll 0 0 #AAAAAA;
-    border-top: medium none;
-    height: 1px;
-}
-
-#fs-facetview li, #fs-categoryview li {
-    margin-top: 5px;
-}
-
-li.fs-facets span {
-    margin-left: 3px;
-}
-
-#fs-selected-categoriesview li span {
-    margin-left: 3px;
-}
-
-li, span.fs-clickable {
-    cursor: pointer;
-}

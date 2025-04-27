@@ -4,6 +4,7 @@ import {SearchStateDocument} from "./event_handler";
 import {WikiContext} from "../index";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import {SimpleTreeView} from "@mui/x-tree-view";
+import {Box, Typography} from "@mui/material";
 
 function FacetViewCategory( prop: {
     title: string,
@@ -48,12 +49,12 @@ function CategoryView( prop: {
             />
         }
     );
-    return <div id={'fs-categoryview'}>
-        <h3>Available categories</h3>
+    return <Box id={'fs-category-view'}>
+        <Typography>Available categories</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
             {listItems}
         </SimpleTreeView>
-    </div>;
+    </Box>;
 }
 
 export default CategoryView;
