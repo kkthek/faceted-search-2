@@ -18,9 +18,10 @@ import SelectedCategoriesView from "./ui/selected_categories_view";
 import NamespaceView from "./ui/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
 import SortView from "./ui/sort_view";
-import {Property, Sort, WikiContextInterface} from "./common/datatypes";
+import {Property, WikiContextInterface} from "./common/datatypes";
 import CategoryDropdown from "./ui/category_dropdown";
 import {Divider, Typography} from "@mui/material";
+import ErrorView from "./custom_ui/error_view";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -51,14 +52,18 @@ const currentFacetsQueryBuilder = new FacetQueryBuilder();
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
+    const [error, setError] = React.useState('');
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
         currentFacetsQueryBuilder,
         setSearchStateDocument,
         setSearchFacetState,
+        setError,
         client
     );
+
+
 
     useEffect(
         () => {
@@ -69,9 +74,11 @@ function App() {
                         documentResponse: response,
                         query: currentDocumentsQueryBuilder.build()
                     });
-            }).catch((e) => {
+
+                }).catch((e) => {
                 console.error("Request to backend failed");
                 console.error(e);
+                setError(e.message);
             });
         },
         []
@@ -79,7 +86,7 @@ function App() {
 
     let anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
-    let useCategoryDropdown = wikiContext.config.fs2gCategoryFilter.length === 0;
+    let useCategoryDropdown = wikiContext.config.fs2gCategoryFilter.length !== 0;
 
     return <WikiContext.Provider value={wikiContext}>
         <div id={'fs-content'}>
@@ -118,10 +125,12 @@ function App() {
                     />
 
                     {useCategoryDropdown ?
+                        <CategoryDropdown onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}/>
+                        :
                         <CategoryView searchStateDocument={searchStateDocument}
                                       onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
-                        /> :
-                        <CategoryDropdown onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}/>
+                        />
+
                     }
 
                 </div>
@@ -131,8 +140,8 @@ function App() {
                             numResults={searchStateDocument ? searchStateDocument.documentResponse.numResults : 0}
                             onPageIndexClick={eventHandler.onPageIndexClick.bind(eventHandler)}
                             client={client}/>
-
             </div>
+            <ErrorView error={error} setError={setError}/>
         </div>
     </WikiContext.Provider>;
 }

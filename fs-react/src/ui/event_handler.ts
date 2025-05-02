@@ -31,17 +31,20 @@ class EventHandler {
     private readonly client: Client;
     private readonly setSearchState: React.Dispatch<React.SetStateAction<SearchStateDocument>>;
     private readonly setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>;
+    private readonly setError: React.Dispatch<React.SetStateAction<string>>;
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
                 currentFacetsQueryBuilder: FacetQueryBuilder,
                 setDocumentState: React.Dispatch<React.SetStateAction<SearchStateDocument>>,
                 setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>,
+                setError: React.Dispatch<React.SetStateAction<string>>,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
         this.currentFacetsQueryBuilder = currentFacetsQueryBuilder;
         this.client = client;
         this.setSearchState = setDocumentState;
         this.setFacetState = setFacetState;
+        this.setError = setError;
     }
 
     onSearchClick(text: string) {
@@ -220,6 +223,7 @@ class EventHandler {
             .catch((e) => {
                 console.error("Requesting new ranges failed");
                 console.error(e);
+                this.setError(e.message);
             });
     }
 
@@ -232,6 +236,7 @@ class EventHandler {
         }).catch((e) => {
             console.error("Request to backend failed");
             console.error(e);
+            this.setError(e.message);
         });
     }
 
@@ -244,6 +249,7 @@ class EventHandler {
         }).catch((e) => {
             console.error("Request to backend failed");
             console.error(e);
+            this.setError(e.message);
         });
     }
 
