@@ -27,7 +27,7 @@ function SortView(prop : {
     };
 
 
-    return <FormControl>
+    return <FormControl sx={{"marginLeft": "10px"}}>
         <InputLabel id="sort-order-select-label">Sort order</InputLabel>
         <Select
             labelId="sort-order-select-label"
@@ -35,7 +35,6 @@ function SortView(prop : {
             value={sort}
             label="Sort order"
             size={'small'}
-            sx={{"marginLeft": "10px"}}
             onChange={handleChange}
         >
             <MenuItem value={'score'}>{wikiContext.msg('score_desc')}</MenuItem>

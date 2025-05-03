@@ -42,7 +42,7 @@ function setConfigForDevContext() {
            $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay;
 
     $fs2gDefaultSortOrder = 'newest';
-    $fs2gCategoryFilter =  ['' => 'all categories', 'Employee' => 'Employee' ];
+    $fs2gCategoryFilter = [];// ['' => 'all categories', 'Employee' => 'Employee' ];
     $fs2gHitsPerPage = 10;
     $fs2gPlaceholderText = 'Suche...';
     $fs2gShowCategories = true;
@@ -92,5 +92,6 @@ function getConfigForDevContext(): array
             $settings[$var] = $value;
         }
     }
-    return $settings;
+    $lang = json_decode(file_get_contents('i18n/en.json'));
+    return [ 'settings' => $settings, 'lang' => $lang ];
 }

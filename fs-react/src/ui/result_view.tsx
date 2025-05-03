@@ -25,7 +25,7 @@ function ResultView(prop: {
     let to = Math.min(from + NUMBER_RESULTS_ONE_PAGE - 1, prop.numResults);
 
     return <div id={'fs-resultview'}>
-        <Typography>Results {from} to {to} of {prop.numResults}</Typography>
+        <Typography>{wikiContext.msg('fs-results-from-to', from, to, prop.numResults)}</Typography>
         <Divider/>
         <Stack>
             {listItems}

@@ -10,7 +10,7 @@ import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 
 export interface WikiContextInterface {
     config: any;
-    msg:  (id:string) => string
+    msg:  (id:string, ...params: string[]) => string
 }
 
 export interface ElementWithURL {

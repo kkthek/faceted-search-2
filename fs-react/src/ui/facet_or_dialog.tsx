@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {SyntheticEvent} from 'react';
+import {SyntheticEvent, useContext} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -10,6 +10,7 @@ import {Datatype, FacetResponse, Property, PropertyFacet, ValueCount} from "../c
 import {Checkbox, FormControlLabel, FormGroup, Grid} from "@mui/material";
 import DisplayTools from "../util/display_tools";
 import Tools from "../util/tools";
+import {WikiContext} from "../index";
 
 function FacetOrDialog(prop: {
         open: boolean,
@@ -23,6 +24,7 @@ function FacetOrDialog(prop: {
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
 
+    let wikiContext = useContext(WikiContext);
     let selectedFacets: PropertyFacet[] = []
     let onChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
         let propertyFacet = new PropertyFacet(
@@ -74,11 +76,11 @@ function FacetOrDialog(prop: {
                 aria-describedby="facet-or-dialog-description"
             >
                 <DialogTitle id="facet-or-dialog-title">
-                    {"Facet values"}
+                    {wikiContext.msg('fs-facet-values')}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="facet-or-dialog-description">
-                        Select facet values
+                        {wikiContext.msg('fs-facet-ored-values')}
                     </DialogContentText>
                     <FormGroup>
                         <Grid container spacing={2}>

@@ -5,7 +5,9 @@ import {Button, TextField} from "@mui/material";
 function SearchBar(prop: {onClick: (text: string)=>void}) {
     let wikiContext = useContext(WikiContext);
     let placeholderText = wikiContext.config['fs2gPlaceholderText'];
-
+    if (!placeholderText) {
+        placeholderText = wikiContext.msg('fs-search-placeholder');
+    }
     const [text, setText] = useState('');
 
     return <div id={'fs-searchbar'}>
@@ -18,7 +20,10 @@ function SearchBar(prop: {onClick: (text: string)=>void}) {
                    onChange={(e)=> setText(e.target.value)}
         />
 
-        <Button size={'medium'} variant="outlined" sx={{"marginTop": "2px", "marginLeft": "10px"}} onClick={() => prop.onClick(text)}>Search</Button>
+        <Button size={'medium'}
+                variant="outlined"
+                sx={{"marginTop": "2px", "marginLeft": "10px"}}
+                onClick={() => prop.onClick(text)}>{wikiContext.msg('fs-search-button')}</Button>
         <CreateArticleLink searchText={text}/>
     </div>;
 }

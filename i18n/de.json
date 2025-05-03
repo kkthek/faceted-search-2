@@ -8,8 +8,20 @@
 	"facetedsearch2": "Faceted search",
 
 	"score_desc": 			"Relevanz",
-	"_mdat_desc": 			"Neuester Artikel zuerst",
-	"_mdat_asc":  			"Ältester Artikel zuerst",
+	"_MDAT_desc": 			"Neuester Artikel zuerst",
+	"_MDAT_asc":  			"Ältester Artikel zuerst",
 	"displaytitle_desc": 	"Artikelname absteigend",
-	"displaytitle_asc": 	"Artikelname aufsteigend"
+	"displaytitle_asc": 	"Artikelname aufsteigend",
+	"fs-results-from-to": 		"Ergebnisse $1 bis $2 von $3",
+	"fs-search-placeholder": 	"Suche...",
+	"fs-search-button": 		"Suche",
+	"fs-no-facets-selected": 	"keine Facetten selektiert",
+	"fs-selected-facets": 		"Selektierte Facetten",
+	"fs-available-properties": 	"Verfügbare Property-Facetten",
+	"fs-available-categories": 	"Verfügbare Kategorie-Facetten",
+	"fs-show-properties": 		"Zeige alle Eigenschaften...",
+	"fs-is-in-category": 		"liegt in Kategorie",
+	"fs-facet-values":	 		"Facettenwerte",
+	"fs-preview":	 			"Vorschau",
+	"fs-facet-ored-values": 	"Selektieren Sie alle Werte die im Ergebnis auftauchen sollen"
 }

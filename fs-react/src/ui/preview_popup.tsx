@@ -45,7 +45,7 @@ function PreviewPopup(prop: {
     handleClose: () => void,
     url: string
 }) {
-
+    let wikiContext = useContext(WikiContext);
     let ext = ConfigUtils.getFileExtension(prop.url);
     let mimeType = ConfigUtils.getFileType(ext);
 
@@ -59,7 +59,7 @@ function PreviewPopup(prop: {
             aria-describedby="preview-dialog-description"
         >
             <DialogTitle id="preview-dialog-title">
-                {"Preview"}
+                {wikiContext.msg('fs-preview')}
             </DialogTitle>
             <DialogContent>
                 <embed src={prop.url} width="800" height="600" type={mimeType} />

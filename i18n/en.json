@@ -8,9 +8,21 @@
 	"facetedsearch2": "Faceted search",
 
 	"score_desc": 			"Relevance",
-	"_mdat_desc": 			"Newest article first",
-	"_mdat_asc": 			"Oldest article first",
+	"_MDAT_desc": 			"Newest article first",
+	"_MDAT_asc": 			"Oldest article first",
 	"displaytitle_desc": 	"Page title descending",
-	"displaytitle_asc": 	"Page title ascending"
+	"displaytitle_asc": 	"Page title ascending",
+	"fs-results-from-to": 		"Results $1 to $2 of $3",
+	"fs-search-placeholder": 	"Search...",
+	"fs-search-button": 		"Search",
+	"fs-no-facets-selected": 	"no facets selected",
+	"fs-selected-facets": 		"Selected facets",
+	"fs-available-properties": 	"Available property facets",
+	"fs-available-categories": 	"Available category facets",
+	"fs-show-properties": 		"Show properties...",
+	"fs-is-in-category": 		"is in category",
+	"fs-facet-values":	 		"Facet values",
+	"fs-preview":	 			"Preview",
+	"fs-facet-ored-values": 	"Select all values that should appear in result set"
 
 }

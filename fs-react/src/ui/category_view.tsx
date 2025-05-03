@@ -50,7 +50,7 @@ function CategoryView( prop: {
         }
     );
     return <Box id={'fs-category-view'}>
-        <Typography>Available categories</Typography>
+        <Typography>{wikiContext.msg('fs-available-categories')}</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
             {listItems}
         </SimpleTreeView>

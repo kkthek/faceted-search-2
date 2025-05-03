@@ -167,7 +167,7 @@ function FacetView(prop: {
     };
 
     return <div id={'fs-facetview'}>
-        <Typography>Available properties</Typography>
+        <Typography>{wikiContext.msg('fs-available-properties')}</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable
                         onItemExpansionToggle={handleItemExpansionToggle}
                         onItemClick={handleItemClick}

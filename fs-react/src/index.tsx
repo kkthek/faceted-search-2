@@ -28,7 +28,7 @@ let solrProxyUrl;
 
 let wikiContext: WikiContextInterface = {
     config: {},
-    msg: (id: string) => id
+    msg: (id: string) => "<" + id + ">"
 };
 
 const isInWikiContext = browserWindow.mw !== undefined;
@@ -99,8 +99,8 @@ function App() {
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
-                    <Typography>Selected facets</Typography>
-                    {anyFacetSelected ? '' : '(no facets selected)'}
+                    <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
+                    {anyFacetSelected ? '' : wikiContext.msg('no-facets-selected')}
                     <SelectedFacetsView searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
@@ -147,8 +147,16 @@ function App() {
 }
 
 async function getSettingsForDevContext() {
-    let settings = await client.getSettingsForDevContext();
-    wikiContext.config = settings;
+    let result = await client.getSettingsForDevContext();
+    let langMap = result.lang;
+    wikiContext.config = result.settings;
+    wikiContext.msg = (id: string, ...params: string[]) => {
+        let text = langMap[id] ? langMap[id] : "<" + id + ">";
+        for(let i = 0; i < params.length; i++) {
+            text = text.replace(new RegExp('\\$'+(i+1)), params[i]);
+        }
+        return text;
+    }
     applyQueryConstraintsFromConfig();
 }
 
