@@ -1,10 +1,10 @@
 import React, {useContext, useState} from "react";
 import {
     BaseQuery,
-    FacetResponse,
+    FacetResponse, FacetsQuery,
     Property,
     PropertyFacet,
-    PropertyFacetCount,
+    PropertyFacetCount, PropertyValueConstraint,
     PropertyWithURL
 } from "../common/datatypes";
 import Tools from "../util/tools";
@@ -18,6 +18,8 @@ import CustomTreeItem from "../custom_ui/custom_tree_item";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
 import {Typography} from "@mui/material";
+import FacetQueryBuilder from "../common/facet_query_builder";
+import Client from "../common/client";
 
 function FacetViewProperty(prop: {
     query: BaseQuery,
@@ -70,8 +72,6 @@ function FacetViewProperty(prop: {
                            itemAction={() => prop.onPropertyClick(prop.property)}
                            actionIcon={facetsWithOr ? ChecklistIcon : null}
                            action={() => {
-
-                               handleExpandClick(null);
                                prop.onOrDialogClick(prop.property);
                            } }
                      className={'fs-facets'}>
@@ -93,7 +93,16 @@ function FacetViewProperty(prop: {
     </CustomTreeItem>
 }
 
+function prepareQuery(query: BaseQuery, property: Property): FacetsQuery {
+    let queryBuilder = new FacetQueryBuilder();
+    queryBuilder.updateBaseQueryDirect(query);
+    queryBuilder.withoutPropertyFacet(property);
+    queryBuilder.withPropertyValueConstraint(new PropertyValueConstraint(property));
+    return queryBuilder.build();
+}
+
 function FacetView(prop: {
+    client: Client
     searchStateDocument: SearchStateDocument,
     searchStateFacets: SearchStateFacet,
     onPropertyClick: (p: Property)=>void,
@@ -114,15 +123,20 @@ function FacetView(prop: {
         propertyMap[pfc.property.title] = pfc.property;
     });
 
-    const [openOrDialog, setOpenOrDialog] = useState({ open: false, property: null});
+    const [openOrDialog, setOpenOrDialog] = useState({ open: false, property: null, facetResponse: null});
 
     const handleCloseFacetOrDialog = () => {
-        setOpenOrDialog({ open: false, property: null});
+        setOpenOrDialog({ open: false, property: null, facetResponse: null});
     };
 
 
     const onOrDialogClick = function(p: Property) {
-        setOpenOrDialog({ open: true, property: p});
+
+        let query = prepareQuery(prop.searchStateDocument.query, p);
+        prop.client.searchFacets(query).then((r) => {
+
+            setOpenOrDialog({ open: true, property: p, facetResponse: r});
+        });
     }
 
     const listItems = propertyFacetCounts
@@ -152,7 +166,9 @@ function FacetView(prop: {
         itemId: string,
         isExpanded: boolean,
     ) => {
+
         if (!propertyMap[itemId]) return;
+        console.log("Expanded");
         prop.onExpandClick(propertyMap[itemId], wikiContext.config.fs2gFacetValueLimit);
     };
 
@@ -163,6 +179,8 @@ function FacetView(prop: {
         if (!propertyMap[itemId]) return;
         let target = event.target as any;
         if (!target.classList.contains('MuiTreeItem-label')) return;
+        if (target.classList.contains('MuiSvgIcon-root')) return;
+        console.log(target.classList);
         prop.onPropertyClick(propertyMap[itemId])
     };
 
@@ -176,7 +194,7 @@ function FacetView(prop: {
         </SimpleTreeView>
         <FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
-                       searchStateFacets={prop.searchStateFacets?.facetsResponse}
+                       searchStateFacets={openOrDialog.facetResponse}
                        selectedFacets={prop.searchStateDocument.query.propertyFacets}
                        property={openOrDialog.property}
                        onValuesClick={prop.onValuesClick}

@@ -32,7 +32,11 @@ function FacetOrDialog(prop: {
             prop.property.type,
             v.value, v.mwTitle, v.range);
         propertyFacet.setORed(true);
-        selectedFacets.push(propertyFacet);
+        if (checked) {
+            selectedFacets.push(propertyFacet);
+        } else {
+            Tools.removeFirstByPredicate(selectedFacets, (f) => f.equals(propertyFacet))
+        }
 
     }
 

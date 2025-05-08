@@ -114,7 +114,8 @@ function App() {
                 </div>
                 <div id={'fs-facets-existing'}>
 
-                    <FacetView searchStateDocument={searchStateDocument}
+                    <FacetView client={client}
+                                searchStateDocument={searchStateDocument}
                                searchStateFacets={searchFacetState}
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
                                onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}

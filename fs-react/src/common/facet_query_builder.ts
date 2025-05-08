@@ -1,4 +1,4 @@
-import {FacetsQuery, Property, PropertyValueConstraint, RangeQuery} from "./datatypes";
+import {BaseQuery, FacetsQuery, Property, PropertyFacet, PropertyValueConstraint, RangeQuery} from "./datatypes";
 import Tools from "../util/tools";
 import DocumentQueryBuilder from "./document_query_builder";
 
@@ -15,6 +15,10 @@ class FacetQueryBuilder {
             [],
             []
         );
+    }
+    withoutPropertyFacet(pf: Property) {
+        Tools.removeAll(this.query.propertyFacets, (e) => e.property, pf.title);
+        return this;
     }
 
     withFacetQuery(rangeQuery: RangeQuery): FacetQueryBuilder {
@@ -44,6 +48,11 @@ class FacetQueryBuilder {
 
     updateBaseQuery(base: DocumentQueryBuilder): void {
         let query = base.build();
+        this.updateBaseQueryDirect(query);
+    }
+
+    updateBaseQueryDirect(base: BaseQuery): void {
+        let query = base;
         this.query.searchText = query.searchText;
         this.query.propertyFacets = query.propertyFacets;
         this.query.categoryFacets = query.categoryFacets;
