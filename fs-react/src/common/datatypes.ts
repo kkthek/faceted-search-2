@@ -54,6 +54,13 @@ export class BaseQuery {
     isAnyPropertySelected() {
         return (this.propertyFacets || []).length > 0;
     }
+
+    updateBaseQuery(base: BaseQuery): void {
+        this.searchText = base.searchText;
+        this.propertyFacets = Tools.deepClone( base.propertyFacets);
+        this.categoryFacets = Tools.deepClone( base.categoryFacets);
+        this.namespaceFacets = Tools.deepClone( base.namespaceFacets);
+    }
 }
 
 export class DocumentQuery extends BaseQuery {

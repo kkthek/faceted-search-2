@@ -52,7 +52,7 @@ class EventHandler {
             .withSearchText(text)
             .withOffset(0);
         this.updateDocuments();
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.updateFacets();
     }
 
@@ -115,7 +115,7 @@ class EventHandler {
             this.currentFacetsQueryBuilder
             .clearFacetsQueriesForProperty(property);
         }
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
 
         this.updateDocuments();
         const rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
@@ -143,7 +143,7 @@ class EventHandler {
             .toggleNamespacesFacet(namespaces)
             .withOffset(0);
         this.updateDocuments();
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.updateFacets();
     }
 
@@ -158,7 +158,7 @@ class EventHandler {
                 .withCategoryFacet(category);
         }
         this.updateDocuments();
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.updateFacets();
     }
 
@@ -167,7 +167,7 @@ class EventHandler {
             .withOffset(0)
             .withoutCategoryFacet(category);
         this.updateDocuments();
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.updateFacets();
     }
 
@@ -179,7 +179,7 @@ class EventHandler {
 
     private updateFacetValuesForProperties(properties: Property[], limit: number = null) {
 
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
 
         properties.forEach((p) => {
             if (p.isRangeProperty()) {
@@ -200,7 +200,7 @@ class EventHandler {
     private async requestRangesAndUpdateFacets(properties: Property[]) {
 
         const sqb = new StatQueryBuilder();
-        sqb.updateBaseQuery(this.currentDocumentsQueryBuilder);
+        sqb.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         properties.forEach((p) => {
             sqb.withStatField(p);
         })

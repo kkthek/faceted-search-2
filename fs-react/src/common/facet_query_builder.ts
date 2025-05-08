@@ -1,6 +1,5 @@
-import {BaseQuery, FacetsQuery, Property, PropertyFacet, PropertyValueConstraint, RangeQuery} from "./datatypes";
+import {BaseQuery, FacetsQuery, Property, PropertyValueConstraint, RangeQuery} from "./datatypes";
 import Tools from "../util/tools";
-import DocumentQueryBuilder from "./document_query_builder";
 
 class FacetQueryBuilder {
 
@@ -46,17 +45,9 @@ class FacetQueryBuilder {
         return this;
     }
 
-    updateBaseQuery(base: DocumentQueryBuilder): void {
-        let query = base.build();
-        this.updateBaseQueryDirect(query);
-    }
-
-    updateBaseQueryDirect(base: BaseQuery): void {
-        let query = base;
-        this.query.searchText = query.searchText;
-        this.query.propertyFacets = Tools.deepClone( query.propertyFacets);
-        this.query.categoryFacets = Tools.deepClone( query.categoryFacets);
-        this.query.namespaceFacets =Tools.deepClone( query.namespaceFacets);
+    updateBaseQuery(base: BaseQuery): FacetQueryBuilder {
+        this.query.updateBaseQuery(base);
+        return this;
     }
 
     build(): FacetsQuery {

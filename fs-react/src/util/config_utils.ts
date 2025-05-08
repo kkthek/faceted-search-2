@@ -1,4 +1,4 @@
-import {BaseQuery, Document, WikiContextInterface} from "../common/datatypes";
+import {BaseQuery, WikiContextInterface} from "../common/datatypes";
 import Client from "../common/client";
 
 class ConfigUtils {

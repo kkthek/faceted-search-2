@@ -1,5 +1,4 @@
-import {Property, StatQuery} from "./datatypes";
-import DocumentQueryBuilder from "./document_query_builder";
+import {BaseQuery, Property, StatQuery} from "./datatypes";
 
 class StatQueryBuilder {
 
@@ -20,12 +19,9 @@ class StatQueryBuilder {
         return this;
     }
 
-    updateBaseQuery(base: DocumentQueryBuilder): void {
-        let query = base.build();
-        this.query.searchText = query.searchText;
-        this.query.propertyFacets = query.propertyFacets;
-        this.query.categoryFacets = query.categoryFacets;
-        this.query.namespaceFacets = query.namespaceFacets;
+    updateBaseQuery(base: BaseQuery): StatQueryBuilder {
+        this.query.updateBaseQuery(base);
+        return this;
     }
 
     build(): StatQuery {
