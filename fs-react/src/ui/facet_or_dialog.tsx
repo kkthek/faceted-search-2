@@ -106,3 +106,16 @@ function FacetOrDialog(prop: {
 }
 
 export default FacetOrDialog;
+
+export class ORDialogInput {
+    open: boolean;
+    property: Property;
+    facetResponse: FacetResponse;
+
+
+    constructor(open: boolean = false, property: Property = null, facetResponse: FacetResponse = null) {
+        this.open = open;
+        this.property = property;
+        this.facetResponse = facetResponse;
+    }
+}

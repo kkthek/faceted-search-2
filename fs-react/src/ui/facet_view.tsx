@@ -12,7 +12,7 @@ import FacetValues from "./facet_values_view";
 import {SearchStateDocument, SearchStateFacet} from "./event_handler";
 import {WikiContext} from "../index";
 import ConfigUtils from "../util/config_utils";
-import FacetOrDialog from "./facet_or_dialog";
+import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import ChecklistIcon from '@mui/icons-material/Checklist';
@@ -115,19 +115,18 @@ function FacetView(prop: {
         propertyMap[pfc.property.title] = pfc.property;
     });
 
-    const [openOrDialog, setOpenOrDialog] = useState({ open: false, property: null, facetResponse: null});
+    const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
 
     const handleCloseFacetOrDialog = () => {
-        setOpenOrDialog({ open: false, property: null, facetResponse: null});
+        setOpenOrDialog(new ORDialogInput());
     };
 
 
     const onOrDialogClick = function(p: Property) {
 
         let query = QueryUtils.prepareQueryWithoutFacet(prop.searchStateDocument.query, p);
-        prop.client.searchFacets(query).then((r) => {
-
-            setOpenOrDialog({ open: true, property: p, facetResponse: r});
+        prop.client.searchFacets(query).then((facetResponse) => {
+            setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
         });
     }
 

@@ -7,7 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SelectedFacetValues from "./selected_facet_values_view";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import Client from "../common/client";
-import FacetOrDialog from "./facet_or_dialog";
+import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
 import {WikiContext} from "../index";
 import QueryUtils from "../util/query_utils";
 
@@ -44,7 +44,7 @@ function SelectedFacets(prop: {
 
     return <CustomTreeItem key={prop.propertyValueCount.property.title}
                            itemId={prop.propertyValueCount.property.title}
-                     label={prop.propertyValueCount.property.displayTitle}
+                           label={prop.propertyValueCount.property.displayTitle}
                            action={() => {
                                if (!hasValue) {
                                    prop.onRemoveClick(propertyFacet)
@@ -68,18 +68,16 @@ function SelectedFacetsView(prop: {
 }) {
     if (!prop.searchStateFacet) return;
 
-    const [openOrDialog, setOpenOrDialog] = useState({ open: false, property: null, facetResponse: null});
+    const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
 
     const handleCloseFacetOrDialog = () => {
-        setOpenOrDialog({ open: false, property: null, facetResponse: null});
+        setOpenOrDialog(new ORDialogInput());
     };
-
 
     const onOrDialogClick = function(p: Property) {
         let query = QueryUtils.prepareQueryWithoutFacet(prop.searchStateFacet.query, p);
-        prop.client.searchFacets(query).then((r) => {
-
-            setOpenOrDialog({ open: true, property: p, facetResponse: r});
+        prop.client.searchFacets(query).then((facetResponse) => {
+            setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
         });
     }
 
@@ -104,11 +102,12 @@ function SelectedFacetsView(prop: {
     );
 
 
-    return <div><SimpleTreeView
-        expandedItems={expandedProperties}
-        expansionTrigger={'iconContainer'} disableSelection>
-        {facetValues}
-    </SimpleTreeView>
+    return <div>
+        <SimpleTreeView
+            expandedItems={expandedProperties}
+            expansionTrigger={'iconContainer'} disableSelection>
+            {facetValues}
+        </SimpleTreeView>
         <FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
                        searchStateFacets={openOrDialog.facetResponse}
