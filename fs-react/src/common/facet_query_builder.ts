@@ -54,9 +54,9 @@ class FacetQueryBuilder {
     updateBaseQueryDirect(base: BaseQuery): void {
         let query = base;
         this.query.searchText = query.searchText;
-        this.query.propertyFacets = query.propertyFacets;
-        this.query.categoryFacets = query.categoryFacets;
-        this.query.namespaceFacets = query.namespaceFacets;
+        this.query.propertyFacets = Tools.deepClone( query.propertyFacets);
+        this.query.categoryFacets = Tools.deepClone( query.categoryFacets);
+        this.query.namespaceFacets =Tools.deepClone( query.namespaceFacets);
     }
 
     build(): FacetsQuery {

@@ -101,8 +101,10 @@ function App() {
                 <div id={'fs-selected-facets'}>
                     <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
                     {anyFacetSelected ? '' : wikiContext.msg('no-facets-selected')}
-                    <SelectedFacetsView searchStateFacet={searchFacetState}
+                    <SelectedFacetsView client={client}
+                                        searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
+                                        onValuesClick={eventHandler.onValuesClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                                         onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                                         onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}

@@ -88,22 +88,19 @@ class EventHandler {
 
     }
 
-    onValuesClick(propertyFacets: PropertyFacet[]) {
+    onValuesClick(propertyFacets: PropertyFacet[], property: Property) {
+
         this.currentDocumentsQueryBuilder
             .withOffset(0);
 
-        let properties = propertyFacets.map((pf) => new Property(pf.property, pf.type));
-        properties = Tools.createUniqueArray(properties, (p) => p.title);
-
-        properties.forEach((p) => {
-            this.currentDocumentsQueryBuilder
-                .clearFacetsForProperty(p);
-        });
+        this.currentDocumentsQueryBuilder
+            .clearFacetsForProperty(property);
         propertyFacets.forEach((p) => {
             this.currentDocumentsQueryBuilder.withPropertyFacet(p);
         });
+
         this.updateDocuments();
-        this.updateFacetValuesForProperties(properties);
+        this.updateFacetValuesForProperties([property]);
 
     }
 
@@ -183,6 +180,7 @@ class EventHandler {
     private updateFacetValuesForProperties(properties: Property[], limit: number = null) {
 
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder);
+
         properties.forEach((p) => {
             if (p.isRangeProperty()) {
                 this.updateRanges([p]);

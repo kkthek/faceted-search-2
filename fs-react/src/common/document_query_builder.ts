@@ -33,7 +33,7 @@ class DocumentQueryBuilder {
     }
 
     clearFacetsForProperty(property: Property): DocumentQueryBuilder {
-        Tools.removeFirst(this.query.propertyFacets, (e) => e.property, property.title);
+        Tools.removeAll(this.query.propertyFacets, (e) => e.property, property.title);
         return this;
     }
 

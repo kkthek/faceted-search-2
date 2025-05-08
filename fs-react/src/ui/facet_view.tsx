@@ -31,7 +31,7 @@ function FacetViewProperty(prop: {
     onPropertyClick: (p: Property)=>void,
     onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
-    onValuesClick: (p: PropertyFacet[])=>void,
+    onValuesClick: (p: PropertyFacet[], property: Property)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
     onFacetValueContainsClick: (text: string, limit: number, property: Property) => void,
     onOrDialogClick: (property: Property) => void
@@ -108,7 +108,7 @@ function FacetView(prop: {
     onPropertyClick: (p: Property)=>void,
     onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
-    onValuesClick: (p: PropertyFacet[])=>void,
+    onValuesClick: (p: PropertyFacet[], property: Property)=>void,
     onRemoveClick: (p: PropertyFacet)=>void,
     onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
 }) {
@@ -180,7 +180,7 @@ function FacetView(prop: {
         let target = event.target as any;
         if (!target.classList.contains('MuiTreeItem-label')) return;
         if (target.classList.contains('MuiSvgIcon-root')) return;
-        console.log(target.classList);
+
         prop.onPropertyClick(propertyMap[itemId])
     };
 

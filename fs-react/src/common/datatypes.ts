@@ -152,6 +152,19 @@ export class PropertyFacet {
             && this.ORed === that.ORed
             ;
     }
+
+    containsValueOrMWTitle(valueCount: ValueCount): boolean {
+
+        let sameValue = this.value !== null && (
+            (this.value as string) === valueCount.value as string
+            || (this.value as number) === valueCount.value as number
+            || ((this.value as Date).toUTCString && (valueCount.value as Date).toUTCString
+                && (this.value as Date).toUTCString() === (valueCount.value as Date).toUTCString())
+        );
+        let sameMWTitle = this.mwTitle
+            && (this.mwTitle === valueCount.mwTitle || (this.mwTitle as MWTitle).equals(valueCount.mwTitle))
+        return sameValue || sameMWTitle;
+    }
 }
 
 export type ValueType = string | number | boolean | Date;

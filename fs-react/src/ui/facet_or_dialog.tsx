@@ -18,14 +18,14 @@ function FacetOrDialog(prop: {
         searchStateFacets: FacetResponse,
         selectedFacets: PropertyFacet[],
         property: Property,
-        onValuesClick: (p: PropertyFacet[])=>void
+        onValuesClick: (p: PropertyFacet[], property: Property)=>void
 }) {
     if (!prop.property) return;
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
 
     let wikiContext = useContext(WikiContext);
-    let selectedFacets: PropertyFacet[] = []
+    let selectedFacets = prop.selectedFacets.filter(e => e.property === prop.property.title);
     let onChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
         let propertyFacet = new PropertyFacet(
             prop.property.title,
@@ -54,10 +54,11 @@ function FacetOrDialog(prop: {
             values.push(row.map((value) => {
                 let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
                 selectedValue += "("+value.count+")";
+                let isSelected = Tools.findFirstByPredicate(selectedFacets, (e)=> e.containsValueOrMWTitle(value)) != null;
                 return <Grid size={4}>
                             <FormControlLabel
                                 key={selectedValue}
-                                control={<Checkbox/>}
+                                control={<Checkbox defaultChecked={isSelected}/>}
                                 onChange={(event, checked) => {
                                              onChange(event, checked, value)
                                          }}
@@ -95,7 +96,7 @@ function FacetOrDialog(prop: {
                 <DialogActions>
                     <Button onClick={prop.handleClose}>Cancel</Button>
                     <Button onClick={() => {
-                        prop.onValuesClick(selectedFacets);
+                        prop.onValuesClick(selectedFacets, prop.property);
                         prop.handleClose();
                     }} autoFocus>Ok</Button>
                 </DialogActions>
