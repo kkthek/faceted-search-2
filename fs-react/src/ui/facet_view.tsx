@@ -1,10 +1,10 @@
 import React, {useContext, useState} from "react";
 import {
     BaseQuery,
-    FacetResponse, FacetsQuery,
+    FacetResponse,
     Property,
     PropertyFacet,
-    PropertyFacetCount, PropertyValueConstraint,
+    PropertyFacetCount,
     PropertyWithURL
 } from "../common/datatypes";
 import Tools from "../util/tools";
@@ -18,8 +18,8 @@ import CustomTreeItem from "../custom_ui/custom_tree_item";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
 import {Typography} from "@mui/material";
-import FacetQueryBuilder from "../common/facet_query_builder";
 import Client from "../common/client";
+import QueryUtils from "../util/query_utils";
 
 function FacetViewProperty(prop: {
     query: BaseQuery,
@@ -93,14 +93,6 @@ function FacetViewProperty(prop: {
     </CustomTreeItem>
 }
 
-function prepareQuery(query: BaseQuery, property: Property): FacetsQuery {
-    let queryBuilder = new FacetQueryBuilder();
-    queryBuilder.updateBaseQueryDirect(query);
-    queryBuilder.withoutPropertyFacet(property);
-    queryBuilder.withPropertyValueConstraint(new PropertyValueConstraint(property));
-    return queryBuilder.build();
-}
-
 function FacetView(prop: {
     client: Client
     searchStateDocument: SearchStateDocument,
@@ -132,7 +124,7 @@ function FacetView(prop: {
 
     const onOrDialogClick = function(p: Property) {
 
-        let query = prepareQuery(prop.searchStateDocument.query, p);
+        let query = QueryUtils.prepareQueryWithoutFacet(prop.searchStateDocument.query, p);
         prop.client.searchFacets(query).then((r) => {
 
             setOpenOrDialog({ open: true, property: p, facetResponse: r});

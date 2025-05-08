@@ -1,23 +1,15 @@
 import React, {useContext, useState} from "react";
-import {
-    BaseQuery,
-    FacetsQuery,
-    Property,
-    PropertyFacet,
-    PropertyValueConstraint,
-    PropertyValueCount,
-} from "../common/datatypes";
-import FacetValues from "./facet_values_view";
+import {Property, PropertyFacet, PropertyValueCount,} from "../common/datatypes";
 import {SearchStateFacet} from "./event_handler";
-import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
+import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SelectedFacetValues from "./selected_facet_values_view";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import Client from "../common/client";
 import FacetOrDialog from "./facet_or_dialog";
-import FacetQueryBuilder from "../common/facet_query_builder";
 import {WikiContext} from "../index";
+import QueryUtils from "../util/query_utils";
 
 function SelectedFacets(prop: {
     propertyValueCount: PropertyValueCount
@@ -65,14 +57,6 @@ function SelectedFacets(prop: {
             >{itemlist}</CustomTreeItem>
 }
 
-function prepareQuery(query: BaseQuery, property: Property): FacetsQuery {
-    let queryBuilder = new FacetQueryBuilder();
-    queryBuilder.updateBaseQueryDirect(query);
-    queryBuilder.withoutPropertyFacet(property);
-    queryBuilder.withPropertyValueConstraint(new PropertyValueConstraint(property));
-    return queryBuilder.build();
-}
-
 function SelectedFacetsView(prop: {
     client: Client
     searchStateFacet: SearchStateFacet,
@@ -92,7 +76,7 @@ function SelectedFacetsView(prop: {
 
 
     const onOrDialogClick = function(p: Property) {
-        let query = prepareQuery(prop.searchStateFacet.query, p);
+        let query = QueryUtils.prepareQueryWithoutFacet(prop.searchStateFacet.query, p);
         prop.client.searchFacets(query).then((r) => {
 
             setOpenOrDialog({ open: true, property: p, facetResponse: r});
