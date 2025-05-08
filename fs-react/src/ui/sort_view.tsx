@@ -2,6 +2,7 @@ import React, {useContext, useState} from "react";
 import {Datatype, Order, Property, Sort} from "../common/datatypes";
 import {WikiContext} from "../index";
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import ConfigUtils from "../util/config_utils";
 
 function SortView(prop : {
     onChange: (sort: Sort) => void
@@ -12,11 +13,11 @@ function SortView(prop : {
     if (!showSortView) return;
 
     let sorts: any = {
-        score: getSortByName('score'),
-        newest: getSortByName('newest'),
-        oldest: getSortByName('oldest'),
-        ascending: getSortByName('ascending'),
-        descending: getSortByName('descending')
+        score: ConfigUtils.getSortByName('score'),
+        newest: ConfigUtils.getSortByName('newest'),
+        oldest: ConfigUtils.getSortByName('oldest'),
+        ascending: ConfigUtils.getSortByName('ascending'),
+        descending: ConfigUtils.getSortByName('descending')
     };
     
     const [sort, setSort] = useState(defaultSortOrder);
@@ -45,17 +46,6 @@ function SortView(prop : {
         </Select>
     </FormControl>
 
-}
-
-let getSortByName = function(name: string): Sort {
-    switch(name) {
-        case 'newest': return new Sort(new Property('_MDAT', Datatype.datetime), Order.desc);
-        case 'oldest': return new Sort(new Property('_MDAT', Datatype.datetime), Order.asc);
-        case 'ascending': return new Sort(new Property('displaytitle', Datatype.internal), Order.asc);
-        case 'descending': return new Sort(new Property('displaytitle', Datatype.internal), Order.desc);
-        default:
-        case 'score': return new Sort(new Property('score', Datatype.internal), Order.desc);
-    }
 }
 
 export default SortView;

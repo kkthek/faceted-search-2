@@ -3,7 +3,6 @@ import {WikiContext} from "../index";
 import {Document, PropertyFacetValues} from "../common/datatypes";
 import WikiLink from "./wiki_link";
 import ValueSerializer from "../util/value_serializer";
-import {SearchStateDocument} from "./event_handler";
 import Client from "../common/client";
 import {Button, Table, TableBody, TableCell, TableRow} from "@mui/material";
 

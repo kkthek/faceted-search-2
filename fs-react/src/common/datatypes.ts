@@ -8,9 +8,15 @@
 import Tools from "../util/tools";
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 
-export interface WikiContextInterface {
+export class WikiContextInterface {
     config: any;
-    msg:  (id:string, ...params: string[]) => string
+    msg: (id: string,  ...params: string[]) => string
+
+    constructor(config: any = [],
+                msg: (id: string, ...params: string[]) => string = (id)=>"<"+id+">") {
+        this.config = config;
+        this.msg = msg;
+    }
 }
 
 export interface ElementWithURL {

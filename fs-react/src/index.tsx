@@ -28,10 +28,7 @@ import ConfigUtils from "./util/config_utils";
 const browserWindow = window as any;
 let solrProxyUrl;
 
-let wikiContext: WikiContextInterface = {
-    config: {},
-    msg: (id: string) => "<" + id + ">"
-};
+let wikiContext = new WikiContextInterface();
 
 const isInWikiContext = browserWindow.mw !== undefined;
 
@@ -39,8 +36,10 @@ if (isInWikiContext) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
     solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
-    wikiContext.config = browserWindow.mw.config.values;
-    wikiContext.msg = browserWindow.mw.msg;
+    wikiContext = new WikiContextInterface(
+        browserWindow.mw.config.values,
+        browserWindow.mw.msg
+    );
 } else {
     solrProxyUrl = "http://localhost:9000";
 }
@@ -172,5 +171,6 @@ function startApp() {
 if (isInWikiContext) {
     startApp();
 } else {
-    ConfigUtils.getSettingsForDevContext(client, wikiContext).then(() => startApp());
+    ConfigUtils.getSettingsForDevContext(client, wikiContext)
+        .then(() => startApp());
 }

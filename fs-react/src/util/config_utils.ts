@@ -1,4 +1,4 @@
-import {BaseQuery, WikiContextInterface} from "../common/datatypes";
+import {BaseQuery, Datatype, Order, Property, Sort, WikiContextInterface} from "../common/datatypes";
 import Client from "../common/client";
 
 class ConfigUtils {
@@ -28,6 +28,17 @@ class ConfigUtils {
             case 'jpg': return "image/jpeg";
             default:
                 return 'application/text';
+        }
+    }
+
+    static getSortByName(name: string): Sort {
+        switch(name) {
+            case 'newest': return new Sort(new Property('_MDAT', Datatype.datetime), Order.desc);
+            case 'oldest': return new Sort(new Property('_MDAT', Datatype.datetime), Order.asc);
+            case 'ascending': return new Sort(new Property('displaytitle', Datatype.internal), Order.asc);
+            case 'descending': return new Sort(new Property('displaytitle', Datatype.internal), Order.desc);
+            default:
+            case 'score': return new Sort(new Property('score', Datatype.internal), Order.desc);
         }
     }
 

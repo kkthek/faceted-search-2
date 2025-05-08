@@ -1,5 +1,6 @@
 import {Datatype, DocumentQuery, Order, Property, PropertyFacet, Sort} from "./datatypes";
 import Tools from "../util/tools";
+import ConfigUtils from "../util/config_utils";
 
 class DocumentQueryBuilder {
 
@@ -13,8 +14,8 @@ class DocumentQueryBuilder {
             [],
             [],
             [
-                { property: new Property("score", Datatype.internal), order: Order.desc},
-                { property: new Property("displaytitle", Datatype.internal), order: Order.asc}
+                ConfigUtils.getSortByName('score'),
+                ConfigUtils.getSortByName('ascending')
             ],
 
             10,
