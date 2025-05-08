@@ -162,7 +162,7 @@ export class PropertyFacet {
 
     containsValueOrMWTitle(valueCount: ValueCount): boolean {
 
-        let sameValue = this.value !== null && (
+        let sameValue = this.value && (
             (this.value as string) === valueCount.value as string
             || (this.value as number) === valueCount.value as number
             || ((this.value as Date).toUTCString && (valueCount.value as Date).toUTCString
