@@ -20,6 +20,10 @@ div.fs-boxes {
 
 }
 
+div.fs-create-article {
+    margin-left: 20px;
+}
+
 @media (min-width: 1000px) {
     #fs-header {
         width: 100%;

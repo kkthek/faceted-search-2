@@ -7,7 +7,6 @@ import PreviewPopup from "./preview_popup";
 import CategoriesInTitle from "./categories_in_title";
 import Annotations from "./annotations_snippets";
 import ArticleProperties from "./article_properties";
-import ConfigUtils from "../util/config_utils";
 import {Box, Typography} from "@mui/material";
 
 function SearchResult(prop: { doc: Document, client: Client}) {
@@ -17,10 +16,10 @@ function SearchResult(prop: { doc: Document, client: Client}) {
     let showSolrScore = wikiContext.config['fs2gShowSolrScore'];
 
     let classNames = [];
-    if (promotionProperty !== false && ConfigUtils.containsTrueFacetValue(prop.doc, promotionProperty)) {
+    if (promotionProperty !== false && prop.doc.containsTrueFacetValue(promotionProperty)) {
         classNames.push('promoted');
     }
-    if (demotionProperty !== false&& ConfigUtils.containsTrueFacetValue(prop.doc, demotionProperty)) {
+    if (demotionProperty !== false&& prop.doc.containsTrueFacetValue(demotionProperty)) {
         classNames.push('demoted');
     }
 

@@ -436,6 +436,13 @@ export class Document implements ElementWithURL {
     getCategoryFacetValue(category: string) {
         return Tools.findFirst(this.categoryFacets, (c) => c.category, category);
     }
+
+    containsTrueFacetValue(property: string) {
+        let propertyFacetValues = this.getPropertyFacetValues(property);
+        if (propertyFacetValues === null) return false;
+        let values = propertyFacetValues.values as boolean[];
+        return values.includes(true);
+    }
 }
 
 @jsonObject

@@ -22,6 +22,8 @@ import {Property, WikiContextInterface} from "./common/datatypes";
 import CategoryDropdown from "./ui/category_dropdown";
 import {Divider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
+import CreateArticleLink from "./ui/create_article";
+import ConfigUtils from "./util/config_utils";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -53,6 +55,7 @@ function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
     const [error, setError] = React.useState('');
+    const [searchText, setSearchText] = useState('');
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
@@ -92,15 +95,16 @@ function App() {
         <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
                 <SortView onChange={eventHandler.onSortChange.bind(eventHandler)}/>
-                <SearchBar onClick={eventHandler.onSearchClick.bind(eventHandler)}/>
+                <SearchBar onClick={eventHandler.onSearchClick.bind(eventHandler)} textState={[searchText, setSearchText]}/>
                 <NamespaceView searchStateDocument={searchStateDocument}
                                onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
                 />
+                <CreateArticleLink searchText={searchText}/>
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 <div id={'fs-selected-facets'}>
                     <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
-                    {anyFacetSelected ? '' : wikiContext.msg('no-facets-selected')}
+                    {anyFacetSelected ? '' : "("+wikiContext.msg('fs-no-facets-selected')+")"}
                     <SelectedFacetsView client={client}
                                         searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
@@ -149,19 +153,6 @@ function App() {
     </WikiContext.Provider>;
 }
 
-async function getSettingsForDevContext() {
-    let result = await client.getSettingsForDevContext();
-    let langMap = result.lang;
-    wikiContext.config = result.settings;
-    wikiContext.msg = (id: string, ...params: string[]) => {
-        let text = langMap[id] ? langMap[id] : "<" + id + ">";
-        for(let i = 0; i < params.length; i++) {
-            text = text.replace(new RegExp('\\$'+(i+1)), params[i]);
-        }
-        return text;
-    }
-    applyQueryConstraintsFromConfig();
-}
 
 function applyQueryConstraintsFromConfig() {
     wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: Property) => {
@@ -172,14 +163,14 @@ function applyQueryConstraintsFromConfig() {
 }
 
 function startApp() {
+    applyQueryConstraintsFromConfig();
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
     root.render(<App/>);
 }
 
 if (isInWikiContext) {
-    applyQueryConstraintsFromConfig();
     startApp();
 } else {
-    getSettingsForDevContext().then(() => startApp());
+    ConfigUtils.getSettingsForDevContext(client, wikiContext).then(() => startApp());
 }

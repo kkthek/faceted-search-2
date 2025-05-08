@@ -1,4 +1,5 @@
-import {BaseQuery, Document} from "../common/datatypes";
+import {BaseQuery, Document, WikiContextInterface} from "../common/datatypes";
+import Client from "../common/client";
 
 class ConfigUtils {
 
@@ -30,12 +31,20 @@ class ConfigUtils {
         }
     }
 
-    static containsTrueFacetValue(doc: Document, property: string) {
-        let propertyFacetValues = doc.getPropertyFacetValues(property);
-        if (propertyFacetValues === null) return false;
-        let values = propertyFacetValues.values as boolean[];
-        return values.includes(true);
+    static async getSettingsForDevContext(client: Client, wikiContext: WikiContextInterface) {
+        let result = await client.getSettingsForDevContext();
+        let langMap = result.lang;
+        wikiContext.config = result.settings;
+        wikiContext.msg = (id: string, ...params: string[]) => {
+            let text = langMap[id] ? langMap[id] : "<" + id + ">";
+            for(let i = 0; i < params.length; i++) {
+                text = text.replace(new RegExp('\\$'+(i+1)), params[i]);
+            }
+            return text;
+        }
+
     }
+
 
 }
 

@@ -23,5 +23,6 @@
 	"fs-is-in-category": 		"liegt in Kategorie",
 	"fs-facet-values":	 		"Facettenwerte",
 	"fs-preview":	 			"Vorschau",
-	"fs-facet-ored-values": 	"Selektieren Sie alle Werte die im Ergebnis auftauchen sollen"
+	"fs-facet-ored-values": 	"Selektieren Sie alle Werte die im Ergebnis auftauchen sollen",
+	"fs-create-article": 		"Erzeuge neue Seite"
 }

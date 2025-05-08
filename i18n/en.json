@@ -23,6 +23,6 @@
 	"fs-is-in-category": 		"is in category",
 	"fs-facet-values":	 		"Facet values",
 	"fs-preview":	 			"Preview",
-	"fs-facet-ored-values": 	"Select all values that should appear in result set"
-
+	"fs-facet-ored-values": 	"Select all values that should appear in result set",
+	"fs-create-article": 		"Create an article"
 }
