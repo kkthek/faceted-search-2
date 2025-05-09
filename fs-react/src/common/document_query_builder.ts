@@ -62,7 +62,7 @@ class DocumentQueryBuilder {
         return this;
     }
 
-    toggleNamespacesFacet(namespaces: number[]): DocumentQueryBuilder {
+    withNamespaceFacets(namespaces: number[]): DocumentQueryBuilder {
         this.query.namespaceFacets = namespaces;
         return this;
     }

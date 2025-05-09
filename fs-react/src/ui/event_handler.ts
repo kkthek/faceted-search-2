@@ -2,16 +2,15 @@ import DocumentQueryBuilder from "../common/document_query_builder";
 import FacetQueryBuilder from "../common/facet_query_builder";
 import {
     BaseQuery,
+    DocumentsResponse,
+    FacetResponse,
     Property,
     PropertyFacet,
     PropertyValueConstraint,
-    DocumentsResponse,
-    FacetResponse,
     Sort
 } from "../common/datatypes";
 import StatQueryBuilder from "../common/stat_query_builder";
 import Client from "../common/client";
-import Tools from "../util/tools";
 
 export interface SearchStateDocument {
     documentResponse: DocumentsResponse;
@@ -51,8 +50,8 @@ class EventHandler {
         this.currentDocumentsQueryBuilder
             .withSearchText(text)
             .withOffset(0);
+
         this.updateDocuments();
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.updateFacets();
     }
 
@@ -65,10 +64,10 @@ class EventHandler {
     }
 
     onPropertyClick(p: Property) {
-        let propertyFacet = new PropertyFacet(p.title, p.type, null, null, null);
         this.currentDocumentsQueryBuilder
-            .withPropertyFacet(propertyFacet)
+            .withPropertyFacet(new PropertyFacet(p.title, p.type, null, null, null))
             .withOffset(0);
+
         this.updateDocuments();
         this.updateFacetValuesForProperties(p);
     }
@@ -83,9 +82,9 @@ class EventHandler {
             .withOffset(0)
             .clearFacetsForProperty(property)
             .withPropertyFacet(p);
+
         this.updateDocuments();
         this.updateFacetValuesForProperties(property);
-
     }
 
     onValuesClick(propertyFacets: PropertyFacet[], property: Property) {
@@ -94,13 +93,10 @@ class EventHandler {
             .withOffset(0)
             .clearFacetsForProperty(property);
 
-        propertyFacets.forEach((p) => {
-            this.currentDocumentsQueryBuilder.withPropertyFacet(p);
-        });
+        propertyFacets.forEach((p) => this.currentDocumentsQueryBuilder.withPropertyFacet(p));
 
         this.updateDocuments();
         this.updateFacetValuesForProperties(property);
-
     }
 
     onRemovePropertyFacet(p: PropertyFacet) {
@@ -114,7 +110,6 @@ class EventHandler {
             this.currentFacetsQueryBuilder
             .clearFacetsQueriesForProperty(property);
         }
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
 
         this.updateDocuments();
         this.updateFacetValuesForProperties(property);
@@ -129,15 +124,16 @@ class EventHandler {
                 null,
                 text === '' ? null : text)
         );
+
         this.updateFacets();
     }
 
     onNamespaceClick(namespaces: number[]) {
         this.currentDocumentsQueryBuilder
-            .toggleNamespacesFacet(namespaces)
+            .withNamespaceFacets(namespaces)
             .withOffset(0);
+
         this.updateDocuments();
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.updateFacets();
     }
 
@@ -151,8 +147,8 @@ class EventHandler {
                 .withOffset(0)
                 .withCategoryFacet(category);
         }
+
         this.updateDocuments();
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.updateFacets();
     }
 
@@ -160,20 +156,19 @@ class EventHandler {
         this.currentDocumentsQueryBuilder
             .withOffset(0)
             .withoutCategoryFacet(category);
+
         this.updateDocuments();
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.updateFacets();
     }
 
     onPageIndexClick(pageIndex: number, limit: number) {
         this.currentDocumentsQueryBuilder
             .withOffset((pageIndex-1) * limit);
+
         this.updateDocuments();
     }
 
     private updateFacetValuesForProperties(property: Property, limit: number = null) {
-
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
 
         if (!property.isRangeProperty()) {
             this.currentFacetsQueryBuilder.withPropertyValueConstraint(
@@ -194,7 +189,6 @@ class EventHandler {
                 this.setError(e.message);
             });
 
-
     }
 
     private async requestRanges(properties: Property[]) {
@@ -202,20 +196,23 @@ class EventHandler {
         if (properties.length === 0) {
             return;
         }
+
         const sqb = new StatQueryBuilder();
         sqb.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
-        properties.forEach((p) => {
-            sqb.withStatField(p);
-        })
+        properties.forEach((p) => sqb.withStatField(p));
+
         let response = await this.client.searchStats(sqb.build());
         response.stats.forEach((stat) => {
-            const p = stat.property;
-            this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(p);
-            stat.clusters.forEach((r) => {
-                this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
+
+            this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(stat.property);
+            stat.clusters.forEach((range) => {
+                this.currentFacetsQueryBuilder.withFacetQuery({
+                    property: stat.property.title,
+                    type: stat.property.type,
+                    range: range
+                })
             });
         });
-
 
     }
 
@@ -233,6 +230,7 @@ class EventHandler {
     }
 
     private updateFacets() {
+        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
             this.setFacetState({
                 facetsResponse: response,
