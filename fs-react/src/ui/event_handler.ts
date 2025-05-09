@@ -175,29 +175,33 @@ class EventHandler {
 
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
 
-        if (property.isRangeProperty()) {
-            this.requestRanges([property])
-                .then(() => this.updateFacets())
-                .catch((e) => {
-                    console.error("Requesting new ranges failed");
-                    console.error(e);
-                    this.setError(e.message);
-                });
-        } else {
+        if (!property.isRangeProperty()) {
             this.currentFacetsQueryBuilder.withPropertyValueConstraint(
                 new PropertyValueConstraint(
                     property,
                     limit,
                     null,
                     null));
-            this.updateFacets()
+
         }
+
+        const rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
+        this.requestRanges(property.isRangeProperty() ? [property, ...rangeProperties] : rangeProperties)
+            .then(() => this.updateFacets())
+            .catch((e) => {
+                console.error("Requesting new ranges failed");
+                console.error(e);
+                this.setError(e.message);
+            });
 
 
     }
 
     private async requestRanges(properties: Property[]) {
 
+        if (properties.length === 0) {
+            return;
+        }
         const sqb = new StatQueryBuilder();
         sqb.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         properties.forEach((p) => {
