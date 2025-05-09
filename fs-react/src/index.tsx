@@ -24,6 +24,7 @@ import {Divider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
 import CreateArticleLink from "./ui/create_article";
 import ConfigUtils from "./util/config_utils";
+import {useDebounce} from "./util/custom_hooks";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -65,7 +66,10 @@ function App() {
         client
     );
 
-
+    const debouncedSearchValue = useDebounce(searchText, 500);
+    useEffect(() => {
+        eventHandler.onSearchClick(debouncedSearchValue);
+    }, [debouncedSearchValue]);
 
     useEffect(
         () => {
