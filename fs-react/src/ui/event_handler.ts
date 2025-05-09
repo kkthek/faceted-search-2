@@ -70,11 +70,11 @@ class EventHandler {
             .withPropertyFacet(propertyFacet)
             .withOffset(0);
         this.updateDocuments();
-        this.updateFacetValuesForProperties([p]);
+        this.updateFacetValuesForProperties(p);
     }
 
     onExpandClick(p: Property, limit: number) {
-        this.updateFacetValuesForProperties([p], limit);
+        this.updateFacetValuesForProperties(p, limit);
     }
 
     onValueClick(p: PropertyFacet) {
@@ -84,7 +84,7 @@ class EventHandler {
             .clearFacetsForProperty(property)
             .withPropertyFacet(p);
         this.updateDocuments();
-        this.updateFacetValuesForProperties([property]);
+        this.updateFacetValuesForProperties(property);
 
     }
 
@@ -99,7 +99,7 @@ class EventHandler {
         });
 
         this.updateDocuments();
-        this.updateFacetValuesForProperties([property]);
+        this.updateFacetValuesForProperties(property);
 
     }
 
@@ -117,12 +117,7 @@ class EventHandler {
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
 
         this.updateDocuments();
-        const rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
-        if (rangeProperties.length === 0) {
-            this.updateFacets();
-        } else {
-            this.updateRanges(rangeProperties);
-        }
+        this.updateFacetValuesForProperties(property);
     }
 
     onFacetValueContains(text: string, limit: number, property: Property) {
@@ -172,31 +167,36 @@ class EventHandler {
 
     onPageIndexClick(pageIndex: number, limit: number) {
         this.currentDocumentsQueryBuilder
-            .withOffset(pageIndex * limit);
+            .withOffset((pageIndex-1) * limit);
         this.updateDocuments();
     }
 
-    private updateFacetValuesForProperties(properties: Property[], limit: number = null) {
+    private updateFacetValuesForProperties(property: Property, limit: number = null) {
 
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
 
-        properties.forEach((p) => {
-            if (p.isRangeProperty()) {
-                this.updateRanges([p]);
-            } else {
-                this.currentFacetsQueryBuilder.withPropertyValueConstraint(
-                    new PropertyValueConstraint(
-                        p,
-                        limit,
-                        null,
-                        null));
+        if (property.isRangeProperty()) {
+            this.requestRanges([property])
+                .then(() => this.updateFacets())
+                .catch((e) => {
+                    console.error("Requesting new ranges failed");
+                    console.error(e);
+                    this.setError(e.message);
+                });
+        } else {
+            this.currentFacetsQueryBuilder.withPropertyValueConstraint(
+                new PropertyValueConstraint(
+                    property,
+                    limit,
+                    null,
+                    null));
+            this.updateFacets()
+        }
 
-            }
-        });
-        this.updateFacets();
+
     }
 
-    private async requestRangesAndUpdateFacets(properties: Property[]) {
+    private async requestRanges(properties: Property[]) {
 
         const sqb = new StatQueryBuilder();
         sqb.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
@@ -211,17 +211,8 @@ class EventHandler {
                 this.currentFacetsQueryBuilder.withFacetQuery({property: p.title, type: p.type, range: r})
             });
         });
-        this.updateFacets();
 
-    }
 
-    private updateRanges(properties: Property[]) {
-        this.requestRangesAndUpdateFacets(properties)
-            .catch((e) => {
-                console.error("Requesting new ranges failed");
-                console.error(e);
-                this.setError(e.message);
-            });
     }
 
     private updateDocuments() {

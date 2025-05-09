@@ -64,7 +64,7 @@ function FacetViewProperty(prop: {
         />
     });
 
-    let showAll = propertyValueCount?.values.length <= wikiContext.config.fs2gFacetValueLimit &&
+    let showAll = propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
                 !(prop.property.isRangeProperty() || prop.property.isBooleanProperty());
 
     return <CustomTreeItem itemId={prop.property.title}
@@ -159,7 +159,6 @@ function FacetView(prop: {
     ) => {
 
         if (!propertyMap[itemId]) return;
-        console.log("Expanded");
         prop.onExpandClick(propertyMap[itemId], wikiContext.config.fs2gFacetValueLimit);
     };
 

@@ -71,24 +71,7 @@ function App() {
         eventHandler.onSearchClick(debouncedSearchValue);
     }, [debouncedSearchValue]);
 
-    useEffect(
-        () => {
 
-            client.searchDocuments(currentDocumentsQueryBuilder.build())
-                .then(response => {
-                    setSearchStateDocument({
-                        documentResponse: response,
-                        query: currentDocumentsQueryBuilder.build()
-                    });
-
-                }).catch((e) => {
-                console.error("Request to backend failed");
-                console.error(e);
-                setError(e.message);
-            });
-        },
-        []
-    );
 
     let anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
