@@ -91,10 +91,9 @@ class EventHandler {
     onValuesClick(propertyFacets: PropertyFacet[], property: Property) {
 
         this.currentDocumentsQueryBuilder
-            .withOffset(0);
-
-        this.currentDocumentsQueryBuilder
+            .withOffset(0)
             .clearFacetsForProperty(property);
+
         propertyFacets.forEach((p) => {
             this.currentDocumentsQueryBuilder.withPropertyFacet(p);
         });
