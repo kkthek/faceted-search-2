@@ -1,6 +1,6 @@
 import {CategoryFacetCount} from "../common/datatypes";
 import React, {useContext} from "react";
-import {SearchStateDocument} from "./event_handler";
+import {SearchStateDocument} from "../common/event_handler";
 import {WikiContext} from "../index";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import {SimpleTreeView} from "@mui/x-tree-view";

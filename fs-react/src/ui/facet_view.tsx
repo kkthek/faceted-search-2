@@ -9,7 +9,7 @@ import {
 } from "../common/datatypes";
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
-import {SearchStateDocument, SearchStateFacet} from "./event_handler";
+import {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
 import {WikiContext} from "../index";
 import ConfigUtils from "../util/config_utils";
 import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";

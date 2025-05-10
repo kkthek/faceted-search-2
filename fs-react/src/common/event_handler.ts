@@ -1,5 +1,5 @@
-import DocumentQueryBuilder from "../common/document_query_builder";
-import FacetQueryBuilder from "../common/facet_query_builder";
+import DocumentQueryBuilder from "./document_query_builder";
+import FacetQueryBuilder from "./facet_query_builder";
 import {
     BaseQuery,
     DocumentsResponse,
@@ -8,9 +8,9 @@ import {
     PropertyFacet,
     PropertyValueConstraint, RangeQuery,
     Sort
-} from "../common/datatypes";
-import StatQueryBuilder from "../common/stat_query_builder";
-import Client from "../common/client";
+} from "./datatypes";
+import StatQueryBuilder from "./stat_query_builder";
+import Client from "./client";
 
 export interface SearchStateDocument {
     documentResponse: DocumentsResponse;

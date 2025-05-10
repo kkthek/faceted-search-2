@@ -12,7 +12,7 @@ import Client from "./common/client";
 import DocumentQueryBuilder from "./common/document_query_builder";
 import FacetView from "./ui/facet_view";
 import SelectedFacetsView from "./ui/selected_facets_view";
-import EventHandler, {SearchStateDocument, SearchStateFacet} from "./ui/event_handler";
+import EventHandler, {SearchStateDocument, SearchStateFacet} from "./common/event_handler";
 import CategoryView from "./ui/category_view";
 import SelectedCategoriesView from "./ui/selected_categories_view";
 import NamespaceView from "./ui/namespace_view";

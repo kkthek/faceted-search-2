@@ -1,7 +1,7 @@
 import {NamespaceFacetCount} from "../common/datatypes";
 import React, {useContext, useState} from "react";
 import {WikiContext} from "../index";
-import {SearchStateDocument} from "./event_handler";
+import {SearchStateDocument} from "../common/event_handler";
 import {ToggleButton, ToggleButtonGroup} from "@mui/material";
 
 function NamespaceFacet(prop: {

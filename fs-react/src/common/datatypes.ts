@@ -208,6 +208,11 @@ export class Range {
     @jsonMember({deserializer: value => Tools.deserializeValue(value)})
     to: Date|number
 
+    constructor(from: Date | number, to: Date | number) {
+        this.from = from;
+        this.to = to;
+    }
+
     equals(that: Range|void) {
         if (!that) return false;
         return this.from === (that as Range).from && this.to === (that as Range).to;

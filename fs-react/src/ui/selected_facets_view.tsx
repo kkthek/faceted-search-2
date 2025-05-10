@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import {Property, PropertyFacet, PropertyValueCount,} from "../common/datatypes";
-import {SearchStateFacet} from "./event_handler";
+import {SearchStateFacet} from "../common/event_handler";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";

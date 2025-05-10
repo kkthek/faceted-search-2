@@ -1,5 +1,5 @@
 import Client from "../src/common/client";
-import {Datatype} from "../src/common/datatypes";
+import {Datatype, Property} from "../src/common/datatypes";
 import StatQueryBuilder from "../src/common/stat_query_builder";
 
 /**
@@ -30,15 +30,23 @@ let asserts = (assertCallback) => {
     assertCallback(globalResult);
 };
 
+let logErrors = (e) => {
+    if (e.message === 'fetch failed') {
+        console.warn("\n\n-------- Is Proxy running?? -------------\n\n");
+    }
+    //console.log("details: %o", e);
+}
+
 describe('stats-search', function () {
     it('request stats for datetime property', function () {
         globalResult = null;
         let query = new StatQueryBuilder()
-            .withStatField({title: 'Was born at', type: Datatype.datetime})
+            .withStatField(new Property('Was born at', Datatype.datetime))
             .build();
         client.searchStats(query).then((e) => {
             globalResult = e;
         }).catch((e) => {
+            logErrors(e);
             globalResult = { error_msg : 'failed', detail: e instanceof Error ? e.message:'unknown' };
         });
 

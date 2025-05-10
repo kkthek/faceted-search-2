@@ -1,5 +1,5 @@
 import Client from "../src/common/client";
-import {Datatype} from "../src/common/datatypes";
+import {Datatype, Property, Range, RangeQuery} from "../src/common/datatypes";
 import FacetsQueryBuilder from "../src/common/facet_query_builder";
 
 /**
@@ -30,16 +30,25 @@ let asserts = (assertCallback) => {
     assertCallback(globalResult);
 };
 
+let logErrors = (e) => {
+    if (e.message === 'fetch failed') {
+        console.warn("\n\n-------- Is Proxy running?? -------------\n\n");
+    }
+    //console.log("details: %o", e);
+}
+
 describe('fecets-search', function () {
     it('request facets for datetime property', function () {
         globalResult = null;
+        let range = new Range(new Date(Date.parse("1969-01-01T00:00:00Z")), new Date(Date.parse("1970-01-01T00:00:00Z")));
         let query = new FacetsQueryBuilder()
-            .withFacetQuery({property: 'Was born at', type: Datatype.datetime,
-                    range: {from: new Date(Date.parse("1969-01-01T00:00:00Z")), to: new Date(Date.parse("1970-01-01T00:00:00Z"))}})
+            .withFacetQuery(new RangeQuery(new Property('Was born at',Datatype.datetime),
+                    range))
             .build();
         client.searchFacets(query).then((e) => {
             globalResult = e;
         }).catch((e) => {
+            logErrors(e);
             globalResult = { error_msg : 'failed', detail: e instanceof Error ? e.message:'unknown' };
         });
 

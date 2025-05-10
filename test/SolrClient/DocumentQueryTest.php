@@ -43,8 +43,8 @@ final class DocumentQueryTest extends BaseTest {
         $p->setValue('Markus');
         $p->setORed(true);
 
-        $p2 = new PropertyFacet('Has age', Datatype::NUMBER);
-        $p2->setValue(105);
+        $p2 = new PropertyFacet('Has name', Datatype::STRING);
+        $p2->setValue('Dieter');
         $p2->setORed(true);
 
         $q->setSearchText('')

@@ -1,6 +1,6 @@
 import DocumentQueryBuilder from "../src/common/document_query_builder";
 import Client from "../src/common/client";
-import {Datatype, PropertyFacet} from "../src/common/datatypes";
+import {Datatype, MWTitle, PropertyFacet} from "../src/common/datatypes";
 
 /**
  * Faceted search 2
@@ -28,6 +28,13 @@ let asserts = (assertCallback) => {
     assertCallback(globalResult);
 };
 
+let logErrors = (e) => {
+    if (e.message === 'fetch failed') {
+        console.warn("\n\n-------- Is Proxy running?? -------------\n\n");
+    }
+    //console.log("details: %o", e);
+}
+
 describe('document-search', function () {
     it('request document with search text', function () {
         globalResult = null;
@@ -37,6 +44,7 @@ describe('document-search', function () {
         client.searchDocuments(query).then((e) => {
             globalResult = e;
         }).catch((e) => {
+            logErrors(e);
             globalResult = { error_msg : 'failed', detail: e instanceof Error ? e.message:'unknown' };
         });
         asserts((response) => {
@@ -55,11 +63,12 @@ describe('document-search', function () {
         globalResult = null;
         let query = new DocumentQueryBuilder()
             .withPropertyFacet(new PropertyFacet('Works at', Datatype.wikipage,
-                null, { title: 'DIQA-GmbH', displayTitle: 'DIQA'}, null))
+                null, new MWTitle('DIQA-GmbH', 'DIQA'), null))
             .build();
         client.searchDocuments(query).then((e) => {
             globalResult = e;
         }).catch((e) => {
+            logErrors(e);
             globalResult = { error_msg : 'failed', detail: e instanceof Error ? e.message:'unknown' };
         });
         asserts((response) => {
