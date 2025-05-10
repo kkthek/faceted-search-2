@@ -91,6 +91,8 @@ class SolrRequestClient implements FacetedSearchClient
                 $v->getProperty()->type)];
             if (!is_null($v->getFacetContains())) {
                 $singleQueryParams['facet.contains'] = $v->getFacetContains();
+                $singleQueryParams['facet.contains.ignoreCase'] = 'true';
+                $singleQueryParams['facet.sort'] = 'count';
             }
             if (!is_null($v->getFacetLimit())) {
                 $singleQueryParams['facet.limit'] = $v->getFacetLimit();

@@ -6,7 +6,7 @@ import {
     FacetResponse,
     Property,
     PropertyFacet,
-    PropertyValueConstraint,
+    PropertyValueConstraint, RangeQuery,
     Sort
 } from "../common/datatypes";
 import StatQueryBuilder from "../common/stat_query_builder";
@@ -58,14 +58,15 @@ class EventHandler {
     onSortChange(sort: Sort) {
         this.currentDocumentsQueryBuilder
             .clearSorts()
-            .withSort(sort);
+            .withSort(sort)
+            .withOffset(0);
 
         this.updateDocuments();
     }
 
     onPropertyClick(p: Property) {
         this.currentDocumentsQueryBuilder
-            .withPropertyFacet(new PropertyFacet(p.title, p.type, null, null, null))
+            .withPropertyFacet(PropertyFacet.facetForAnyValue(p))
             .withOffset(0);
 
         this.updateDocuments();
@@ -76,12 +77,12 @@ class EventHandler {
         this.updateFacetValuesForProperties(p, limit);
     }
 
-    onValueClick(p: PropertyFacet) {
-        let property = new Property(p.property, p.type);
+    onValueClick(propertyFacet: PropertyFacet) {
+        let property = propertyFacet.getProperty();
         this.currentDocumentsQueryBuilder
             .withOffset(0)
             .clearFacetsForProperty(property)
-            .withPropertyFacet(p);
+            .withPropertyFacet(propertyFacet);
 
         this.updateDocuments();
         this.updateFacetValuesForProperties(property);
@@ -93,19 +94,19 @@ class EventHandler {
             .withOffset(0)
             .clearFacetsForProperty(property);
 
-        propertyFacets.forEach((p) => this.currentDocumentsQueryBuilder.withPropertyFacet(p));
+        propertyFacets.forEach((pf) => this.currentDocumentsQueryBuilder.withPropertyFacet(pf));
 
         this.updateDocuments();
         this.updateFacetValuesForProperties(property);
     }
 
-    onRemovePropertyFacet(p: PropertyFacet) {
+    onRemovePropertyFacet(propertyFacet: PropertyFacet) {
 
-        let property = new Property(p.property, p.type);
         this.currentDocumentsQueryBuilder
             .withOffset(0)
-            .withoutPropertyFacet(p);
+            .withoutPropertyFacet(propertyFacet);
 
+        let property = propertyFacet.getProperty();
         if (!this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property)) {
             this.currentFacetsQueryBuilder
             .clearFacetsQueriesForProperty(property);
@@ -206,11 +207,7 @@ class EventHandler {
 
             this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(stat.property);
             stat.clusters.forEach((range) => {
-                this.currentFacetsQueryBuilder.withFacetQuery({
-                    property: stat.property.title,
-                    type: stat.property.type,
-                    range: range
-                })
+                this.currentFacetsQueryBuilder.withFacetQuery(new RangeQuery(stat.property, range));
             });
         });
 

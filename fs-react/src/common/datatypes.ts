@@ -155,6 +155,15 @@ export class PropertyFacet {
     hasRange(): boolean {
         return (this.range && this.range !== null);
     }
+
+    getProperty() {
+        return new Property(this.property, this.type);
+    }
+
+    static facetForAnyValue(p: Property) {
+        return new PropertyFacet(p.title, p.type, null, null, null);
+    }
+
     equals(that: PropertyFacet) {
 
         return this.property === that.property
@@ -272,6 +281,12 @@ export class RangeQuery {
     property: string
     type: Datatype
     range: Range|void
+
+    constructor(property: Property, range: Range | void) {
+        this.property = property.title;
+        this.type = property.type;
+        this.range = range;
+    }
 }
 
 export class Sort {

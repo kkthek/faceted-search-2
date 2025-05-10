@@ -1,8 +1,9 @@
-import React, {KeyboardEvent, useContext, useState} from "react";
+import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
 import {Property} from "../common/datatypes";
 import {WikiContext} from "../index";
 import {Button, TextField} from "@mui/material";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
+import {useDebounce} from "../util/custom_hooks";
 
 function FacetFilter(prop : {
     property: Property
@@ -16,6 +17,11 @@ function FacetFilter(prop : {
     let unsuitableProperty = prop.property.isRangeProperty() || prop.property.isBooleanProperty();
     const [text, setText] = useState((): string => '');
     const [unchanged, setUnchanged] = useState((): boolean => true);
+
+    const debouncedSearchValue = useDebounce(text, 500);
+    useEffect(() => {
+        prop.onFilterContainsClick(debouncedSearchValue, wikiContext.config.fs2gFacetValueLimit, prop.property)
+    }, [debouncedSearchValue]);
 
     if (unsuitableProperty || (unchanged && needsNoFilter)) {
         return;
