@@ -6,11 +6,13 @@ import {
     FacetResponse,
     Property,
     PropertyFacet,
-    PropertyValueConstraint, RangeQuery,
+    PropertyValueConstraint,
+    RangeQuery,
     Sort
 } from "./datatypes";
 import StatQueryBuilder from "./stat_query_builder";
 import Client from "./client";
+import {Dispatch, SetStateAction} from "react";
 
 export interface SearchStateDocument {
     documentResponse: DocumentsResponse;
@@ -28,15 +30,15 @@ class EventHandler {
     private readonly currentDocumentsQueryBuilder: DocumentQueryBuilder;
     private readonly currentFacetsQueryBuilder: FacetQueryBuilder;
     private readonly client: Client;
-    private readonly setSearchState: React.Dispatch<React.SetStateAction<SearchStateDocument>>;
-    private readonly setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>;
-    private readonly setError: React.Dispatch<React.SetStateAction<string>>;
+    private readonly setSearchState: Dispatch<SetStateAction<SearchStateDocument>>;
+    private readonly setFacetState: Dispatch<SetStateAction<SearchStateFacet>>;
+    private readonly setError: Dispatch<SetStateAction<string>>;
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
                 currentFacetsQueryBuilder: FacetQueryBuilder,
-                setDocumentState: React.Dispatch<React.SetStateAction<SearchStateDocument>>,
-                setFacetState: React.Dispatch<React.SetStateAction<SearchStateFacet>>,
-                setError: React.Dispatch<React.SetStateAction<string>>,
+                setDocumentState: Dispatch<SetStateAction<SearchStateDocument>>,
+                setFacetState: Dispatch<SetStateAction<SearchStateFacet>>,
+                setError: Dispatch<SetStateAction<string>>,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
         this.currentFacetsQueryBuilder = currentFacetsQueryBuilder;
