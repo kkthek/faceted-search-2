@@ -11,7 +11,6 @@ function FacetOrDialogContent(prop: {
     searchStateFacets: FacetResponse,
     selectedFacets: PropertyFacet[],
     property: Property,
-    onValuesClick: (p: PropertyFacet[], property: Property) => void,
     onChange: (e: SyntheticEvent, checked: boolean, v: ValueCount) => void,
     onBulkChange: (e: SyntheticEvent, v: ValueCount[]) => void
 }) {
@@ -23,72 +22,89 @@ function FacetOrDialogContent(prop: {
         </Grid>;
     }
 
+    let selectedItemIds = valueCounts
+        .filter((value) => Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.containsValueOrMWTitle(value)) != null)
+        .map(v => DisplayTools.serializeFacetValue(prop.property, v));
+
     let groups = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
-    if (groups) {
-        let allValues = valueCounts.map(v => v.value ? v.value.toString() : v.mwTitle.title);
-        for(let group in groups) {
-            groups[group] = Tools.intersect(groups[group], allValues);
-        }
-        let selectedItemIds = valueCounts
-            .filter((value) => Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.containsValueOrMWTitle(value)) != null)
-            .map(v => v.value ? v.value.toString() : v.mwTitle.title);
-        return createTree(groups, selectedItemIds);
-    } else {
-        return createGrid();
-    }
 
-    function createTree(groupMap: any, selectedItemIds: string[]) {
-        let groupElements = [];
-        let allGroups: string[]= [];
-        for(let group in groupMap) {
-            let values = groupMap[group].map((v: any) => <TreeItem key={v} itemId={v} label={v}/>);
-            allGroups.push(group);
-            if (values.length > 0) {
-                groupElements.push(<TreeItem key={group} itemId={group} label={group}>{values}</TreeItem>);
-            }
-        }
-
-        function onSelectedItemsChange(event: React.SyntheticEvent, itemIds: string[]) {
-            prop.onBulkChange(event, valueCounts.filter(v => itemIds.includes(v.value ? v.value.toString() : v.mwTitle.title)));
-        }
-
-        return <SimpleTreeView checkboxSelection={true}
-                               defaultExpandedItems={allGroups}
-                               multiSelect={true}
-                               defaultSelectedItems={selectedItemIds}
-                               selectionPropagation={{descendants: true, parents: true}}
-                               onSelectedItemsChange={onSelectedItemsChange}
-        >{groupElements}
-        </SimpleTreeView>
-    };
-
-    function createGrid() {
-        let values: any = [];
-        let rows: ValueCount[][] = Tools.splitArray2NTuples(valueCounts, 3);
-
-        rows.forEach((row) => {
-            values.push(row.map((value) => {
-                let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
-                selectedValue += "(" + value.count + ")";
-                let isSelected = Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.containsValueOrMWTitle(value)) != null;
-                return <Grid size={4}>
-                    <FormControlLabel
-                        key={selectedValue}
-                        control={<Checkbox defaultChecked={isSelected}/>}
-                        onChange={(event, checked) => {
-                            prop.onChange(event, checked, value)
-                        }}
-                        label={selectedValue}/>
-                </Grid>;
-            }));
-
-        });
-        return <Grid container spacing={2}>
-            {values}
-        </Grid>;
-    }
+    return groups ? <PropertyValueTree property={prop.property}
+                                       valueCounts={valueCounts}
+                                       selectedItemIds={selectedItemIds}
+                                       onBulkChange={prop.onBulkChange}/>
+        :
+        <PropertyValueGrid property={prop.property}
+                           valueCounts={valueCounts}
+                           selectedItemIds={selectedItemIds}
+                           onChange={prop.onChange}/>
 
 
 }
+
+function PropertyValueGrid(prop: {
+    property: Property,
+    selectedItemIds: string[],
+    valueCounts: ValueCount[],
+    onChange: (e: SyntheticEvent, checked: boolean, v: ValueCount) => void,
+}) {
+    let values: any = [];
+    let rows: ValueCount[][] = Tools.splitArray2NTuples(prop.valueCounts, 3);
+
+    rows.forEach((row) => {
+        values.push(row.map((value) => {
+            let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
+            let isSelected = prop.selectedItemIds.includes(selectedValue)
+            return <Grid size={4}>
+                <FormControlLabel
+                    key={selectedValue}
+                    control={<Checkbox defaultChecked={isSelected}/>}
+                    onChange={(event, checked) => {
+                        prop.onChange(event, checked, value);
+                    }}
+                    label={selectedValue + " (" + value.count + ")"}/>
+            </Grid>;
+        }));
+
+    });
+    return <Grid container spacing={2}>
+        {values}
+    </Grid>;
+}
+
+function PropertyValueTree(prop: {
+    property: Property,
+    selectedItemIds: string[],
+    valueCounts: ValueCount[],
+    onBulkChange: (e: SyntheticEvent, v: ValueCount[]) => void
+}) {
+    let wikiContext = useContext(WikiContext);
+    let allFacetValues = prop.valueCounts.map(v => DisplayTools.serializeFacetValue(prop.property, v));
+    let groups = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
+    for (let groupId in groups) {
+        groups[groupId] = Tools.intersect(groups[groupId], allFacetValues);
+    }
+    let groupTreeItems = [];
+
+    for (let groupId in groups) {
+        let facetValueTreeItems = groups[groupId].map((v: any) => <TreeItem key={v} itemId={v} label={v}/>);
+        if (facetValueTreeItems.length > 0) {
+            groupTreeItems.push(<TreeItem key={groupId} itemId={groupId} label={groupId}>{facetValueTreeItems}</TreeItem>);
+        }
+    }
+
+    function onSelectedItemsChange(event: React.SyntheticEvent, itemIds: string[]) {
+        let selectedValueCounts = prop.valueCounts.filter(v => itemIds.includes(DisplayTools.serializeFacetValue(prop.property, v)));
+        prop.onBulkChange(event, selectedValueCounts);
+    }
+
+    return <SimpleTreeView checkboxSelection={true}
+                           defaultExpandedItems={Object.keys(groups)}
+                           multiSelect={true}
+                           defaultSelectedItems={prop.selectedItemIds}
+                           selectionPropagation={{descendants: true, parents: true}}
+                           onSelectedItemsChange={onSelectedItemsChange}
+    >{groupTreeItems}
+    </SimpleTreeView>
+};
 
 export default FacetOrDialogContent;

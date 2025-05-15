@@ -71,7 +71,6 @@ function FacetOrDialog(prop: {
                     <FormGroup>
                         <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}
                                               selectedFacets={selectedFacets}
-                                              onValuesClick={prop.onValuesClick}
                                               property={prop.property}
                                               onChange={onChange}
                                               onBulkChange={onBulkChange}
