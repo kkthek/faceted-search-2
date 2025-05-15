@@ -3,21 +3,15 @@
 }
 
 #fs-header {
-    height: 80px;
     background: lightgrey;
-    align-items: center;
-
+    padding: 15px;
+    border-radius: 5px;
 }
 
-#fs-searchbar {
-    width: 50%;
-}
 
 div.fs-boxes {
     margin-top: 3px;
-
     display: flex;
-
 }
 
 div.fs-create-article {
@@ -42,11 +36,32 @@ div.fs-create-article {
         width: 65%;
     }
 
+    #fs-searchbar {
+        width: 75%;
+        margin-left: 10px;
+    }
+
+    #sort-order-select-control {
+        margin-left: 10px;
+    }
+
+    #fs-searchbar-button {
+        margin-left: 10px;
+    }
+
+    #fs-searchbar div.MuiTextField-root {
+        width: 45%
+    }
 }
 
 @media (max-width: 999px) {
     #fs-header {
         width: 100%;
+        flex-direction: column;
+    }
+
+    #fs-header > div {
+        margin-top: 10px;
     }
 
     #fs-content {
@@ -60,7 +75,10 @@ div.fs-create-article {
     #fs-results {
         width: 100%;
     }
-
+    #fs-searchbar {
+        width: 100%;
+        flex-direction: column;
+    }
 }
 
 /**

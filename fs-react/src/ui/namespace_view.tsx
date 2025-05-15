@@ -17,7 +17,7 @@ function NamespaceFacet(prop: {
     let countText = prop.namespaceFacetCount.count > 0 ? "("+prop.namespaceFacetCount.count+")" : '';
 
     namespaceText = namespaceText === '' ? 'Main' : namespaceText;
-    return <ToggleButton value={prop.namespaceFacetCount.namespace}>{countText} {namespaceText}</ToggleButton>
+    return <ToggleButton size={'small'} value={prop.namespaceFacetCount.namespace}>{countText}&nbsp;{namespaceText}</ToggleButton>
 }
 
 function NamespaceView(prop: {

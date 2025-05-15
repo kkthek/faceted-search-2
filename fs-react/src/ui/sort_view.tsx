@@ -28,7 +28,7 @@ function SortView(prop : {
     };
 
 
-    return <FormControl sx={{"marginLeft": "10px"}}>
+    return <FormControl id={'sort-order-select-control'}>
         <InputLabel id="sort-order-select-label">Sort order</InputLabel>
         <Select
             labelId="sort-order-select-label"
