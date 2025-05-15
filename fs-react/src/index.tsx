@@ -71,11 +71,8 @@ function App() {
         eventHandler.onSearchClick(debouncedSearchValue);
     }, [debouncedSearchValue]);
 
-
-
     let anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
-    let useCategoryDropdown = wikiContext.config.fs2gCategoryFilter.length !== 0;
 
     return <WikiContext.Provider value={wikiContext}>
         <div id={'fs-content'}>
@@ -117,14 +114,10 @@ function App() {
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                     />
 
-                    {useCategoryDropdown ?
-                        <CategoryDropdown onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}/>
-                        :
-                        <CategoryView searchStateDocument={searchStateDocument}
-                                      onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
-                        />
-
-                    }
+                    <CategoryDropdown onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}/>
+                    <CategoryView searchStateDocument={searchStateDocument}
+                                  onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
+                    />
 
                 </div>
             </div>

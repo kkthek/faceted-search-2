@@ -19,7 +19,8 @@ function CategoryDropdown(prop: {
     let wikiContext = useContext(WikiContext);
     let categoryFilter = wikiContext.config['fs2gCategoryFilter'];
     let showCategories = wikiContext.config['fs2gShowCategories'];
-
+    let useCategoryDropdown = wikiContext.config.fs2gCategoryFilter.length !== 0;
+    if (!useCategoryDropdown) return;
     if (!showCategories) return;
 
     let entries = [];

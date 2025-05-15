@@ -33,6 +33,8 @@ function CategoryView( prop: {
     let wikiContext = useContext(WikiContext);
     let showCategories = wikiContext.config['fs2gShowCategories'];
     let shownCategoryFacets = wikiContext.config['fs2gShownCategoryFacets'];
+    let useCategoryDropdown = wikiContext.config.fs2gCategoryFilter.length !== 0;
+    if (useCategoryDropdown) return;
     if (!prop.searchStateDocument || !showCategories) return;
 
     const categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
