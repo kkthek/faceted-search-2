@@ -42,6 +42,10 @@ class ConfigUtils {
         }
     }
 
+    static calculatePermutation(order: string[], defaultOrder: string[]) {
+        return order.map((e) => defaultOrder.indexOf(e));
+    }
+
     static async getSettingsForDevContext(client: Client, wikiContext: WikiContextInterface) {
         let result = await client.getSettingsForDevContext();
         let langMap = result.lang;

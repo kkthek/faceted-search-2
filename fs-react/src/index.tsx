@@ -20,11 +20,12 @@ import FacetQueryBuilder from "./common/facet_query_builder";
 import SortView from "./ui/sort_view";
 import {Property, WikiContextInterface} from "./common/datatypes";
 import CategoryDropdown from "./ui/category_dropdown";
-import {Divider, Typography} from "@mui/material";
+import {Box, Divider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
 import CreateArticleLink from "./ui/create_article";
 import ConfigUtils from "./util/config_utils";
 import {useDebounce} from "./util/custom_hooks";
+import Tools from "./util/tools";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -77,33 +78,40 @@ function App() {
     return <WikiContext.Provider value={wikiContext}>
         <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
-                <SortView onChange={eventHandler.onSortChange.bind(eventHandler)}/>
-                <SearchBar onClick={eventHandler.onSearchClick.bind(eventHandler)} textState={[searchText, setSearchText]}/>
-                <NamespaceView searchStateDocument={searchStateDocument}
-                               onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
-                />
-                <CreateArticleLink searchText={searchText}/>
+                {Tools.reorder([
+                    <SortView key={'sortView'} onChange={eventHandler.onSortChange.bind(eventHandler)}/>,
+                    <SearchBar key={'searchBar'} onClick={eventHandler.onSearchClick.bind(eventHandler)} textState={[searchText, setSearchText]}/>,
+                    <NamespaceView key={'namespaceView'} searchStateDocument={searchStateDocument}
+                    onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
+                    />,
+                    <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>
+                ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
+                    ['sortView', 'searchView', 'namespaceView', 'createArticleView']))}
+
             </div>
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
-                <div id={'fs-selected-facets'}>
+                {Tools.reorder([
+                    <Box key={'selectedFacetLabel'}>
                     <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
                     {anyFacetSelected ? '' : "("+wikiContext.msg('fs-no-facets-selected')+")"}
-                    <SelectedFacetsView client={client}
+                    </Box>,
+                    <SelectedFacetsView key={'selectedFacetView'}
+                                        client={client}
                                         searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onValuesClick={eventHandler.onValuesClick.bind(eventHandler)}
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                                         onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                                         onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
-                    />
-                    <SelectedCategoriesView searchStateDocument={searchStateDocument}
+                    />,
+                    <SelectedCategoriesView key={'selectedCategoryView'}
+                                            searchStateDocument={searchStateDocument}
                                             onCategoryRemove={eventHandler.onCategoryRemoveClick.bind(eventHandler)}
-                    />
-                    <Divider/>
-                </div>
-                <div id={'fs-facets-existing'}>
+                    />,
+                    <Divider key={'divider'}/>,
 
-                    <FacetView client={client}
+                    <FacetView key={'facetView'}
+                                client={client}
                                 searchStateDocument={searchStateDocument}
                                searchStateFacets={searchFacetState}
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
@@ -112,14 +120,15 @@ function App() {
                                onValuesClick={eventHandler.onValuesClick.bind(eventHandler)}
                                onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
-                    />
+                    />,
 
-                    <CategoryDropdown onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}/>
-                    <CategoryView searchStateDocument={searchStateDocument}
+                    <CategoryDropdown key={'categoryView'} onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}/>,
+                    <CategoryView key={'categoryDropDown'} searchStateDocument={searchStateDocument}
                                   onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                     />
-
-                </div>
+                    ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
+                    ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'divider',
+                    'facetView', 'categoryView', 'categoryDropDown']))}
             </div>
             <div id={'fs-results'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}

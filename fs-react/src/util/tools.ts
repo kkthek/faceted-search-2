@@ -1,5 +1,6 @@
 import {CustomDeserializerParams} from "typedjson/lib/types/metadata";
 import {MWTitleWithURL} from "../common/datatypes";
+import {ReactElement} from "react";
 
 class Tools {
 
@@ -147,6 +148,14 @@ class Tools {
             }
         }
         return Object.assign(res, obj) as T;
+    }
+
+    static reorder(items: ReactElement[], order: number[]) {
+        let results: ReactElement[] = [];
+        for(let i = 0; i < items.length; i++) {
+            results[i] = items[order[i]];
+        }
+        return results;
     }
 }
 

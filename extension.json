@@ -224,6 +224,15 @@
 		"ShowFileInOverlay": {
 			"value": false,
 			"description": "Show some files in an overlay. Either 'false' or array of file types ['pdf', 'png',...]"
+		},
+		"HeaderControlOrder": {
+			"value": ["sortView", "searchView", "namespaceView", "createArticleView"],
+			"description": "Order of controls in header"
+		},
+		"FacetControlOrder": {
+			"value": ["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "divider",
+				"facetView", "categoryView", "categoryDropDown"],
+			"description": "Order of controls in left-hand view"
 		}
 	},
 	"manifest_version": 2

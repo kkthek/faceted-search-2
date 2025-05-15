@@ -39,7 +39,8 @@ function setConfigForDevContext() {
            $fs2gShowCategories, $fs2gShowSortOrder, $fs2gFacetValueLimit, $fs2gShowNamespaces,
            $fs2gShowArticleProperties, $fs2gShownFacets, $fs2gShownCategoryFacets, $fs2gPromotionProperty,
            $fs2gDemotionProperty, $fs2gNumericPropertyClusters, $fs2gDateTimePropertyClusters, $fs2gNamespaceConstraint,
-           $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay;
+           $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay,
+           $fs2gHeaderControlOrder, $fs2gFacetControlOrder;
 
     $fs2gDefaultSortOrder = 'newest';
     $fs2gCategoryFilter = [];// ['' => 'all categories', 'Employee' => 'Employee' ];
@@ -81,6 +82,10 @@ function setConfigForDevContext() {
     if ($fs2gShowFileInOverlay) {
         $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
     }
+
+    $fs2gHeaderControlOrder = ['sortView', 'searchView', 'namespaceView', 'createArticleView'];
+    $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'divider',
+        'facetView', 'categoryView', 'categoryDropDown'];
 // -------------------------------------------------------
 }
 
