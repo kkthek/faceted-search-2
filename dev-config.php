@@ -40,7 +40,7 @@ function setConfigForDevContext() {
            $fs2gShowArticleProperties, $fs2gShownFacets, $fs2gShownCategoryFacets, $fs2gPromotionProperty,
            $fs2gDemotionProperty, $fs2gNumericPropertyClusters, $fs2gDateTimePropertyClusters, $fs2gNamespaceConstraint,
            $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay,
-           $fs2gHeaderControlOrder, $fs2gFacetControlOrder;
+           $fs2gHeaderControlOrder, $fs2gFacetControlOrder, $fs2gPropertyGrouping;
 
     $fs2gDefaultSortOrder = 'newest';
     $fs2gCategoryFilter = [];// ['' => 'all categories', 'Employee' => 'Employee' ];
@@ -86,6 +86,8 @@ function setConfigForDevContext() {
     $fs2gHeaderControlOrder = ['sortView', 'searchView', 'namespaceView', 'createArticleView'];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'divider',
         'facetView', 'categoryView', 'categoryDropDown'];
+
+    $fs2gPropertyGrouping =  ['Has name' => ['Group1' => [ 'Markus', 'Horst' ], 'Group2' => ['Peter', 'Timo'] ] ];
 // -------------------------------------------------------
 }
 

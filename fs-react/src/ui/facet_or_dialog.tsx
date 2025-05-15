@@ -1,16 +1,16 @@
 import * as React from 'react';
-import {SyntheticEvent, useContext} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Datatype, FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
-import {Checkbox, FormControlLabel, FormGroup, Grid} from "@mui/material";
-import DisplayTools from "../util/display_tools";
-import Tools from "../util/tools";
+import {FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import {FormGroup} from "@mui/material";
+import FacetOrDialogContent from "./facet_or_dialog_content";
+import {SyntheticEvent, useContext} from "react";
 import {WikiContext} from "../index";
+import Tools from "../util/tools";
 
 function FacetOrDialog(prop: {
         open: boolean,
@@ -20,11 +20,11 @@ function FacetOrDialog(prop: {
         property: Property,
         onValuesClick: (p: PropertyFacet[], property: Property)=>void
 }) {
+    let wikiContext = useContext(WikiContext);
     if (!prop.property) return;
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
 
-    let wikiContext = useContext(WikiContext);
     let selectedFacets = prop.selectedFacets.filter(e => e.property === prop.property.title);
     let onChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
         let propertyFacet = new PropertyFacet(
@@ -40,35 +40,16 @@ function FacetOrDialog(prop: {
 
     }
 
-    let values = [];
-    const valueCounts = prop.searchStateFacets?.getPropertyValueCount(prop.property).values;
-    if (prop.property.type === Datatype.boolean
-        || prop.property.type === Datatype.datetime
-        || prop.property.type === Datatype.number) {
-        values.push(<div>Properties of type "datetime", "number" or "boolean" cannot be used with OR</div>)
-    } else {
-
-        let rows: ValueCount[][] = Tools.splitArray2NTuples(valueCounts, 3);
-
-        rows.forEach((row) => {
-            values.push(row.map((value) => {
-                let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
-                selectedValue += "("+value.count+")";
-                let isSelected = Tools.findFirstByPredicate(selectedFacets, (e)=> e.containsValueOrMWTitle(value)) != null;
-                return <Grid size={4}>
-                            <FormControlLabel
-                                key={selectedValue}
-                                control={<Checkbox defaultChecked={isSelected}/>}
-                                onChange={(event, checked) => {
-                                             onChange(event, checked, value)
-                                         }}
-                                label={selectedValue}/>
-                </Grid>;
-            }));
-
+    let onBulkChange = function(e: SyntheticEvent, values: ValueCount[]) {
+        selectedFacets = values.map((v) => {
+            let propertyFacet = new PropertyFacet(
+                prop.property.title,
+                prop.property.type,
+                v.value, v.mwTitle, v.range);
+            propertyFacet.setORed(true);
+            return propertyFacet;
         });
-
-    };
+    }
 
     return (
         <React.Fragment>
@@ -88,9 +69,13 @@ function FacetOrDialog(prop: {
                         {wikiContext.msg('fs-facet-ored-values')}
                     </DialogContentText>
                     <FormGroup>
-                        <Grid container spacing={2}>
-                        {values}
-                        </Grid>
+                        <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}
+                                              selectedFacets={selectedFacets}
+                                              onValuesClick={prop.onValuesClick}
+                                              property={prop.property}
+                                              onChange={onChange}
+                                              onBulkChange={onBulkChange}
+                        />
                     </FormGroup>
                 </DialogContent>
                 <DialogActions>

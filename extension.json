@@ -233,6 +233,10 @@
 			"value": ["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "divider",
 				"facetView", "categoryView", "categoryDropDown"],
 			"description": "Order of controls in left-hand view"
+		},
+		"PropertyGrouping": {
+			"value": [],
+			"description": "Groups property values in OR-Dialog"
 		}
 	},
 	"manifest_version": 2
