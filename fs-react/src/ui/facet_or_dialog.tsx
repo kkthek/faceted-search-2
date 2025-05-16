@@ -6,11 +6,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
-import {FormGroup} from "@mui/material";
+import {FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
-import {SyntheticEvent, useContext} from "react";
+import {SyntheticEvent, useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
 import Tools from "../util/tools";
+import {useDebounce} from "../util/custom_hooks";
 
 function FacetOrDialog(prop: {
         open: boolean,
@@ -21,6 +22,9 @@ function FacetOrDialog(prop: {
         onValuesClick: (p: PropertyFacet[], property: Property)=>void
 }) {
     let wikiContext = useContext(WikiContext);
+    const [searchText, setSearchText] = useState((): string => '');
+    const debouncedSearchText = useDebounce(searchText, 300);
+
     if (!prop.property) return;
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
@@ -68,12 +72,20 @@ function FacetOrDialog(prop: {
                     <DialogContentText id="facet-or-dialog-description">
                         {wikiContext.msg('fs-facet-ored-values')}
                     </DialogContentText>
+                    <TextField id="fs-dialog-or-search"
+                               label={'Search...'}
+                               size={'small'}
+                               onChange={(event) => {
+                                    setSearchText(event.target.value);
+                               }}
+                               variant="outlined"/>
                     <FormGroup>
                         <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}
                                               selectedFacets={selectedFacets}
                                               property={prop.property}
                                               onChange={onChange}
                                               onBulkChange={onBulkChange}
+                                              filterText={debouncedSearchText}
                         />
                     </FormGroup>
                 </DialogContent>

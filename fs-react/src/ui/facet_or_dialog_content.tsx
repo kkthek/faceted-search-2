@@ -12,10 +12,18 @@ function FacetOrDialogContent(prop: {
     selectedFacets: PropertyFacet[],
     property: Property,
     onChange: (e: SyntheticEvent, checked: boolean, v: ValueCount) => void,
-    onBulkChange: (e: SyntheticEvent, v: ValueCount[]) => void
+    onBulkChange: (e: SyntheticEvent, v: ValueCount[]) => void,
+    filterText: string
 }) {
     let wikiContext = useContext(WikiContext);
-    const valueCounts = prop.searchStateFacets?.getPropertyValueCount(prop.property).values;
+    let valueCounts = prop.searchStateFacets?.getPropertyValueCount(prop.property).values;
+    let filterTextLowercase = prop.filterText.toLowerCase();
+    valueCounts = valueCounts.filter((v) => {
+        let serializedFacetValue = DisplayTools.serializeFacetValue(prop.property, v);
+        return filterTextLowercase === '' ||
+            serializedFacetValue.toLowerCase().indexOf(filterTextLowercase) > -1;
+    });
+
     if (prop.property.isRangeProperty() || prop.property.isBooleanProperty()) {
         return <Grid container spacing={2}>
             <Typography>Properties of type "datetime", "number" or "boolean" cannot be used with OR</Typography>
@@ -79,7 +87,7 @@ function PropertyValueTree(prop: {
 }) {
     let wikiContext = useContext(WikiContext);
     let allFacetValues = prop.valueCounts.map(v => DisplayTools.serializeFacetValue(prop.property, v));
-    let groups = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
+    let groups = Tools.deepClone(wikiContext.config.fs2gPropertyGrouping[prop.property.title]);
     for (let groupId in groups) {
         groups[groupId] = Tools.intersect(groups[groupId], allFacetValues);
     }
