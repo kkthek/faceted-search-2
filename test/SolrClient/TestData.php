@@ -121,4 +121,33 @@ class TestData {
             ->setNamespace(0);
         return $document;
     }
+
+    public static function generateData5() {
+        $document = new Document('66666', "Schmidt, Markus", "", 0);
+        $p = new Property('Has name', Datatype::STRING);
+
+        $pvName = new PropertyValues($p, ['Markus']);
+
+        $p = new Property('Has age', Datatype::NUMBER);
+        $pvAge = new PropertyValues($p, [54]);
+
+        $p = new Property('Was born at', Datatype::DATETIME);
+        $pvWasBornAt = new PropertyValues($p, ['1976-02-18T00:00:00Z']);
+
+        $p = new Property('Is on pension', Datatype::BOOLEAN);
+        $pvIsOnPension = new PropertyValues($p, ['false']);
+
+        $p = new Property('Works at', Datatype::WIKIPAGE);
+        $pvWorksAt = new PropertyValues($p, [new MWTitle("Firma XY\n123", "Firma XY\n123")]);
+
+        $p = new Property('Has spouse', Datatype::WIKIPAGE);
+        $pvSpouse = new PropertyValues($p, [new MWTitle('Schmidt, Johanna', 'Johanna')]);
+
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse])
+            ->setFulltext("Markus Schmidt arbeitet bei Firma XY:12/3.")
+            ->setCategories(["Employee"])
+            ->setDirectCategories(["Employee"])
+            ->setNamespace(0);
+        return $document;
+    }
 }

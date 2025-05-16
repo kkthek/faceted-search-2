@@ -1,11 +1,9 @@
-import {BaseQuery, Property, PropertyFacet, PropertyValueCount, ValueCount} from "../common/datatypes";
-import React, {useContext} from "react";
+import {BaseQuery, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import React from "react";
 import DisplayTools from "../util/display_tools";
-import FacetFilter from "./facet_filter";
-import {WikiContext} from "../index";
-import {TreeItem} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Tools from "../util/tools";
 
 function SelectedFacetValues(prop: {
     query: BaseQuery,
@@ -32,7 +30,7 @@ function SelectedFacetValues(prop: {
         prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
 
     return <CustomTreeItem key={value + prop.propertyValueCount.count}
-                            itemId={value + prop.propertyValueCount.count}
+                           itemId={Tools.createId(value + prop.propertyValueCount.count)}
                            actionIcon={prop.removable ? DeleteIcon : null}
                            action={() => prop.onRemoveClick(prop.selectedPropertyFacet)}
                            label={value + " : " + prop.propertyValueCount.count}

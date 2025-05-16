@@ -161,6 +161,11 @@ class Tools {
     static intersect(array1: string[], array2: string[]) {
         return array1.filter(value => array2.includes(value));
     }
+
+    static createId(rawId: string) {
+        return rawId.replace(/[\W]/g, '')
+    }
+
 }
 
 

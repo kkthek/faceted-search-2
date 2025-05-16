@@ -61,4 +61,5 @@ $documentUpdater->updateDocument(TestData::generateData());
 $documentUpdater->updateDocument(TestData::generateData2());
 $documentUpdater->updateDocument(TestData::generateData3());
 $documentUpdater->updateDocument(TestData::generateData4());
+$documentUpdater->updateDocument(TestData::generateData5());
 
