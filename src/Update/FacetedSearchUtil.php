@@ -22,7 +22,7 @@ class FacetedSearchUtil {
      */
     public static function findDisplayTitle(Title $title, WikiPage $wikipage = null) {
         $title = $title->createFragmentTarget( '' );
-        $originalPageName = $title->getPrefixedText();
+        $originalPageName = $title->getText();
         
         $redirect = false;
         if($wikipage) {
