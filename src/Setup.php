@@ -51,6 +51,15 @@ class Setup
 
     }
 
+    private static function getMessageKeys() {
+        $keys = [];
+        $messages = json_decode(file_get_contents('../i18n/en.json'));
+        foreach($messages as $key => $value) {
+            $keys[] = $key;
+        }
+        return $keys;
+    }
+
     public static function getFacetedSearchClient(): FacetedSearchClient
     {
         global $fsgBackendQueryClient;
@@ -127,7 +136,8 @@ class Setup
                $fs2gFacetsWithOR,
                $fs2gShowSolrScore,
                $fs2gCreateNewPageLink,
-               $fs2gShowFileInOverlay
+               $fs2gShowFileInOverlay,
+               $fs2gNamespacesToShow
                ;
 
         $jsVars = [];
@@ -143,6 +153,7 @@ class Setup
         $jsVars["fs2gShowCategories"] = $fs2gShowCategories;
         $jsVars["fs2gShowSortOrder"] = $fs2gShowSortOrder;
         $jsVars["fs2gShowNamespaces"] = $fs2gShowNamespaces;
+        $jsVars["fs2gNamespacesToShow"] = $fs2gNamespacesToShow;
         $jsVars["fs2gShowArticleProperties"] = $fs2gShowArticleProperties;
         $jsVars["fs2gShownFacets"] = $fs2gShownFacets;
         $jsVars["fs2gShownCategoryFacets"] = $fs2gShownCategoryFacets;

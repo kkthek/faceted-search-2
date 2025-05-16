@@ -137,6 +137,10 @@
 			"value": true,
 			"description": "Show/hide UI element for selecting namespace filters"
 		},
+		"NamespacesToShow": {
+			"value": [],
+			"description": "IDs of namespaces to show. Empty means all namespaces."
+		},
 		"ShowArticleProperties": {
 			"value": true,
 			"description": "Show the article properties button under each search hit."
@@ -226,7 +230,7 @@
 			"description": "Show some files in an overlay. Either 'false' or array of file types ['pdf', 'png',...]"
 		},
 		"HeaderControlOrder": {
-			"value": ["sortView", "searchView", "namespaceView", "createArticleView"],
+			"value": ["sortView", "searchView", "createArticleView"],
 			"description": "Order of controls in header"
 		},
 		"FacetControlOrder": {

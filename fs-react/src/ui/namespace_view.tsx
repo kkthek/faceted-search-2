@@ -10,14 +10,15 @@ function NamespaceFacet(prop: {
 }) {
     let wikiContext = useContext(WikiContext);
     let namespaces = wikiContext.config['wgFormattedNamespaces'];
-    let showNamespaces = wikiContext.config['fs2gShowNamespaces'];
-    if (!showNamespaces) return;
+
 
     let namespaceText = namespaces[prop.namespaceFacetCount.namespace] ?? 'unknown namespace';
     let countText = prop.namespaceFacetCount.count > 0 ? "("+prop.namespaceFacetCount.count+")" : '';
 
     namespaceText = namespaceText === '' ? 'Main' : namespaceText;
-    return <ToggleButton size={'small'} value={prop.namespaceFacetCount.namespace}>{countText}&nbsp;{namespaceText}</ToggleButton>
+    return <ToggleButton sx={{marginTop: '3px'}}
+                         size={'small'}
+                         value={prop.namespaceFacetCount.namespace}>{countText}&nbsp;{namespaceText}</ToggleButton>
 }
 
 function NamespaceView(prop: {
@@ -26,6 +27,8 @@ function NamespaceView(prop: {
 }) {
     if (!prop.searchStateDocument) return;
     let wikiContext = useContext(WikiContext);
+    let showNamespaces = wikiContext.config['fs2gShowNamespaces'];
+    if (!showNamespaces) return;
     let namespacesFromWiki = wikiContext.config['wgFormattedNamespaces'];
 
     const [namespaces, setNamespaces] = useState([] as number[]);
@@ -48,11 +51,18 @@ function NamespaceView(prop: {
         }
     }
 
-    const listItems = namespaceFacetCounts.map((facetCount, i) => {
+    const listItems = namespaceFacetCounts
+        .filter(facetCount => wikiContext.config['fs2gNamespacesToShow'].length === 0 ||
+            wikiContext.config['fs2gNamespacesToShow'].includes(facetCount.namespace))
+        .map((facetCount, i) => {
             return <NamespaceFacet key={facetCount.namespace} namespaceFacetCount={facetCount} />
     });
-    return <div id={'fs-namespaceview'}>
-        <ToggleButtonGroup value={namespaces} onChange={handleChange} size="small">
+    return <div id={'fs-namespaces'} className={'fs-boxes'}>
+        <ToggleButtonGroup value={namespaces}
+                           onChange={handleChange}
+                           size="small"
+                           sx={{'display': 'block'}}
+        >
             {listItems}
         </ToggleButtonGroup>
     </div>;

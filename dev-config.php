@@ -13,7 +13,12 @@ use DIQA\FacetedSearch2\Model\Common\Property;
 function setConfigForDevContext() {
 
     global $wgFormattedNamespaces, $wgServer, $wgArticlePath;
-    $wgFormattedNamespaces = [0 => 'Main', 14 => 'Category', 10 => 'Template'];
+    $wgFormattedNamespaces = [
+        0 => 'Main',
+        14 => 'Category',
+        10 => 'Template',
+
+       ];
     $wgServer = "http://localhost";
     $wgArticlePath = '/main/mediawiki/$1';
 
@@ -40,7 +45,7 @@ function setConfigForDevContext() {
            $fs2gShowArticleProperties, $fs2gShownFacets, $fs2gShownCategoryFacets, $fs2gPromotionProperty,
            $fs2gDemotionProperty, $fs2gNumericPropertyClusters, $fs2gDateTimePropertyClusters, $fs2gNamespaceConstraint,
            $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay,
-           $fs2gHeaderControlOrder, $fs2gFacetControlOrder, $fs2gPropertyGrouping;
+           $fs2gHeaderControlOrder, $fs2gFacetControlOrder, $fs2gPropertyGrouping, $fs2gNamespacesToShow;
 
     $fs2gDefaultSortOrder = 'newest';
     $fs2gCategoryFilter = [];// ['' => 'all categories', 'Employee' => 'Employee' ];
@@ -49,6 +54,7 @@ function setConfigForDevContext() {
     $fs2gShowCategories = true;
     $fs2gShowSortOrder = true;
     $fs2gShowNamespaces = true;
+    $fs2gNamespacesToShow = [];
 
     $fs2gFacetValueLimit = 20;
     $fs2gShowArticleProperties = true;
@@ -83,11 +89,17 @@ function setConfigForDevContext() {
         $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
     }
 
-    $fs2gHeaderControlOrder = ['sortView', 'searchView', 'namespaceView', 'createArticleView'];
+    $fs2gHeaderControlOrder = ['sortView', 'searchView', 'createArticleView'];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'divider',
         'facetView', 'categoryView', 'categoryDropDown'];
 
-    $fs2gPropertyGrouping =  ['Has name' => ['Group1' => [ 'Markus', 'Horst' ], 'Group2' => ['Peter', 'Timo'] ] ];
+    $fs2gPropertyGrouping = [
+        'Has name' =>
+                [
+                    'Group1' => [ 'Markus', 'Horst' ],
+                    'Group2' => ['Peter', 'Timo']
+                ]
+    ];
 // -------------------------------------------------------
 }
 

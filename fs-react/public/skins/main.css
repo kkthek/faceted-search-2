@@ -2,10 +2,11 @@
     display: flex;
 }
 
-#fs-header {
+#fs-header, #fs-namespaces {
     background: lightgrey;
     padding: 15px;
     border-radius: 5px;
+    width: 100%;
 }
 
 #fs-facets > div {
@@ -21,9 +22,6 @@ div.fs-create-article {
 }
 
 @media (min-width: 1000px) {
-    #fs-header {
-        width: 100%;
-    }
 
     #fs-content {
         flex-wrap: wrap;
@@ -58,7 +56,6 @@ div.fs-create-article {
 
 @media (max-width: 999px) {
     #fs-header {
-        width: 100%;
         flex-direction: column;
     }
 

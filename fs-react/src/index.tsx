@@ -81,14 +81,17 @@ function App() {
                 {Tools.reorder([
                     <SortView key={'sortView'} onChange={eventHandler.onSortChange.bind(eventHandler)}/>,
                     <SearchBar key={'searchBar'} onClick={eventHandler.onSearchClick.bind(eventHandler)} textState={[searchText, setSearchText]}/>,
-                    <NamespaceView key={'namespaceView'} searchStateDocument={searchStateDocument}
-                    onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
-                    />,
+
                     <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>
                 ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
-                    ['sortView', 'searchView', 'namespaceView', 'createArticleView']))}
+                    ['sortView', 'searchView', 'createArticleView']))}
 
             </div>
+
+                <NamespaceView key={'namespaceView'} searchStateDocument={searchStateDocument}
+                               onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
+                />
+
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {Tools.reorder([
                     <Box key={'selectedFacetLabel'}>
