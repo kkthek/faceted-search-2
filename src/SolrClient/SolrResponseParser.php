@@ -83,7 +83,7 @@ class SolrResponseParser {
                     $highlighting = $smwh_search_field[1];
                 }
             }
-            $this->fillEmptyExtraProperties($propertyFacets);
+            $propertyFacets = $this->fillEmptyExtraProperties($propertyFacets);
             $docs[] = new Document(
                 $doc->id,
                 $propertyFacets,
@@ -279,7 +279,7 @@ class SolrResponseParser {
         return substr( $haystack, -$length ) === $needle;
     }
 
-    private function fillEmptyExtraProperties(array & $propertyFacetValues)
+    private function fillEmptyExtraProperties(array $propertyFacetValues)
     {
         global $fs2gExtraPropertiesToRequest;
 
