@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Model\Request;
 
-class BaseQuery {
+abstract class BaseQuery {
 
     public string $searchText = '';
     /* @var string[] */
