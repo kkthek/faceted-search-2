@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {Dispatch, SetStateAction, useContext, useState} from "react";
 import {Property, PropertyFacet, PropertyValueCount,} from "../common/datatypes";
 import {SearchStateFacet} from "../common/event_handler";
 import {SimpleTreeView} from "@mui/x-tree-view";
@@ -60,6 +60,7 @@ function SelectedFacets(prop: {
 function SelectedFacetsView(prop: {
     client: Client
     searchStateFacet: SearchStateFacet,
+    expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
     onValueClick: (p: PropertyFacet) => void,
     onValuesClick: (p: PropertyFacet[])=>void,
     onRemoveClick: (p: PropertyFacet) => void,
@@ -69,6 +70,7 @@ function SelectedFacetsView(prop: {
     if (!prop.searchStateFacet) return;
 
     const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
+    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
 
     const handleCloseFacetOrDialog = () => {
         setOpenOrDialog(new ORDialogInput());
@@ -81,15 +83,13 @@ function SelectedFacetsView(prop: {
         });
     }
 
-    let expandedProperties: string[] = [];
+
     const facetValues = prop.searchStateFacet.facetsResponse.valueCounts.map((v, i) => {
 
             let query = prop.searchStateFacet.query;
-
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
-
             if (!isSelectedFacet) return;
-            expandedProperties.push(v.property.title);
+
             return <SelectedFacets key={v.property.title}
                                     propertyValueCount={v}
                                    searchStateFacet={prop.searchStateFacet}
@@ -101,11 +101,16 @@ function SelectedFacetsView(prop: {
         }
     );
 
+    let onItemExpansionToggle = function(event: React.SyntheticEvent | null, itemId: string, isExpanded: boolean) {
+        setExpandedFacets(isExpanded ? [...expandedFacets, itemId] : expandedFacets.filter(i => i !== itemId));
+    }
 
     return <div>
         <SimpleTreeView
-            expandedItems={expandedProperties}
-            expansionTrigger={'iconContainer'} disableSelection>
+            expandedItems={expandedFacets}
+            expansionTrigger={'iconContainer'} disableSelection
+            onItemExpansionToggle={onItemExpansionToggle}
+        >
             {facetValues}
         </SimpleTreeView>
         <FacetOrDialog open={openOrDialog.open}

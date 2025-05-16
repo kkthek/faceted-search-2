@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {Dispatch, SetStateAction, useContext, useState} from "react";
 import {
     BaseQuery,
     FacetResponse,
@@ -27,6 +27,7 @@ function FacetViewProperty(prop: {
     property: PropertyWithURL,
     searchStateFacets: FacetResponse,
     selectedFacets: PropertyFacet[],
+    expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
     propertyFacetCount: PropertyFacetCount|null,
     onPropertyClick: (p: Property)=>void,
     onExpandClick: (p: Property, limit: number)=>void,
@@ -36,7 +37,7 @@ function FacetViewProperty(prop: {
     onFacetValueContainsClick: (text: string, limit: number, property: Property) => void,
     onOrDialogClick: (property: Property) => void
 }) {
-
+    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
     let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
     if (isSelectedFacet) return;
@@ -44,14 +45,6 @@ function FacetViewProperty(prop: {
 
     let wikiContext = useContext(WikiContext);
     let facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(prop.property.title);
-
-    function handleExpandClick(limit: number) {
-        if (propertyValueCount === null) {
-            prop.onExpandClick(prop.property, limit);
-            return;
-        }
-
-    }
 
     const values = propertyValueCount?.values.map((v, i) => {
         return <FacetValues key={prop.property.title + i}
@@ -69,7 +62,10 @@ function FacetViewProperty(prop: {
 
     return <CustomTreeItem itemId={prop.property.title}
                            label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
-                           itemAction={() => prop.onPropertyClick(prop.property)}
+                           itemAction={() => {
+                               prop.onPropertyClick(prop.property);
+                               setExpandedFacets([...expandedFacets, prop.property.title]);
+                           } }
                            actionIcon={facetsWithOr ? ChecklistIcon : null}
                            action={() => {
                                prop.onOrDialogClick(prop.property);
@@ -97,6 +93,7 @@ function FacetView(prop: {
     client: Client
     searchStateDocument: SearchStateDocument,
     searchStateFacets: SearchStateFacet,
+    expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
     onPropertyClick: (p: Property)=>void,
     onExpandClick: (p: Property, limit: number)=>void,
     onValueClick: (p: PropertyFacet)=>void,
@@ -106,14 +103,10 @@ function FacetView(prop: {
 }) {
     if (!prop.searchStateDocument) return;
 
+    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
     const propertyFacetCounts = prop.searchStateDocument.documentResponse.propertyFacetCounts;
     let wikiContext = useContext(WikiContext);
     let shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fs2gShownFacets'], prop.searchStateDocument.query);
-
-    const propertyMap: any = {};
-    propertyFacetCounts.forEach((pfc) => {
-        propertyMap[pfc.property.title] = pfc.property;
-    });
 
     const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
 
@@ -138,6 +131,7 @@ function FacetView(prop: {
                            query={prop.searchStateDocument.query}
                            title={facetCount.property.title}
                            property={facetCount.property}
+                           expandedFacets={prop.expandedFacets}
                            onPropertyClick={prop.onPropertyClick}
                            onExpandClick={prop.onExpandClick}
                            onValueClick={prop.onValueClick}
@@ -158,27 +152,22 @@ function FacetView(prop: {
         isExpanded: boolean,
     ) => {
 
-        if (!propertyMap[itemId]) return;
-        prop.onExpandClick(propertyMap[itemId], wikiContext.config.fs2gFacetValueLimit);
+        if (isExpanded) {
+            let facetCount = Tools.findFirstByPredicate(propertyFacetCounts, (e) => e.property.title === itemId);
+            prop.onExpandClick(facetCount.property, wikiContext.config.fs2gFacetValueLimit);
+        }
+
+        setExpandedFacets(isExpanded ? [...expandedFacets, itemId] : expandedFacets.filter(i => i !== itemId));
     };
 
-    const handleItemClick = (
-        event: React.SyntheticEvent | null,
-        itemId: string
-    ) => {
-        if (!propertyMap[itemId]) return;
-        let target = event.target as any;
-        if (!target.classList.contains('MuiTreeItem-label')) return;
-        if (target.classList.contains('MuiSvgIcon-root')) return;
-
-        prop.onPropertyClick(propertyMap[itemId])
-    };
 
     return <div id={'fs-facetview'}>
         <Typography>{wikiContext.msg('fs-available-properties')}</Typography>
-        <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable
+        <SimpleTreeView expansionTrigger={'iconContainer'}
+                        disableSelection
+                        disabledItemsFocusable
+                        expandedItems={expandedFacets}
                         onItemExpansionToggle={handleItemExpansionToggle}
-                        onItemClick={handleItemClick}
         >
             {listItems}
         </SimpleTreeView>

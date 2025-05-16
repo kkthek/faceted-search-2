@@ -57,6 +57,7 @@ function App() {
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
     const [error, setError] = React.useState('');
     const [searchText, setSearchText] = useState('');
+    const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
@@ -100,6 +101,7 @@ function App() {
                     </Box>,
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
+                                        expandedFacets={[expandedFacets, setExpandedFacets]}
                                         searchStateFacet={searchFacetState}
                                         onValueClick={eventHandler.onValueClick.bind(eventHandler)}
                                         onValuesClick={eventHandler.onValuesClick.bind(eventHandler)}
@@ -117,6 +119,7 @@ function App() {
                                 client={client}
                                 searchStateDocument={searchStateDocument}
                                searchStateFacets={searchFacetState}
+                               expandedFacets={[expandedFacets, setExpandedFacets]}
                                onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
                                onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
                                onValueClick={eventHandler.onValueClick.bind(eventHandler)}
