@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
 import {Box, InputLabel, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 
@@ -14,7 +14,7 @@ class DropdownEntry {
 }
 
 function CategoryDropdown(prop: {
-    onCategoryClick: (c: string)=>void
+    onCategoryDropDownClick: (c: string)=>void
 }) {
     let wikiContext = useContext(WikiContext);
     let categoryFilter = wikiContext.config['fs2gCategoryFilter'];
@@ -29,11 +29,11 @@ function CategoryDropdown(prop: {
         entries.push(new DropdownEntry(id, categoryFilter[category]));
     }
 
-    const [category, setCategory] = useState('-no-filter-');
+    const [category, setCategory] = useState(entries[0].id);
 
     const handleChange = (event: SelectChangeEvent) => {
-        prop.onCategoryClick(event.target.value === '-no-filter-' ? '' : event.target.value);
         setCategory(event.target.value);
+        prop.onCategoryDropDownClick(event.target.value === '-no-filter-' ? '' : event.target.value);
     };
 
     let categoryOptions = entries.map((entry) => <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>);

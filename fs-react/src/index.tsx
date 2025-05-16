@@ -128,7 +128,7 @@ function App() {
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                     />,
 
-                    <CategoryDropdown key={'categoryView'} onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}/>,
+                    <CategoryDropdown key={'categoryView'} onCategoryDropDownClick={eventHandler.onCategoryDropDownClick.bind(eventHandler)}/>,
                     <CategoryView key={'categoryDropDown'} searchStateDocument={searchStateDocument}
                                   onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                     />
@@ -153,7 +153,10 @@ function applyQueryConstraintsFromConfig() {
         currentDocumentsQueryBuilder.withExtraProperty(p);
     });
     currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
-
+    if (wikiContext.config['fs2gCategoryFilter'].length !== 0) {
+        let firstCategory = Object.keys(wikiContext.config['fs2gCategoryFilter'])[0];
+        currentDocumentsQueryBuilder.withCategoryFacet(firstCategory);
+    }
 }
 
 function startApp() {

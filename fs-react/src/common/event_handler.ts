@@ -141,15 +141,19 @@ class EventHandler {
     }
 
     onCategoryClick(category: string) {
-        if (category === '') {
-            this.currentDocumentsQueryBuilder
-                .withOffset(0)
-                .clearCategoryFacets();
-        } else {
-            this.currentDocumentsQueryBuilder
-                .withOffset(0)
-                .withCategoryFacet(category);
-        }
+        this.currentDocumentsQueryBuilder
+            .withOffset(0)
+            .withCategoryFacet(category);
+
+        this.updateDocuments();
+        this.updateFacets();
+    }
+
+    onCategoryDropDownClick(category: string) {
+        this.currentDocumentsQueryBuilder
+            .withOffset(0)
+            .clearCategoryFacets()
+            .withCategoryFacet(category);
 
         this.updateDocuments();
         this.updateFacets();

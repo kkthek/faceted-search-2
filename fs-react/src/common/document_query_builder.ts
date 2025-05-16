@@ -48,6 +48,9 @@ class DocumentQueryBuilder {
     }
 
     withCategoryFacet(category: string): DocumentQueryBuilder {
+        if (category === '') {
+            return this;
+        }
         this.query.categoryFacets.push(category);
         return this;
     }
