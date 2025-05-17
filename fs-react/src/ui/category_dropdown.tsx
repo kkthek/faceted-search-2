@@ -26,7 +26,9 @@ function CategoryDropdown(prop: {
     let entries = [];
     for(let category in categoryFilter) {
         let id = category === '' ? '-no-filter-' : category;
-        entries.push(new DropdownEntry(id, categoryFilter[category]));
+        let label = categoryFilter[category];
+        label = label.replace('&nbsp;', '\u00A0');
+        entries.push(new DropdownEntry(id, label));
     }
 
     const [category, setCategory] = useState(entries[0].id);
