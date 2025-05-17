@@ -37,6 +37,7 @@ function ResultView(prop: {
                     onChange={(e, pageIndex) => {
                         prop.onPageIndexClick(pageIndex, NUMBER_RESULTS_ONE_PAGE);
                         setPageIndex(pageIndex);
+                        window.scrollTo(0,0);
                     }  }/>
     </div>;
 }
