@@ -20,6 +20,7 @@ function SearchBar(prop: {
                    label={placeholderText}
                    size={'small'}
                    variant="outlined"
+                   defaultValue={text}
                    onKeyDown={(e) => { if (e.key === 'Enter') prop.onClick(text) } }
                    onChange={(e)=> setText(e.target.value)}
         />

@@ -52,11 +52,14 @@ export let WikiContext = createContext(null);
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
 
+const urlParams = new URLSearchParams(window.location.search);
+const searchParam = urlParams.get('search');
+
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
     const [error, setError] = React.useState('');
-    const [searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState(searchParam ?? '');
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
 
     const eventHandler = new EventHandler(
