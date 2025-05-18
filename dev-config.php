@@ -90,16 +90,16 @@ function setConfigForDevContext() {
     }
 
     $fs2gHeaderControlOrder = ['sortView', 'searchView', 'createArticleView'];
-    $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'divider',
+    $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
         'facetView', 'categoryView', 'categoryDropDown'];
 
-    $fs2gPropertyGrouping = [
+    $fs2gPropertyGrouping = [];/* [
         'Has name' =>
                 [
                     'Group1' => [ 'Markus', 'Horst' ],
                     'Group2' => ['Peter', 'Timo']
                 ]
-    ];
+    ];*/
 // -------------------------------------------------------
 }
 

@@ -28,6 +28,7 @@ import {useDebounce} from "./util/custom_hooks";
 import Tools from "./util/tools";
 import SaveSearchLink from "./ui/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
+import RemoveAllFacetsButton from "./ui/remove_all_facets_button";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -96,8 +97,8 @@ function App() {
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {Tools.reorder([
                     <Box key={'selectedFacetLabel'}>
-                    <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
-                    {anyFacetSelected ? '' : "("+wikiContext.msg('fs-no-facets-selected')+")"}
+                        <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
+                        {anyFacetSelected ? '' : "("+wikiContext.msg('fs-no-facets-selected')+")"}
                     </Box>,
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
@@ -108,11 +109,15 @@ function App() {
                                         onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
                                         onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                                         onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
-                                        onRemoveAllFacetsClick={eventHandler.onRemoveAllFacetsClick.bind(eventHandler)}
+
                     />,
                     <SelectedCategoriesView key={'selectedCategoryView'}
                                             searchStateDocument={searchStateDocument}
                                             onCategoryRemove={eventHandler.onCategoryRemoveClick.bind(eventHandler)}
+                    />,
+                    <RemoveAllFacetsButton key={'removeAllFacets'}
+                                           searchStateFacet={searchFacetState}
+                                           onRemoveAllFacetsClick={eventHandler.onRemoveAllFacetsClick.bind(eventHandler)}
                     />,
                     <Divider key={'divider'}/>,
 
@@ -136,7 +141,7 @@ function App() {
                                   onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                     />
                     ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
-                    ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'divider',
+                    ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
                     'facetView', 'categoryView', 'categoryDropDown']))}
             </div>
             <div id={'fs-results'}>

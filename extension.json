@@ -234,7 +234,7 @@
 			"description": "Order of controls in header"
 		},
 		"FacetControlOrder": {
-			"value": ["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "divider",
+			"value": ["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "removeAllFacets", "divider",
 				"facetView", "categoryView", "categoryDropDown"],
 			"description": "Order of controls in left-hand view"
 		},
