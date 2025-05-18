@@ -18,7 +18,7 @@ import SelectedCategoriesView from "./ui/selected_categories_view";
 import NamespaceView from "./ui/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
 import SortView from "./ui/sort_view";
-import {Property, WikiContextInterface} from "./common/datatypes";
+import {Property} from "./common/datatypes";
 import CategoryDropdown from "./ui/category_dropdown";
 import {Box, Divider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
@@ -27,14 +27,13 @@ import ConfigUtils from "./util/config_utils";
 import {useDebounce} from "./util/custom_hooks";
 import Tools from "./util/tools";
 import SaveSearchLink from "./ui/save_search_link";
+import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
 
 const browserWindow = window as any;
+const isInWikiContext = !!browserWindow.mw;
+let wikiContext: WikiContextInterface = null;
+
 let solrProxyUrl;
-
-let wikiContext = new WikiContextInterface();
-
-const isInWikiContext = browserWindow.mw !== undefined;
-
 if (isInWikiContext) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
@@ -193,6 +192,8 @@ function startApp() {
 if (isInWikiContext) {
     startApp();
 } else {
-    ConfigUtils.getSettingsForDevContext(client, wikiContext)
-        .then(() => startApp());
+    client.getSettingsForDevContext().then(result => {
+        wikiContext = new WikiContextInterfaceMock(result.settings, result.lang);
+        startApp();
+    });
 }

@@ -1,5 +1,6 @@
-import {BaseQuery, Datatype, Order, Property, Sort, WikiContextInterface} from "../common/datatypes";
+import {BaseQuery, Datatype, Order, Property, Sort} from "../common/datatypes";
 import Client from "../common/client";
+import {WikiContextInterface, WikiContextInterfaceMock} from "../common/wiki_context";
 
 class ConfigUtils {
 
@@ -45,21 +46,6 @@ class ConfigUtils {
     static calculatePermutation(order: string[], defaultOrder: string[]) {
         return order.map((e) => defaultOrder.indexOf(e));
     }
-
-    static async getSettingsForDevContext(client: Client, wikiContext: WikiContextInterface) {
-        let result = await client.getSettingsForDevContext();
-        let langMap = result.lang;
-        wikiContext.config = result.settings;
-        wikiContext.msg = (id: string, ...params: string[]) => {
-            let text = langMap[id] ? langMap[id] : "<" + id + ">";
-            for(let i = 0; i < params.length; i++) {
-                text = text.replace(new RegExp('\\$'+(i+1)), params[i]);
-            }
-            return text;
-        }
-
-    }
-
 
 }
 
