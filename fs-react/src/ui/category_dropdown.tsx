@@ -39,8 +39,11 @@ function CategoryDropdown(prop: {
 
     let entries = DropdownEntry.createEntries(categoryFilter);
     let categoryFacets = prop.documentQuery.categoryFacets;
-    let preselectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : entries[0].id;
+    let preselectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : '-no-filter-';
     const [category, setCategory] = useState(preselectedCategory);
+    useEffect(() => {
+        setCategory(preselectedCategory);
+    }, [preselectedCategory])
 
     const handleChange = (event: SelectChangeEvent) => {
         setCategory(event.target.value);
