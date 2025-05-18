@@ -24,5 +24,6 @@
 	"fs-facet-values":	 		"Facet values",
 	"fs-preview":	 			"Preview",
 	"fs-facet-ored-values": 	"Select all values that should appear in result set",
-	"fs-create-article": 		"Create an article"
+	"fs-create-article": 		"Create an article",
+	"fs-remove-all-facets": 	"Remove all selected facets"
 }

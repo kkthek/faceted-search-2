@@ -10,6 +10,7 @@ import Client from "../common/client";
 import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
 import {WikiContext} from "../index";
 import QueryUtils from "../util/query_utils";
+import {Button} from "@mui/material";
 
 function SelectedFacets(prop: {
     propertyValueCount: PropertyValueCount
@@ -65,9 +66,11 @@ function SelectedFacetsView(prop: {
     onValuesClick: (p: PropertyFacet[])=>void,
     onRemoveClick: (p: PropertyFacet) => void,
     onExpandClick: (p: Property, limit: number)=>void,
-    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
+    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void,
+    onRemoveAllFacetsClick: () => void
 }) {
     if (!prop.searchStateFacet) return;
+    let wikiContext = useContext(WikiContext);
 
     const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
     const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
@@ -113,6 +116,10 @@ function SelectedFacetsView(prop: {
         >
             {facetValues}
         </SimpleTreeView>
+
+        {prop.searchStateFacet.query.isAnyPropertySelected() || prop.searchStateFacet.query.isAnyCategorySelected()
+            ? <Button onClick={prop.onRemoveAllFacetsClick}>{wikiContext.msg('fs-remove-all-facets')}</Button> : ''}
+
         <FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
                        searchStateFacets={openOrDialog.facetResponse}

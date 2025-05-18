@@ -8,6 +8,10 @@ class DocumentQueryBuilder {
     private query: DocumentQuery;
 
     constructor() {
+        this.initalizeQueryWithDefaults();
+    }
+
+    private initalizeQueryWithDefaults() {
         this.query = new DocumentQuery(
             "",
             [],
@@ -22,6 +26,11 @@ class DocumentQueryBuilder {
             10,
             0
         );
+    }
+
+    clearAll() {
+        this.initalizeQueryWithDefaults();
+        return this;
     }
 
     withQueryFromJson(json: string) {

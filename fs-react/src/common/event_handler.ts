@@ -175,6 +175,13 @@ class EventHandler {
         this.updateDocuments();
     }
 
+    onRemoveAllFacetsClick() {
+        this.currentDocumentsQueryBuilder.clearAll();
+
+        this.updateDocuments();
+        this.updateFacets();
+    }
+
     private updateFacetValuesForProperties(property: Property, limit: number = null) {
 
         if (!property.isRangeProperty()) {

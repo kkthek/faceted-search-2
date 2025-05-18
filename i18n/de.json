@@ -24,5 +24,6 @@
 	"fs-facet-values":	 		"Facettenwerte",
 	"fs-preview":	 			"Vorschau",
 	"fs-facet-ored-values": 	"Selektieren Sie alle Werte die im Ergebnis auftauchen sollen",
-	"fs-create-article": 		"Erzeuge neue Seite"
+	"fs-create-article": 		"Erzeuge neue Seite",
+	"fs-remove-all-facets": 	"Entferne all selektierten Facetten"
 }
