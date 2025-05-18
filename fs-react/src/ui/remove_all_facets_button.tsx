@@ -9,8 +9,8 @@ function RemoveAllFacetsButton(prop: {
 }) {
     let wikiContext = useContext(WikiContext);
 
-    if (prop.searchStateFacet?.query.isAnyPropertySelected()
-        || prop.searchStateFacet?.query.isAnyCategorySelected()) {
+    if (!prop.searchStateFacet?.query.isAnyPropertySelected()
+        && !prop.searchStateFacet?.query.isAnyCategorySelected()) {
         return;
     }
     return <div key={'removeAllFacets'}>
