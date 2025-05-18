@@ -6,13 +6,24 @@ import {DocumentQuery} from "../common/datatypes";
 
 class DropdownEntry {
 
+    readonly id: string
+    readonly label: string
+
     constructor(id: string, label: string) {
         this.id = id;
         this.label = label;
     }
 
-    id: string
-    label: string
+    static createEntries(categoryFilters: any) {
+        let entries = [];
+        for(let category in categoryFilters) {
+            let id = category === '' ? '-no-filter-' : category;
+            let label = categoryFilters[category];
+            label = label.replace('&nbsp;', '\u00A0');
+            entries.push(new DropdownEntry(id, label));
+        }
+        return entries;
+    }
 }
 
 function CategoryDropdown(prop: {
@@ -26,14 +37,7 @@ function CategoryDropdown(prop: {
     if (!useCategoryDropdown) return;
     if (!showCategories) return;
 
-    let entries = [];
-    for(let category in categoryFilter) {
-        let id = category === '' ? '-no-filter-' : category;
-        let label = categoryFilter[category];
-        label = label.replace('&nbsp;', '\u00A0');
-        entries.push(new DropdownEntry(id, label));
-    }
-
+    let entries = DropdownEntry.createEntries(categoryFilter);
     let categoryFacets = prop.documentQuery.categoryFacets;
     let preselectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : entries[0].id;
     const [category, setCategory] = useState(preselectedCategory);
@@ -43,7 +47,10 @@ function CategoryDropdown(prop: {
         prop.onCategoryDropDownClick(event.target.value === '-no-filter-' ? '' : event.target.value);
     };
 
-    let categoryOptions = entries.map((entry) => <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>);
+    let categoryOptions = entries.map((entry) =>
+        <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>
+    );
+
     return <Box className={'fs-category-dropdown'}>
         <Typography>Available categories</Typography>
         <Select
