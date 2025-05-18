@@ -84,9 +84,13 @@ function App() {
                     <SortView key={'sortView'} onChange={eventHandler.onSortChange.bind(eventHandler)}/>,
                     <SearchBar key={'searchBar'} onClick={eventHandler.onSearchClick.bind(eventHandler)} textState={[searchText, setSearchText]}/>,
 
-                    <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>
+                    <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>,
+                    <SaveSearchLink key={'saveSearchLink'}
+                                    documentQuery={currentDocumentsQueryBuilder.build()}
+                                    facetQuery={currentFacetsQueryBuilder.build()}
+                    />
                 ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
-                    ['sortView', 'searchView', 'createArticleView']))}
+                    ['sortView', 'searchView', 'createArticleView', 'saveSearchLink']))}
 
             </div>
 
@@ -150,9 +154,7 @@ function App() {
                             onPageIndexClick={eventHandler.onPageIndexClick.bind(eventHandler)}
                             client={client}/>
             </div>
-            <SaveSearchLink documentQuery={currentDocumentsQueryBuilder.build()}
-                            facetQuery={currentFacetsQueryBuilder.build()}
-            />
+
             <ErrorView error={error} setError={setError}/>
         </div>
     </WikiContext.Provider>;
@@ -164,8 +166,8 @@ function applyQueryConstraintsFromConfig() {
         currentDocumentsQueryBuilder.withExtraProperty(p);
     });
     currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
-    if (wikiContext.config['fs2gCategoryFilter'].length !== 0) {
-        let firstCategory = Object.keys(wikiContext.config['fs2gCategoryFilter'])[0];
+    if (wikiContext.isObjectConfigured('fs2gCategoryFilter')) {
+        let firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');
         currentDocumentsQueryBuilder.withCategoryFacet(firstCategory);
     }
 }

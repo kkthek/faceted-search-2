@@ -8,6 +8,14 @@ export class WikiContextInterface {
         this.config = config;
         this.msg = msg;
     }
+
+    isObjectConfigured(setting: string): boolean {
+        return this.config[setting].length !== 0;
+    }
+
+    getFirstInObject(setting: string): string {
+        return Object.keys(this.config[setting])[0]
+    }
 }
 
 export class WikiContextInterfaceMock extends WikiContextInterface {

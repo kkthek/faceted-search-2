@@ -230,7 +230,7 @@
 			"description": "Show some files in an overlay. Either 'false' or array of file types ['pdf', 'png',...]"
 		},
 		"HeaderControlOrder": {
-			"value": ["sortView", "searchView", "createArticleView"],
+			"value": ["sortView", "searchView", "createArticleView", "saveSearchLink"],
 			"description": "Order of controls in header"
 		},
 		"FacetControlOrder": {

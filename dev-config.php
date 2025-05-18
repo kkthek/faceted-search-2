@@ -89,7 +89,7 @@ function setConfigForDevContext() {
         $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
     }
 
-    $fs2gHeaderControlOrder = ['sortView', 'searchView', 'createArticleView'];
+    $fs2gHeaderControlOrder = ['sortView', 'searchView', 'createArticleView', 'saveSearchLink'];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
         'facetView', 'categoryView', 'categoryDropDown'];
 

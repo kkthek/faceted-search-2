@@ -12,10 +12,7 @@ function FacetViewCategory( prop: {
     selectedCategories: string[],
     onCategoryClick: (c: string)=>void,
 }) {
-    let isSelectedFacet = prop.selectedCategories.indexOf(prop.categoryFacetCount.category) > -1;
-    if (isSelectedFacet) {
-        return;
-    }
+
     let title = prop.categoryFacetCount.displayTitle != '' ? prop.categoryFacetCount.displayTitle : prop.title;
     let count = prop.categoryFacetCount?.count;
     return <CustomTreeItem itemId={prop.categoryFacetCount.category}
@@ -33,7 +30,7 @@ function CategoryView( prop: {
     let wikiContext = useContext(WikiContext);
     let showCategories = wikiContext.config['fs2gShowCategories'];
     let shownCategoryFacets = wikiContext.config['fs2gShownCategoryFacets'];
-    let useCategoryDropdown = wikiContext.config.fs2gCategoryFilter.length !== 0;
+    let useCategoryDropdown = wikiContext.isObjectConfigured('fs2gCategoryFilter');
     if (useCategoryDropdown) return;
     if (!prop.searchStateDocument || !showCategories) return;
 
@@ -41,6 +38,7 @@ function CategoryView( prop: {
 
     const listItems = categoryFacetCounts
         .filter((facetCount) => shownCategoryFacets.includes(facetCount.category) || shownCategoryFacets.length === 0)
+        .filter((facetCount) => !prop.searchStateDocument.query.categoryFacets.includes(facetCount.category))
         .map((facetCount,i) => {
 
             return <FacetViewCategory key={facetCount.category}
@@ -51,10 +49,12 @@ function CategoryView( prop: {
             />
         }
     );
+
     return <Box id={'fs-category-view'}>
         <Typography>{wikiContext.msg('fs-available-categories')}</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
             {listItems}
+            {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={'none'}></CustomTreeItem>: ''}
         </SimpleTreeView>
     </Box>;
 }
