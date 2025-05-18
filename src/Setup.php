@@ -35,13 +35,7 @@ class Setup
             'localBasePath' => $basePath,
             'remoteExtPath' => 'FacetedSearch2',
             'position' => 'bottom',
-            'messages' => [
-                'score_desc',
-                '_mdat_desc',
-                '_mdat_asc',
-                'displaytitle_desc',
-                'displaytitle_asc'
-            ],
+            'messages' => self::getMessageKeys(),
             'scripts' => [
                 $reactScript,
             ],
@@ -53,7 +47,7 @@ class Setup
 
     private static function getMessageKeys() {
         $keys = [];
-        $messages = json_decode(file_get_contents('../i18n/en.json'));
+        $messages = json_decode(file_get_contents(__DIR__ . '/../i18n/en.json'));
         foreach($messages as $key => $value) {
             $keys[] = $key;
         }
@@ -137,7 +131,10 @@ class Setup
                $fs2gShowSolrScore,
                $fs2gCreateNewPageLink,
                $fs2gShowFileInOverlay,
-               $fs2gNamespacesToShow
+               $fs2gNamespacesToShow,
+               $fs2gHeaderControlOrder,
+               $fs2gFacetControlOrder,
+               $fs2gPropertyGrouping
                ;
 
         $jsVars = [];
@@ -166,6 +163,9 @@ class Setup
             $fs2gExtraPropertiesToRequest[] = new Property($fs2gDemotionProperty, Datatype::BOOLEAN);
         }
         $jsVars["fs2gFacetsWithOR"] = $fs2gFacetsWithOR;
+        $jsVars["fs2gHeaderControlOrder"] = $fs2gHeaderControlOrder;
+        $jsVars["fs2gFacetControlOrder"] = $fs2gFacetControlOrder;
+        $jsVars["fs2gPropertyGrouping"] = $fs2gPropertyGrouping;
         $jsVars["fs2gShowSolrScore"] = $fs2gShowSolrScore;
         $jsVars["fs2gCreateNewPageLink"] = $fs2gCreateNewPageLink;
         $jsVars["fs2gShowFileInOverlay"] = $fs2gShowFileInOverlay;
