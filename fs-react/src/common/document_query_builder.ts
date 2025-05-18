@@ -1,10 +1,11 @@
-import {Datatype, DocumentQuery, Order, Property, PropertyFacet, Sort} from "./datatypes";
+import {Datatype, DocumentQuery, DocumentsResponse, Order, Property, PropertyFacet, Sort} from "./datatypes";
 import Tools from "../util/tools";
 import ConfigUtils from "../util/config_utils";
+import {TypedJSON} from "typedjson";
 
 class DocumentQueryBuilder {
 
-    private readonly query: DocumentQuery;
+    private query: DocumentQuery;
 
     constructor() {
         this.query = new DocumentQuery(
@@ -21,6 +22,12 @@ class DocumentQueryBuilder {
             10,
             0
         );
+    }
+
+    withQueryFromJson(json: string) {
+        const deserializer = new TypedJSON(DocumentQuery);
+        this.query = deserializer.parse(json);
+        return this;
     }
 
     withSearchText(text: string): DocumentQueryBuilder {

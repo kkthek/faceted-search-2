@@ -26,6 +26,7 @@ import CreateArticleLink from "./ui/create_article";
 import ConfigUtils from "./util/config_utils";
 import {useDebounce} from "./util/custom_hooks";
 import Tools from "./util/tools";
+import SaveSearchLink from "./ui/save_search_link";
 
 const browserWindow = window as any;
 let solrProxyUrl;
@@ -52,14 +53,11 @@ export let WikiContext = createContext(null);
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
 
-const urlParams = new URLSearchParams(window.location.search);
-const searchParam = urlParams.get('search');
-
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
     const [error, setError] = React.useState('');
-    const [searchText, setSearchText] = useState(searchParam ?? '');
+    const [searchText, setSearchText] = useState(currentDocumentsQueryBuilder.build().searchText);
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
 
     const eventHandler = new EventHandler(
@@ -131,7 +129,9 @@ function App() {
                                onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
                     />,
 
-                    <CategoryDropdown key={'categoryView'} onCategoryDropDownClick={eventHandler.onCategoryDropDownClick.bind(eventHandler)}/>,
+                    <CategoryDropdown key={'categoryView'}
+                                      documentQuery={currentDocumentsQueryBuilder.build()}
+                                      onCategoryDropDownClick={eventHandler.onCategoryDropDownClick.bind(eventHandler)}/>,
                     <CategoryView key={'categoryDropDown'} searchStateDocument={searchStateDocument}
                                   onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
                     />
@@ -145,6 +145,9 @@ function App() {
                             onPageIndexClick={eventHandler.onPageIndexClick.bind(eventHandler)}
                             client={client}/>
             </div>
+            <SaveSearchLink documentQuery={currentDocumentsQueryBuilder.build()}
+                            facetQuery={currentFacetsQueryBuilder.build()}
+            />
             <ErrorView error={error} setError={setError}/>
         </div>
     </WikiContext.Provider>;
@@ -162,8 +165,25 @@ function applyQueryConstraintsFromConfig() {
     }
 }
 
+function applyQueryConstraintsFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const searchText = urlParams.get('search');
+    if (searchText !== null) {
+        currentDocumentsQueryBuilder.withSearchText(searchText);
+    }
+
+    const dq = urlParams.get('dq');
+    const fq = urlParams.get('fq');
+    if (dq !== null && fq !== null) {
+        currentDocumentsQueryBuilder.withQueryFromJson(dq);
+        currentFacetsQueryBuilder.withQueryFromJson(fq);
+    }
+}
+
 function startApp() {
     applyQueryConstraintsFromConfig();
+    applyQueryConstraintsFromURL();
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
     root.render(<App/>);

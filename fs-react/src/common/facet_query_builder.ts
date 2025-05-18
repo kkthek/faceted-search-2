@@ -1,9 +1,10 @@
-import {BaseQuery, FacetsQuery, Property, PropertyValueConstraint, RangeQuery} from "./datatypes";
+import {BaseQuery, DocumentQuery, FacetsQuery, Property, PropertyValueConstraint, RangeQuery} from "./datatypes";
 import Tools from "../util/tools";
+import {TypedJSON} from "typedjson";
 
 class FacetQueryBuilder {
 
-    private readonly query: FacetsQuery;
+    private query: FacetsQuery;
 
     constructor() {
         this.query = new FacetsQuery(
@@ -15,6 +16,13 @@ class FacetQueryBuilder {
             []
         );
     }
+
+    withQueryFromJson(json: string) {
+        const deserializer = new TypedJSON(FacetsQuery);
+        this.query = deserializer.parse(json);
+        return this;
+    }
+
     withoutPropertyFacet(pf: Property) {
         Tools.removeAll(this.query.propertyFacets, (e) => e.property, pf.title);
         return this;

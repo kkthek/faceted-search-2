@@ -1,6 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
 import {Box, InputLabel, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import DocumentQueryBuilder from "../common/document_query_builder";
+import {DocumentQuery} from "../common/datatypes";
 
 class DropdownEntry {
 
@@ -14,6 +16,7 @@ class DropdownEntry {
 }
 
 function CategoryDropdown(prop: {
+    documentQuery: DocumentQuery,
     onCategoryDropDownClick: (c: string)=>void
 }) {
     let wikiContext = useContext(WikiContext);
@@ -31,7 +34,9 @@ function CategoryDropdown(prop: {
         entries.push(new DropdownEntry(id, label));
     }
 
-    const [category, setCategory] = useState(entries[0].id);
+    let categoryFacets = prop.documentQuery.categoryFacets;
+    let preselectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : entries[0].id;
+    const [category, setCategory] = useState(preselectedCategory);
 
     const handleChange = (event: SelectChangeEvent) => {
         setCategory(event.target.value);
