@@ -111,7 +111,7 @@ class Setup
             return true;
         }
 
-        global $fsgFacetValueLimit,
+        global $fs2gFacetValueLimit,
                $fs2gExtraPropertiesToRequest,
                $fs2gAnnotationsInSnippet,
                $fs2gCategoriesToShowInTitle,
@@ -138,7 +138,7 @@ class Setup
                ;
 
         $jsVars = [];
-        $jsVars["fs2gFacetValueLimit"] = $fsgFacetValueLimit;
+        $jsVars["fs2gFacetValueLimit"] = $fs2gFacetValueLimit;
         $jsVars["fs2gAnnotationsInSnippet"] = $fs2gAnnotationsInSnippet;
         $fs2gExtraPropertiesToRequest = self::getPropertiesForAnnotations($fs2gAnnotationsInSnippet);
         $jsVars["fs2gExtraPropertiesToRequest"] = $fs2gExtraPropertiesToRequest;
