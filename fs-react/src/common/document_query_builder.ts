@@ -8,10 +8,6 @@ class DocumentQueryBuilder {
     private query: DocumentQuery;
 
     constructor() {
-        this.initalizeQueryWithDefaults();
-    }
-
-    private initalizeQueryWithDefaults() {
         this.query = new DocumentQuery(
             "",
             [],
@@ -28,8 +24,10 @@ class DocumentQueryBuilder {
         );
     }
 
-    clearAll() {
-        this.initalizeQueryWithDefaults();
+    clearAllFacets() {
+        this.query.categoryFacets = [];
+        this.query.propertyFacets = [];
+        this.query.namespaceFacets = [];
         return this;
     }
 

@@ -176,7 +176,7 @@ class EventHandler {
     }
 
     onRemoveAllFacetsClick() {
-        this.currentDocumentsQueryBuilder.clearAll();
+        this.currentDocumentsQueryBuilder.clearAllFacets();
 
         this.updateDocuments();
         this.updateFacets();
