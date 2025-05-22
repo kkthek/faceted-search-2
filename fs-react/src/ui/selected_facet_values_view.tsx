@@ -29,12 +29,14 @@ function SelectedFacetValues(prop: {
         property.type,
         prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
 
-    return <CustomTreeItem key={value + prop.propertyValueCount.count}
-                           itemId={Tools.createId(value + prop.propertyValueCount.count)}
-                           actionIcon={prop.removable ? DeleteIcon : null}
-                           action={() => prop.onRemoveClick(prop.selectedPropertyFacet)}
-                           label={value + " : " + prop.propertyValueCount.count}
-                           itemAction={() => prop.onValueClick(propertyFacet)}>
+    const rnd = Math.trunc(Math.random() * 100000);
+    let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + rnd);
+    return <CustomTreeItem key={property.title + value + prop.propertyValueCount.count}
+        itemId={itemId}
+        actionIcon={prop.removable ? DeleteIcon : null}
+        action={() => prop.onRemoveClick(prop.selectedPropertyFacet)}
+        label={value + " : " + prop.propertyValueCount.count}
+        itemAction={() => prop.onValueClick(propertyFacet)}>
 
     </CustomTreeItem>
 

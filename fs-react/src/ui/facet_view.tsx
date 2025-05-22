@@ -60,7 +60,7 @@ function FacetViewProperty(prop: {
     let showAll = propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
                 !(prop.property.isRangeProperty() || prop.property.isBooleanProperty());
 
-    return <CustomTreeItem itemId={prop.property.title}
+    return <CustomTreeItem itemId={Tools.createItemIdForProperty(prop.property)}
                            label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
                            itemAction={() => {
                                prop.onPropertyClick(prop.property);
@@ -153,7 +153,8 @@ function FacetView(prop: {
     ) => {
 
         if (isExpanded) {
-            let facetCount = Tools.findFirstByPredicate(propertyFacetCounts, (e) => e.property.title === itemId);
+            let facetCount = Tools.findFirstByPredicate(propertyFacetCounts,
+                (pfc) => Tools.createItemIdForProperty(pfc.property)=== itemId);
             prop.onExpandClick(facetCount.property, wikiContext.config.fs2gFacetValueLimit);
         }
 

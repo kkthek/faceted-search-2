@@ -1,5 +1,5 @@
 import {CustomDeserializerParams} from "typedjson/lib/types/metadata";
-import {MWTitleWithURL} from "../common/datatypes";
+import {MWTitleWithURL, Property} from "../common/datatypes";
 import {ReactElement} from "react";
 
 class Tools {
@@ -164,6 +164,11 @@ class Tools {
 
     static createId(rawId: string) {
         return rawId.replace(/[\W]/g, '')
+    }
+
+    static createItemIdForProperty(property: Property) {
+        const rawId = property.title + "_" + property.type
+        return rawId.replace(/[\W]/g, '');
     }
 
 }
