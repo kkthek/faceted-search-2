@@ -1,5 +1,5 @@
 import {BaseQuery, Property, PropertyFacet, ValueCount} from "../common/datatypes";
-import React from "react";
+import React, {Dispatch, SetStateAction} from "react";
 import DisplayTools from "../util/display_tools";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -7,7 +7,8 @@ import Tools from "../util/tools";
 
 function FacetValues(prop: {
     query: BaseQuery,
-    property: Property
+    property: Property,
+    expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
     propertyValueCount: ValueCount | null,
     onValueClick: (p: PropertyFacet) => void,
     removable: boolean
@@ -17,7 +18,7 @@ function FacetValues(prop: {
     if (prop.propertyValueCount === null || !prop.property) {
         return;
     }
-
+    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
     let value = DisplayTools.serializeFacetValue(prop.property, prop.propertyValueCount);
 
     let property = prop.property;
@@ -32,7 +33,11 @@ function FacetValues(prop: {
                            actionIcon={prop.removable ? DeleteIcon : null}
                            action={() => prop.onRemoveClick(propertyFacet)}
                            label={value + " : " + prop.propertyValueCount.count}
-                           itemAction={() => prop.onValueClick(propertyFacet)}>
+                           itemAction={() => {
+                               prop.onValueClick(propertyFacet);
+                               setExpandedFacets([...expandedFacets, prop.property.title]);
+                           }
+                           }>
 
     </CustomTreeItem>
 
