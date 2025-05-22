@@ -28,7 +28,11 @@
 	],
 	"Hooks": {
 		"BeforePageDisplay": "DIQA\\FacetedSearch2\\Setup::onBeforePageDisplay",
-		"ParserFirstCallInit": "DIQA\\FacetedSearch2\\Setup::initializeBeforeParserInit"
+		"ParserFirstCallInit": "DIQA\\FacetedSearch2\\Setup::initializeBeforeParserInit",
+		"GetPreferences": "DIQA\\FacetedSearch2\\UserPreference::setupPreferences"
+	},
+	"DefaultUserOptions": {
+		"fs2-sort-order-preferences": "sort-alphabetically"
 	},
 	"ExtensionMessagesFiles": {
 		"FacetedSearch2Magic": "i18n/MagicWords.php"
