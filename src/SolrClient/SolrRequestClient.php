@@ -208,6 +208,7 @@ class SolrRequestClient implements FacetedSearchClient
         $params['hl.simple-pre'] = '<b>';
         $params['hl.simple-post'] = '</b>';
         $params['hl.fragsize'] = '250';
+        $searchText = trim($searchText);
         $params['searchText'] = $searchText === '' ? '(*)' : $searchText;
 
         $params['wt'] = 'json';
