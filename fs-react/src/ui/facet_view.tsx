@@ -176,6 +176,7 @@ function FacetView(prop: {
         </SimpleTreeView>
         <FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
+                       expandedFacets={prop.expandedFacets}
                        searchStateFacets={openOrDialog.facetResponse}
                        selectedFacets={prop.searchStateDocument.query.propertyFacets}
                        property={openOrDialog.property}

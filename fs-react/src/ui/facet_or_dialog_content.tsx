@@ -6,6 +6,7 @@ import * as React from "react";
 import {SyntheticEvent, useContext} from "react";
 import {WikiContext} from "../index";
 import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
+import TreeCreator from "./facet_or_dialog_tree";
 
 function FacetOrDialogContent(prop: {
     searchStateFacets: FacetResponse,
@@ -36,9 +37,9 @@ function FacetOrDialogContent(prop: {
         .filter((value) => Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.containsValueOrMWTitle(value)) != null)
         .map(v => DisplayTools.serializeFacetValue(prop.property, v));
 
-    let groups = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
+    let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
 
-    return groups ? <PropertyValueTree property={prop.property}
+    return groupConfiguration ? <PropertyValueTree property={prop.property}
                                        valueCounts={valueCounts}
                                        selectedItemIds={selectedItemIds}
                                        onBulkChange={prop.onBulkChange}/>
@@ -88,21 +89,18 @@ function PropertyValueTree(prop: {
     onBulkChange: (e: SyntheticEvent, v: ValueCount[]) => void
 }) {
     let wikiContext = useContext(WikiContext);
-    let allFacetValues = prop.valueCounts.map(v => DisplayTools.serializeFacetValue(prop.property, v));
-    let groups = Tools.deepClone(wikiContext.config.fs2gPropertyGrouping[prop.property.title]);
-    for (let groupId in groups) {
-        groups[groupId] = Tools.intersect(groups[groupId], allFacetValues);
-    }
-    let groupTreeItems = [];
 
-    for (let groupId in groups) {
-        let facetValueTreeItems = groups[groupId].map((v: any) => <TreeItem key={v} itemId={v} label={v}/>);
-        if (facetValueTreeItems.length > 0) {
-            groupTreeItems.push(<TreeItem key={groupId} itemId={groupId} label={groupId}>{facetValueTreeItems}</TreeItem>);
-        }
+    let items;
+    let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
+    if (typeof groupConfiguration === 'string') {
+        items = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfiguration);
+    } else {
+        items = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, prop.property, groupConfiguration);
     }
+    let {groups, groupTreeItems} = items;
 
     function onSelectedItemsChange(event: React.SyntheticEvent, itemIds: string[]) {
+        itemIds = itemIds.map(i => decodeURIComponent(i));
         let selectedValueCounts = prop.valueCounts.filter(v => itemIds.includes(DisplayTools.serializeFacetValue(prop.property, v)));
         prop.onBulkChange(event, selectedValueCounts);
     }

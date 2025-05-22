@@ -54,7 +54,7 @@ function setConfigForDevContext() {
     $fs2gShowCategories = true;
     $fs2gShowSortOrder = true;
     $fs2gShowNamespaces = true;
-    $fs2gNamespacesToShow = [];
+    $fs2gNamespacesToShow = [0, 14, 10];
 
     $fs2gFacetValueLimit = 20;
     $fs2gShowArticleProperties = true;
@@ -78,7 +78,7 @@ function setConfigForDevContext() {
 
     $fs2gNamespaceConstraint = []; // ['sysop' => [ 0, 10, 14] ];
 
-    $fs2gFacetsWithOR = ['Has name'];
+    $fs2gFacetsWithOR = ['Has name', 'Works at'];
 
     $fs2gShowSolrScore = true;
 
@@ -93,13 +93,14 @@ function setConfigForDevContext() {
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
         'facetView', 'categoryView', 'categoryDropDown'];
 
-    $fs2gPropertyGrouping = [];/* [
+    $fs2gPropertyGrouping = [
         'Has name' =>
                 [
                     'Group1' => [ 'Markus', 'Horst' ],
                     'Group2' => ['Peter', 'Timo']
-                ]
-    ];*/
+                ],
+        'Works at' => '/'
+    ];
 
     global $userOptions;
     $userOptions = [

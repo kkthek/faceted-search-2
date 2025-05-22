@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
 import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
-import {SyntheticEvent, useContext, useEffect, useState} from "react";
+import {Dispatch, SetStateAction, SyntheticEvent, useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
 import Tools from "../util/tools";
 import {useDebounce} from "../util/custom_hooks";
@@ -19,7 +19,8 @@ function FacetOrDialog(prop: {
         searchStateFacets: FacetResponse,
         selectedFacets: PropertyFacet[],
         property: Property,
-        onValuesClick: (p: PropertyFacet[], property: Property)=>void
+        onValuesClick: (p: PropertyFacet[], property: Property)=>void,
+        expandedFacets: [string[], Dispatch<SetStateAction<string[]>>]
 }) {
     let wikiContext = useContext(WikiContext);
     const [searchText, setSearchText] = useState((): string => '');
@@ -28,7 +29,7 @@ function FacetOrDialog(prop: {
     if (!prop.property) return;
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
-
+    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
     let selectedFacets = prop.selectedFacets.filter(e => e.property === prop.property.title);
     let onChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
         let propertyFacet = new PropertyFacet(
@@ -88,6 +89,7 @@ function FacetOrDialog(prop: {
                                                   onChange={onChange}
                                                   onBulkChange={onBulkChange}
                                                   filterText={debouncedSearchText}
+
                             />
                         </Box>
                     </FormGroup>
@@ -96,6 +98,7 @@ function FacetOrDialog(prop: {
                     <Button onClick={prop.handleClose}>Cancel</Button>
                     <Button onClick={() => {
                         prop.onValuesClick(selectedFacets, prop.property);
+                        setExpandedFacets([...expandedFacets, prop.property.title]);
                         prop.handleClose();
                     }} autoFocus>Ok</Button>
                 </DialogActions>
