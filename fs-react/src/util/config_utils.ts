@@ -1,4 +1,4 @@
-import {BaseQuery, Datatype, Order, Property, PropertyFacetCount, Sort} from "../common/datatypes";
+import {BaseQuery, CategoryFacetCount, Datatype, Order, Property, PropertyFacetCount, Sort} from "../common/datatypes";
 
 class ConfigUtils {
 
@@ -13,7 +13,7 @@ class ConfigUtils {
         return [...new Set(results)]
     }
 
-    static getSortFunction(sortType: string) {
+    static getSortFunctionForPropertyFacets(sortType: string) {
         switch(sortType) {
             case 'sort-by-count':
                 return (a: PropertyFacetCount, b: PropertyFacetCount) => b.count - a.count;
@@ -21,6 +21,17 @@ class ConfigUtils {
             case 'sort-alphabetically':
                 return (a: PropertyFacetCount, b: PropertyFacetCount) =>
                      a.property.title.toLowerCase().localeCompare(b.property.title.toLowerCase())
+        }
+    }
+
+    static getSortFunctionForCategoryFacets(sortType: string) {
+        switch(sortType) {
+            case 'sort-by-count':
+                return (a: CategoryFacetCount, b: CategoryFacetCount) => b.count - a.count;
+            default:
+            case 'sort-alphabetically':
+                return (a: CategoryFacetCount, b: CategoryFacetCount) =>
+                    a.category.toLowerCase().localeCompare(b.category.toLowerCase())
         }
     }
 

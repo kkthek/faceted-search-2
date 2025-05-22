@@ -5,6 +5,7 @@ import {WikiContext} from "../index";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import {Box, Typography} from "@mui/material";
+import ConfigUtils from "../util/config_utils";
 
 function FacetViewCategory( prop: {
     title: string,
@@ -39,6 +40,7 @@ function CategoryView( prop: {
     const listItems = categoryFacetCounts
         .filter((facetCount) => shownCategoryFacets.includes(facetCount.category) || shownCategoryFacets.length === 0)
         .filter((facetCount) => !prop.searchStateDocument.query.categoryFacets.includes(facetCount.category))
+        .sort(ConfigUtils.getSortFunctionForCategoryFacets(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount,i) => {
 
             return <FacetViewCategory key={facetCount.category}
