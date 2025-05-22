@@ -29,6 +29,13 @@ div.demoted {
     background: lightgray;
 }
 
+div.fs-or-content {
+    width: 800px;
+    height: 500px;
+    padding: 20px;
+}
+
+
 @media (min-width: 1000px) {
 
     #fs-content {

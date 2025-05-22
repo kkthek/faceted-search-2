@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
-import {FormGroup, TextField} from "@mui/material";
+import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
 import {SyntheticEvent, useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
@@ -75,18 +75,21 @@ function FacetOrDialog(prop: {
                     <TextField id="fs-dialog-or-search"
                                label={'Search...'}
                                size={'small'}
+                               sx={{width: '100%', marginTop: '15px'}}
                                onChange={(event) => {
                                     setSearchText(event.target.value);
                                }}
                                variant="outlined"/>
                     <FormGroup>
-                        <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}
-                                              selectedFacets={selectedFacets}
-                                              property={prop.property}
-                                              onChange={onChange}
-                                              onBulkChange={onBulkChange}
-                                              filterText={debouncedSearchText}
-                        />
+                        <Box className={'fs-or-content'}>
+                            <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}
+                                                  selectedFacets={selectedFacets}
+                                                  property={prop.property}
+                                                  onChange={onChange}
+                                                  onBulkChange={onBulkChange}
+                                                  filterText={debouncedSearchText}
+                            />
+                        </Box>
                     </FormGroup>
                 </DialogContent>
                 <DialogActions>
