@@ -100,11 +100,17 @@ function setConfigForDevContext() {
                     'Group2' => ['Peter', 'Timo']
                 ]
     ];*/
+
+    global $userOptions;
+    $userOptions = [
+        'fs2-sort-order-preferences' => 'sort-alphabetically'
+    ];
 // -------------------------------------------------------
 }
 
 function getConfigForDevContext(): array
 {
+    global $userOptions;
     $settings = [];
     foreach($GLOBALS as $var => $value) {
         if (strpos($var, 'fs2g') === 0 || strpos($var, 'wg') === 0) {
@@ -112,5 +118,5 @@ function getConfigForDevContext(): array
         }
     }
     $lang = json_decode(file_get_contents('i18n/en.json'));
-    return [ 'settings' => $settings, 'lang' => $lang ];
+    return [ 'settings' => $settings, 'options' => $userOptions, 'lang' => $lang ];
 }

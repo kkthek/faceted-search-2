@@ -1,11 +1,14 @@
 
 export class WikiContextInterface {
     config: any;
+    options: any;
     msg: (id: string,  ...params: string[]) => string
 
-    constructor(config: any = [],
+    constructor(config: any = {},
+                options: any = {},
                 msg: (id: string, ...params: string[]) => string) {
         this.config = config;
+        this.options = options;
         this.msg = msg;
     }
 
@@ -23,6 +26,7 @@ export class WikiContextInterfaceMock extends WikiContextInterface {
     private readonly langMap: any;
 
     constructor(config: any = {},
+                options: any = {},
                 langMap: any = {}) {
         let msgFunction = (id: string, ...params: string[]) => {
             let text = this.langMap[id] ? this.langMap[id] : "<" + id + ">";
@@ -31,7 +35,7 @@ export class WikiContextInterfaceMock extends WikiContextInterface {
             }
             return text;
         };
-        super(config, msgFunction);
+        super(config, options, msgFunction);
         this.langMap = langMap;
     }
 }

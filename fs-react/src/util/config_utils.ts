@@ -1,6 +1,4 @@
-import {BaseQuery, Datatype, Order, Property, Sort} from "../common/datatypes";
-import Client from "../common/client";
-import {WikiContextInterface, WikiContextInterfaceMock} from "../common/wiki_context";
+import {BaseQuery, Datatype, Order, Property, PropertyFacetCount, Sort} from "../common/datatypes";
 
 class ConfigUtils {
 
@@ -13,6 +11,17 @@ class ConfigUtils {
         });
         // @ts-ignore
         return [...new Set(results)]
+    }
+
+    static getSortFunction(sortType: string) {
+        switch(sortType) {
+            case 'sort-by-count':
+                return (a: PropertyFacetCount, b: PropertyFacetCount) => b.count - a.count;
+            default:
+            case 'sort-alphabetically':
+                return (a: PropertyFacetCount, b: PropertyFacetCount) =>
+                     a.property.title.toLowerCase().localeCompare(b.property.title.toLowerCase())
+        }
     }
 
     static getFileExtension(url: string) {

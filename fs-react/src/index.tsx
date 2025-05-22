@@ -41,6 +41,7 @@ if (isInWikiContext) {
     solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
     wikiContext = new WikiContextInterface(
         browserWindow.mw.config.values,
+        browserWindow.mw.user.options.values,
         browserWindow.mw.msg
     );
 } else {
@@ -200,7 +201,7 @@ if (isInWikiContext) {
     startApp();
 } else {
     client.getSettingsForDevContext().then(result => {
-        wikiContext = new WikiContextInterfaceMock(result.settings, result.lang);
+        wikiContext = new WikiContextInterfaceMock(result.settings, result.options, result.lang);
         startApp();
     });
 }
