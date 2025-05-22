@@ -17,11 +17,13 @@ function FacetOrDialogContent(prop: {
 }) {
     let wikiContext = useContext(WikiContext);
     let valueCounts = prop.searchStateFacets?.getPropertyValueCount(prop.property).values;
-    let filterTextLowercase = prop.filterText.toLowerCase();
+    let filterTextsLowercase = prop.filterText.toLowerCase().split(/\s+/);
+
     valueCounts = valueCounts.filter((v) => {
         let serializedFacetValue = DisplayTools.serializeFacetValue(prop.property, v);
-        return filterTextLowercase === '' ||
-            serializedFacetValue.toLowerCase().indexOf(filterTextLowercase) > -1;
+        return filterTextsLowercase.length === 0 ||
+            filterTextsLowercase.every((s) => serializedFacetValue.toLowerCase().indexOf(s) > -1);
+
     });
 
     if (prop.property.isRangeProperty() || prop.property.isBooleanProperty()) {
