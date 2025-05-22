@@ -141,7 +141,7 @@ class Setup
         $jsVars["fs2gFacetValueLimit"] = $fs2gFacetValueLimit;
         $jsVars["fs2gAnnotationsInSnippet"] = $fs2gAnnotationsInSnippet;
         $fs2gExtraPropertiesToRequest = self::getPropertiesForAnnotations($fs2gAnnotationsInSnippet);
-        $jsVars["fs2gExtraPropertiesToRequest"] = $fs2gExtraPropertiesToRequest;
+
         $jsVars["fs2gCategoriesToShowInTitle"] = $fs2gCategoriesToShowInTitle;
         $jsVars["fs2gDefaultSortOrder"] = $fs2gDefaultSortOrder;
         $jsVars["fs2gCategoryFilter"] = $fs2gCategoryFilter;
@@ -173,6 +173,7 @@ class Setup
             $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
         }
 
+        $jsVars["fs2gExtraPropertiesToRequest"] = $fs2gExtraPropertiesToRequest;
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 
         return true;

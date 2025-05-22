@@ -21,6 +21,14 @@ div.fs-create-article {
     margin-left: 20px;
 }
 
+div.promoted {
+    background: lightpink;
+}
+
+div.demoted {
+    background: lightgray;
+}
+
 @media (min-width: 1000px) {
 
     #fs-content {
