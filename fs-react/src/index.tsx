@@ -82,8 +82,13 @@ function App() {
         <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
                 {Tools.reorder([
-                    <SortView key={'sortView'} onChange={eventHandler.onSortChange.bind(eventHandler)}/>,
-                    <SearchBar key={'searchBar'} onClick={eventHandler.onSearchClick.bind(eventHandler)} textState={[searchText, setSearchText]}/>,
+                    <SortView key={'sortView'}
+                              onChange={eventHandler.onSortChange}
+                    />,
+                    <SearchBar key={'searchBar'}
+                               onClick={eventHandler.onSearchClick}
+                               textState={[searchText, setSearchText]}
+                    />,
 
                     <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>,
                     <SaveSearchLink key={'saveSearchLink'}
@@ -96,7 +101,7 @@ function App() {
             </div>
 
                 <NamespaceView key={'namespaceView'} searchStateDocument={searchStateDocument}
-                               onNamespaceClick={eventHandler.onNamespaceClick.bind(eventHandler)}
+                               onNamespaceClick={eventHandler.onNamespaceClick}
                 />
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
@@ -107,43 +112,34 @@ function App() {
                     </Box>,
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
-                                        expandedFacets={[expandedFacets, setExpandedFacets]}
                                         searchStateFacet={searchFacetState}
-                                        onValueClick={eventHandler.onValueClick.bind(eventHandler)}
-                                        onValuesClick={eventHandler.onValuesClick.bind(eventHandler)}
-                                        onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
-                                        onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
-                                        onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
+                                        expandedFacets={[expandedFacets, setExpandedFacets]}
+                                        eventHandler={eventHandler}
 
                     />,
                     <SelectedCategoriesView key={'selectedCategoryView'}
                                             searchStateDocument={searchStateDocument}
-                                            onCategoryRemove={eventHandler.onCategoryRemoveClick.bind(eventHandler)}
+                                            onCategoryRemove={eventHandler.onCategoryRemoveClick}
                     />,
                     <RemoveAllFacetsButton key={'removeAllFacets'}
                                            searchStateFacet={searchFacetState}
-                                           onRemoveAllFacetsClick={eventHandler.onRemoveAllFacetsClick.bind(eventHandler)}
+                                           onRemoveAllFacetsClick={eventHandler.onRemoveAllFacetsClick}
                     />,
                     <Divider key={'divider'}/>,
 
                     <FacetView key={'facetView'}
-                                client={client}
-                                searchStateDocument={searchStateDocument}
+                               client={client}
+                               searchStateDocument={searchStateDocument}
                                searchStateFacets={searchFacetState}
                                expandedFacets={[expandedFacets, setExpandedFacets]}
-                               onPropertyClick={eventHandler.onPropertyClick.bind(eventHandler)}
-                               onExpandClick={eventHandler.onExpandClick.bind(eventHandler)}
-                               onValueClick={eventHandler.onValueClick.bind(eventHandler)}
-                               onValuesClick={eventHandler.onValuesClick.bind(eventHandler)}
-                               onRemoveClick={eventHandler.onRemovePropertyFacet.bind(eventHandler)}
-                               onFacetValueContainsClick={eventHandler.onFacetValueContains.bind(eventHandler)}
+                               eventHandler={eventHandler}
                     />,
 
                     <CategoryDropdown key={'categoryView'}
                                       documentQuery={currentDocumentsQueryBuilder.build()}
-                                      onCategoryDropDownClick={eventHandler.onCategoryDropDownClick.bind(eventHandler)}/>,
+                                      onCategoryDropDownClick={eventHandler.onCategoryDropDownClick}/>,
                     <CategoryView key={'categoryDropDown'} searchStateDocument={searchStateDocument}
-                                  onCategoryClick={eventHandler.onCategoryClick.bind(eventHandler)}
+                                  onCategoryClick={eventHandler.onCategoryClick}
                     />
                     ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
                     ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
@@ -152,7 +148,7 @@ function App() {
             <div id={'fs-results'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}
                             numResults={searchStateDocument ? searchStateDocument.documentResponse.numResults : 0}
-                            onPageIndexClick={eventHandler.onPageIndexClick.bind(eventHandler)}
+                            onPageIndexClick={eventHandler.onPageIndexClick}
                             client={client}/>
             </div>
 

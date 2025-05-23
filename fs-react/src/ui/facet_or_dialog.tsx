@@ -12,6 +12,7 @@ import {Dispatch, SetStateAction, SyntheticEvent, useContext, useEffect, useStat
 import {WikiContext} from "../index";
 import Tools from "../util/tools";
 import {useDebounce} from "../util/custom_hooks";
+import EventHandler from "../common/event_handler";
 
 function FacetOrDialog(prop: {
         open: boolean,
@@ -19,7 +20,7 @@ function FacetOrDialog(prop: {
         searchStateFacets: FacetResponse,
         selectedFacets: PropertyFacet[],
         property: Property,
-        onValuesClick: (p: PropertyFacet[], property: Property)=>void,
+        eventHandler: EventHandler
         expandedFacets: [string[], Dispatch<SetStateAction<string[]>>]
 }) {
     let wikiContext = useContext(WikiContext);
@@ -97,7 +98,7 @@ function FacetOrDialog(prop: {
                 <DialogActions>
                     <Button onClick={prop.handleClose}>Cancel</Button>
                     <Button onClick={() => {
-                        prop.onValuesClick(selectedFacets, prop.property);
+                        prop.eventHandler.onValuesClick(selectedFacets, prop.property);
                         setExpandedFacets([...expandedFacets, prop.property.title]);
                         prop.handleClose();
                     }} autoFocus>Ok</Button>

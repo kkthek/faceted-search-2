@@ -9,7 +9,7 @@ import {
 } from "../common/datatypes";
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
-import {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
+import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
 import {WikiContext} from "../index";
 import ConfigUtils from "../util/config_utils";
 import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
@@ -29,12 +29,7 @@ function FacetViewProperty(prop: {
     selectedFacets: PropertyFacet[],
     expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
     propertyFacetCount: PropertyFacetCount|null,
-    onPropertyClick: (p: Property)=>void,
-    onExpandClick: (p: Property, limit: number)=>void,
-    onValueClick: (p: PropertyFacet)=>void,
-    onValuesClick: (p: PropertyFacet[], property: Property)=>void,
-    onRemoveClick: (p: PropertyFacet)=>void,
-    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void,
+    eventHandler: EventHandler
     onOrDialogClick: (property: Property) => void
 }) {
     const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
@@ -51,10 +46,9 @@ function FacetViewProperty(prop: {
                      propertyValueCount={v}
                      expandedFacets={prop.expandedFacets}
                      property={prop.property}
-                     onValueClick={prop.onValueClick}
+                     eventHandler={prop.eventHandler}
                      removable={false}
                      query={prop.query}
-                     onRemoveClick={prop.onRemoveClick}
                      index={i}
         />
     });
@@ -65,7 +59,7 @@ function FacetViewProperty(prop: {
     return <CustomTreeItem itemId={Tools.createItemIdForProperty(prop.property)}
                            label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
                            itemAction={() => {
-                               prop.onPropertyClick(prop.property);
+                               prop.eventHandler.onPropertyClick(prop.property);
                                setExpandedFacets([...expandedFacets, prop.property.title]);
                            } }
                            actionIcon={facetsWithOr ? ChecklistIcon : null}
@@ -73,7 +67,7 @@ function FacetViewProperty(prop: {
                                prop.onOrDialogClick(prop.property);
                            } }
                      className={'fs-facets'}>
-        <FacetFilter onFilterContainsClick={prop.onFacetValueContainsClick}
+        <FacetFilter onFilterContainsClick={prop.eventHandler.onFacetValueContains}
                      numberOfValues={propertyValueCount?.values.length}
                      property={propertyValueCount?.property}/>
 
@@ -82,7 +76,7 @@ function FacetViewProperty(prop: {
         <CustomTreeItem itemId={prop.property.title + "-showall"}
                         label={"[Show all...]"}
                         itemAction={() => {
-                            prop.onFacetValueContainsClick('', null, prop.property);
+                            prop.eventHandler.onFacetValueContains('', null, prop.property);
                         }
                         }
         /> : '' }
@@ -96,12 +90,8 @@ function FacetView(prop: {
     searchStateDocument: SearchStateDocument,
     searchStateFacets: SearchStateFacet,
     expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
-    onPropertyClick: (p: Property)=>void,
-    onExpandClick: (p: Property, limit: number)=>void,
-    onValueClick: (p: PropertyFacet)=>void,
-    onValuesClick: (p: PropertyFacet[], property: Property)=>void,
-    onRemoveClick: (p: PropertyFacet)=>void,
-    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
+    eventHandler: EventHandler
+
 }) {
     if (!prop.searchStateDocument) return;
 
@@ -125,6 +115,8 @@ function FacetView(prop: {
         });
     }
 
+    let onExpandClick = prop.eventHandler.onExpandClick.bind(prop.eventHandler);
+
     const listItems = propertyFacetCounts
         .filter((facetCount) => shownFacets.includes(facetCount.property.title) || shownFacets.length === 0 )
         .sort(ConfigUtils.getSortFunctionForPropertyFacets(wikiContext.options['fs2-sort-order-preferences']))
@@ -135,15 +127,10 @@ function FacetView(prop: {
                            title={facetCount.property.title}
                            property={facetCount.property}
                            expandedFacets={prop.expandedFacets}
-                           onPropertyClick={prop.onPropertyClick}
-                           onExpandClick={prop.onExpandClick}
-                           onValueClick={prop.onValueClick}
-                           onValuesClick={prop.onValuesClick}
                            searchStateFacets={prop.searchStateFacets?.facetsResponse}
                            selectedFacets={prop.searchStateDocument.query.propertyFacets}
                            propertyFacetCount={facetCount}
-                           onRemoveClick={prop.onRemoveClick}
-                           onFacetValueContainsClick={prop.onFacetValueContainsClick}
+                           eventHandler={prop.eventHandler}
                            onOrDialogClick={onOrDialogClick}
         />
     }
@@ -158,7 +145,7 @@ function FacetView(prop: {
         if (isExpanded) {
             let facetCount = Tools.findFirstByPredicate(propertyFacetCounts,
                 (pfc) => Tools.createItemIdForProperty(pfc.property)=== itemId);
-            prop.onExpandClick(facetCount.property, wikiContext.config.fs2gFacetValueLimit);
+            onExpandClick(facetCount.property, wikiContext.config.fs2gFacetValueLimit);
         }
 
         setExpandedFacets(isExpanded ? [...expandedFacets, itemId] : expandedFacets.filter(i => i !== itemId));
@@ -181,7 +168,7 @@ function FacetView(prop: {
                        searchStateFacets={openOrDialog.facetResponse}
                        selectedFacets={prop.searchStateDocument.query.propertyFacets}
                        property={openOrDialog.property}
-                       onValuesClick={prop.onValuesClick}
+                       eventHandler={prop.eventHandler}
         />
     </div>;
 }

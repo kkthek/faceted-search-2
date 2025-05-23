@@ -4,15 +4,15 @@ import DisplayTools from "../util/display_tools";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Tools from "../util/tools";
+import EventHandler from "../common/event_handler";
 
 function FacetValues(prop: {
     query: BaseQuery,
     property: Property,
     expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
     propertyValueCount: ValueCount | null,
-    onValueClick: (p: PropertyFacet) => void,
+    eventHandler: EventHandler
     removable: boolean
-    onRemoveClick: (p: PropertyFacet) => void
     index: number
 }) {
 
@@ -31,10 +31,10 @@ function FacetValues(prop: {
     let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem itemId={itemId}
                            actionIcon={prop.removable ? DeleteIcon : null}
-                           action={() => prop.onRemoveClick(propertyFacet)}
+                           action={() => prop.eventHandler.onRemovePropertyFacet(propertyFacet)}
                            label={value + " : " + prop.propertyValueCount.count}
                            itemAction={() => {
-                               prop.onValueClick(propertyFacet);
+                               prop.eventHandler.onValueClick(propertyFacet);
                                setExpandedFacets([...expandedFacets, prop.property.title]);
                            }
                            }>

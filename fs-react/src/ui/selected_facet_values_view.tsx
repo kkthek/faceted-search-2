@@ -4,17 +4,16 @@ import DisplayTools from "../util/display_tools";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Tools from "../util/tools";
+import EventHandler from "../common/event_handler";
 
 function SelectedFacetValues(prop: {
     query: BaseQuery,
     selectedPropertyFacet: PropertyFacet,
     property: Property
     propertyValueCount: ValueCount | null,
-    onValueClick: (p: PropertyFacet) => void,
+    eventHandler: EventHandler
     removable: boolean
-    onRemoveClick: (p: PropertyFacet) => void,
-    onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
-    onExpandClick: (p: Property, limit: number) => void
+
     index: number
 }) {
 
@@ -34,9 +33,9 @@ function SelectedFacetValues(prop: {
     return <CustomTreeItem key={property.title + value + prop.propertyValueCount.count}
         itemId={itemId}
         actionIcon={prop.removable ? DeleteIcon : null}
-        action={() => prop.onRemoveClick(prop.selectedPropertyFacet)}
+        action={() => prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet)}
         label={value + " : " + prop.propertyValueCount.count}
-        itemAction={() => prop.onValueClick(propertyFacet)}>
+        itemAction={() => prop.eventHandler.onValueClick(propertyFacet)}>
 
     </CustomTreeItem>
 
