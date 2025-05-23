@@ -108,7 +108,7 @@ function PropertyValueTree(prop: {
     return <SimpleTreeView checkboxSelection={true}
                            defaultExpandedItems={Object.keys(groups)}
                            multiSelect={true}
-                           defaultSelectedItems={prop.selectedItemIds}
+                           defaultSelectedItems={prop.selectedItemIds.map(i => encodeURIComponent(i))}
                            selectionPropagation={{descendants: true, parents: true}}
                            onSelectedItemsChange={onSelectedItemsChange}
     >{groupTreeItems}
