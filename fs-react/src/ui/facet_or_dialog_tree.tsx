@@ -1,15 +1,15 @@
-import {Property, ValueCount} from "../common/datatypes";
+import {Datatype, Property, ValueCount} from "../common/datatypes";
 import DisplayTools from "../util/display_tools";
 import {TreeItem} from "@mui/x-tree-view";
 import * as React from "react";
 import Tools from "../util/tools";
 
 class GroupItem {
-    value: ValueCount
+    id: string
     label: string
 
-    constructor(value: ValueCount, label: string) {
-        this.value = value;
+    constructor(value: string, label: string) {
+        this.id = value;
         this.label = label;
     }
 }
@@ -40,31 +40,39 @@ class TreeCreator {
 
         valueCounts.forEach((v) => {
 
-            let displayValue = DisplayTools.serializeFacetValue(property, v)
-            let parts = displayValue.split(separator);
+            let valueLabel = DisplayTools.serializeFacetValue(property, v);
+            let valueId = v.mwTitle ? v.mwTitle.title : v.value.toString();
+            let parts = valueId.split(separator);
             if (parts.length === 1) {
-                groups['ungrouped'] = groups['ungrouped'] ?? new Group('ungrouped');
-                groups['ungrouped'].addGroupItem(new GroupItem(v, parts[0].trim()));
+                groups['ungrouped'] = groups['ungrouped'] ?? new Group('-');
+                let itemLabel = valueLabel !== valueId ? valueLabel : parts[0].trim();
+                groups['ungrouped'].addGroupItem(new GroupItem(valueId, itemLabel));
             } else if (parts.length > 1) {
-                groups[parts[0].trim()] = groups[parts[0].trim()] ??  new Group(parts[0].trim());
-                groups[parts[0].trim()].addGroupItem(new GroupItem(v, parts.splice(1).join(separator)));
+                let groupName = parts[0].trim();
+                groups[groupName] = groups[groupName] ??  new Group(groupName);
+                let itemLabel = valueLabel !== valueId ? valueLabel : parts.splice(1).join(separator);
+                groups[groupName].addGroupItem(new GroupItem(valueId, itemLabel));
             }
         });
         for (let groupId in groups) {
             let facetValueTreeItems = groups[groupId].items.map((v: GroupItem) => {
-                let displayValue = DisplayTools.serializeFacetValue(property, v.value);
-                return <TreeItem key={displayValue} itemId={encodeURIComponent(displayValue)} label={v.label}/>
+                return <TreeItem key={encodeURIComponent(v.id)}
+                                 itemId={encodeURIComponent(v.id)}
+                                 label={v.label}
+                />
             });
             if (facetValueTreeItems.length > 0) {
-                groupTreeItems.push(<TreeItem key={groupId} itemId={groupId}
-                                              label={groupId}>{facetValueTreeItems}</TreeItem>);
+                groupTreeItems.push(<TreeItem key={groupId}
+                                              itemId={groupId}
+                                              label={groups[groupId].label}
+                >{facetValueTreeItems}</TreeItem>);
             }
         }
         return {groups, groupTreeItems};
     }
 
     static createGroupItemsBySpecifiedValues(valueCounts: ValueCount[], property: Property, specifiedValues: any) {
-        let allFacetValues = valueCounts.map(v => DisplayTools.serializeFacetValue(property, v));
+        let allFacetValues = valueCounts.map(v => v.mwTitle ? v.mwTitle.title : v.value.toString());
         let groups = Tools.deepClone(specifiedValues);
         for (let groupId in groups) {
             groups[groupId] = Tools.intersect(groups[groupId], allFacetValues);
@@ -72,7 +80,11 @@ class TreeCreator {
 
         let groupTreeItems = [];
         for (let groupId in groups) {
-            let facetValueTreeItems = groups[groupId].map((v: any) => <TreeItem key={v} itemId={v} label={v}/>);
+            let facetValueTreeItems = groups[groupId].map((v: any) =>
+                <TreeItem key={encodeURIComponent(v)}
+                          itemId={encodeURIComponent(v)}
+                          label={v}
+                />);
             if (facetValueTreeItems.length > 0) {
                 groupTreeItems.push(<TreeItem key={groupId} itemId={groupId}
                                               label={groupId}>{facetValueTreeItems}</TreeItem>);

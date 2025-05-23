@@ -35,7 +35,7 @@ function FacetOrDialogContent(prop: {
 
     let selectedItemIds = valueCounts
         .filter((value) => Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.containsValueOrMWTitle(value)) != null)
-        .map(v => DisplayTools.serializeFacetValue(prop.property, v));
+        .map(v => v.mwTitle ? v.mwTitle.title : v.value.toString());
 
     let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
 
@@ -101,7 +101,12 @@ function PropertyValueTree(prop: {
 
     function onSelectedItemsChange(event: React.SyntheticEvent, itemIds: string[]) {
         itemIds = itemIds.map(i => decodeURIComponent(i));
-        let selectedValueCounts = prop.valueCounts.filter(v => itemIds.includes(DisplayTools.serializeFacetValue(prop.property, v)));
+
+        let selectedValueCounts = prop.valueCounts.filter(v => {
+            let id = v.mwTitle ? v.mwTitle.title : v.value.toString();
+            return itemIds.includes(id);
+        });
+
         prop.onBulkChange(event, selectedValueCounts);
     }
 
