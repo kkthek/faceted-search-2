@@ -55,6 +55,7 @@ function FacetViewProperty(prop: {
                      removable={false}
                      query={prop.query}
                      onRemoveClick={prop.onRemoveClick}
+                     index={i}
         />
     });
 

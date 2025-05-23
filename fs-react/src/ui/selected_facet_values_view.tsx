@@ -15,6 +15,7 @@ function SelectedFacetValues(prop: {
     onRemoveClick: (p: PropertyFacet) => void,
     onFacetValueContainsClick: (text: string, limit: number, property: Property) => void
     onExpandClick: (p: Property, limit: number) => void
+    index: number
 }) {
 
     if (prop.propertyValueCount === null || !prop.property) {
@@ -29,8 +30,7 @@ function SelectedFacetValues(prop: {
         property.type,
         prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
 
-    const rnd = Math.trunc(Math.random() * 100000);
-    let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + rnd);
+    let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem key={property.title + value + prop.propertyValueCount.count}
         itemId={itemId}
         actionIcon={prop.removable ? DeleteIcon : null}

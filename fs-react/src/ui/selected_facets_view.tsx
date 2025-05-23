@@ -40,7 +40,9 @@ function SelectedFacets(prop: {
                      onValueClick={prop.onValueClick}
                      onRemoveClick={prop.onRemoveClick}
                      onExpandClick={prop.onExpandClick}
-                     onFacetValueContainsClick={prop.onFacetValueContainsClick}/>
+                     onFacetValueContainsClick={prop.onFacetValueContainsClick}
+                     index={i}
+        />
     });
 
     return <CustomTreeItem key={prop.propertyValueCount.property.title}
@@ -121,6 +123,7 @@ function SelectedFacetsView(prop: {
                        selectedFacets={prop.searchStateFacet.query.propertyFacets}
                        property={openOrDialog.property}
                        onValuesClick={prop.onValuesClick}
+                       expandedFacets={prop.expandedFacets}
         />
     </div>;
 }

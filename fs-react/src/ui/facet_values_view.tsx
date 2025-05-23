@@ -13,6 +13,7 @@ function FacetValues(prop: {
     onValueClick: (p: PropertyFacet) => void,
     removable: boolean
     onRemoveClick: (p: PropertyFacet) => void
+    index: number
 }) {
 
     if (prop.propertyValueCount === null || !prop.property) {
@@ -27,8 +28,7 @@ function FacetValues(prop: {
         property.type,
         prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
 
-    const rnd = Math.trunc(Math.random() * 100000);
-    let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + rnd);
+    let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem itemId={itemId}
                            actionIcon={prop.removable ? DeleteIcon : null}
                            action={() => prop.onRemoveClick(propertyFacet)}
