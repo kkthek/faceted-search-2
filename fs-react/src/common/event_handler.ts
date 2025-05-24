@@ -47,19 +47,18 @@ class EventHandler {
         this.setFacetState = setFacetState;
         this.setError = setError;
 
-        this.onSearchClick = this.onSearchClick.bind(this);
-        this.onSortChange = this.onSortChange.bind(this);
-        this.onPropertyClick = this.onPropertyClick.bind(this);
-        this.onValueClick = this.onValueClick.bind(this);
-        this.onValuesClick = this.onValuesClick.bind(this);
-        this.onRemovePropertyFacet = this.onRemovePropertyFacet.bind(this);
-        this.onFacetValueContains = this.onFacetValueContains.bind(this);
-        this.onNamespaceClick = this.onNamespaceClick.bind(this);
-        this.onCategoryClick = this.onCategoryClick.bind(this);
-        this.onCategoryDropDownClick = this.onCategoryDropDownClick.bind(this);
-        this.onCategoryRemoveClick = this.onCategoryRemoveClick.bind(this);
-        this.onPageIndexClick = this.onPageIndexClick.bind(this);
-        this.onRemoveAllFacetsClick = this.onRemoveAllFacetsClick.bind(this);
+        this.createClosuresForEventHandlers();
+
+    }
+
+    private createClosuresForEventHandlers() {
+        let objPrototype = Object.getPrototypeOf(this);
+        Object.getOwnPropertyNames(objPrototype).forEach((p) => {
+            if (typeof objPrototype[p] === 'function' && p.startsWith('on')) {
+                objPrototype[p] = objPrototype[p].bind(this);
+            }
+        })
+
     }
 
     onSearchClick(text: string) {
@@ -125,7 +124,7 @@ class EventHandler {
         let property = propertyFacet.getProperty();
         if (!this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property)) {
             this.currentFacetsQueryBuilder
-            .clearFacetsQueriesForProperty(property);
+                .clearFacetsQueriesForProperty(property);
         }
 
         this.updateDocuments();
@@ -184,7 +183,7 @@ class EventHandler {
 
     onPageIndexClick(pageIndex: number, limit: number) {
         this.currentDocumentsQueryBuilder
-            .withOffset((pageIndex-1) * limit);
+            .withOffset((pageIndex - 1) * limit);
 
         this.updateDocuments();
     }
