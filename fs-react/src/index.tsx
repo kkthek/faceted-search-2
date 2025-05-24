@@ -42,6 +42,7 @@ if (isInWikiContext) {
     wikiContext = new WikiContextInterface(
         browserWindow.mw.config.values,
         browserWindow.mw.user.options.values,
+        browserWindow.mw.user.getName(),
         browserWindow.mw.msg
     );
 } else {

@@ -134,7 +134,8 @@ class Setup
                $fs2gNamespacesToShow,
                $fs2gHeaderControlOrder,
                $fs2gFacetControlOrder,
-               $fs2gPropertyGrouping
+               $fs2gPropertyGrouping,
+               $fs2gAdditionalLinks
                ;
 
         $jsVars = [];
@@ -172,6 +173,7 @@ class Setup
         if ($fs2gShowFileInOverlay !== false) {
             $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
         }
+        $jsVars["fs2gAdditionalLinks"] = $fs2gAdditionalLinks;
 
         $jsVars["fs2gExtraPropertiesToRequest"] = $fs2gExtraPropertiesToRequest;
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);

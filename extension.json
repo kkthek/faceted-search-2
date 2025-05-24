@@ -245,6 +245,10 @@
 		"PropertyGrouping": {
 			"value": [],
 			"description": "Groups property values in OR-Dialog"
+		},
+		"AdditionalLinks": {
+			"value": [],
+			"description": "Shows additional configurable links under a search result depending on a category."
 		}
 	},
 	"manifest_version": 2

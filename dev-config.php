@@ -102,6 +102,22 @@ function setConfigForDevContext() {
         'Works at' => '/'
     ];
 
+    global $fs2gAdditionalLinks;
+    $fs2gAdditionalLinks = [
+        "Employee" => [
+            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{CurrentUser}&Objekt={SMW:Has spouse}",
+            "Objektjournal öffnen" => "{SMW:ODB-ID.replace('Objekt','Journal'}"
+        ],
+        "Pensionist" => [
+            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{CurrentUser}&Objekt={SMW:Has spouse}",
+            "Objektjournal öffnen" => "{SMW:ODB-ID.replace('Objekt','Journal'}"
+        ]
+    ];
+
+    global $wgServer, $wgScriptPath;
+    $wgServer = "http://locahost:9000";
+    $wgScriptPath = "/test";
+
     global $userOptions;
     $userOptions = [
         'fs2-sort-order-preferences' => 'sort-alphabetically'

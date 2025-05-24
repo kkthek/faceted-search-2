@@ -8,6 +8,7 @@ import CategoriesInTitle from "./categories_in_title";
 import Annotations from "./annotations_snippets";
 import ArticleProperties from "./article_properties";
 import {Box, Typography} from "@mui/material";
+import UserDefinedLinks from "./user_defined_links";
 
 function SearchResult(prop: { doc: Document, client: Client}) {
     let wikiContext = useContext(WikiContext);
@@ -34,6 +35,7 @@ function SearchResult(prop: { doc: Document, client: Client}) {
         </Box>
         <Box><Typography><span dangerouslySetInnerHTML={{ __html: snippet }}></span></Typography>
             <CategoriesInTitle doc={prop.doc}/>
+            <UserDefinedLinks doc={prop.doc}/>
             <Annotations doc={prop.doc}/>
             <ArticleProperties doc={prop.doc} client={prop.client}/>
         </Box>

@@ -2,13 +2,16 @@
 export class WikiContextInterface {
     config: any;
     options: any;
+    username: string
     msg: (id: string,  ...params: string[]) => string
 
     constructor(config: any = {},
                 options: any = {},
+                username: string,
                 msg: (id: string, ...params: string[]) => string) {
         this.config = config;
         this.options = options;
+        this.username = username;
         this.msg = msg;
     }
 
@@ -35,7 +38,7 @@ export class WikiContextInterfaceMock extends WikiContextInterface {
             }
             return text;
         };
-        super(config, options, msgFunction);
+        super(config, options, "dummy user", msgFunction);
         this.langMap = langMap;
     }
 }
