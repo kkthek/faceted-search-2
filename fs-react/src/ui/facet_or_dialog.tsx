@@ -21,7 +21,7 @@ function FacetOrDialog(prop: {
         selectedFacets: PropertyFacet[],
         property: Property,
         eventHandler: EventHandler
-        expandedFacets: [string[], Dispatch<SetStateAction<string[]>>]
+
 }) {
     let wikiContext = useContext(WikiContext);
     const [searchText, setSearchText] = useState((): string => '');
@@ -30,7 +30,7 @@ function FacetOrDialog(prop: {
     if (!prop.property) return;
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
-    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
+
     let selectedFacets = prop.selectedFacets.filter(e => e.property === prop.property.title);
     let onChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
         let propertyFacet = new PropertyFacet(
@@ -99,7 +99,6 @@ function FacetOrDialog(prop: {
                     <Button onClick={prop.handleClose}>Cancel</Button>
                     <Button onClick={() => {
                         prop.eventHandler.onValuesClick(selectedFacets, prop.property);
-                        setExpandedFacets([...expandedFacets, prop.property.title]);
                         prop.handleClose();
                     }} autoFocus>Ok</Button>
                 </DialogActions>

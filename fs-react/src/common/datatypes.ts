@@ -37,6 +37,10 @@ export class Property {
     isFilterProperty() {
         return !this.isRangeProperty() && !this.isBooleanProperty();
     }
+
+    getItemId() {
+        return Tools.createItemIdForProperty(this);
+    }
 }
 
 @jsonObject

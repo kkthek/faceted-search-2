@@ -9,7 +9,6 @@ import EventHandler from "../common/event_handler";
 function FacetValues(prop: {
     query: BaseQuery,
     property: Property,
-    expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
     propertyValueCount: ValueCount | null,
     eventHandler: EventHandler
     removable: boolean
@@ -19,7 +18,7 @@ function FacetValues(prop: {
     if (prop.propertyValueCount === null || !prop.property) {
         return;
     }
-    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
+
     let value = DisplayTools.serializeFacetValue(prop.property, prop.propertyValueCount);
 
     let property = prop.property;
@@ -35,7 +34,7 @@ function FacetValues(prop: {
                            label={value + " : " + prop.propertyValueCount.count}
                            itemAction={() => {
                                prop.eventHandler.onValueClick(propertyFacet);
-                               setExpandedFacets([...expandedFacets, prop.property.title]);
+
                            }
                            }>
 

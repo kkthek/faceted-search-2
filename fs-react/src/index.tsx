@@ -67,6 +67,7 @@ function App() {
         currentFacetsQueryBuilder,
         setSearchStateDocument,
         setSearchFacetState,
+        [expandedFacets, setExpandedFacets],
         setError,
         client
     );
@@ -114,7 +115,7 @@ function App() {
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
                                         searchStateFacet={searchFacetState}
-                                        expandedFacets={[expandedFacets, setExpandedFacets]}
+                                        expandedFacets={expandedFacets}
                                         eventHandler={eventHandler}
 
                     />,
@@ -132,14 +133,15 @@ function App() {
                                client={client}
                                searchStateDocument={searchStateDocument}
                                searchStateFacets={searchFacetState}
-                               expandedFacets={[expandedFacets, setExpandedFacets]}
+                               expandedFacets={expandedFacets}
                                eventHandler={eventHandler}
                     />,
 
                     <CategoryDropdown key={'categoryView'}
                                       documentQuery={currentDocumentsQueryBuilder.build()}
                                       onCategoryDropDownClick={eventHandler.onCategoryDropDownClick}/>,
-                    <CategoryView key={'categoryDropDown'} searchStateDocument={searchStateDocument}
+                    <CategoryView key={'categoryDropDown'}
+                                  searchStateDocument={searchStateDocument}
                                   onCategoryClick={eventHandler.onCategoryClick}
                     />
                     ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,

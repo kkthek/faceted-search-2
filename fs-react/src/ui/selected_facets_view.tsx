@@ -10,6 +10,7 @@ import Client from "../common/client";
 import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
 import {WikiContext} from "../index";
 import QueryUtils from "../util/query_utils";
+import Tools from "../util/tools";
 
 function SelectedFacets(prop: {
     propertyValueCount: PropertyValueCount
@@ -41,7 +42,7 @@ function SelectedFacets(prop: {
     });
 
     return <CustomTreeItem key={prop.propertyValueCount.property.title}
-                           itemId={prop.propertyValueCount.property.title}
+                           itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
                            label={prop.propertyValueCount.property.displayTitle}
                            action={() => {
                                if (!hasValue) {
@@ -58,13 +59,12 @@ function SelectedFacets(prop: {
 function SelectedFacetsView(prop: {
     client: Client
     searchStateFacet: SearchStateFacet,
-    expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
+    expandedFacets: string[],
     eventHandler: EventHandler
 }) {
     if (!prop.searchStateFacet) return;
 
     const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
-    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
 
     const handleCloseFacetOrDialog = () => {
         setOpenOrDialog(new ORDialogInput());
@@ -93,12 +93,16 @@ function SelectedFacetsView(prop: {
     );
 
     let onItemExpansionToggle = function(event: React.SyntheticEvent | null, itemId: string, isExpanded: boolean) {
-        setExpandedFacets(isExpanded ? [...expandedFacets, itemId] : expandedFacets.filter(i => i !== itemId));
+        if (isExpanded) {
+            prop.eventHandler.onExpandSelectedFacetClick(itemId)
+        } else {
+            prop.eventHandler.onCollapseFacetClick(itemId)
+        }
     }
 
     return <div>
         <SimpleTreeView
-            expandedItems={expandedFacets}
+            expandedItems={prop.expandedFacets}
             expansionTrigger={'iconContainer'} disableSelection
             onItemExpansionToggle={onItemExpansionToggle}
         >
@@ -111,7 +115,6 @@ function SelectedFacetsView(prop: {
                        selectedFacets={prop.searchStateFacet.query.propertyFacets}
                        property={openOrDialog.property}
                        eventHandler={prop.eventHandler}
-                       expandedFacets={prop.expandedFacets}
         />
     </div>;
 }

@@ -32,12 +32,15 @@ class EventHandler {
     private readonly client: Client;
     private readonly setSearchState: Dispatch<SetStateAction<SearchStateDocument>>;
     private readonly setFacetState: Dispatch<SetStateAction<SearchStateFacet>>;
+    private readonly expandedFacets: string[];
+    private readonly setExpandedFacets: Dispatch<SetStateAction<string[]>>;
     private readonly setError: Dispatch<SetStateAction<string>>;
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
                 currentFacetsQueryBuilder: FacetQueryBuilder,
                 setDocumentState: Dispatch<SetStateAction<SearchStateDocument>>,
                 setFacetState: Dispatch<SetStateAction<SearchStateFacet>>,
+                expandedFacetsState: [string[], Dispatch<SetStateAction<string[]>>],
                 setError: Dispatch<SetStateAction<string>>,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
@@ -47,8 +50,11 @@ class EventHandler {
         this.setFacetState = setFacetState;
         this.setError = setError;
 
-        this.createClosuresForEventHandlers();
+        const [expandedFacets, setExpandedFacets] = expandedFacetsState;
+        this.expandedFacets = expandedFacets;
+        this.setExpandedFacets = setExpandedFacets;
 
+        this.createClosuresForEventHandlers();
     }
 
     private createClosuresForEventHandlers() {
@@ -60,6 +66,7 @@ class EventHandler {
         })
 
     }
+
 
     onSearchClick(text: string) {
         this.currentDocumentsQueryBuilder
@@ -84,13 +91,28 @@ class EventHandler {
             .withPropertyFacet(PropertyFacet.facetForAnyValue(p))
             .withOffset(0);
 
+        this.expandFacet(p.getItemId());
         this.updateDocuments();
         this.updateFacetValuesForProperties(p);
     }
 
-    onExpandClick(p: Property, limit: number) {
+    onExpandFacetClick(p: Property, limit: number) {
         this.updateFacetValuesForProperties(p, limit);
+        this.expandFacet(p.getItemId());
     }
+
+    onExpandSelectedFacetClick(itemId: string) {
+        this.expandFacet(itemId);
+    }
+
+    onCollapseFacetClick(itemId: string) {
+        this.setExpandedFacets(this.expandedFacets.filter(id => id !== itemId));
+    }
+
+    private expandFacet(itemId: string) {
+        this.setExpandedFacets([...this.expandedFacets, itemId]);
+    }
+
 
     onValueClick(propertyFacet: PropertyFacet) {
         let property = propertyFacet.getProperty();
@@ -99,6 +121,7 @@ class EventHandler {
             .clearFacetsForProperty(property)
             .withPropertyFacet(propertyFacet);
 
+        this.expandFacet(property.getItemId());
         this.updateDocuments();
         this.updateFacetValuesForProperties(property);
     }
@@ -111,6 +134,7 @@ class EventHandler {
 
         propertyFacets.forEach((pf) => this.currentDocumentsQueryBuilder.withPropertyFacet(pf));
 
+        this.expandFacet(property.getItemId());
         this.updateDocuments();
         this.updateFacetValuesForProperties(property);
     }

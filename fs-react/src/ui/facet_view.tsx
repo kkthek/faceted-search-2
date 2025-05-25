@@ -27,12 +27,11 @@ function FacetViewProperty(prop: {
     property: PropertyWithURL,
     searchStateFacets: FacetResponse,
     selectedFacets: PropertyFacet[],
-    expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
     propertyFacetCount: PropertyFacetCount|null,
     eventHandler: EventHandler
     onOrDialogClick: (property: Property) => void
 }) {
-    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
+
     let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
     let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
     if (isSelectedFacet) return;
@@ -44,7 +43,6 @@ function FacetViewProperty(prop: {
     const values = propertyValueCount?.values.map((v, i) => {
         return <FacetValues key={prop.property.title + i}
                      propertyValueCount={v}
-                     expandedFacets={prop.expandedFacets}
                      property={prop.property}
                      eventHandler={prop.eventHandler}
                      removable={false}
@@ -60,7 +58,7 @@ function FacetViewProperty(prop: {
                            label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
                            itemAction={() => {
                                prop.eventHandler.onPropertyClick(prop.property);
-                               setExpandedFacets([...expandedFacets, prop.property.title]);
+
                            } }
                            actionIcon={facetsWithOr ? ChecklistIcon : null}
                            action={() => {
@@ -89,13 +87,13 @@ function FacetView(prop: {
     client: Client
     searchStateDocument: SearchStateDocument,
     searchStateFacets: SearchStateFacet,
-    expandedFacets: [string[], Dispatch<SetStateAction<string[]>>],
+    expandedFacets: string[],
     eventHandler: EventHandler
 
 }) {
     if (!prop.searchStateDocument) return;
 
-    const [expandedFacets, setExpandedFacets] = prop.expandedFacets;
+
     const propertyFacetCounts = prop.searchStateDocument.documentResponse.propertyFacetCounts;
     let wikiContext = useContext(WikiContext);
     let shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fs2gShownFacets'], prop.searchStateDocument.query);
@@ -115,8 +113,6 @@ function FacetView(prop: {
         });
     }
 
-    let onExpandClick = prop.eventHandler.onExpandClick.bind(prop.eventHandler);
-
     const listItems = propertyFacetCounts
         .filter((facetCount) => shownFacets.includes(facetCount.property.title) || shownFacets.length === 0 )
         .sort(ConfigUtils.getSortFunctionForPropertyFacets(wikiContext.options['fs2-sort-order-preferences']))
@@ -126,7 +122,6 @@ function FacetView(prop: {
                            query={prop.searchStateDocument.query}
                            title={facetCount.property.title}
                            property={facetCount.property}
-                           expandedFacets={prop.expandedFacets}
                            searchStateFacets={prop.searchStateFacets?.facetsResponse}
                            selectedFacets={prop.searchStateDocument.query.propertyFacets}
                            propertyFacetCount={facetCount}
@@ -142,13 +137,14 @@ function FacetView(prop: {
         isExpanded: boolean,
     ) => {
 
+        let facetCount = Tools.findFirstByPredicate(propertyFacetCounts,
+           (pfc) => Tools.createItemIdForProperty(pfc.property)=== itemId);
         if (isExpanded) {
-            let facetCount = Tools.findFirstByPredicate(propertyFacetCounts,
-                (pfc) => Tools.createItemIdForProperty(pfc.property)=== itemId);
-            onExpandClick(facetCount.property, wikiContext.config.fs2gFacetValueLimit);
+            prop.eventHandler.onExpandFacetClick(facetCount.property, wikiContext.config.fs2gFacetValueLimit);
+        } else {
+            prop.eventHandler.onCollapseFacetClick(facetCount.property.getItemId());
         }
 
-        setExpandedFacets(isExpanded ? [...expandedFacets, itemId] : expandedFacets.filter(i => i !== itemId));
     };
 
 
@@ -157,14 +153,13 @@ function FacetView(prop: {
         <SimpleTreeView expansionTrigger={'iconContainer'}
                         disableSelection
                         disabledItemsFocusable
-                        expandedItems={expandedFacets}
+                        expandedItems={prop.expandedFacets}
                         onItemExpansionToggle={handleItemExpansionToggle}
         >
             {listItems}
         </SimpleTreeView>
         <FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
-                       expandedFacets={prop.expandedFacets}
                        searchStateFacets={openOrDialog.facetResponse}
                        selectedFacets={prop.searchStateDocument.query.propertyFacets}
                        property={openOrDialog.property}
