@@ -20,6 +20,7 @@ import FacetFilter from "./facet_filter";
 import {Typography} from "@mui/material";
 import Client from "../common/client";
 import QueryUtils from "../util/query_utils";
+import FacetExtensionPoint from "../extensions/facet_ep";
 
 function FacetViewProperty(prop: {
     query: BaseQuery,
@@ -158,6 +159,13 @@ function FacetView(prop: {
         >
             {listItems}
         </SimpleTreeView>
+        <FacetExtensionPoint key={'facetExtensionPoint'}
+                             client={prop.client}
+                             searchStateDocument={prop.searchStateDocument}
+                             searchStateFacets={prop.searchStateFacets}
+                             expandedFacets={prop.expandedFacets}
+                             eventHandler={prop.eventHandler}
+        />
         <FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
                        searchStateFacets={openOrDialog.facetResponse}
