@@ -29,8 +29,7 @@ function FacetValues(prop: {
 
     let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem itemId={itemId}
-                           actionIcon={prop.removable ? DeleteIcon : null}
-                           action={() => prop.eventHandler.onRemovePropertyFacet(propertyFacet)}
+
                            label={value + " : " + prop.propertyValueCount.count}
                            itemAction={() => {
                                prop.eventHandler.onValueClick(propertyFacet);

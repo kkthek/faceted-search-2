@@ -53,6 +53,16 @@ class FacetQueryBuilder {
         return this;
     }
 
+    clearAllPropertyValueConstraints() {
+        this.query.propertyValueConstraints = [];
+        return this;
+    }
+
+    clearAllFacetQueries() {
+        this.query.facetQueries = [];
+        return this;
+    }
+
     updateBaseQuery(base: BaseQuery): FacetQueryBuilder {
         this.query.updateBaseQuery(base);
         return this;

@@ -13,6 +13,7 @@ import {
 import StatQueryBuilder from "./stat_query_builder";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
+import Tools from "../util/tools";
 
 export interface SearchStateDocument {
     documentResponse: DocumentsResponse;
@@ -32,15 +33,15 @@ class EventHandler {
     private readonly client: Client;
     private readonly setSearchState: Dispatch<SetStateAction<SearchStateDocument>>;
     private readonly setFacetState: Dispatch<SetStateAction<SearchStateFacet>>;
-    private readonly expandedFacets: string[];
     private readonly setExpandedFacets: Dispatch<SetStateAction<string[]>>;
     private readonly setError: Dispatch<SetStateAction<string>>;
+    private expandedFacets: string[];
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
                 currentFacetsQueryBuilder: FacetQueryBuilder,
                 setDocumentState: Dispatch<SetStateAction<SearchStateDocument>>,
                 setFacetState: Dispatch<SetStateAction<SearchStateFacet>>,
-                expandedFacetsState: [string[], Dispatch<SetStateAction<string[]>>],
+                setExpandedFacets: Dispatch<SetStateAction<string[]>>,
                 setError: Dispatch<SetStateAction<string>>,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
@@ -50,8 +51,7 @@ class EventHandler {
         this.setFacetState = setFacetState;
         this.setError = setError;
 
-        const [expandedFacets, setExpandedFacets] = expandedFacetsState;
-        this.expandedFacets = expandedFacets;
+        this.expandedFacets = [];
         this.setExpandedFacets = setExpandedFacets;
 
         this.createClosuresForEventHandlers();
@@ -93,12 +93,12 @@ class EventHandler {
 
         this.expandFacet(p.getItemId());
         this.updateDocuments();
-        this.updateFacetValuesForProperties(p);
+        this.updateFacetValuesForProperty(p);
     }
 
     onExpandFacetClick(p: Property, limit: number) {
-        this.updateFacetValuesForProperties(p, limit);
         this.expandFacet(p.getItemId());
+        this.updateFacetValuesForProperty(p, limit);
     }
 
     onExpandSelectedFacetClick(itemId: string) {
@@ -106,11 +106,13 @@ class EventHandler {
     }
 
     onCollapseFacetClick(itemId: string) {
-        this.setExpandedFacets(this.expandedFacets.filter(id => id !== itemId));
+        this.expandedFacets = this.expandedFacets.filter(id => id !== itemId)
+        this.setExpandedFacets(this.expandedFacets);
     }
 
     private expandFacet(itemId: string) {
-        this.setExpandedFacets([...this.expandedFacets, itemId]);
+        this.expandedFacets = [...this.expandedFacets, itemId];
+        this.setExpandedFacets(this.expandedFacets);
     }
 
 
@@ -123,20 +125,41 @@ class EventHandler {
 
         this.expandFacet(property.getItemId());
         this.updateDocuments();
-        this.updateFacetValuesForProperties(property);
+        this.updateFacetValuesForProperty(property);
     }
 
-    onValuesClick(propertyFacets: PropertyFacet[], property: Property) {
+    onValuesClick(propertyFacets: PropertyFacet[]) {
 
+        if (propertyFacets.length === 0) return;
+        let properties = propertyFacets.map(pf => pf.getProperty());
+        properties = Tools.createUniqueArray(properties, (p) => p.title);
+
+        properties.forEach(property => {
+            this.currentDocumentsQueryBuilder
+                .withOffset(0)
+                .clearFacetsForProperty(property);
+        });
+
+        propertyFacets.forEach((pf) => this.currentDocumentsQueryBuilder.withPropertyFacet(pf));
+
+        this.updateDocuments();
+        properties.forEach(property => {
+            this.expandFacet(property.getItemId());
+        });
+        this.updateFacetValuesForProperties(properties);
+    }
+
+    onRemoveAllFacetsForProperty(property: Property) {
         this.currentDocumentsQueryBuilder
             .withOffset(0)
             .clearFacetsForProperty(property);
 
-        propertyFacets.forEach((pf) => this.currentDocumentsQueryBuilder.withPropertyFacet(pf));
+        this.currentFacetsQueryBuilder
+            .clearFacetsQueriesForProperty(property);
 
         this.expandFacet(property.getItemId());
         this.updateDocuments();
-        this.updateFacetValuesForProperties(property);
+        this.updateFacetValuesForProperty(property);
     }
 
     onRemovePropertyFacet(propertyFacet: PropertyFacet) {
@@ -148,14 +171,17 @@ class EventHandler {
         let property = propertyFacet.getProperty();
         if (!this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property)) {
             this.currentFacetsQueryBuilder
-                .clearFacetsQueriesForProperty(property);
+                .clearFacetsQueriesForProperty(property)
+                .clearPropertyValueConstraintForProperty(property);
         }
 
         this.updateDocuments();
-        this.updateFacetValuesForProperties(property);
+        this.updateFacetValuesForProperty(property);
     }
 
     onFacetValueContains(text: string, limit: number, property: Property) {
+
+        if (property.isRangeProperty()) return;
 
         this.currentFacetsQueryBuilder.withPropertyValueConstraint(
             new PropertyValueConstraint(
@@ -214,25 +240,34 @@ class EventHandler {
 
     onRemoveAllFacetsClick() {
         this.currentDocumentsQueryBuilder.clearAllFacets();
+        this.currentFacetsQueryBuilder
+            .clearAllFacetQueries()
+            .clearAllPropertyValueConstraints();
 
         this.updateDocuments();
         this.updateFacets();
     }
 
-    private updateFacetValuesForProperties(property: Property, limit: number = null) {
+    private updateFacetValuesForProperties(properties: Property[], limit: number = null) {
 
-        if (!property.isRangeProperty()) {
-            this.currentFacetsQueryBuilder.withPropertyValueConstraint(
-                new PropertyValueConstraint(
-                    property,
-                    limit,
-                    null,
-                    null));
+        properties.forEach(property => {
+            if (!property.isRangeProperty()) {
 
-        }
+                this.currentFacetsQueryBuilder.withPropertyValueConstraint(
+                    new PropertyValueConstraint(
+                        property,
+                        limit,
+                        null,
+                        null));
 
-        const rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
-        this.requestRanges(property.isRangeProperty() ? [property, ...rangeProperties] : rangeProperties)
+            }
+        })
+
+        let rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
+        properties.forEach(property => {
+            rangeProperties = property.isRangeProperty() ? [property, ...rangeProperties] : rangeProperties;
+        });
+        this.requestRanges(rangeProperties)
             .then(() => this.updateFacets())
             .catch((e) => {
                 console.error("Requesting new ranges failed");
@@ -240,6 +275,10 @@ class EventHandler {
                 this.setError(e.message);
             });
 
+    }
+
+    private updateFacetValuesForProperty(property: Property, limit: number = null) {
+        this.updateFacetValuesForProperties([property], limit);
     }
 
     private async requestRanges(properties: Property[]) {

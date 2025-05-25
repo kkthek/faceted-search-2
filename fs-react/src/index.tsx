@@ -67,7 +67,7 @@ function App() {
         currentFacetsQueryBuilder,
         setSearchStateDocument,
         setSearchFacetState,
-        [expandedFacets, setExpandedFacets],
+        setExpandedFacets,
         setError,
         client
     );

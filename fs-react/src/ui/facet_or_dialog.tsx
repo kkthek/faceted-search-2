@@ -98,7 +98,11 @@ function FacetOrDialog(prop: {
                 <DialogActions>
                     <Button onClick={prop.handleClose}>Cancel</Button>
                     <Button onClick={() => {
-                        prop.eventHandler.onValuesClick(selectedFacets, prop.property);
+                        if (selectedFacets.length === 0) {
+                            prop.eventHandler.onRemoveAllFacetsForProperty(prop.property);
+                        } else {
+                            prop.eventHandler.onValuesClick(selectedFacets);
+                        }
                         prop.handleClose();
                     }} autoFocus>Ok</Button>
                 </DialogActions>
