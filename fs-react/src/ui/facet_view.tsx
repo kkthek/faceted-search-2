@@ -66,7 +66,7 @@ function FacetViewProperty(prop: {
                                prop.onOrDialogClick(prop.property);
                            } }
                      className={'fs-facets'}>
-        <FacetFilter onFilterContainsClick={prop.eventHandler.onFacetValueContains}
+        <FacetFilter eventHandler={prop.eventHandler}
                      numberOfValues={propertyValueCount?.values.length}
                      property={propertyValueCount?.property}/>
 

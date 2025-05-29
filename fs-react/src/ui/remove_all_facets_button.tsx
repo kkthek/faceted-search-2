@@ -1,11 +1,11 @@
 import {Button} from "@mui/material";
 import React, {useContext} from "react";
-import {SearchStateFacet} from "../common/event_handler";
+import EventHandler, {SearchStateFacet} from "../common/event_handler";
 import {WikiContext} from "../index";
 
 function RemoveAllFacetsButton(prop: {
     searchStateFacet: SearchStateFacet,
-    onRemoveAllFacetsClick: () => void
+    eventHandler: EventHandler
 }) {
     let wikiContext = useContext(WikiContext);
 
@@ -14,7 +14,7 @@ function RemoveAllFacetsButton(prop: {
         return;
     }
     return <div key={'removeAllFacets'}>
-        <Button onClick={prop.onRemoveAllFacetsClick}
+        <Button onClick={prop.eventHandler.onRemoveAllFacetsClick}
         >{wikiContext.msg('fs-remove-all-facets')}</Button>
     </div>
 }

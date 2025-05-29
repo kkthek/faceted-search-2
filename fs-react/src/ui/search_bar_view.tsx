@@ -1,9 +1,10 @@
 import React, {Dispatch, SetStateAction, useContext} from "react";
 import {WikiContext} from "../index";
 import {Box, Button, TextField} from "@mui/material";
+import EventHandler from "../common/event_handler";
 
 function SearchBar(prop: {
-    onClick: (text: string)=>void
+    eventHandler: EventHandler,
     textState: [string, Dispatch<SetStateAction<string>>]
 }) {
     let wikiContext = useContext(WikiContext);
@@ -21,14 +22,14 @@ function SearchBar(prop: {
                    size={'small'}
                    variant="outlined"
                    defaultValue={text}
-                   onKeyDown={(e) => { if (e.key === 'Enter') prop.onClick(text) } }
+                   onKeyDown={(e) => { if (e.key === 'Enter') prop.eventHandler.onSearchClick(text) } }
                    onChange={(e)=> setText(e.target.value)}
         />
 
         <Button id={'fs-searchbar-button'}
                 size={'medium'}
                 variant="outlined"
-                onClick={() => prop.onClick(text)}>{wikiContext.msg('fs-search-button')}</Button>
+                onClick={() => prop.eventHandler.onSearchClick(text)}>{wikiContext.msg('fs-search-button')}</Button>
         </Box>;
 }
 

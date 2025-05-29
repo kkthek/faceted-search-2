@@ -2,11 +2,12 @@ import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
 import {Property} from "../common/datatypes";
 import {WikiContext} from "../index";
 import {useDebounce} from "../util/custom_hooks";
+import EventHandler from "../common/event_handler";
 
 function FacetFilter(prop : {
     property: Property
     numberOfValues: number
-    onFilterContainsClick: (text: string, limit: number, property: Property) => void
+    eventHandler: EventHandler
 }) {
 
     let wikiContext = useContext(WikiContext);
@@ -16,7 +17,7 @@ function FacetFilter(prop : {
     const debouncedSearchValue = useDebounce(text, 500);
     useEffect(() => {
         if (!prop.property) return;
-        prop.onFilterContainsClick(debouncedSearchValue, wikiContext.config.fs2gFacetValueLimit, prop.property)
+        prop.eventHandler.onFacetValueContains(debouncedSearchValue, wikiContext.config.fs2gFacetValueLimit, prop.property)
     }, [debouncedSearchValue]);
 
     if (!prop.property) return;
@@ -33,7 +34,7 @@ function FacetFilter(prop : {
 
     const onKeyDown = function(e: KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Enter") {
-            prop.onFilterContainsClick(text, wikiContext.config.fs2gFacetValueLimit, prop.property);
+            prop.eventHandler.onFacetValueContains(text, wikiContext.config.fs2gFacetValueLimit, prop.property);
         }
         e.stopPropagation();
     }

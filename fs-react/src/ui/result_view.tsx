@@ -4,12 +4,13 @@ import {WikiContext} from "../index";
 import Client from "../common/client";
 import {Divider, Pagination, Stack, Typography} from "@mui/material";
 import SearchResult from "./search_result";
+import EventHandler from "../common/event_handler";
 
 
 function ResultView(prop: {
     results: Document[],
     numResults: number,
-    onPageIndexClick: (pageIndex: number, limit: number)=>void,
+    eventHandler: EventHandler
     client: Client}) {
 
     const [pageIndex, setPageIndex] = useState(1);
@@ -35,7 +36,7 @@ function ResultView(prop: {
                     defaultPage={1}
                     siblingCount={2}
                     onChange={(e, pageIndex) => {
-                        prop.onPageIndexClick(pageIndex, NUMBER_RESULTS_ONE_PAGE);
+                        prop.eventHandler.onPageIndexClick(pageIndex, NUMBER_RESULTS_ONE_PAGE);
                         setPageIndex(pageIndex);
                         window.scrollTo(0,0);
                     }  }/>

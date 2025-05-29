@@ -1,11 +1,11 @@
 import React, {useContext, useState} from "react";
-import {Datatype, Order, Property, Sort} from "../common/datatypes";
 import {WikiContext} from "../index";
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import ConfigUtils from "../util/config_utils";
+import EventHandler from "../common/event_handler";
 
 function SortView(prop : {
-    onChange: (sort: Sort) => void
+    eventHandler: EventHandler
 }) {
     let wikiContext = useContext(WikiContext);
     let defaultSortOrder = wikiContext.config['fs2gDefaultSortOrder'];
@@ -23,7 +23,7 @@ function SortView(prop : {
     const [sort, setSort] = useState(defaultSortOrder);
 
     const handleChange = (event: SelectChangeEvent) => {
-        prop.onChange(sorts[event.target.value]);
+        prop.eventHandler.onSortChange(sorts[event.target.value]);
         setSort(event.target.value);
     };
 

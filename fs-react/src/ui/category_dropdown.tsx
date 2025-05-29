@@ -3,6 +3,7 @@ import {WikiContext} from "../index";
 import {Box, InputLabel, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 import DocumentQueryBuilder from "../common/document_query_builder";
 import {DocumentQuery} from "../common/datatypes";
+import EventHandler from "../common/event_handler";
 
 class DropdownEntry {
 
@@ -28,7 +29,7 @@ class DropdownEntry {
 
 function CategoryDropdown(prop: {
     documentQuery: DocumentQuery,
-    onCategoryDropDownClick: (c: string)=>void
+    eventHandler: EventHandler
 }) {
     let wikiContext = useContext(WikiContext);
     let categoryFilter = wikiContext.config['fs2gCategoryFilter'];
@@ -47,7 +48,7 @@ function CategoryDropdown(prop: {
 
     const handleChange = (event: SelectChangeEvent) => {
         setCategory(event.target.value);
-        prop.onCategoryDropDownClick(event.target.value === '-no-filter-' ? '' : event.target.value);
+        prop.eventHandler.onCategoryDropDownClick(event.target.value === '-no-filter-' ? '' : event.target.value);
     };
 
     let categoryOptions = entries.map((entry) =>

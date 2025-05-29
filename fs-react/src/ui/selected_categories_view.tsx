@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {SearchStateDocument} from "../common/event_handler";
+import EventHandler, {SearchStateDocument} from "../common/event_handler";
 import {WikiContext} from "../index";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
@@ -8,7 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 function SelectedCategoriesView(prop: {
     searchStateDocument: SearchStateDocument,
-    onCategoryRemove: (c: string) => void
+    eventHandler: EventHandler
 }) {
     let wikiContext = useContext(WikiContext);
     let showCategories = wikiContext.config['fs2gShowCategories'];
@@ -22,7 +22,7 @@ function SelectedCategoriesView(prop: {
                                     itemId={v.category}
                                     actionIcon={DeleteIcon}
                                     label={v.category}
-                                    action={() => prop.onCategoryRemove(v.category)} />
+                                    action={() => prop.eventHandler.onCategoryRemoveClick(v.category)} />
         }
     );
 

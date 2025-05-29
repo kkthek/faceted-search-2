@@ -1,7 +1,7 @@
 import {NamespaceFacetCount} from "../common/datatypes";
 import React, {useContext, useState} from "react";
 import {WikiContext} from "../index";
-import {SearchStateDocument} from "../common/event_handler";
+import EventHandler, {SearchStateDocument} from "../common/event_handler";
 import {ToggleButton, ToggleButtonGroup} from "@mui/material";
 
 function NamespaceFacet(prop: {
@@ -23,7 +23,7 @@ function NamespaceFacet(prop: {
 
 function NamespaceView(prop: {
     searchStateDocument: SearchStateDocument,
-    onNamespaceClick: (namespaces: number[]) => void,
+    eventHandler: EventHandler
 }) {
     if (!prop.searchStateDocument) return;
     let wikiContext = useContext(WikiContext);
@@ -37,7 +37,7 @@ function NamespaceView(prop: {
         event: React.MouseEvent<HTMLElement>,
         namespaces: number[],
     ) => {
-        prop.onNamespaceClick(namespaces)
+        prop.eventHandler.onNamespaceClick(namespaces)
         setNamespaces(namespaces);
     };
 

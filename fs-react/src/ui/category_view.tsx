@@ -1,6 +1,6 @@
 import {CategoryFacetCount} from "../common/datatypes";
 import React, {useContext} from "react";
-import {SearchStateDocument} from "../common/event_handler";
+import EventHandler, {SearchStateDocument} from "../common/event_handler";
 import {WikiContext} from "../index";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import {SimpleTreeView} from "@mui/x-tree-view";
@@ -11,21 +11,21 @@ function FacetViewCategory( prop: {
     title: string,
     categoryFacetCount: CategoryFacetCount|null,
     selectedCategories: string[],
-    onCategoryClick: (c: string)=>void,
+    eventHandler: EventHandler
 }) {
 
     let title = prop.categoryFacetCount.displayTitle != '' ? prop.categoryFacetCount.displayTitle : prop.title;
     let count = prop.categoryFacetCount?.count;
     return <CustomTreeItem itemId={prop.categoryFacetCount.category}
                            label={title + " (" + count + ")"}
-                           onClick={() => prop.onCategoryClick(prop.title)}
+                           onClick={() => prop.eventHandler.onCategoryClick(prop.title)}
                      className={'fs-facets'}>
 
     </CustomTreeItem>
 }
 function CategoryView( prop: {
     searchStateDocument: SearchStateDocument,
-    onCategoryClick: (c: string)=>void,
+    eventHandler: EventHandler
 
 }) {
     let wikiContext = useContext(WikiContext);
@@ -46,7 +46,7 @@ function CategoryView( prop: {
             return <FacetViewCategory key={facetCount.category}
                                       title={facetCount.category}
                                       categoryFacetCount={facetCount}
-                                      onCategoryClick={prop.onCategoryClick}
+                                      eventHandler={prop.eventHandler}
                                       selectedCategories={prop.searchStateDocument.query.categoryFacets}
             />
         }

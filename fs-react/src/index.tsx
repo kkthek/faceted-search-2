@@ -85,10 +85,10 @@ function App() {
             <div id={'fs-header'} className={'fs-boxes'}>
                 {Tools.reorder([
                     <SortView key={'sortView'}
-                              onChange={eventHandler.onSortChange}
+                              eventHandler={eventHandler}
                     />,
                     <SearchBar key={'searchBar'}
-                               onClick={eventHandler.onSearchClick}
+                               eventHandler={eventHandler}
                                textState={[searchText, setSearchText]}
                     />,
 
@@ -102,8 +102,9 @@ function App() {
 
             </div>
 
-                <NamespaceView key={'namespaceView'} searchStateDocument={searchStateDocument}
-                               onNamespaceClick={eventHandler.onNamespaceClick}
+                <NamespaceView key={'namespaceView'}
+                               searchStateDocument={searchStateDocument}
+                               eventHandler={eventHandler}
                 />
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
@@ -121,11 +122,11 @@ function App() {
                     />,
                     <SelectedCategoriesView key={'selectedCategoryView'}
                                             searchStateDocument={searchStateDocument}
-                                            onCategoryRemove={eventHandler.onCategoryRemoveClick}
+                                            eventHandler={eventHandler}
                     />,
                     <RemoveAllFacetsButton key={'removeAllFacets'}
                                            searchStateFacet={searchFacetState}
-                                           onRemoveAllFacetsClick={eventHandler.onRemoveAllFacetsClick}
+                                           eventHandler={eventHandler}
                     />,
                     <Divider key={'divider'}/>,
 
@@ -139,10 +140,11 @@ function App() {
 
                     <CategoryDropdown key={'categoryView'}
                                       documentQuery={currentDocumentsQueryBuilder.build()}
-                                      onCategoryDropDownClick={eventHandler.onCategoryDropDownClick}/>,
+                                      eventHandler={eventHandler}
+                    />,
                     <CategoryView key={'categoryDropDown'}
                                   searchStateDocument={searchStateDocument}
-                                  onCategoryClick={eventHandler.onCategoryClick}
+                                  eventHandler={eventHandler}
                     />
                     ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
                     ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
@@ -151,7 +153,7 @@ function App() {
             <div id={'fs-results'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}
                             numResults={searchStateDocument ? searchStateDocument.documentResponse.numResults : 0}
-                            onPageIndexClick={eventHandler.onPageIndexClick}
+                            eventHandler={eventHandler}
                             client={client}/>
             </div>
 
