@@ -26,7 +26,6 @@ function SelectedFacets(prop: {
     let hasValue = propertyFacet.hasValue() || propertyFacet.hasRange();
     let wikiContext = useContext(WikiContext);
     let facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(propertyFacet.property);
-    let facetValueLimit: number = wikiContext.config['fs2gFacetValueLimit'];
 
     const itemlist = prop.propertyValueCount.values.map((v,i ) => {
 
@@ -46,7 +45,7 @@ function SelectedFacets(prop: {
                            label={prop.propertyValueCount.property.displayTitle}
                            action={() => {
                                if (!hasValue) {
-                                   prop.eventHandler.onRemovePropertyFacet(propertyFacet, facetValueLimit)
+                                   prop.eventHandler.onRemovePropertyFacet(propertyFacet)
                                } else if (facetsWithOr) {
                                    prop.onOrDialogClick(prop.propertyValueCount.property);
                                }

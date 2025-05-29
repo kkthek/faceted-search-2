@@ -28,9 +28,7 @@ export class WikiContextInterfaceMock extends WikiContextInterface {
 
     private readonly langMap: any;
 
-    constructor(config: any = {},
-                options: any = {},
-                langMap: any = {}) {
+    constructor(result: any = {}) {
         let msgFunction = (id: string, ...params: string[]) => {
             let text = this.langMap[id] ? this.langMap[id] : "<" + id + ">";
             for(let i = 0; i < params.length; i++) {
@@ -38,7 +36,7 @@ export class WikiContextInterfaceMock extends WikiContextInterface {
             }
             return text;
         };
-        super(config, options, "dummy user", msgFunction);
-        this.langMap = langMap;
+        super(result.settings, result.options, "dummy user", msgFunction);
+        this.langMap = result.lang;
     }
 }

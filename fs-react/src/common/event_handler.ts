@@ -14,6 +14,7 @@ import StatQueryBuilder from "./stat_query_builder";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
 import Tools from "../util/tools";
+import {WikiContextInterface} from "./wiki_context";
 
 export interface SearchStateDocument {
     documentResponse: DocumentsResponse;
@@ -35,6 +36,7 @@ class EventHandler {
     private readonly setFacetState: Dispatch<SetStateAction<SearchStateFacet>>;
     private readonly setExpandedFacets: Dispatch<SetStateAction<string[]>>;
     private readonly setError: Dispatch<SetStateAction<string>>;
+    private readonly facetValueLimit: number;
     private expandedFacets: string[];
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
@@ -43,6 +45,7 @@ class EventHandler {
                 setFacetState: Dispatch<SetStateAction<SearchStateFacet>>,
                 setExpandedFacets: Dispatch<SetStateAction<string[]>>,
                 setError: Dispatch<SetStateAction<string>>,
+                wikiContext: WikiContextInterface,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
         this.currentFacetsQueryBuilder = currentFacetsQueryBuilder;
@@ -50,6 +53,7 @@ class EventHandler {
         this.setSearchState = setDocumentState;
         this.setFacetState = setFacetState;
         this.setError = setError;
+        this.facetValueLimit = wikiContext.config.fs2gFacetValueLimit;
 
         this.expandedFacets = [];
         this.setExpandedFacets = setExpandedFacets;
@@ -96,9 +100,9 @@ class EventHandler {
         this.updateFacetValuesForProperty(p);
     }
 
-    onExpandFacetClick(p: Property, facetValueLimit: number) {
+    onExpandFacetClick(p: Property) {
         this.expandFacet(p.getItemId());
-        this.updateFacetValuesForProperty(p, facetValueLimit);
+        this.updateFacetValuesForProperty(p, this.facetValueLimit);
     }
 
     onExpandSelectedFacetClick(itemId: string) {
@@ -163,7 +167,7 @@ class EventHandler {
         this.updateFacetValuesForProperty(property);
     }
 
-    onRemovePropertyFacet(propertyFacet: PropertyFacet, facetValueLimit: number) {
+    onRemovePropertyFacet(propertyFacet: PropertyFacet) {
 
         this.currentDocumentsQueryBuilder
             .withOffset(0)
@@ -178,22 +182,39 @@ class EventHandler {
         }
 
         this.updateDocuments();
-        this.updateFacetValuesForProperty(property, existsFacets ? null : facetValueLimit);
+        this.updateFacetValuesForProperty(property, existsFacets ? null : this.facetValueLimit);
     }
 
-    onFacetValueContains(text: string, facetValueLimit: number, property: Property) {
+    onFacetValueContains(text: string, property: Property) {
 
-        if (property.isRangeProperty()) return;
+        if (property.isRangeProperty()) {
+            return;
+        }
 
         let propertyValueConstraint = new PropertyValueConstraint(
             property,
-            text === '' ? facetValueLimit : null,
+            text === '' ? this.facetValueLimit : null,
             null,
             text === '' ? null : text);
-        if (this.currentFacetsQueryBuilder.existsPropertyValueConstraint(propertyValueConstraint)) return;
+        if (this.currentFacetsQueryBuilder.existsPropertyValueConstraint(propertyValueConstraint)) {
+            return;
+        }
 
         this.currentFacetsQueryBuilder.withPropertyValueConstraint(propertyValueConstraint);
+        this.updateFacets();
+    }
 
+    onShowAllValues(property: Property) {
+        if (property.isRangeProperty()) {
+            return;
+        }
+
+        let propertyValueConstraint = new PropertyValueConstraint(property,null,null,null);
+        if (this.currentFacetsQueryBuilder.existsPropertyValueConstraint(propertyValueConstraint)) {
+            return;
+        }
+
+        this.currentFacetsQueryBuilder.withPropertyValueConstraint(propertyValueConstraint);
         this.updateFacets();
     }
 
@@ -217,12 +238,8 @@ class EventHandler {
 
     onCategoryDropDownClick(category: string) {
         this.currentDocumentsQueryBuilder
-            .withOffset(0)
-            .clearCategoryFacets()
-            .withCategoryFacet(category);
-
-        this.updateDocuments();
-        this.updateFacets();
+            .clearCategoryFacets();
+        this.onCategoryClick(category);
     }
 
     onCategoryRemoveClick(category: string) {

@@ -17,7 +17,7 @@ function FacetFilter(prop : {
     const debouncedSearchValue = useDebounce(text, 500);
     useEffect(() => {
         if (!prop.property) return;
-        prop.eventHandler.onFacetValueContains(debouncedSearchValue, wikiContext.config.fs2gFacetValueLimit, prop.property)
+        prop.eventHandler.onFacetValueContains(debouncedSearchValue, prop.property)
     }, [debouncedSearchValue]);
 
     if (!prop.property) return;
@@ -34,7 +34,7 @@ function FacetFilter(prop : {
 
     const onKeyDown = function(e: KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Enter") {
-            prop.eventHandler.onFacetValueContains(text, wikiContext.config.fs2gFacetValueLimit, prop.property);
+            prop.eventHandler.onFacetValueContains(text, prop.property);
         }
         e.stopPropagation();
     }

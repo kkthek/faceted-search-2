@@ -69,6 +69,7 @@ function App() {
         setSearchFacetState,
         setExpandedFacets,
         setError,
+        wikiContext,
         client
     );
 
@@ -202,7 +203,7 @@ if (isInWikiContext) {
     startApp();
 } else {
     client.getSettingsForDevContext().then(result => {
-        wikiContext = new WikiContextInterfaceMock(result.settings, result.options, result.lang);
+        wikiContext = new WikiContextInterfaceMock(result);
         startApp();
     });
 }

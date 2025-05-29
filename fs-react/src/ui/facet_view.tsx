@@ -75,7 +75,7 @@ function FacetViewProperty(prop: {
         <CustomTreeItem itemId={prop.property.title + "-showall"}
                         label={"[Show all...]"}
                         itemAction={() => {
-                            prop.eventHandler.onFacetValueContains('', null, prop.property);
+                            prop.eventHandler.onShowAllValues(prop.property);
                         }
                         }
         /> : '' }
@@ -141,7 +141,7 @@ function FacetView(prop: {
         let facetCount = Tools.findFirstByPredicate(propertyFacetCounts,
            (pfc) => Tools.createItemIdForProperty(pfc.property)=== itemId);
         if (isExpanded) {
-            prop.eventHandler.onExpandFacetClick(facetCount.property, wikiContext.config.fs2gFacetValueLimit);
+            prop.eventHandler.onExpandFacetClick(facetCount.property);
         } else {
             prop.eventHandler.onCollapseFacetClick(facetCount.property.getItemId());
         }
