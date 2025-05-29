@@ -183,13 +183,14 @@ class EventHandler {
 
         if (property.isRangeProperty()) return;
 
-        this.currentFacetsQueryBuilder.withPropertyValueConstraint(
-            new PropertyValueConstraint(
-                property,
-                text === '' ? limit : null,
-                null,
-                text === '' ? null : text)
-        );
+        let propertyValueConstraint = new PropertyValueConstraint(
+            property,
+            text === '' ? limit : null,
+            null,
+            text === '' ? null : text);
+        if (this.currentFacetsQueryBuilder.existsPropertyValueConstraint(propertyValueConstraint)) return;
+
+        this.currentFacetsQueryBuilder.withPropertyValueConstraint(propertyValueConstraint);
 
         this.updateFacets();
     }

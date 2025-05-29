@@ -48,6 +48,11 @@ class FacetQueryBuilder {
         return this;
     }
 
+    existsPropertyValueConstraint(propertyValueConstraint: PropertyValueConstraint): boolean {
+        return Tools.findFirstByPredicate(this.query.propertyValueConstraints,
+            (e) => e.equals(propertyValueConstraint)) != null;
+    }
+
     clearPropertyValueConstraintForProperty(p : Property) {
         Tools.removeAll(this.query.propertyValueConstraints, (e) => e.property.title, p.title);
         return this;

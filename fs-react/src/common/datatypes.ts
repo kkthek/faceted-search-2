@@ -41,6 +41,10 @@ export class Property {
     getItemId() {
         return Tools.createItemIdForProperty(this);
     }
+
+    equals(that: Property) {
+        return that.title === this.title && that.type === this.type;
+    }
 }
 
 @jsonObject
@@ -60,6 +64,11 @@ export class PropertyValueConstraint {
         this.facetLimit = limit;
         this.facetOffset = offset;
         this.facetContains = contains;
+    }
+
+    equals(that: PropertyValueConstraint) {
+        return that.property.equals(this.property) && that.facetContains === this.facetContains
+        && that.facetLimit === this.facetLimit && that.facetOffset === this.facetOffset;
     }
 }
 
