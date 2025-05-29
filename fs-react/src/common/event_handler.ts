@@ -96,9 +96,9 @@ class EventHandler {
         this.updateFacetValuesForProperty(p);
     }
 
-    onExpandFacetClick(p: Property, limit: number) {
+    onExpandFacetClick(p: Property, facetValueLimit: number) {
         this.expandFacet(p.getItemId());
-        this.updateFacetValuesForProperty(p, limit);
+        this.updateFacetValuesForProperty(p, facetValueLimit);
     }
 
     onExpandSelectedFacetClick(itemId: string) {
@@ -155,37 +155,39 @@ class EventHandler {
             .clearFacetsForProperty(property);
 
         this.currentFacetsQueryBuilder
-            .clearFacetsQueriesForProperty(property);
+            .clearFacetsQueriesForProperty(property)
+            .clearPropertyValueConstraintForProperty(property);
 
         this.expandFacet(property.getItemId());
         this.updateDocuments();
         this.updateFacetValuesForProperty(property);
     }
 
-    onRemovePropertyFacet(propertyFacet: PropertyFacet) {
+    onRemovePropertyFacet(propertyFacet: PropertyFacet, facetValueLimit: number) {
 
         this.currentDocumentsQueryBuilder
             .withOffset(0)
             .withoutPropertyFacet(propertyFacet);
 
         let property = propertyFacet.getProperty();
-        if (!this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property)) {
+        let existsFacets = this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property);
+        if (!existsFacets) {
             this.currentFacetsQueryBuilder
                 .clearFacetsQueriesForProperty(property)
                 .clearPropertyValueConstraintForProperty(property);
         }
 
         this.updateDocuments();
-        this.updateFacetValuesForProperty(property);
+        this.updateFacetValuesForProperty(property, existsFacets ? null : facetValueLimit);
     }
 
-    onFacetValueContains(text: string, limit: number, property: Property) {
+    onFacetValueContains(text: string, facetValueLimit: number, property: Property) {
 
         if (property.isRangeProperty()) return;
 
         let propertyValueConstraint = new PropertyValueConstraint(
             property,
-            text === '' ? limit : null,
+            text === '' ? facetValueLimit : null,
             null,
             text === '' ? null : text);
         if (this.currentFacetsQueryBuilder.existsPropertyValueConstraint(propertyValueConstraint)) return;
@@ -249,7 +251,7 @@ class EventHandler {
         this.updateFacets();
     }
 
-    private updateFacetValuesForProperties(properties: Property[], limit: number = null) {
+    private updateFacetValuesForProperties(properties: Property[], facetValueLimit: number = null) {
 
         properties.forEach(property => {
             if (!property.isRangeProperty()) {
@@ -257,7 +259,7 @@ class EventHandler {
                 this.currentFacetsQueryBuilder.withPropertyValueConstraint(
                     new PropertyValueConstraint(
                         property,
-                        limit,
+                        facetValueLimit,
                         null,
                         null));
 
@@ -278,8 +280,8 @@ class EventHandler {
 
     }
 
-    private updateFacetValuesForProperty(property: Property, limit: number = null) {
-        this.updateFacetValuesForProperties([property], limit);
+    private updateFacetValuesForProperty(property: Property, facetValueLimit: number = null) {
+        this.updateFacetValuesForProperties([property], facetValueLimit);
     }
 
     private async requestRanges(properties: Property[]) {

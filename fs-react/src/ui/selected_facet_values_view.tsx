@@ -1,10 +1,11 @@
 import {BaseQuery, Property, PropertyFacet, ValueCount} from "../common/datatypes";
-import React from "react";
+import React, {useContext} from "react";
 import DisplayTools from "../util/display_tools";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Tools from "../util/tools";
 import EventHandler from "../common/event_handler";
+import {WikiContext} from "../index";
 
 function SelectedFacetValues(prop: {
     query: BaseQuery,
@@ -16,6 +17,8 @@ function SelectedFacetValues(prop: {
 
     index: number
 }) {
+    let wikiContext = useContext(WikiContext);
+    let facetValueLimit: number = wikiContext.config['fs2gFacetValueLimit'];
 
     if (prop.propertyValueCount === null || !prop.property) {
         return;
@@ -33,7 +36,7 @@ function SelectedFacetValues(prop: {
     return <CustomTreeItem key={property.title + value + prop.propertyValueCount.count}
         itemId={itemId}
         actionIcon={prop.removable ? DeleteIcon : null}
-        action={() => prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet)}
+        action={() => prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet, facetValueLimit)}
         label={value + " : " + prop.propertyValueCount.count}
         itemAction={() => prop.eventHandler.onValueClick(propertyFacet)}>
 
