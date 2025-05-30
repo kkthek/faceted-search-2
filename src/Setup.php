@@ -40,7 +40,7 @@ class Setup
                 $reactScript,
             ],
             'styles' => ['fs-react/public/skins/main.css'],
-            'dependencies' => [],
+            'dependencies' => ['mediawiki.user'],
         );
 
     }
@@ -112,7 +112,6 @@ class Setup
         }
 
         global $fs2gFacetValueLimit,
-               $fs2gExtraPropertiesToRequest,
                $fs2gAnnotationsInSnippet,
                $fs2gCategoriesToShowInTitle,
                $fs2gDefaultSortOrder,
@@ -141,8 +140,6 @@ class Setup
         $jsVars = [];
         $jsVars["fs2gFacetValueLimit"] = $fs2gFacetValueLimit;
         $jsVars["fs2gAnnotationsInSnippet"] = $fs2gAnnotationsInSnippet;
-        $fs2gExtraPropertiesToRequest = self::getPropertiesForAnnotations($fs2gAnnotationsInSnippet);
-
         $jsVars["fs2gCategoriesToShowInTitle"] = $fs2gCategoriesToShowInTitle;
         $jsVars["fs2gDefaultSortOrder"] = $fs2gDefaultSortOrder;
         $jsVars["fs2gCategoryFilter"] = $fs2gCategoryFilter;
@@ -156,13 +153,7 @@ class Setup
         $jsVars["fs2gShownFacets"] = $fs2gShownFacets;
         $jsVars["fs2gShownCategoryFacets"] = $fs2gShownCategoryFacets;
         $jsVars["fs2gPromotionProperty"] = $fs2gPromotionProperty;
-        if ($fs2gPromotionProperty !== false) {
-            $fs2gExtraPropertiesToRequest[] = new Property($fs2gPromotionProperty, Datatype::BOOLEAN);
-        }
         $jsVars["fs2gDemotionProperty"] = $fs2gDemotionProperty;
-        if ($fs2gDemotionProperty !== false) {
-            $fs2gExtraPropertiesToRequest[] = new Property($fs2gDemotionProperty, Datatype::BOOLEAN);
-        }
         $jsVars["fs2gFacetsWithOR"] = $fs2gFacetsWithOR;
         $jsVars["fs2gHeaderControlOrder"] = $fs2gHeaderControlOrder;
         $jsVars["fs2gFacetControlOrder"] = $fs2gFacetControlOrder;
@@ -170,15 +161,29 @@ class Setup
         $jsVars["fs2gShowSolrScore"] = $fs2gShowSolrScore;
         $jsVars["fs2gCreateNewPageLink"] = $fs2gCreateNewPageLink;
         $jsVars["fs2gShowFileInOverlay"] = $fs2gShowFileInOverlay;
-        if ($fs2gShowFileInOverlay !== false) {
-            $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
-        }
         $jsVars["fs2gAdditionalLinks"] = $fs2gAdditionalLinks;
-
-        $jsVars["fs2gExtraPropertiesToRequest"] = $fs2gExtraPropertiesToRequest;
+        $jsVars["fs2gExtraPropertiesToRequest"] = self::calculateAndSetExtraProperties();
         RequestContext::getMain()->getOutput()->addJsConfigVars($jsVars);
 
         return true;
+    }
+
+    public static function calculateAndSetExtraProperties() {
+        global $fs2gAnnotationsInSnippet, $fs2gPromotionProperty,
+               $fs2gDemotionProperty, $fs2gShowFileInOverlay,
+               $fs2gExtraPropertiesToRequest;
+        $extraProperties = self::getPropertiesForAnnotations($fs2gAnnotationsInSnippet);
+        if ($fs2gPromotionProperty !== false) {
+            $extraProperties[] = new Property($fs2gPromotionProperty, Datatype::BOOLEAN);
+        }
+        if ($fs2gDemotionProperty !== false) {
+            $extraProperties[] = new Property($fs2gDemotionProperty, Datatype::BOOLEAN);
+        }
+        if ($fs2gShowFileInOverlay !== false) {
+            $extraProperties[] = new Property("diqa import fullpath", Datatype::STRING);
+        }
+        $fs2gExtraPropertiesToRequest = $extraProperties;
+        return $extraProperties;
     }
 
     public static function onBeforePageDisplay(OutputPage $out, Skin $skin)

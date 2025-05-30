@@ -12,6 +12,7 @@ class DocumentByIdEndpoint extends Handler
 
     public function execute()
     {
+        Setup::calculateAndSetExtraProperties();
         $solrClient = Setup::getFacetedSearchClient();
         $jsonBody = $this->getRequest()->getBody();
         $documentQuery = DocumentByIdQuery::fromJson($jsonBody);

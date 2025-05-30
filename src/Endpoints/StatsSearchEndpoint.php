@@ -14,6 +14,7 @@ class StatsSearchEndpoint extends Handler
 
     public function execute()
     {
+        Setup::calculateAndSetExtraProperties();
         $solrClient = Setup::getFacetedSearchClient();
         $jsonBody = $this->getRequest()->getBody();
         $query = StatsQuery::fromJson($jsonBody);
