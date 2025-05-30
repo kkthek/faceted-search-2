@@ -116,7 +116,7 @@ function PropertyValueTree(prop: {
             setContent(groups);
         }
 
-    }, prop.valueCounts);
+    }, [prop.valueCounts]);
 
     function onSelectedItemsChange(event: React.SyntheticEvent, itemIds: string[]) {
         itemIds = itemIds.map(i => decodeURIComponent(i));
