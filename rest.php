@@ -76,6 +76,11 @@ try {
         echo json_encode($client->requestFacets($query));
     } else if (endsWith($url, '/FacetedSearch2/v1/settings')) {
         echo json_encode(getConfigForDevContext());
+    } else if (endsWith($url, '/FacetedSearch2/v1/sample-group-hierarchy')) {
+        echo json_encode([
+            'Group3' => [ 'Markus', 'Horst' ],
+            'Group4' => ['Peter', 'Timo']
+        ]);
     } else if (endsWith($url, '/FacetedSearch2/v1/proxy/document-by-id')) {
         $query = DocumentByIdQuery::fromJson($entityBody);
         echo json_encode($client->requestDocument($query->getId()));

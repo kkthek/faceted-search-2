@@ -51,6 +51,11 @@ module.exports = {
         context: ['/settings'],
         target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1',
         changeOrigin: true,
+      },
+      {
+        context: ['/sample-group-hierarchy'],
+        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1',
+        changeOrigin: true,
       }
     ],
   }

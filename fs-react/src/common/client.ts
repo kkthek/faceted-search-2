@@ -74,6 +74,14 @@ class Client {
         return deserializer.parse(json);
     }
 
+    async getCustomEndpoint(path: string): Promise<any> {
+        const response = await fetch(this.baseUrl + path, {
+            ...HTTP_REQUEST_OPTIONS
+        });
+        await this.handleErrorIfAny(response);
+        return await response.json();
+    }
+
     async getSettingsForDevContext(): Promise<any> {
         const response = await fetch(this.baseUrl + "/settings", {
             ...HTTP_REQUEST_OPTIONS

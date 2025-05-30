@@ -167,6 +167,7 @@ function FacetView(prop: {
                              eventHandler={prop.eventHandler}
         />
         <FacetOrDialog open={openOrDialog.open}
+                       client={prop.client}
                        handleClose={handleCloseFacetOrDialog}
                        searchStateFacets={openOrDialog.facetResponse}
                        selectedFacets={prop.searchStateDocument.query.propertyFacets}

@@ -1,10 +1,9 @@
-import {Datatype, Property, ValueCount} from "../common/datatypes";
+import {Property, ValueCount} from "../common/datatypes";
 import DisplayTools from "../util/display_tools";
-import {TreeItem} from "@mui/x-tree-view";
 import * as React from "react";
 import Tools from "../util/tools";
 
-class GroupItem {
+export class GroupItem {
     id: string
     label: string
 
@@ -14,7 +13,7 @@ class GroupItem {
     }
 }
 
-class Group {
+export class Group {
     label: string
     items: GroupItem[]
 
@@ -28,16 +27,15 @@ class Group {
     }
 }
 
-interface Groups {
+export interface Groups {
     [key: string]: Group;
 }
 
 class TreeCreator {
 
-    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property,  separator: string) {
-        let groups: Groups = {};
-        let groupTreeItems: any = [];
+    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property,  separator: string): Groups {
 
+        let groups: Groups = {};
         valueCounts.forEach((v) => {
 
             let valueLabel = DisplayTools.serializeFacetValue(property, v);
@@ -54,43 +52,23 @@ class TreeCreator {
                 groups[groupName].addGroupItem(new GroupItem(valueId, itemLabel));
             }
         });
-        for (let groupId in groups) {
-            let facetValueTreeItems = groups[groupId].items.map((v: GroupItem) => {
-                return <TreeItem key={encodeURIComponent(v.id)}
-                                 itemId={encodeURIComponent(v.id)}
-                                 label={v.label}
-                />
-            });
-            if (facetValueTreeItems.length > 0) {
-                groupTreeItems.push(<TreeItem key={groupId}
-                                              itemId={groupId}
-                                              label={groups[groupId].label}
-                >{facetValueTreeItems}</TreeItem>);
-            }
-        }
-        return {groups, groupTreeItems};
+
+        return groups;
     }
 
-    static createGroupItemsBySpecifiedValues(valueCounts: ValueCount[], property: Property, specifiedValues: any) {
+    static createGroupItemsBySpecifiedValues(valueCounts: ValueCount[], property: Property, specifiedValues: any): Groups {
+
         let allFacetValues = valueCounts.map(v => v.mwTitle ? v.mwTitle.title : v.value.toString());
-        let groups = Tools.deepClone(specifiedValues);
-        for (let groupId in groups) {
-            groups[groupId] = Tools.intersect(groups[groupId], allFacetValues);
+        let groups: Groups = {};
+        let groupsCopy = Tools.deepClone(specifiedValues);
+        for (let groupId in groupsCopy) {
+            let groupItems = Tools.intersect(groupsCopy[groupId], allFacetValues);
+            groups[groupId] = new Group(groupId);
+            groupItems.map((value) => new GroupItem(value, value))
+                .forEach(item => groups[groupId].addGroupItem(item));
         }
 
-        let groupTreeItems = [];
-        for (let groupId in groups) {
-            let facetValueTreeItems = groups[groupId].map((v: any) =>
-                <TreeItem key={encodeURIComponent(v)}
-                          itemId={encodeURIComponent(v)}
-                          label={v}
-                />);
-            if (facetValueTreeItems.length > 0) {
-                groupTreeItems.push(<TreeItem key={groupId} itemId={groupId}
-                                              label={groupId}>{facetValueTreeItems}</TreeItem>);
-            }
-        }
-        return {groups, groupTreeItems};
+        return groups;
     }
 }
 

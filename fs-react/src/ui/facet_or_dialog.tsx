@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {SyntheticEvent, useContext, useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -8,14 +9,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
 import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
-import {Dispatch, SetStateAction, SyntheticEvent, useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
 import Tools from "../util/tools";
 import {useDebounce} from "../util/custom_hooks";
 import EventHandler from "../common/event_handler";
+import Client from "../common/client";
 
 function FacetOrDialog(prop: {
         open: boolean,
+        client: Client,
         handleClose: () => void,
         searchStateFacets: FacetResponse,
         selectedFacets: PropertyFacet[],
@@ -90,7 +92,7 @@ function FacetOrDialog(prop: {
                                                   onChange={onChange}
                                                   onBulkChange={onBulkChange}
                                                   filterText={debouncedSearchText}
-
+                                                  client={prop.client}
                             />
                         </Box>
                     </FormGroup>

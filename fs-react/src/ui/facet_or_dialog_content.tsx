@@ -3,12 +3,14 @@ import Tools from "../util/tools";
 import DisplayTools from "../util/display_tools";
 import {Checkbox, FormControlLabel, Grid, Typography} from "@mui/material";
 import * as React from "react";
-import {SyntheticEvent, useContext} from "react";
+import {SyntheticEvent, useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
 import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
-import TreeCreator from "./facet_or_dialog_tree";
+import TreeCreator, {GroupItem, Groups} from "./facet_or_dialog_tree";
+import Client from "../common/client";
 
 function FacetOrDialogContent(prop: {
+    client: Client,
     searchStateFacets: FacetResponse,
     selectedFacets: PropertyFacet[],
     property: Property,
@@ -42,7 +44,9 @@ function FacetOrDialogContent(prop: {
     return groupConfiguration ? <PropertyValueTree property={prop.property}
                                        valueCounts={valueCounts}
                                        selectedItemIds={selectedItemIds}
-                                       onBulkChange={prop.onBulkChange}/>
+                                       onBulkChange={prop.onBulkChange}
+                                       client={prop.client}
+        />
         :
         <PropertyValueGrid property={prop.property}
                            valueCounts={valueCounts}
@@ -83,6 +87,7 @@ function PropertyValueGrid(prop: {
 }
 
 function PropertyValueTree(prop: {
+    client: Client,
     property: Property,
     selectedItemIds: string[],
     valueCounts: ValueCount[],
@@ -90,14 +95,28 @@ function PropertyValueTree(prop: {
 }) {
     let wikiContext = useContext(WikiContext);
 
-    let items;
     let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
-    if (typeof groupConfiguration === 'string') {
-        items = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfiguration);
-    } else {
-        items = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, prop.property, groupConfiguration);
-    }
-    let {groups, groupTreeItems} = items;
+
+    const [content, setContent] = useState<Groups>(null);
+    useEffect(() => {
+        let groups: Groups;
+        if (typeof groupConfiguration === 'string') {
+            if (!groupConfiguration.startsWith('url:')) {
+                groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfiguration);
+                setContent(groups);
+            } else {
+                const path = groupConfiguration.substr('url:'.length).trim();
+                prop.client.getCustomEndpoint(path).then((jsonObject) => {
+                    groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, prop.property, jsonObject);
+                    setContent(groups);
+                });
+            }
+        } else {
+            groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, prop.property, groupConfiguration);
+            setContent(groups);
+        }
+
+    }, prop.valueCounts);
 
     function onSelectedItemsChange(event: React.SyntheticEvent, itemIds: string[]) {
         itemIds = itemIds.map(i => decodeURIComponent(i));
@@ -111,13 +130,33 @@ function PropertyValueTree(prop: {
     }
 
     return <SimpleTreeView checkboxSelection={true}
-                           expandedItems={Object.keys(groups)}
+                           expandedItems={Object.keys(content ?? [])}
                            multiSelect={true}
                            defaultSelectedItems={prop.selectedItemIds.map(i => encodeURIComponent(i))}
                            selectionPropagation={{descendants: true, parents: true}}
                            onSelectedItemsChange={onSelectedItemsChange}
-    >{groupTreeItems}
+    >{createItemsFromGroups(content)}
     </SimpleTreeView>
 };
+
+function createItemsFromGroups(groups: Groups) {
+    let groupTreeItems = [];
+    for (let groupId in groups) {
+
+        let facetValueTreeItems = groups[groupId].items.map((v: GroupItem) => {
+            return <TreeItem key={encodeURIComponent(v.id)}
+                             itemId={encodeURIComponent(v.id)}
+                             label={v.label}
+            />
+        });
+        if (facetValueTreeItems.length > 0) {
+            groupTreeItems.push(<TreeItem key={groupId}
+                                          itemId={groupId}
+                                          label={groups[groupId].label}
+            >{facetValueTreeItems}</TreeItem>);
+        }
+    }
+    return groupTreeItems;
+}
 
 export default FacetOrDialogContent;
