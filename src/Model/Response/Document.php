@@ -13,8 +13,7 @@ class Document
     public array $directCategoryFacets;
     /* @var NamespaceFacetValue[] */
     public $namespaceFacet;
-    /* @var PropertyWithURL[] */
-    public array $properties;
+
     public string $title;
     public string $displayTitle;
     public string $url;
@@ -28,21 +27,19 @@ class Document
      * @param CategoryFacetValue[] $categoryFacets
      * @param CategoryFacetValue[] $directCategoryFacets
      * @param NamespaceFacetValue $namespaceFacet
-     * @param PropertyWithURL[] $properties
      * @param string $title
      * @param string $displayTitle
      * @param string $url
      * @param int $score
      * @param string|null $highlighting
      */
-    public function __construct(string $id, array $propertyFacets, array $categoryFacets, array $directCategoryFacets, NamespaceFacetValue $namespaceFacet, array $properties, string $title, string $displayTitle, string $url, int $score, ?string $highlighting)
+    public function __construct(string $id, array $propertyFacets, array $categoryFacets, array $directCategoryFacets, NamespaceFacetValue $namespaceFacet, string $title, string $displayTitle, string $url, int $score, ?string $highlighting)
     {
         $this->id = $id;
         $this->propertyFacets = $propertyFacets;
         $this->categoryFacets = $categoryFacets;
         $this->directCategoryFacets = $directCategoryFacets;
         $this->namespaceFacet = $namespaceFacet;
-        $this->properties = $properties;
         $this->title = $title;
         $this->displayTitle = $displayTitle;
         $this->url = $url;

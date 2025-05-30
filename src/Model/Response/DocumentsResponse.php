@@ -2,8 +2,6 @@
 
 namespace DIQA\FacetedSearch2\Model\Response;
 
-use DIQA\FacetedSearch2\Model\Response\Document;
-
 class DocumentsResponse
 {
     public int $numResults;
@@ -15,8 +13,6 @@ class DocumentsResponse
     public array $propertyFacetCounts;
     /* @var NamespaceFacetCount[] */
     public array $namespaceFacetCounts;
-    /* @var PropertyValueCount[] */
-    public array $propertyValueCount;
 
     /**
      * SolrDocumentsResponse constructor.

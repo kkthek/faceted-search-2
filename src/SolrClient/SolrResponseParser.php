@@ -44,7 +44,6 @@ class SolrResponseParser {
             $categoryFacets = []; /* @var CategoryFacetValue[] */
             $directCategoryFacets = []; /* @var CategoryFacetValue[] */
             $namespace = null;
-            $properties = []; /* @var Property[] */;
             foreach ($doc as $property => $value) {
                     if (self::startsWith($property, "smwh_namespace_id")) {
                         $namespace = new NamespaceFacetValue($value, WikiTools::getNamespaceName($value));
@@ -62,10 +61,6 @@ class SolrResponseParser {
                             WikiTools::createURLForCategory($category)
                         ), $value);
 
-                    } else if (self::startsWith($property, "smwh_attributes")) {
-                        $properties = array_merge($properties, $this->parseProperties($value));
-                    } else if (self::startsWith($property, "smwh_properties")) {
-                        $properties = array_merge($properties, $this->parseProperties($value));
                     } else if (self::endsWith($property, "_s") || self::endsWith($property, "_datevalue_l")) {
                         continue;
                     } else if (self::startsWith($property, "smwh_")) {
@@ -90,7 +85,6 @@ class SolrResponseParser {
                 $categoryFacets,
                 $directCategoryFacets,
                 $namespace,
-                $properties,
                 $doc->smwh_title,
                 $doc->smwh_displaytitle,
                 WikiTools::createURLForPage($doc->smwh_title, $namespace->namespace),

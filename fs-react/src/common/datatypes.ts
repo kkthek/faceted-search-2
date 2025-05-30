@@ -479,8 +479,6 @@ export class Document implements ElementWithURL {
     directCategoryFacets: CategoryFacetValue[];
     @jsonMember(NamespaceFacetValue)
     namespaceFacet: NamespaceFacetValue;
-    @jsonArrayMember(PropertyWithURL)
-    properties: PropertyWithURL[];
     @jsonMember(String)
     title: string;
     @jsonMember(String)
