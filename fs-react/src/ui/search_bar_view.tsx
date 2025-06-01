@@ -1,11 +1,13 @@
-import React, {Dispatch, SetStateAction, useContext} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
 import {Box, Button, TextField} from "@mui/material";
 import EventHandler from "../common/event_handler";
+import {useDebounce} from "../util/custom_hooks";
+import CreateArticleLink from "./create_article";
 
 function SearchBar(prop: {
-    eventHandler: EventHandler,
-    textState: [string, Dispatch<SetStateAction<string>>]
+    eventHandler: EventHandler
+
 }) {
     let wikiContext = useContext(WikiContext);
     let placeholderText = wikiContext.config['fs2gPlaceholderText'];
@@ -13,23 +15,27 @@ function SearchBar(prop: {
         placeholderText = wikiContext.msg('fs-search-placeholder');
     }
 
-    const [text, setText] = prop.textState;
-
+    const [searchText, setSearchText] = useState('');
+    const debouncedSearchValue = useDebounce(searchText, 500);
+    useEffect(() => {
+        prop.eventHandler.onSearchClick(debouncedSearchValue);
+    }, [debouncedSearchValue]);
 
     return <Box id={'fs-searchbar'} sx={{'display': 'flex'}}>
         <TextField id="fs-searchbar-button-text"
                    label={placeholderText}
                    size={'small'}
                    variant="outlined"
-                   defaultValue={text}
-                   onKeyDown={(e) => { if (e.key === 'Enter') prop.eventHandler.onSearchClick(text) } }
-                   onChange={(e)=> setText(e.target.value)}
+                   value={searchText}
+                   onKeyDown={(e) => { if (e.key === 'Enter') { prop.eventHandler.onSearchClick(searchText); } } }
+                   onChange={(e)=> setSearchText(e.target.value)}
         />
 
         <Button id={'fs-searchbar-button'}
                 size={'medium'}
                 variant="outlined"
-                onClick={() => prop.eventHandler.onSearchClick(text)}>{wikiContext.msg('fs-search-button')}</Button>
+                onClick={() => prop.eventHandler.onSearchClick(searchText)}>{wikiContext.msg('fs-search-button')}</Button>
+        <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>,
         </Box>;
 }
 

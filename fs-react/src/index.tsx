@@ -59,7 +59,7 @@ function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
     const [error, setError] = React.useState('');
-    const [searchText, setSearchText] = useState(currentDocumentsQueryBuilder.build().searchText);
+
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
 
     const eventHandler = new EventHandler(
@@ -73,10 +73,7 @@ function App() {
         client
     );
 
-    const debouncedSearchValue = useDebounce(searchText, 500);
-    useEffect(() => {
-        eventHandler.onSearchClick(debouncedSearchValue);
-    }, [debouncedSearchValue]);
+
 
     const anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
@@ -90,16 +87,14 @@ function App() {
                     />,
                     <SearchBar key={'searchBar'}
                                eventHandler={eventHandler}
-                               textState={[searchText, setSearchText]}
-                    />,
 
-                    <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>,
+                    />,
                     <SaveSearchLink key={'saveSearchLink'}
                                     documentQuery={currentDocumentsQueryBuilder.build()}
                                     facetQuery={currentFacetsQueryBuilder.build()}
                     />
                 ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
-                    ['sortView', 'searchView', 'createArticleView', 'saveSearchLink']))}
+                    ['sortView', 'searchView', 'saveSearchLink']))}
 
             </div>
 
