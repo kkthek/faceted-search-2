@@ -2,6 +2,7 @@
 namespace DIQA\FacetedSearch2\SolrClient;
 
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
@@ -17,8 +18,8 @@ final class DocumentQueryTest extends BaseTest {
     {
        parent::setUp();
 
-       $this->client = Setup::getFacetedSearchClient();
-       $documentUpdater = Setup::getFacetedSearchUpdateClient();
+       $this->client = ConfigTools::getFacetedSearchClient();
+       $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
        $documentUpdater->clearAllDocuments();
        $documentUpdater->updateDocument(TestData::generateData());
     }

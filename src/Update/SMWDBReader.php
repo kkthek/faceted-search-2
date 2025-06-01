@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Update;
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Property;
@@ -143,7 +144,7 @@ class SMWDBReader {
             if (isset($fs2gIndexImageURL) && $fs2gIndexImageURL === true) {
                 $this->retrieveFileSystemPath($pageNamespace, $pageDbKey, $doc);
             }
-            $client = Setup::getFacetedSearchClient();
+            $client = ConfigTools::getFacetedSearchClient();
             $metadata = $this->getDocumentMetadata($pageTitle);
             if (is_null($metadata)) return '';
             $docData = $client->requestFileExtraction( file_get_contents($metadata['filePath']), $metadata['contentType'] );

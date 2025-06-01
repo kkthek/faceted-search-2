@@ -10,7 +10,7 @@ final class EndToEnd extends TestCase {
 
     protected function setUp(): void
     {
-        $documentUpdater = Setup::getFacetedSearchUpdateClient();
+        $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
         $documentUpdater->clearAllDocuments();
         $documentUpdater->updateDocument(TestData::generateData());
     }

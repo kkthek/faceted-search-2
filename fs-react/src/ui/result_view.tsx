@@ -11,19 +11,27 @@ function ResultView(prop: {
     results: Document[],
     numResults: number,
     eventHandler: EventHandler
-    client: Client}) {
+    client: Client
+}) {
 
     const [pageIndex, setPageIndex] = useState(1);
-    let wikiContext = useContext(WikiContext);
+    const wikiContext = useContext(WikiContext);
 
     const NUMBER_RESULTS_ONE_PAGE = wikiContext.config['fs2gHitsPerPage'];
     const totalNumberOfPages = Math.trunc(prop.numResults / NUMBER_RESULTS_ONE_PAGE) + 1;
 
-    const listItems = prop.results.map((doc,i) =>
-        <SearchResult key={doc.id} doc={doc} client={prop.client} />
+    const listItems = prop.results.map((doc, i) =>
+        <SearchResult key={doc.id} doc={doc} client={prop.client}/>
     );
-    let from = (pageIndex-1)*NUMBER_RESULTS_ONE_PAGE+1;
-    let to = Math.min(from + NUMBER_RESULTS_ONE_PAGE - 1, prop.numResults);
+
+    const from = (pageIndex - 1) * NUMBER_RESULTS_ONE_PAGE + 1;
+    const to = Math.min(from + NUMBER_RESULTS_ONE_PAGE - 1, prop.numResults);
+
+    function onPageIndexChange(event: React.ChangeEvent<unknown>, pageIndex: number) {
+        prop.eventHandler.onPageIndexClick(pageIndex, NUMBER_RESULTS_ONE_PAGE);
+        setPageIndex(pageIndex);
+        window.scrollTo(0, 0);
+    }
 
     return <div id={'fs-resultview'}>
         <Typography>{wikiContext.msg('fs-results-from-to', from, to, prop.numResults)}</Typography>
@@ -35,11 +43,7 @@ function ResultView(prop: {
         <Pagination count={totalNumberOfPages}
                     defaultPage={1}
                     siblingCount={2}
-                    onChange={(e, pageIndex) => {
-                        prop.eventHandler.onPageIndexClick(pageIndex, NUMBER_RESULTS_ONE_PAGE);
-                        setPageIndex(pageIndex);
-                        window.scrollTo(0,0);
-                    }  }/>
+                    onChange={onPageIndexChange}/>
     </div>;
 }
 

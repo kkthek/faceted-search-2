@@ -78,7 +78,7 @@ function App() {
         eventHandler.onSearchClick(debouncedSearchValue);
     }, [debouncedSearchValue]);
 
-    let anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
+    const anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
 
     return <WikiContext.Provider value={wikiContext}>

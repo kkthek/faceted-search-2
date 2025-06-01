@@ -226,18 +226,6 @@ class SolrResponseParser {
 
     }
 
-    private function parseProperties(array $propertyList): array
-    {
-        $properties = [] /* @var Property[] */;
-        foreach($propertyList as $property) {
-            $propertyResponse = $this->parseProperty($property);
-            if (!is_null($propertyResponse)) {
-                $properties[] = $propertyResponse;
-            }
-        }
-        return $properties;
-    }
-
     private function parseProperty(string $property): ?PropertyWithURL {
         list($name, $type) = Helper::parseSOLRProperty($property);
         if (is_null($name)) {

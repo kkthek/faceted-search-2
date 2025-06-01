@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Endpoints;
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Setup;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
@@ -14,8 +15,8 @@ class FacetQueryEndpoint extends Handler
 
     public function execute()
     {
-        Setup::calculateAndSetExtraProperties();
-        $solrClient = Setup::getFacetedSearchClient();
+        ConfigTools::initializeServersideConfig();
+        $solrClient = ConfigTools::getFacetedSearchClient();
         $jsonBody = $this->getRequest()->getBody();
         $query = FacetQuery::fromJson($jsonBody);
         $response = $solrClient->requestFacets($query);

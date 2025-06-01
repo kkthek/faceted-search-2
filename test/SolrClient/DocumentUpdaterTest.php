@@ -1,6 +1,7 @@
 <?php
 namespace DIQA\FacetedSearch2\SolrClient;
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Update\Document;
@@ -17,7 +18,7 @@ final class DocumentUpdaterTest extends BaseTest {
         $pv = new PropertyValues($p, ['Markus']);
         $document->setPropertyValues([$pv]);
 
-        $updater = Setup::getFacetedSearchUpdateClient();
+        $updater = ConfigTools::getFacetedSearchUpdateClient();
         $updater->clearAllDocuments();
         $xml = $updater->updateDocument($document);
 

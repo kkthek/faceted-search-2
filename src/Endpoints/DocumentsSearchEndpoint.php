@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Endpoints;
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Setup;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
@@ -13,8 +14,8 @@ class DocumentsSearchEndpoint extends Handler
 
     public function execute()
     {
-        Setup::calculateAndSetExtraProperties();
-        $solrClient = Setup::getFacetedSearchClient();
+        ConfigTools::initializeServersideConfig();
+        $solrClient = ConfigTools::getFacetedSearchClient();
         $jsonBody = $this->getRequest()->getBody();
         $documentQuery = DocumentQuery::fromJson($jsonBody);
         $response = $solrClient->requestDocuments($documentQuery);

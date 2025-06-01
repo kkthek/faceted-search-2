@@ -1,6 +1,7 @@
 <?php
 namespace DIQA\FacetedSearch2\SolrClient;
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;
@@ -16,8 +17,8 @@ final class FacetQueryTest extends BaseTest {
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = Setup::getFacetedSearchClient();
-        $documentUpdater = Setup::getFacetedSearchUpdateClient();
+        $this->client = ConfigTools::getFacetedSearchClient();
+        $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
         $documentUpdater->clearAllDocuments();
         $documentUpdater->updateDocument(TestData::generateData());
     }

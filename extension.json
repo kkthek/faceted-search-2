@@ -145,6 +145,10 @@
 			"value": [],
 			"description": "IDs of namespaces to show. Empty means all namespaces."
 		},
+		"NamespaceConstraint": {
+			"value": [],
+			"description": "Allows certain groups to see only some namespaces"
+		},
 		"ShowArticleProperties": {
 			"value": true,
 			"description": "Show the article properties button under each search hit."

@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Update;
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Setup;
 use Title;
 use WikiPage;
@@ -18,20 +19,20 @@ class FSIndexer
 
     public static function indexArticleWithText(Title $title, $text, &$messages = [])
     {
-        $client = Setup::getFacetedSearchUpdateClient();
+        $client = ConfigTools::getFacetedSearchUpdateClient();
         $smwDBReader = new SMWDBReader();
         $document = $smwDBReader->getIndexDocumentFromWikiPage(new WikiPage($title), $text, $messages);
         $client->updateDocument($document);
     }
 
     public static function deleteArticleFromIndex($id) {
-        $client = Setup::getFacetedSearchUpdateClient();
+        $client = ConfigTools::getFacetedSearchUpdateClient();
         $client->deleteDocument($id);
     }
 
     public static function updateIndexForMovedArticle($oldid, $newid)
     {
-        $client = Setup::getFacetedSearchUpdateClient();
+        $client = ConfigTools::getFacetedSearchUpdateClient();
         $client->deleteDocument($oldid);
 
         // The article with the new name has the same page id as before
