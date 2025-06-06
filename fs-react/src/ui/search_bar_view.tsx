@@ -6,6 +6,7 @@ import {useDebounce} from "../util/custom_hooks";
 import CreateArticleLink from "./create_article";
 
 function SearchBar(prop: {
+    searchText: string
     eventHandler: EventHandler
 
 }) {
@@ -15,7 +16,7 @@ function SearchBar(prop: {
         placeholderText = wikiContext.msg('fs-search-placeholder');
     }
 
-    const [searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState(prop.searchText);
     const debouncedSearchValue = useDebounce(searchText, 500);
     useEffect(() => {
         prop.eventHandler.onSearchClick(debouncedSearchValue);

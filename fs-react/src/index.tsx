@@ -86,6 +86,7 @@ function App() {
                               eventHandler={eventHandler}
                     />,
                     <SearchBar key={'searchBar'}
+                               searchText={currentDocumentsQueryBuilder.build().searchText}
                                eventHandler={eventHandler}
 
                     />,
