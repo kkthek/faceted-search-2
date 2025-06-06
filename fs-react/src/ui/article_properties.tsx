@@ -26,7 +26,9 @@ function ArticleProperties(prop: {
 
     let rows: ReactElement[] = [];
     if (documentById !== null) {
-        rows = documentById.propertyFacets.map((pfv) => {
+        rows = documentById.propertyFacets
+            .sort((a, b) => a.property.title.localeCompare(b.property.title))
+            .map((pfv) => {
             return <Row key={'article-properties-'+prop.doc.id+pfv.property.title} pfv={pfv}/>
         });
     }
