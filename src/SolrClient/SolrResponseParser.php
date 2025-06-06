@@ -37,7 +37,7 @@ class SolrResponseParser {
 
     }
 
-    public function parse(): DocumentsResponse {
+    public function parse($fillEmptyProperties = true): DocumentsResponse {
         $docs = [];
         foreach ($this->body->response->docs as $doc) {
             $propertyFacets = []; /* @var PropertyFacetValues[] */
@@ -78,7 +78,9 @@ class SolrResponseParser {
                     $highlighting = $smwh_search_field[1];
                 }
             }
-            $propertyFacets = $this->fillEmptyExtraProperties($propertyFacets);
+            if ($fillEmptyProperties) {
+                $propertyFacets = $this->fillEmptyExtraProperties($propertyFacets);
+            }
             $docs[] = new Document(
                 $doc->id,
                 $propertyFacets,

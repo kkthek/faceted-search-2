@@ -28,7 +28,7 @@ class SolrRequestClient implements FacetedSearchClient
     public function requestDocument(string $id): Document
     {
         $response =  new SolrResponseParser($this->requestSOLR(['q' => "id:$id"]));
-        $documentsResponse = $response->parse();
+        $documentsResponse = $response->parse(false);
         if (count($documentsResponse->docs) === 0) {
             throw new Exception("No document with ID $id found", 400);
         }
