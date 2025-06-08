@@ -23,12 +23,10 @@ function Annotations(prop: {doc: Document}) {
 
             return  <TableRow key={'annotation-'+prop.doc.id+'-'+tuples[0]}>
                         <TableCell>
-                            <WikiLink page={pfvCell1.property}/>:
-                            {ValueSerializer.getValues(pfvCell1)}
+                            <WikiLink page={pfvCell1.property}/>: {ValueSerializer.getValues(pfvCell1)}
                         </TableCell>
                         <TableCell>
-                            <WikiLink page={pfvCell2?.property}/> {pfvCell2 ? ':':''}
-                            {ValueSerializer.getValues(pfvCell2)}
+                            <WikiLink page={pfvCell2?.property}/>{pfvCell2 ? ': ':' '}{ValueSerializer.getValues(pfvCell2)}
                         </TableCell>
             </TableRow>
         });

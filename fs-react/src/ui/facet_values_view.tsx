@@ -30,7 +30,7 @@ function FacetValues(prop: {
     let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem itemId={itemId}
 
-                           label={value + " : " + prop.propertyValueCount.count}
+                           label={value + " (" + prop.propertyValueCount.count+")"}
                            itemAction={() => {
                                prop.eventHandler.onValueClick(propertyFacet);
 
