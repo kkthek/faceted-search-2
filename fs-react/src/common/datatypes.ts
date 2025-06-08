@@ -375,6 +375,14 @@ export class ValueCount {
     @jsonMember(Number)
     count: number;
 
+    compare(valueCount: ValueCount) {
+        if (this.value !== null && valueCount.value !== null) {
+            return this.value.toLocaleString().localeCompare(valueCount.value.toLocaleString());
+        } else if(this.mwTitle !== null && valueCount.mwTitle !== null) {
+            return this.mwTitle.title.toLocaleString().localeCompare(valueCount.mwTitle.title.toLocaleString());
+        }
+        return 0;
+    }
 }
 
 @jsonObject

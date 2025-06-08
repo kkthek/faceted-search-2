@@ -63,7 +63,9 @@ function PropertyValueGrid(prop: {
     onChange: (e: SyntheticEvent, checked: boolean, v: ValueCount) => void,
 }) {
     let values: any = [];
-    let rows: ValueCount[][] = Tools.splitArray2NTuples(prop.valueCounts, 3);
+
+    let valueCounts = prop.valueCounts.sort((a,b) => a.compare(b));
+    let rows: ValueCount[][] = Tools.splitArray2NTuples(valueCounts, 3);
 
     rows.forEach((row) => {
         values.push(row.map((value) => {
