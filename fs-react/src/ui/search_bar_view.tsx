@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {WikiContext} from "../index";
 import {Box, Button, TextField} from "@mui/material";
 import EventHandler from "../common/event_handler";
@@ -8,6 +8,7 @@ import CreateArticleLink from "./create_article";
 function SearchBar(prop: {
     searchText: string
     eventHandler: EventHandler
+    firstRenderRequired: boolean
 
 }) {
     let wikiContext = useContext(WikiContext);
@@ -16,11 +17,16 @@ function SearchBar(prop: {
         placeholderText = wikiContext.msg('fs-search-placeholder');
     }
 
+    const firstRenderRequired = useRef(prop.firstRenderRequired);
     const [searchText, setSearchText] = useState(prop.searchText);
     const debouncedSearchValue = useDebounce(searchText, 500);
     useEffect(() => {
+        if (!firstRenderRequired.current) {
+            firstRenderRequired.current = true;
+            return;
+        }
         prop.eventHandler.onSearchClick(debouncedSearchValue);
-    }, [debouncedSearchValue]);
+    }, [debouncedSearchValue, firstRenderRequired]);
 
     return <Box id={'fs-searchbar'} sx={{'display': 'flex'}}>
         <TextField id="fs-searchbar-button-text"
@@ -36,7 +42,7 @@ function SearchBar(prop: {
                 size={'medium'}
                 variant="outlined"
                 onClick={() => prop.eventHandler.onSearchClick(searchText)}>{wikiContext.msg('fs-search-button')}</Button>
-        <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>,
+        <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>
         </Box>;
 }
 

@@ -34,6 +34,7 @@ class DocumentQueryBuilder {
     withQueryFromJson(json: string) {
         const deserializer = new TypedJSON(DocumentQuery);
         this.query = deserializer.parse(json);
+        this.query.extraProperties = this.query.extraProperties ?? [];
         return this;
     }
 

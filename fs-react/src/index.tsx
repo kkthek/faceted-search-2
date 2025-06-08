@@ -22,9 +22,7 @@ import {Property} from "./common/datatypes";
 import CategoryDropdown from "./ui/category_dropdown";
 import {Box, Divider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
-import CreateArticleLink from "./ui/create_article";
 import ConfigUtils from "./util/config_utils";
-import {useDebounce} from "./util/custom_hooks";
 import Tools from "./util/tools";
 import SaveSearchLink from "./ui/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
@@ -55,6 +53,10 @@ export let WikiContext = createContext(null);
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
 
+const urlParams = new URLSearchParams(window.location.search);
+const q = urlParams.get('q');
+const searchText = urlParams.get('search');
+
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
@@ -73,7 +75,7 @@ function App() {
         client
     );
 
-
+    updateFacetsIfFromQuery(eventHandler);
 
     const anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
@@ -87,6 +89,7 @@ function App() {
                     />,
                     <SearchBar key={'searchBar'}
                                searchText={currentDocumentsQueryBuilder.build().searchText}
+                               firstRenderRequired={q === null}
                                eventHandler={eventHandler}
 
                     />,
@@ -99,16 +102,16 @@ function App() {
 
             </div>
 
-                <NamespaceView key={'namespaceView'}
-                               searchStateDocument={searchStateDocument}
-                               eventHandler={eventHandler}
-                />
+            <NamespaceView key={'namespaceView'}
+                           searchStateDocument={searchStateDocument}
+                           eventHandler={eventHandler}
+            />
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {Tools.reorder([
                     <Box key={'selectedFacetLabel'}>
                         <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
-                        {anyFacetSelected ? '' : "("+wikiContext.msg('fs-no-facets-selected')+")"}
+                        {anyFacetSelected ? '' : "(" + wikiContext.msg('fs-no-facets-selected') + ")"}
                     </Box>,
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
@@ -143,9 +146,9 @@ function App() {
                                   searchStateDocument={searchStateDocument}
                                   eventHandler={eventHandler}
                     />
-                    ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
+                ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
                     ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-                    'facetView', 'categoryView', 'categoryDropDown']))}
+                        'facetView', 'categoryView', 'categoryDropDown']))}
             </div>
             <div id={'fs-results'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}
@@ -160,36 +163,38 @@ function App() {
 }
 
 
-function applyQueryConstraintsFromConfig() {
-    wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: Property) => {
-        currentDocumentsQueryBuilder.withExtraProperty(p);
-    });
+function applyQueryConstraints() {
     currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
     if (wikiContext.isObjectConfigured('fs2gCategoryFilter')) {
         let firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');
         currentDocumentsQueryBuilder.withCategoryFacet(firstCategory);
     }
-}
-
-function applyQueryConstraintsFromURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-
-    const searchText = urlParams.get('search');
     if (searchText !== null) {
         currentDocumentsQueryBuilder.withSearchText(searchText);
     }
-
-    const dq = urlParams.get('dq');
-    const fq = urlParams.get('fq');
-    if (dq !== null && fq !== null) {
-        currentDocumentsQueryBuilder.withQueryFromJson(dq);
-        currentFacetsQueryBuilder.withQueryFromJson(fq);
+    if (q !== null) {
+        currentDocumentsQueryBuilder.withQueryFromJson(atob(q));
+        currentFacetsQueryBuilder.updateBaseQuery(currentDocumentsQueryBuilder.build());
     }
+    wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: Property) => {
+        currentDocumentsQueryBuilder.withExtraProperty(p);
+    });
+}
+
+function updateFacetsIfFromQuery(eventHandler: EventHandler) {
+    if (q === null) {
+        return;
+    }
+    // required because facet query is not stored in the URL for length optimization reasons
+    // it must be re-created once
+    useEffect(() => {
+        const propertyFacets = Tools.deepClone(currentDocumentsQueryBuilder.build().propertyFacets);
+        eventHandler.onValuesClick(propertyFacets);
+    }, [q]);
 }
 
 function startApp() {
-    applyQueryConstraintsFromConfig();
-    applyQueryConstraintsFromURL();
+    applyQueryConstraints();
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
     root.render(<App/>);
