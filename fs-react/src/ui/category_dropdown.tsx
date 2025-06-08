@@ -20,10 +20,16 @@ class DropdownEntry {
         for(let category in categoryFilters) {
             let id = category === '' ? '-no-filter-' : category;
             let label = categoryFilters[category];
-            label = label.replace('&nbsp;', '\u00A0');
+            label = this.decodeHtml(label);
             entries.push(new DropdownEntry(id, label));
         }
         return entries;
+    }
+
+    static decodeHtml(html: string) {
+        const txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
     }
 }
 
