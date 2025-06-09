@@ -44,14 +44,14 @@ function SelectedFacets(prop: {
                            itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
                            label={prop.propertyValueCount.property.displayTitle}
                            action={() => {
-                               if (!hasValue) {
+                               if (!hasValue || itemlist.length === 0) {
                                    prop.eventHandler.onRemovePropertyFacet(propertyFacet)
                                } else if (facetsWithOr) {
                                    prop.onOrDialogClick(prop.propertyValueCount.property);
                                }
 
                            } }
-                           actionIcon={!hasValue ? DeleteIcon :  (facetsWithOr ? ChecklistIcon: null)}
+                           actionIcon={!hasValue || itemlist.length === 0 ? DeleteIcon :  (facetsWithOr ? ChecklistIcon: null)}
             >{itemlist}</CustomTreeItem>
 }
 
@@ -114,6 +114,7 @@ function SelectedFacetsView(prop: {
                        selectedFacets={prop.searchStateFacet.query.propertyFacets}
                        property={openOrDialog.property}
                        eventHandler={prop.eventHandler}
+                       client={prop.client}
         />
     </div>;
 }
