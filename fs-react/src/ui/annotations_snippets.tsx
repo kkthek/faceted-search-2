@@ -15,13 +15,14 @@ function Annotations(prop: {doc: Document}) {
         let categoryFound = prop.doc.getCategoryFacetValue(category) != null;
         if (!categoryFound) continue;
 
+        let index = 0;
         let rows = Tools.splitArray2NTuples(annotationsInSnippets[category], 2)
             .map((tuples: string[]) => {
 
             let pfvCell1 = prop.doc.getPropertyFacetValues(tuples[0]);
             let pfvCell2 = tuples[1] ? prop.doc.getPropertyFacetValues(tuples[1]) : null;
 
-            return  <TableRow key={'annotation-'+prop.doc.id+'-'+tuples[0]}>
+            return  <TableRow key={'annotation-'+prop.doc.id+"_"+index++}>
                         <TableCell>
                             <WikiLink page={pfvCell1.property}/>: {ValueSerializer.getValues(pfvCell1)}
                         </TableCell>
