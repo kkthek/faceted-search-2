@@ -379,7 +379,7 @@ class SMWDBReader {
         $file = MediaWikiServices::getInstance()->getRepoGroup()->getLocalRepo()->newFile($title);
         $filepath = $file->getFullUrl();
 
-        $doc['smwh_properties'][] = new PropertyValues(new Property("diqa_import_fullpath", Datatype::STRING), [$filepath]);
+        $doc['smwh_properties'][] = new PropertyValues(new Property("Diqa import fullpath", Datatype::STRING), [$filepath]);
     }
 
     /**
