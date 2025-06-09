@@ -28,7 +28,7 @@ class TestData {
         $p = new Property('Works at', Datatype::WIKIPAGE);
         $pvWorksAt = new PropertyValues($p, [new MWTitle('DIQA-GmbH', 'DIQA')]);
 
-        $p = new Property('diqa import fullpath', Datatype::STRING);
+        $p = new Property('Diqa import fullpath', Datatype::STRING);
         $pvDiqa_import_fullpath = new PropertyValues($p, ['https://pdfobject.com/pdf/sample.pdf']);
 
         $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvDiqa_import_fullpath])

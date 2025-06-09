@@ -27,7 +27,7 @@ class ConfigTools {
             $extraProperties[] = new Property($fs2gDemotionProperty, Datatype::BOOLEAN);
         }
         if ($fs2gShowFileInOverlay !== false) {
-            $extraProperties[] = new Property("diqa import fullpath", Datatype::STRING);
+            $extraProperties[] = new Property("Diqa import fullpath", Datatype::STRING);
         }
         $fs2gExtraPropertiesToRequest = $extraProperties;
 

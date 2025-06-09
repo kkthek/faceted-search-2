@@ -25,7 +25,7 @@ function PopupComponent(prop: {
     }
 
     let previewPopup;
-    let previewUrlPropertyValues = prop.doc.getPropertyFacetValues("diqa import fullpath");
+    let previewUrlPropertyValues = prop.doc.getPropertyFacetValues("Diqa import fullpath");
     if (fileTypesToShowInOverlay !== false && previewUrlPropertyValues.values.length > 0
         && fileTypesToShowInOverlay.includes(ConfigUtils.getFileExtension(previewUrlPropertyValues.values[0] as string))) {
         previewPopup = <span>

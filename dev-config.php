@@ -86,10 +86,10 @@ function setConfigForDevContext() {
 
     $fs2gShowFileInOverlay =  ['pdf'];
     if ($fs2gShowFileInOverlay) {
-        $fs2gExtraPropertiesToRequest[] = new Property("diqa import fullpath", Datatype::STRING);
+        $fs2gExtraPropertiesToRequest[] = new Property("Diqa import fullpath", Datatype::STRING);
     }
 
-    $fs2gHeaderControlOrder = ['sortView', 'searchView', 'createArticleView', 'saveSearchLink'];
+    $fs2gHeaderControlOrder = ['sortView', 'searchView', 'saveSearchLink'];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
         'facetView', 'categoryView', 'categoryDropDown'];
 
