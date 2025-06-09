@@ -4,6 +4,7 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class StatsResponse
 {
+    use DebugInfo;
 
     /* @var Stats[] */
     public array $stats;

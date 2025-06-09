@@ -4,6 +4,8 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class FacetResponse
 {
+    use DebugInfo;
+
     /* @var PropertyValueCount[] */
     public array $valueCounts;
 

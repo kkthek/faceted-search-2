@@ -4,6 +4,8 @@ namespace DIQA\FacetedSearch2\Model\Response;
 
 class DocumentsResponse
 {
+    use DebugInfo;
+
     public int $numResults;
     /* @var Document[] */
     public array $docs;

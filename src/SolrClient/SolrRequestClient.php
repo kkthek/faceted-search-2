@@ -4,12 +4,12 @@ namespace DIQA\FacetedSearch2\SolrClient;
 
 use DIQA\FacetedSearch2\FacetedSearchClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
-use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
-use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Common\Order;
 use DIQA\FacetedSearch2\Model\Common\Property;
-use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Common\Range;
+use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
+use DIQA\FacetedSearch2\Model\Request\FacetQuery;
+use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
 use DIQA\FacetedSearch2\Model\Request\Sort;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
@@ -43,7 +43,8 @@ class SolrRequestClient implements FacetedSearchClient
         $queryParams = array_merge($queryParams, $sortsAndLimits);
 
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
-        return $response->parse();
+        return $response->parse()
+            ->setDebugInfo(self::buildQueryParams($queryParams));
     }
 
     public function requestStats(StatsQuery $q): StatsResponse
@@ -57,7 +58,8 @@ class SolrRequestClient implements FacetedSearchClient
         }
         $queryParams['stats.field'] = $statsFields;
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
-        return $response->parseStatsResponse();
+        return $response->parseStatsResponse()
+            ->setDebugInfo(self::buildQueryParams($queryParams));
     }
 
     public function requestFacets(FacetQuery $q): FacetResponse
@@ -105,7 +107,7 @@ class SolrRequestClient implements FacetedSearchClient
 
         }
 
-        return $result;
+        return $result->setDebugInfo(self::buildQueryParams($queryParams));;
     }
 
     /**
