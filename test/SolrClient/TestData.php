@@ -55,7 +55,7 @@ class TestData {
         $pvIsOnPension = new PropertyValues($p, ['false']);
 
         $p = new Property('Works at', Datatype::WIKIPAGE);
-        $pvWorksAt = new PropertyValues($p, [new MWTitle('Mercedes AG', 'Mercedes')]);
+        $pvWorksAt = new PropertyValues($p, [new MWTitle('VW', 'Volkswagen')]);
 
         $p = new Property('Has spouse', Datatype::WIKIPAGE);
         $pvSpouse = new PropertyValues($p, [new MWTitle('Maier, Maria', 'Maria')]);

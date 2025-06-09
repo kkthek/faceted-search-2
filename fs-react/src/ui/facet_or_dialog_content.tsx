@@ -132,7 +132,7 @@ function PropertyValueTree(prop: {
     }
 
     return <SimpleTreeView checkboxSelection={true}
-                           expandedItems={Object.keys(content ?? [])}
+                           expandedItems={Object.keys(content ?? []).map(e => "group_"+e)}
                            multiSelect={true}
                            defaultSelectedItems={prop.selectedItemIds.map(i => encodeURIComponent(i))}
                            selectionPropagation={{descendants: true, parents: true}}
@@ -152,8 +152,8 @@ function createItemsFromGroups(groups: Groups) {
             />
         });
         if (facetValueTreeItems.length > 0) {
-            groupTreeItems.push(<TreeItem key={groupId}
-                                          itemId={groupId}
+            groupTreeItems.push(<TreeItem key={"group_"+groupId}
+                                          itemId={"group_"+groupId}
                                           label={groups[groupId].label}
             >{facetValueTreeItems}</TreeItem>);
         }
