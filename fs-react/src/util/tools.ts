@@ -1,5 +1,5 @@
 import {CustomDeserializerParams} from "typedjson/lib/types/metadata";
-import {MWTitleWithURL, Property} from "../common/datatypes";
+import {MWTitleWithURL, Property, ValueCount} from "../common/datatypes";
 import {ReactElement} from "react";
 
 class Tools {
@@ -158,8 +158,11 @@ class Tools {
         return results;
     }
 
-    static intersect(array1: string[], array2: string[]) {
-        return array1.filter(value => array2.includes(value));
+    static intersect(array1: ValueCount[], array2: string[]) {
+        return array1.filter(v => {
+            const value = v.mwTitle ? v.mwTitle.title : v.value.toString();
+            return array2.includes(value);
+        });
     }
 
     static createId(rawId: string) {

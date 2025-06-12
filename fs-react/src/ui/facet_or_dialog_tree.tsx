@@ -6,10 +6,12 @@ import Tools from "../util/tools";
 export class GroupItem {
     id: string
     label: string
+    count: number
 
-    constructor(value: string, label: string) {
+    constructor(value: string, label: string, count: number) {
         this.id = value;
         this.label = label;
+        this.count = count;
     }
 }
 
@@ -44,12 +46,12 @@ class TreeCreator {
             if (parts.length === 1) {
                 groups['ungrouped'] = groups['ungrouped'] ?? new Group('-');
                 let itemLabel = valueLabel !== valueId ? valueLabel : parts[0].trim();
-                groups['ungrouped'].addGroupItem(new GroupItem(valueId, itemLabel));
+                groups['ungrouped'].addGroupItem(new GroupItem(valueId, itemLabel, v.count));
             } else if (parts.length > 1) {
                 let groupName = parts[0].trim();
                 groups[groupName] = groups[groupName] ??  new Group(groupName);
                 let itemLabel = valueLabel !== valueId ? valueLabel : parts.splice(1).join(separator);
-                groups[groupName].addGroupItem(new GroupItem(valueId, itemLabel));
+                groups[groupName].addGroupItem(new GroupItem(valueId, itemLabel, v.count));
             }
         });
 
@@ -58,14 +60,16 @@ class TreeCreator {
 
     static createGroupItemsBySpecifiedValues(valueCounts: ValueCount[], property: Property, specifiedValues: any): Groups {
 
-        let allFacetValues = valueCounts.map(v => v.mwTitle ? v.mwTitle.title : v.value.toString());
         let groups: Groups = {};
         let groupsCopy = Tools.deepClone(specifiedValues);
         for (let groupId in groupsCopy) {
-            let groupItems = Tools.intersect(groupsCopy[groupId], allFacetValues);
+            let groupItems = Tools.intersect(valueCounts, groupsCopy[groupId]);
             groups[groupId] = new Group(groupId);
-            groupItems.map((value) => new GroupItem(value, value))
-                .forEach(item => groups[groupId].addGroupItem(item));
+            groupItems.map((v) => {
+                const value =  v.mwTitle ? v.mwTitle.title : v.value.toString()
+                return new GroupItem(value, value, v.count)
+            })
+            .forEach(item => groups[groupId].addGroupItem(item));
         }
 
         return groups;

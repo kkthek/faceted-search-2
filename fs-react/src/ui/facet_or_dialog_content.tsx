@@ -148,7 +148,7 @@ function createItemsFromGroups(groups: Groups) {
         let facetValueTreeItems = groups[groupId].items.map((v: GroupItem) => {
             return <TreeItem key={encodeURIComponent(v.id)}
                              itemId={encodeURIComponent(v.id)}
-                             label={v.label}
+                             label={v.label+ " (" + v.count + ")"}
             />
         });
         if (facetValueTreeItems.length > 0) {
