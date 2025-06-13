@@ -146,6 +146,17 @@ function createItemsFromGroups(groups: Groups) {
     const ordered = Tools.orderKeys(groups ?? {});
     for (let groupId in ordered) {
 
+        if (groupId === '__ungrouped__') {
+            groups[groupId].items
+                .sort((a,b) => a.label.localeCompare(b.label))
+                .map((v: GroupItem) => {
+                    return <TreeItem key={encodeURIComponent(v.id)}
+                                     itemId={encodeURIComponent(v.id)}
+                                     label={v.label+ " (" + v.count + ")"}
+                    />
+                }).forEach(e => groupTreeItems.push(e));
+            continue;
+        }
         let facetValueTreeItems = groups[groupId].items
             .sort((a,b) => a.label.localeCompare(b.label))
             .map((v: GroupItem) => {

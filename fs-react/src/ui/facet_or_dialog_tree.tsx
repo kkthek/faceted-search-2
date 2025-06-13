@@ -44,9 +44,9 @@ class TreeCreator {
             let valueId = v.mwTitle ? v.mwTitle.title : v.value.toString();
             let parts = valueId.split(separator);
             if (parts.length === 1) {
-                groups['ungrouped'] = groups['ungrouped'] ?? new Group('-');
+                groups['__ungrouped__'] = groups['__ungrouped__'] ?? new Group('-');
                 let itemLabel = valueLabel !== valueId ? valueLabel : parts[0].trim();
-                groups['ungrouped'].addGroupItem(new GroupItem(valueId, itemLabel, v.count));
+                groups['__ungrouped__'].addGroupItem(new GroupItem(valueId, itemLabel, v.count));
             } else if (parts.length > 1) {
                 let groupName = parts[0].trim();
                 groups[groupName] = groups[groupName] ??  new Group(groupName);
