@@ -143,9 +143,12 @@ function PropertyValueTree(prop: {
 
 function createItemsFromGroups(groups: Groups) {
     let groupTreeItems = [];
-    for (let groupId in groups) {
+    const ordered = Tools.orderKeys(groups ?? {});
+    for (let groupId in ordered) {
 
-        let facetValueTreeItems = groups[groupId].items.map((v: GroupItem) => {
+        let facetValueTreeItems = groups[groupId].items
+            .sort((a,b) => a.label.localeCompare(b.label))
+            .map((v: GroupItem) => {
             return <TreeItem key={encodeURIComponent(v.id)}
                              itemId={encodeURIComponent(v.id)}
                              label={v.label+ " (" + v.count + ")"}

@@ -174,6 +174,16 @@ class Tools {
         return rawId.replace(/[\W]/g, '');
     }
 
+    static orderKeys(o: any) {
+        return Object.keys(o).sort().reduce(
+            (obj: any, key: string) => {
+                obj[key] = o[key];
+                return obj;
+            },
+            {}
+        );
+    }
+
 }
 
 
