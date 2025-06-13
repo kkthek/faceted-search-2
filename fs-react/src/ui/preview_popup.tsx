@@ -25,7 +25,12 @@ function PopupComponent(prop: {
     }
 
     let previewPopup;
-    let previewUrlPropertyValues = prop.doc.getPropertyFacetValues("Diqa import fullpath");
+    let previewUrlPropertyValues = prop.doc.getPropertyFacetValues("Diqa import fullpath")
+    if (previewUrlPropertyValues.values.length === 0) {
+        let oldPreviewUrlPropertyValues = prop.doc.getPropertyFacetValues("diqa_import_fullpath"); // fallback
+        previewUrlPropertyValues = oldPreviewUrlPropertyValues ?? previewUrlPropertyValues;
+    }
+
     if (fileTypesToShowInOverlay !== false && previewUrlPropertyValues.values.length > 0
         && fileTypesToShowInOverlay.includes(ConfigUtils.getFileExtension(previewUrlPropertyValues.values[0] as string))) {
         previewPopup = <span>
