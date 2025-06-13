@@ -13,6 +13,7 @@ use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
 use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
 use DIQA\FacetedSearch2\Model\Request\Sort;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
+use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
 use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\FacetResponse;
@@ -43,8 +44,11 @@ class SolrRequestClient implements FacetedSearchClient
         $queryParams = array_merge($queryParams, $sortsAndLimits);
 
         $response =  new SolrResponseParser($this->requestSOLR($queryParams));
-        return $response->parse()
+        $docResponse = $response->parse()
             ->setDebugInfo(self::buildQueryParams($queryParams));
+
+        $this->fillEmptyCategoryFacetCounts($docResponse, $q);
+        return $docResponse;
     }
 
     public function requestStats(StatsQuery $q): StatsResponse
@@ -466,6 +470,19 @@ class SolrRequestClient implements FacetedSearchClient
         }
 
         return implode("&", $encodedParams);
+    }
+
+    /**
+     * Fills empty category facet counts if category facet is selected but there are no results
+     */
+    private function fillEmptyCategoryFacetCounts(DocumentsResponse $docResponse, DocumentQuery $q): void
+    {
+        $categoriesInFacetCounts = array_map(fn($e) => $e->category, $docResponse->categoryFacetCounts);
+        foreach ($q->categoryFacets as $c) {
+            if (!in_array($c, $categoriesInFacetCounts)) {
+                $docResponse->categoryFacetCounts[] = new CategoryFacetCount($c, WikiTools::getDisplayTitleForCategory($c), 0);
+            }
+        }
     }
 
 }
