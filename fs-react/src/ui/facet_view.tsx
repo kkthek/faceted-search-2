@@ -158,6 +158,7 @@ function FacetView(prop: {
                         onItemExpansionToggle={handleItemExpansionToggle}
         >
             {listItems}
+            {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={'none'}></CustomTreeItem>: ''}
         </SimpleTreeView>
         <FacetExtensionPoint key={'facetExtensionPoint'}
                              client={prop.client}
