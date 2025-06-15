@@ -248,7 +248,15 @@
 		},
 		"PropertyGrouping": {
 			"value": [],
-			"description": "Groups property values in OR-Dialog"
+			"description": "Groups property values in OR-Dialog by a statically configured set of groups and values. eg. 'Property name' => ['Group1'=>['value1','value2], 'Group2'=>['value3','value4], ...]"
+		},
+		"PropertyGroupingBySeparator": {
+			"value": [],
+			"description": "Groups property values in OR-Dialog by a separator in the value. eg. ['Property name' => '/', ...]"
+		},
+		"PropertyGroupingByUrl": {
+			"value": [],
+			"description": "Groups property values in OR-Dialog by a request to the wiki. ['Property name' => 'https://host/path/to/endpoint', ...]"
 		},
 		"AdditionalLinks": {
 			"value": [],

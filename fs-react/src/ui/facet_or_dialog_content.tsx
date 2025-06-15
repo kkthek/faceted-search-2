@@ -39,7 +39,9 @@ function FacetOrDialogContent(prop: {
         .filter((value) => Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.containsValueOrMWTitle(value)) != null)
         .map(v => v.mwTitle ? v.mwTitle.title : v.value.toString());
 
-    let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
+    let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title]
+                            || wikiContext.config.fs2gPropertyGroupingBySeparator[prop.property.title]
+                            || wikiContext.config.fs2gPropertyGroupingByUrl[prop.property.title];
 
     return groupConfiguration ? <PropertyValueTree property={prop.property}
                                        valueCounts={valueCounts}
@@ -70,7 +72,9 @@ function PropertyValueGrid(prop: {
     rows.forEach((row) => {
         values.push(row.map((value) => {
             let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
-            let isSelected = prop.selectedItemIds.includes(selectedValue)
+            let selectedId = value.mwTitle ? value.mwTitle.title : value.value.toString();
+            let isSelected = prop.selectedItemIds.includes(selectedId)
+
             return <Grid size={4}>
                 <FormControlLabel
                     key={selectedValue}
@@ -98,22 +102,22 @@ function PropertyValueTree(prop: {
     let wikiContext = useContext(WikiContext);
 
     let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
+    let groupConfigurationBySeparator = wikiContext.config.fs2gPropertyGroupingBySeparator[prop.property.title];
+    let groupConfigurationByUrl = wikiContext.config.fs2gPropertyGroupingByUrl[prop.property.title];
 
     const [content, setContent] = useState<Groups>(null);
     useEffect(() => {
         let groups: Groups;
-        if (typeof groupConfiguration === 'string') {
-            if (!groupConfiguration.startsWith('url:')) {
-                groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfiguration);
+        if (groupConfigurationByUrl) {
+            const path = groupConfigurationByUrl.trim();
+            prop.client.getCustomEndpoint(path).then((jsonObject) => {
+                groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, prop.property, jsonObject);
                 setContent(groups);
-            } else {
-                const path = groupConfiguration.substr('url:'.length).trim();
-                prop.client.getCustomEndpoint(path).then((jsonObject) => {
-                    groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, prop.property, jsonObject);
-                    setContent(groups);
-                });
-            }
-        } else {
+            });
+        } else if (groupConfigurationBySeparator) {
+            groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfigurationBySeparator);
+            setContent(groups);
+        } else if (groupConfiguration) {
             groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, prop.property, groupConfiguration);
             setContent(groups);
         }

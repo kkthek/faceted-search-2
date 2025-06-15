@@ -376,9 +376,9 @@ export class ValueCount {
     count: number;
 
     compare(valueCount: ValueCount) {
-        if (this.value !== null && valueCount.value !== null) {
+        if (this.value && valueCount.value ) {
             return this.value.toLocaleString().localeCompare(valueCount.value.toLocaleString());
-        } else if(this.mwTitle !== null && valueCount.mwTitle !== null) {
+        } else if(this.mwTitle && valueCount.mwTitle) {
             return this.mwTitle.title.toLocaleString().localeCompare(valueCount.mwTitle.title.toLocaleString());
         }
         return 0;
