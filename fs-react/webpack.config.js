@@ -56,6 +56,11 @@ module.exports = {
         context: ['/sample-group-hierarchy'],
         target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1',
         changeOrigin: true,
+      },
+      {
+        context: ['/api'],
+        target: 'http://localhost/mediawiki/api.php',
+        changeOrigin: true,
       }
     ],
   }
