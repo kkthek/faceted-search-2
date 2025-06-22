@@ -43,14 +43,14 @@ class WikiTools {
 
     public static function getDisplayTitleForProperty(string $title) {
         if (!defined('MEDIAWIKI')) {
-            return $title;
+            return ucfirst($title);
         }
         return FacetedSearchUtil::findDisplayTitle(Title::newFromText($title, SMW_NS_PROPERTY));
     }
 
     public static function getDisplayTitleForCategory(string $title) {
         if (!defined('MEDIAWIKI')) {
-            return $title;
+            return ucfirst($title);
         }
         return FacetedSearchUtil::findDisplayTitle(Title::newFromText($title, NS_CATEGORY));
     }
