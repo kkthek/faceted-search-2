@@ -45,7 +45,8 @@ function setConfigForDevContext() {
            $fs2gShowArticleProperties, $fs2gShownFacets, $fs2gShownCategoryFacets, $fs2gPromotionProperty,
            $fs2gDemotionProperty, $fs2gNumericPropertyClusters, $fs2gDateTimePropertyClusters, $fs2gNamespaceConstraint,
            $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay,
-           $fs2gHeaderControlOrder, $fs2gFacetControlOrder, $fs2gPropertyGrouping, $fs2gNamespacesToShow;
+           $fs2gHeaderControlOrder, $fs2gFacetControlOrder, $fs2gPropertyGrouping, $fs2gNamespacesToShow,
+           $fs2gPropertyGroupingBySeparator, $fs2gPropertyGroupingByUrl;
 
     $fs2gDefaultSortOrder = 'newest';
     $fs2gCategoryFilter = [];// ['' => 'all categories', 'Employee' => 'Employee' ];
@@ -99,8 +100,11 @@ function setConfigForDevContext() {
                     'Group1' => [ 'Markus', 'Horst' ],
                     'Group2' => ['Peter', 'Timo']
                 ],
-        'Works at' => '/'
+        //'Works at' => '/'
     ];
+
+    $fs2gPropertyGroupingBySeparator = [];// [ 'Works at' => '/'];
+    $fs2gPropertyGroupingByUrl = [];
 
     global $fs2gAdditionalLinks;
     $fs2gAdditionalLinks = [
@@ -122,6 +126,8 @@ function setConfigForDevContext() {
     $userOptions = [
         'fs2-sort-order-preferences' => 'sort-alphabetically'
     ];
+    global $fs2gDebugMode;
+    $fs2gDebugMode = false;
 // -------------------------------------------------------
 }
 
