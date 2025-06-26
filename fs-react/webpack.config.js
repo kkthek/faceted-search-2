@@ -58,8 +58,8 @@ module.exports = {
         changeOrigin: true,
       },
       {
-        context: ['/api'],
-        target: 'http://localhost/mediawiki/api.php',
+        context: ['/api.php'],
+        target: 'http://localhost/mediawiki',
         changeOrigin: true,
       }
     ],

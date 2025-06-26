@@ -24,7 +24,7 @@ function GisDialog(prop: {
     let wikiContext = useContext(WikiContext);
 
     const iframe = useRef<any>(null);
-    const apiEndpoint = wikiContext.config['wgServer'] + wikiContext.config['wgScriptPath'] + "/api.php";
+    const apiEndpoint = wikiContext.globals.mwApiUrl;
     const iframeUrl = new URL(apiEndpoint);
     iframeUrl.searchParams.set('action', 'odbgeo');
     iframeUrl.searchParams.set('method', 'getiFrame');
