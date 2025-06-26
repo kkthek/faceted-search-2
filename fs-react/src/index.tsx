@@ -49,7 +49,7 @@ if (isInWikiContext) {
     );
 } else {
     solrProxyUrl = "http://localhost:9000";
-    globals.mwApiUrl = solrProxyUrl;
+    globals.mwApiUrl = solrProxyUrl + '/api.php';
 }
 
 const client: Client = new Client(solrProxyUrl);
