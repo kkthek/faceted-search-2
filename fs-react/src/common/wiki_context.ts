@@ -4,15 +4,18 @@ export class WikiContextInterface {
     options: any;
     username: string
     msg: (id: string,  ...params: string[]) => string
+    globals: any;
 
     constructor(config: any = {},
                 options: any = {},
                 username: string,
-                msg: (id: string, ...params: string[]) => string) {
+                msg: (id: string, ...params: string[]) => string,
+                globals: any) {
         this.config = config;
         this.options = options;
         this.username = username;
         this.msg = msg;
+        this.globals = globals;
     }
 
     isObjectConfigured(setting: string): boolean {
@@ -28,7 +31,7 @@ export class WikiContextInterfaceMock extends WikiContextInterface {
 
     private readonly langMap: any;
 
-    constructor(result: any = {}) {
+    constructor(result: any = {}, globals: any) {
         let msgFunction = (id: string, ...params: string[]) => {
             let text = this.langMap[id] ? this.langMap[id] : "<" + id + ">";
             for(let i = 0; i < params.length; i++) {
@@ -36,7 +39,7 @@ export class WikiContextInterfaceMock extends WikiContextInterface {
             }
             return text;
         };
-        super(result.settings, result.options, "dummy user", msgFunction);
+        super(result.settings, result.options, "dummy user", msgFunction, globals);
         this.langMap = result.lang;
     }
 }

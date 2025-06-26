@@ -32,19 +32,24 @@ const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
 let wikiContext: WikiContextInterface = null;
 
-let solrProxyUrl;
+let solrProxyUrl: string;
+let globals: any = {};
+
 if (isInWikiContext) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
     solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
+    globals.mwApiUrl = wgServer + wgScriptPath + "/api.php";
     wikiContext = new WikiContextInterface(
         browserWindow.mw.config.values,
         browserWindow.mw.user.options.values,
         browserWindow.mw.user.getName(),
-        browserWindow.mw.msg
+        browserWindow.mw.msg,
+        globals
     );
 } else {
     solrProxyUrl = "http://localhost:9000";
+    globals.mwApiUrl = solrProxyUrl;
 }
 
 const client: Client = new Client(solrProxyUrl);
@@ -204,7 +209,7 @@ if (isInWikiContext) {
     startApp();
 } else {
     client.getSettingsForDevContext().then(result => {
-        wikiContext = new WikiContextInterfaceMock(result);
+        wikiContext = new WikiContextInterfaceMock(result, globals);
         startApp();
     });
 }
