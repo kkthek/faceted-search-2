@@ -1,4 +1,13 @@
-import {BaseQuery, CategoryFacetCount, Datatype, Order, Property, PropertyFacetCount, Sort} from "../common/datatypes";
+import {
+    BaseQuery,
+    CategoryFacetCount,
+    Datatype,
+    Document, MWTitle, MWTitleWithURL,
+    Order,
+    Property,
+    PropertyFacetCount,
+    Sort, ValueType
+} from "../common/datatypes";
 
 class ConfigUtils {
 
@@ -65,6 +74,28 @@ class ConfigUtils {
 
     static calculatePermutation(order: string[], defaultOrder: string[]) {
         return order.map((e) => defaultOrder.indexOf(e));
+    }
+
+    static replaceSMWVariables(doc: Document, url: string) {
+
+        const smwVariables = url.matchAll(/\{SMW:([^}]+)\}/gi);
+
+        // @ts-ignore
+        for (let smwVariable of smwVariables) {
+            let propertyName = smwVariable[1];
+            let pfv = doc.getPropertyFacetValues(propertyName);
+            if (pfv === null) continue;
+
+            let value = pfv.values.map((value: ValueType | MWTitleWithURL) => this.serialize(value)).join(',');
+            url = url.replace(`{SMW:${propertyName}}`, encodeURIComponent(value));
+        }
+
+        return url;
+    }
+
+    static serialize(value: ValueType | MWTitleWithURL): string {
+        let mwTitle = value as MWTitle;
+        return mwTitle ? mwTitle.title : value.toString();
     }
 
 }
