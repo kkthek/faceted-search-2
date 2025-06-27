@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import {FacetResponse, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
 import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
 import {WikiContext} from "../index";
@@ -33,29 +33,21 @@ function FacetOrDialog(prop: {
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
 
-    let selectedFacets = prop.selectedFacets.filter(e => e.property === prop.property.title);
+    let facet = Tools.findFirstByPredicate(prop.selectedFacets, e => e.property === prop.property.title);
+    let selectedValues: FacetValue[] = facet == null ? [] : facet.values;
     let onChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
-        let propertyFacet = new PropertyFacet(
-            prop.property.title,
-            prop.property.type,
-            v.value, v.mwTitle, v.range);
-        propertyFacet.setORed(true);
+        let facetValue = new FacetValue(v.value, v.mwTitle, v.range);
         if (checked) {
-            selectedFacets.push(propertyFacet);
+            selectedValues.push(facetValue);
         } else {
-            Tools.removeFirstByPredicate(selectedFacets, (f) => f.equals(propertyFacet))
+            Tools.removeFirstByPredicate(selectedValues, (f) => f.equals(facetValue))
         }
 
     }
 
     let onBulkChange = function(e: SyntheticEvent, values: ValueCount[]) {
-        selectedFacets = values.map((v) => {
-            let propertyFacet = new PropertyFacet(
-                prop.property.title,
-                prop.property.type,
-                v.value, v.mwTitle, v.range);
-            propertyFacet.setORed(true);
-            return propertyFacet;
+        selectedValues = values.map((v) => {
+            return new FacetValue(v.value, v.mwTitle, v.range);
         });
     }
 
@@ -87,7 +79,7 @@ function FacetOrDialog(prop: {
                     <FormGroup>
                         <Box className={'fs-or-content'}>
                             <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}
-                                                  selectedFacets={selectedFacets}
+                                                  selectedValues={selectedValues}
                                                   property={prop.property}
                                                   onChange={onChange}
                                                   onBulkChange={onBulkChange}
@@ -100,10 +92,10 @@ function FacetOrDialog(prop: {
                 <DialogActions>
                     <Button onClick={prop.handleClose}>Cancel</Button>
                     <Button onClick={() => {
-                        if (selectedFacets.length === 0) {
+                        if (selectedValues.length === 0) {
                             prop.eventHandler.onRemoveAllFacetsForProperty(prop.property);
                         } else {
-                            prop.eventHandler.onValuesClick(selectedFacets);
+                            prop.eventHandler.onValueClick(new PropertyFacet(prop.property.title, prop.property.type, selectedValues));
                         }
                         prop.handleClose();
                     }} autoFocus>Ok</Button>

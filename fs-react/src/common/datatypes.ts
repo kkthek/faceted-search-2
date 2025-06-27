@@ -113,41 +113,82 @@ export class MWTitle {
  * Request types
  */
 @jsonObject
-export class PropertyFacet {
-    @jsonMember(String)
-    property: string
-    @jsonMember(Number)
-    type: Datatype
+export class FacetValue {
     @jsonMember({deserializer: value => Tools.deserializeValue(value)})
     value: ValueType|void;
     @jsonMember(MWTitle)
     mwTitle: MWTitle|void;
     @jsonMember(Range)
     range: Range|void
-    @jsonMember(Boolean)
-    ORed: boolean = false;
 
-    constructor(property: string,
-                type: Datatype,
-                value: ValueType|void,
-                mwTitle: MWTitle|void,
-                range: Range|void) {
-        this.property = property;
-        this.type = type;
+
+    constructor(value: ValueType | void, mwTitle: MWTitle | void, range: Range | void) {
         this.value = value;
         this.mwTitle = mwTitle;
         this.range = range;
     }
 
-    setORed(ORed: boolean) {
-        this.ORed = ORed;
+
+
+    equals(that: FacetValue) {
+
+        return this.value === that.value
+            && (this.mwTitle === that.mwTitle || (this.mwTitle as MWTitle).equals(that.mwTitle))
+            && (this.value === that.value || (this.range as Range).equals(that.range))
+            ;
+    }
+
+    containsValueOrMWTitle(valueCount: ValueCount): boolean {
+
+            let sameValue =  (
+                (this.value as string) === valueCount.value as string
+                || (this.value as number) === valueCount.value as number
+                || ((this.value as Date).toUTCString && (valueCount.value as Date).toUTCString
+                    && (this.value as Date).toUTCString() === (valueCount.value as Date).toUTCString())
+            );
+            let sameMWTitle = this.mwTitle
+                && (this.mwTitle === valueCount.mwTitle || (this.mwTitle as MWTitle).equals(valueCount.mwTitle))
+            if (sameValue || sameMWTitle) {
+                return true;
+            }
+
+        return false;
+    }
+}
+
+@jsonObject
+export class PropertyFacet {
+    @jsonMember(String)
+    property: string
+    @jsonMember(Number)
+    type: Datatype
+    @jsonArrayMember(FacetValue)
+    values: FacetValue[]
+    constructor(property: string,
+                type: Datatype,
+                values: FacetValue[]
+    ) {
+        this.property = property;
+        this.type = type;
+        this.values = values;
     }
 
     hasValue(): boolean {
-        return (this.value && this.value !== null || this.mwTitle && this.mwTitle !== null);
+        for(let i = 0; i < this.values.length; i++) {
+            if (this.values[i].value && this.values[i].value !== null || this.values[i].mwTitle && this.values[i].mwTitle !== null) {
+                return true;
+            }
+        }
+        return false;
     }
+
     hasRange(): boolean {
-        return (this.range && this.range !== null);
+        for(let i = 0; i < this.values.length; i++) {
+            if (this.values[i].range && this.values[i].range !== null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     getProperty() {
@@ -155,32 +196,26 @@ export class PropertyFacet {
     }
 
     static facetForAnyValue(p: Property) {
-        return new PropertyFacet(p.title, p.type, null, null, null);
+        return new PropertyFacet(p.title, p.type, [new FacetValue(null, null, null)]);
     }
 
     equals(that: PropertyFacet) {
 
+        if (this.values.length !== that.values.length) {
+            return false;
+        }
+        let sameValues = true;
+        for(let i = 0; i < this.values.length; i++) {
+            sameValues = sameValues && this.values[i].equals(that.values[i]);
+        }
+
         return this.property === that.property
             && this.type === that.type
-            && this.value === that.value
-            && (this.mwTitle === that.mwTitle || (this.mwTitle as MWTitle).equals(that.mwTitle))
-            && (this.value === that.value || (this.range as Range).equals(that.range))
-            && this.ORed === that.ORed
+            && sameValues
             ;
     }
 
-    containsValueOrMWTitle(valueCount: ValueCount): boolean {
 
-        let sameValue = this.value && (
-            (this.value as string) === valueCount.value as string
-            || (this.value as number) === valueCount.value as number
-            || ((this.value as Date).toUTCString && (valueCount.value as Date).toUTCString
-                && (this.value as Date).toUTCString() === (valueCount.value as Date).toUTCString())
-        );
-        let sameMWTitle = this.mwTitle
-            && (this.mwTitle === valueCount.mwTitle || (this.mwTitle as MWTitle).equals(valueCount.mwTitle))
-        return sameValue || sameMWTitle;
-    }
 }
 
 @jsonObject

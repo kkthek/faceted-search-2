@@ -10,21 +10,19 @@ class PropertyFacet {
     public string $property;
     public int $type;
 
-    public ?string $value = null;
-    public ?MWTitle $mwTitle = null;
-    public ?Range $range = null;
-
-    public bool $ORed = false;
+    /** @var FacetValue[] */
+    public array $values;
 
     /**
      * PropertyFacet constructor.
      * @param string $property
      * @param int $type
      */
-    public function __construct(string $property, int $type)
+    public function __construct(string $property, int $type, array $values)
     {
         $this->property = $property;
         $this->type = $type;
+        $this->values = $values;
     }
 
     /**
@@ -44,76 +42,21 @@ class PropertyFacet {
     }
 
     /**
-     * @return string|null
+     * @return FacetValue[]
      */
-    public function getValue(): ?string
+    public function getValues(): array
     {
-        return $this->value;
+        return $this->values;
     }
 
     /**
-     * @return MWTitle|null
-     */
-    public function getMwTitle(): ?MWTitle
-    {
-        return $this->mwTitle;
-    }
-
-    /**
-     * @return Range|null
-     */
-    public function getRange(): ?Range
-    {
-        return $this->range;
-    }
-
-    /**
-     * @param string|null $value
+     * @param FacetValue[] $values
      * @return PropertyFacet
      */
-    public function setValue(?string $value): PropertyFacet
+    public function setValues(array $values): PropertyFacet
     {
-        $this->value = $value;
+        $this->values = $values;
         return $this;
     }
-
-    /**
-     * @param MWTitle|null $mwTitle
-     * @return PropertyFacet
-     */
-    public function setMwTitle(?MWTitle $mwTitle): PropertyFacet
-    {
-        $this->mwTitle = $mwTitle;
-        return $this;
-    }
-
-    /**
-     * @param Range|null $range
-     * @return PropertyFacet
-     */
-    public function setRange(?Range $range): PropertyFacet
-    {
-        $this->range = $range;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isORed(): bool
-    {
-        return $this->ORed;
-    }
-
-    /**
-     * @param bool $ORed
-     * @return PropertyFacet
-     */
-    public function setORed(bool $ORed): PropertyFacet
-    {
-        $this->ORed = $ORed;
-        return $this;
-    }
-
 
 }

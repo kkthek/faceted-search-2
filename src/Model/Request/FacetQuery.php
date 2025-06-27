@@ -6,7 +6,7 @@ namespace DIQA\FacetedSearch2\Model\Request;
 class FacetQuery extends BaseQuery {
 
     /**
-     * @var PropertyFacet[]
+     * @var PropertyRange[]
      */
     public $facetQueries = [];
 
@@ -22,7 +22,7 @@ class FacetQuery extends BaseQuery {
     }
 
     /**
-     * @return PropertyFacet[]
+     * @return PropertyRange[]
      */
     public function getFacetQueries(): array
     {
@@ -30,7 +30,7 @@ class FacetQuery extends BaseQuery {
     }
 
     /**
-     * @param PropertyFacet[] $facetQueries
+     * @param PropertyRange[] $facetQueries
      * @return FacetQuery
      */
     public function setFacetQueries(array $facetQueries): FacetQuery

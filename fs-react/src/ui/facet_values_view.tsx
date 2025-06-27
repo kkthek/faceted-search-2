@@ -1,8 +1,7 @@
-import {BaseQuery, Property, PropertyFacet, ValueCount} from "../common/datatypes";
-import React, {Dispatch, SetStateAction} from "react";
+import {BaseQuery, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import React from "react";
 import DisplayTools from "../util/display_tools";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Tools from "../util/tools";
 import EventHandler from "../common/event_handler";
 
@@ -25,7 +24,7 @@ function FacetValues(prop: {
     let propertyFacet = new PropertyFacet(
         property.title,
         property.type,
-        prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
+        [new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range)]);
 
     let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem itemId={itemId}

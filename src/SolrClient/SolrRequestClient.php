@@ -28,7 +28,7 @@ class SolrRequestClient implements FacetedSearchClient
 
     public function requestDocument(string $id): Document
     {
-        $response =  new SolrResponseParser($this->requestSOLR(['q' => "id:$id"]));
+        $response = new SolrResponseParser($this->requestSOLR(['q' => "id:$id"]));
         $documentsResponse = $response->parse(false);
         if (count($documentsResponse->docs) === 0) {
             throw new Exception("No document with ID $id found", 400);
@@ -43,7 +43,7 @@ class SolrRequestClient implements FacetedSearchClient
         $sortsAndLimits = $this->getSortsAndLimits($q->sorts, $q->limit, $q->offset);
         $queryParams = array_merge($queryParams, $sortsAndLimits);
 
-        $response =  new SolrResponseParser($this->requestSOLR($queryParams));
+        $response = new SolrResponseParser($this->requestSOLR($queryParams));
         $docResponse = $response->parse()
             ->setDebugInfo(self::buildQueryParams($queryParams));
 
@@ -57,11 +57,11 @@ class SolrRequestClient implements FacetedSearchClient
             $q->namespaceFacets, []);
         $queryParams['stats'] = 'true';
         $statsFields = [];
-        foreach($q->statsProperties as $p) {
+        foreach ($q->statsProperties as $p) {
             $statsFields[] = Helper::generateSOLRPropertyForSearch($p->title, $p->type);
         }
         $queryParams['stats.field'] = $statsFields;
-        $response =  new SolrResponseParser($this->requestSOLR($queryParams));
+        $response = new SolrResponseParser($this->requestSOLR($queryParams));
         return $response->parseStatsResponse()
             ->setDebugInfo(self::buildQueryParams($queryParams));
     }
@@ -79,13 +79,13 @@ class SolrRequestClient implements FacetedSearchClient
         }
 
         $facetQueries = [];
-        foreach($q->facetQueries as $p) {
+        foreach ($q->facetQueries as $p) {
             $property = Helper::generateSOLRPropertyForSearch($p->property, $p->type);
             $range = self::encodeRange($p->range, $p->type);
-            $facetQueries[] = $property .":[" . $range . "]";
+            $facetQueries[] = $property . ":[" . $range . "]";
         }
         $queryParams['facet.query'] = $facetQueries;
-        $response =  new SolrResponseParser($this->requestSOLR($queryParams));
+        $response = new SolrResponseParser($this->requestSOLR($queryParams));
         $result = $response->parseFacetResponse();
 
         $facetPropertiesWithConstraints = array_filter($q->getPropertyValueConstraints(), fn($e) => $e->hasConstraints());
@@ -178,7 +178,7 @@ class SolrRequestClient implements FacetedSearchClient
                                array $propertyFacetConstraints, /* @var PropertyFacet[] */
                                array $categoryFacets, /* @var string [] */
                                array $namespaceFacets, /* @var number[] */
-                               array $extraProperties /* @var PropertyFacet[] */
+                               array $extraProperties/* @var PropertyFacet[] */
     )
     {
 
@@ -219,15 +219,11 @@ class SolrRequestClient implements FacetedSearchClient
 
         $params['wt'] = 'json';
 
-        $ANDedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => !$e->isORed());
+        $ANDedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => count($e->values) === 1);
         $fq = self::encodePropertyFacets($ANDedFacets, false);
-        $ORedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => $e->isORed());
-        if (count($ORedFacets) > 0) {
-            $oredFacetsGroupedByProperty = Util::groupArray($ORedFacets, fn(PropertyFacet $e) => $e->property);
-            foreach($oredFacetsGroupedByProperty as $items) {
-                $fq = array_merge($fq, self::encodePropertyFacets($items, true));
-            }
-        }
+
+        $ORedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => count($e->values) > 1);
+        $fq = array_merge($fq, self::encodePropertyFacets($ORedFacets, true));
 
         $fq = array_merge($fq, self::encodeCategoryFacets($categoryFacets));
         $fq = array_merge($fq, self::encodeNamespaceFacets($namespaceFacets));
@@ -241,7 +237,7 @@ class SolrRequestClient implements FacetedSearchClient
 
     private static function encodeNamespaceConstraints() {
         global $fs2gNamespaceConstraint;
-        if (! isset($fs2gNamespaceConstraint) || count($fs2gNamespaceConstraint) === 0) {
+        if (!isset($fs2gNamespaceConstraint) || count($fs2gNamespaceConstraint) === 0) {
             return [];
         }
 
@@ -273,39 +269,46 @@ class SolrRequestClient implements FacetedSearchClient
 
     private static function encodePropertyFacets(array $propertyFacets, bool $valuesORed): array
     {
+        if (count($propertyFacets) === 0) {
+            return [];
+        }
         $propertyConstraints = [];
         $valueConstraints = [];
         foreach ($propertyFacets as $f) {
-            /* @var $f PropertyFacet */
-            if ($f->type === Datatype::WIKIPAGE) {
-                $pAsValue = 'smwh_properties:' . Helper::generateSOLRProperty($f->property, Datatype::WIKIPAGE);
-                if (!in_array($pAsValue, $propertyConstraints)) {
-                    $propertyConstraints[] = $pAsValue;
-                }
-                if (!is_null($f->mwTitle)) {
-                    $p = Helper::generateSOLRPropertyForSearch($f->property, Datatype::WIKIPAGE);
-                    $value = Helper::quoteValue($f->mwTitle->title . '|' . $f->mwTitle->displayTitle, Datatype::WIKIPAGE);
-                    $valueConstraints[] = $p . ':' . $value;
-                }
-            } else {
-                $pAsValue = 'smwh_attributes:' . Helper::generateSOLRProperty($f->property, $f->type);
-                if (!in_array($pAsValue, $propertyConstraints)) {
-                    $propertyConstraints[] = $pAsValue;
-                }
-                $p = Helper::generateSOLRPropertyForSearch($f->property, $f->type);
 
-                if (!is_null($f->range)) {
-                    $value = "[" . self::encodeRange($f->range, $f->type) . "]";
-                    $valueConstraints[] = "$p:$value";
-                } else if (!is_null($f->value) && ($f->type === Datatype::STRING || $f->type === Datatype::NUMBER || $f->type === Datatype::BOOLEAN
-                        || $f->type === Datatype::DATETIME)) {
-                    $value = Helper::quoteValue($f->value, $f->type);
-                    $valueConstraints[] = "$p:$value";
+            $values = $f->getValues();
+            foreach ($values as $v) {
+                /* @var $f PropertyFacet */
+                if ($f->type === Datatype::WIKIPAGE) {
+                    $pAsValue = 'smwh_properties:' . Helper::generateSOLRProperty($f->property, Datatype::WIKIPAGE);
+                    if (!in_array($pAsValue, $propertyConstraints)) {
+                        $propertyConstraints[] = $pAsValue;
+                    }
+                    if (!is_null($v->mwTitle)) {
+                        $p = Helper::generateSOLRPropertyForSearch($f->property, Datatype::WIKIPAGE);
+                        $value = Helper::quoteValue($v->mwTitle->title . '|' . $v->mwTitle->displayTitle, Datatype::WIKIPAGE);
+                        $valueConstraints[] = $p . ':' . $value;
+                    }
+                } else {
+                    $pAsValue = 'smwh_attributes:' . Helper::generateSOLRProperty($f->property, $f->type);
+                    if (!in_array($pAsValue, $propertyConstraints)) {
+                        $propertyConstraints[] = $pAsValue;
+                    }
+                    $p = Helper::generateSOLRPropertyForSearch($f->property, $f->type);
+
+                    if (!is_null($v->range)) {
+                        $value = "[" . self::encodeRange($v->range, $f->type) . "]";
+                        $valueConstraints[] = "$p:$value";
+                    } else if (!is_null($v->value) && ($f->type === Datatype::STRING || $f->type === Datatype::NUMBER || $f->type === Datatype::BOOLEAN
+                            || $f->type === Datatype::DATETIME)) {
+                        $value = Helper::quoteValue($v->value, $f->type);
+                        $valueConstraints[] = "$p:$value";
+                    }
                 }
             }
         }
         if ($valuesORed) {
-            return array_merge($propertyConstraints, ["(" . implode(' OR ', $valueConstraints). ")"]);
+            return array_merge($propertyConstraints, ["(" . implode(' OR ', $valueConstraints) . ")"]);
         } else {
             return array_merge($propertyConstraints, $valueConstraints);
         }
@@ -461,11 +464,11 @@ class SolrRequestClient implements FacetedSearchClient
     private static function buildQueryParams(array $params) {
         $encodedParams = [];
 
-        foreach($params as $key => $value) {
+        foreach ($params as $key => $value) {
             if (is_array($value)) {
-                $encodedParams = array_merge($encodedParams, array_map(fn($e) => "$key=".urlencode($e), $value));
+                $encodedParams = array_merge($encodedParams, array_map(fn($e) => "$key=" . urlencode($e), $value));
             } else {
-                $encodedParams[] = "$key=".urlencode($value);
+                $encodedParams[] = "$key=" . urlencode($value);
             }
         }
 

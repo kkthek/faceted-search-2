@@ -1,4 +1,4 @@
-import {FacetResponse, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import {FacetResponse, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
 import Tools from "../util/tools";
 import DisplayTools from "../util/display_tools";
 import {Checkbox, FormControlLabel, Grid, Typography} from "@mui/material";
@@ -12,7 +12,7 @@ import Client from "../common/client";
 function FacetOrDialogContent(prop: {
     client: Client,
     searchStateFacets: FacetResponse,
-    selectedFacets: PropertyFacet[],
+    selectedValues: FacetValue[],
     property: Property,
     onChange: (e: SyntheticEvent, checked: boolean, v: ValueCount) => void,
     onBulkChange: (e: SyntheticEvent, v: ValueCount[]) => void,
@@ -36,7 +36,7 @@ function FacetOrDialogContent(prop: {
     }
 
     let selectedItemIds = valueCounts
-        .filter((value) => Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.containsValueOrMWTitle(value)) != null)
+        .filter((value) => Tools.findFirstByPredicate(prop.selectedValues, (e) => e.containsValueOrMWTitle(value)) != null)
         .map(v => v.mwTitle ? v.mwTitle.title : v.value.toString());
 
     let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title]
