@@ -29,5 +29,8 @@
 	"sort-by-count": "Sort by count",
 	"sort-alphabetically": "Sort alphabetically",
 	"prefs-Standard-Sortierung-Facetten": "Standard sorting",
-	"prefs-facetedsearch2": "FacetedSearch2"
+	"prefs-facetedsearch2": "FacetedSearch2",
+
+	"fs-gis-map-title": "GIS-Browser",
+	"fs-facet-gis": "Select a section of the map"
 }

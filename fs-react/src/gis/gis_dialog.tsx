@@ -36,6 +36,7 @@ function GisDialog(prop: {
 
     const selectedLocation = getSelectedLocation();
     if (selectedLocation !== null) {
+        console.log(selectedLocation);
         iframeUrl.searchParams.set('location', selectedLocation);
     }
 
@@ -76,8 +77,12 @@ function GisDialog(prop: {
             <Dialog
                 open={prop.open}
                 onClose={prop.handleClose}
-                maxWidth={'md'}
-
+                PaperProps={{
+                    sx: {
+                        width: "525px",
+                        height: "640px"
+                    }
+                }}
                 aria-labelledby="gis-dialog-title"
                 aria-describedby="gis-dialog-description"
             >
@@ -90,7 +95,7 @@ function GisDialog(prop: {
                     </DialogContentText>
 
                     <Box id={'fs-gis-content'}>
-                        <iframe ref={iframe} src={iframeUrl.toString()}/>
+                        <iframe style={{'width': '470px', 'height': '470px'}} ref={iframe} src={iframeUrl.toString()}/>
                     </Box>
                 </DialogContent>
                 <DialogActions>

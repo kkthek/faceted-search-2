@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import Client from "../common/client";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
 import {Box, Typography} from "@mui/material";
+import RoomIcon from '@mui/icons-material/Room';
 
 import GisDialog from "./gis_dialog";
 
@@ -19,9 +20,9 @@ function GisFacet(prop: {
     };
 
     return <Box>
-        <Typography onClick={() => {
+        <Typography id={'fs-gis-button'} onClick={() => {
             setOpenOrDialog(true);
-        }}>Open GIS</Typography>
+        }}><RoomIcon id={'fs-gis-icon'}/> Open GIS</Typography>
         <GisDialog open={openOrDialog}
                        client={prop.client}
                        handleClose={handleCloseFacetOrDialog}

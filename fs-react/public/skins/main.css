@@ -141,3 +141,15 @@ div.fs-or-content {
     padding: 10px;
 }
 
+/**
+ * GIS
+ */
+#fs-gis-icon {
+    position: relative;
+    top: 5px;
+    margin-left: 5px;
+}
+
+#fs-gis-button {
+    cursor: pointer;
+}
