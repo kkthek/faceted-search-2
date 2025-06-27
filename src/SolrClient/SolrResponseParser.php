@@ -139,10 +139,10 @@ class SolrResponseParser {
                 $property = $this->parsePropertyFromStats($p);
                 if (!is_null($property)) {
                     $stat = new Stats($property,
-                        $info->min,
-                        $info->max,
-                        $info->count,
-                        $info->sum
+                        $info->min ?? 0,
+                        $info->max ?? 0,
+                        $info->count ?? 0,
+                        $info->sum ?? 0
                     );
                     $stats[] = $stat;
                 }
