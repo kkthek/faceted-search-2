@@ -4,13 +4,13 @@ namespace DIQA\FacetedSearch2\Model\Request;
 
 use DIQA\FacetedSearch2\Model\Common\Property;
 
-class PropertyValueConstraint {
+class PropertyValueQuery {
 
     public Property $property;
 
-    public ?int $facetLimit = null;
-    public ?int $facetOffset = null;
-    public ?string $facetContains = null;
+    public ?int $valueLimit = null;
+    public ?int $valueOffset = null;
+    public ?string $valueContains = null;
 
     /**
      * Property constructor.
@@ -25,9 +25,9 @@ class PropertyValueConstraint {
                                 ?string $facetContains = null)
     {
         $this->property = $property;
-        $this->facetLimit = $facetLimit;
-        $this->facetOffset = $facetOffset;
-        $this->facetContains = $facetContains;
+        $this->valueLimit = $facetLimit;
+        $this->valueOffset = $facetOffset;
+        $this->valueContains = $facetContains;
     }
 
     /**
@@ -41,29 +41,29 @@ class PropertyValueConstraint {
     /**
      * @return int|null
      */
-    public function getFacetLimit(): ?int
+    public function getValueLimit(): ?int
     {
-        return $this->facetLimit;
+        return $this->valueLimit;
     }
 
     /**
      * @return int|null
      */
-    public function getFacetOffset(): ?int
+    public function getValueOffset(): ?int
     {
-        return $this->facetOffset;
+        return $this->valueOffset;
     }
 
     /**
      * @return string|null
      */
-    public function getFacetContains(): ?string
+    public function getValueContains(): ?string
     {
-        return $this->facetContains;
+        return $this->valueContains;
     }
 
     public function hasConstraints() {
-        return !(is_null($this->facetLimit) && is_null($this->facetOffset) && is_null($this->facetContains));
+        return !(is_null($this->valueLimit) && is_null($this->valueOffset) && is_null($this->valueContains));
     }
 
 }

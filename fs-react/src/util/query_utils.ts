@@ -1,4 +1,4 @@
-import {BaseQuery, FacetsQuery, Property, PropertyValueConstraint} from "../common/datatypes";
+import {BaseQuery, FacetsQuery, Property, PropertyValueQuery} from "../common/datatypes";
 import FacetQueryBuilder from "../common/facet_query_builder";
 
 class QueryUtils {
@@ -8,7 +8,7 @@ class QueryUtils {
         return new FacetQueryBuilder()
             .updateBaseQuery(query)
             .withoutPropertyFacet(property)
-            .withPropertyValueConstraint(new PropertyValueConstraint(property))
+            .withPropertyValueConstraint(new PropertyValueQuery(property))
             .build();
 
     }

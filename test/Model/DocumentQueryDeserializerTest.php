@@ -13,9 +13,8 @@ final class DocumentQueryDeserializerTest extends TestCase {
 {
     "propertyFacets": [
         {
-          "property": "Has name",
-          "type": 0,
-          "value": "Markus" 
+          "property": { "title": "Has name", "type": 0 },
+          "values": [{ "value": "Markus" }] 
         }
     ]
 }
@@ -23,11 +22,11 @@ JSON;
         $documentQuery = DocumentQuery::fromJson($json);
 
         $this->assertEquals(1, count($documentQuery->getPropertyFacets()) );
-        $this->assertEquals('Has name', $documentQuery->getPropertyFacets()[0]->getProperty() );
-        $this->assertEquals(Datatype::STRING, $documentQuery->getPropertyFacets()[0]->getType() );
-        $this->assertEquals('Markus', $documentQuery->getPropertyFacets()[0]->getValue() );
-        $this->assertNull($documentQuery->getPropertyFacets()[0]->getMwTitle() );
-        $this->assertNull($documentQuery->getPropertyFacets()[0]->getRange() );
+        $this->assertEquals('Has name', $documentQuery->getPropertyFacets()[0]->getProperty()->getTitle() );
+        $this->assertEquals(Datatype::STRING, $documentQuery->getPropertyFacets()[0]->getProperty()->getType() );
+        $this->assertEquals('Markus', $documentQuery->getPropertyFacets()[0]->getValues()[0]->getValue() );
+        $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getMwTitle() );
+        $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getRange() );
     }
 
     public function testPropertyFacetMwTitle(): void
@@ -36,12 +35,14 @@ JSON;
 {
     "propertyFacets": [
         {
-          "property": "Lives in",
-          "type": 4,
-          "mwTitle": {
-            "title": "Koblenz, RP", 
-            "displayTitle": "Koblenz" 
-          }
+        "property": { "title": "Lives in", "type": 4 },
+         "values": [
+              {   "mwTitle": {
+                    "title": "Koblenz, RP", 
+                    "displayTitle": "Koblenz" 
+                  } 
+              }
+          ] 
         }
     ]
 }
@@ -49,11 +50,11 @@ JSON;
         $documentQuery = DocumentQuery::fromJson($json);
 
         $this->assertEquals(1, count($documentQuery->getPropertyFacets()) );
-        $this->assertEquals('Lives in', $documentQuery->getPropertyFacets()[0]->getProperty() );
-        $this->assertEquals(Datatype::WIKIPAGE, $documentQuery->getPropertyFacets()[0]->getType() );
-        $this->assertEquals('Koblenz, RP', $documentQuery->getPropertyFacets()[0]->getMwTitle()->getTitle() );
-        $this->assertEquals('Koblenz', $documentQuery->getPropertyFacets()[0]->getMwTitle()->getDisplayTitle() );
-        $this->assertNull($documentQuery->getPropertyFacets()[0]->getValue() );
-        $this->assertNull($documentQuery->getPropertyFacets()[0]->getRange() );
+        $this->assertEquals('Lives in', $documentQuery->getPropertyFacets()[0]->getProperty()->getTitle() );
+        $this->assertEquals(Datatype::WIKIPAGE, $documentQuery->getPropertyFacets()[0]->getProperty()->getType() );
+        $this->assertEquals('Koblenz, RP', $documentQuery->getPropertyFacets()[0]->getValues()[0]->getMwTitle()->getTitle() );
+        $this->assertEquals('Koblenz', $documentQuery->getPropertyFacets()[0]->getValues()[0]->getMwTitle()->getDisplayTitle() );
+        $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getValue() );
+        $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getRange() );
     }
 }

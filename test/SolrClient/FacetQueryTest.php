@@ -6,8 +6,10 @@ use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
+use DIQA\FacetedSearch2\Model\Request\FacetValue;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
-use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
+use DIQA\FacetedSearch2\Model\Request\PropertyRange;
+use DIQA\FacetedSearch2\Model\Request\PropertyValueQuery;
 use DIQA\FacetedSearch2\Setup;
 
 final class FacetQueryTest extends BaseTest {
@@ -28,13 +30,11 @@ final class FacetQueryTest extends BaseTest {
 
         $q = new FacetQuery();
 
-        $p = new PropertyFacet('Was born at', Datatype::DATETIME);
-        $p->setRange(new Range('1969-01-01T00:00:00Z', '1970-01-01T00:00:00Z'));
+        $p = new PropertyRange(new Property('Was born at', Datatype::DATETIME), new Range('1969-01-01T00:00:00Z', '1970-01-01T00:00:00Z'));
 
-        $p2 = new PropertyFacet('Publication date', Datatype::DATETIME);
-        $p2->setRange(new Range('1970-01-01T00:00:00Z', '1971-01-01T00:00:00Z'));
+        $p2 = new PropertyRange(new Property('Publication date', Datatype::DATETIME), new Range('1970-01-01T00:00:00Z', '1971-01-01T00:00:00Z'));
 
-        $q->setFacetQueries([$p, $p2]);
+        $q->setRangeQueries([$p, $p2]);
         $response = $this->client->requestFacets($q);
 
         $this->assertEquals(1, count($response->getValueCounts()));
@@ -47,9 +47,9 @@ final class FacetQueryTest extends BaseTest {
 
         $q = new FacetQuery();
 
-        $p = new PropertyValueConstraint(new Property('Has name', Datatype::STRING));
+        $p = new PropertyValueQuery(new Property('Has name', Datatype::STRING));
 
-        $q->setPropertyValueConstraints([$p]);
+        $q->setPropertyValueQueries([$p]);
         $response = $this->client->requestFacets($q);
 
         $this->assertEquals(1, count($response->getValueCounts()));

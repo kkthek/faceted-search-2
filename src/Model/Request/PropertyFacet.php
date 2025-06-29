@@ -2,118 +2,60 @@
 
 namespace DIQA\FacetedSearch2\Model\Request;
 
-use DIQA\FacetedSearch2\Model\Common\MWTitle;
-use DIQA\FacetedSearch2\Model\Common\Range;
+use DIQA\FacetedSearch2\Model\Common\Property;
 
 class PropertyFacet {
 
-    public string $property;
-    public int $type;
+    public Property $property;
 
-    public ?string $value = null;
-    public ?MWTitle $mwTitle = null;
-    public ?Range $range = null;
-
-    public bool $ORed = false;
+    /** @var FacetValue[] */
+    public array $values;
 
     /**
      * PropertyFacet constructor.
-     * @param string $property
-     * @param int $type
+     * @param Property $property
+     * @param array $values
      */
-    public function __construct(string $property, int $type)
+    public function __construct(Property $property, array $values = [])
     {
         $this->property = $property;
-        $this->type = $type;
+        $this->values = $values;
     }
 
     /**
-     * @return string
+     * @return Property
      */
-    public function getProperty(): string
+    public function getProperty(): Property
     {
         return $this->property;
     }
 
     /**
-     * @return int
-     */
-    public function getType(): int
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getValue(): ?string
-    {
-        return $this->value;
-    }
-
-    /**
-     * @return MWTitle|null
-     */
-    public function getMwTitle(): ?MWTitle
-    {
-        return $this->mwTitle;
-    }
-
-    /**
-     * @return Range|null
-     */
-    public function getRange(): ?Range
-    {
-        return $this->range;
-    }
-
-    /**
-     * @param string|null $value
+     * @param Property $property
      * @return PropertyFacet
      */
-    public function setValue(?string $value): PropertyFacet
+    public function setProperty(Property $property): PropertyFacet
     {
-        $this->value = $value;
+        $this->property = $property;
         return $this;
     }
 
     /**
-     * @param MWTitle|null $mwTitle
-     * @return PropertyFacet
+     * @return FacetValue[]
      */
-    public function setMwTitle(?MWTitle $mwTitle): PropertyFacet
+    public function getValues(): array
     {
-        $this->mwTitle = $mwTitle;
-        return $this;
+        return $this->values;
     }
 
     /**
-     * @param Range|null $range
+     * @param FacetValue[] $values
      * @return PropertyFacet
      */
-    public function setRange(?Range $range): PropertyFacet
+    public function setValues(array $values): PropertyFacet
     {
-        $this->range = $range;
+        $this->values = $values;
         return $this;
     }
-
-    /**
-     * @return bool
-     */
-    public function isORed(): bool
-    {
-        return $this->ORed;
-    }
-
-    /**
-     * @param bool $ORed
-     * @return PropertyFacet
-     */
-    public function setORed(bool $ORed): PropertyFacet
-    {
-        $this->ORed = $ORed;
-        return $this;
-    }
-
 
 }

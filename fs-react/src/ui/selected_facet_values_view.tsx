@@ -1,4 +1,4 @@
-import {BaseQuery, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import {BaseQuery, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
 import React from "react";
 import DisplayTools from "../util/display_tools";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
@@ -25,9 +25,10 @@ function SelectedFacetValues(prop: {
 
     let property = prop.property;
     let propertyFacet = new PropertyFacet(
-        property.title,
-        property.type,
-        prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
+        property,
+        [
+            new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range)
+        ]);
 
     let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem key={property.title + value + prop.propertyValueCount.count}

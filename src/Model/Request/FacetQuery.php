@@ -6,14 +6,14 @@ namespace DIQA\FacetedSearch2\Model\Request;
 class FacetQuery extends BaseQuery {
 
     /**
-     * @var PropertyFacet[]
+     * @var PropertyRange[]
      */
-    public $facetQueries = [];
+    public $rangeQueries = [];
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\Common\Property[]
+     * @var PropertyValueQuery[]
      */
-    public $propertyValueConstraints = [];
+    public $propertyValueQueries = [];
 
     public static function fromJson($json): FacetQuery
     {
@@ -22,38 +22,38 @@ class FacetQuery extends BaseQuery {
     }
 
     /**
-     * @return PropertyFacet[]
+     * @return PropertyRange[]
      */
-    public function getFacetQueries(): array
+    public function getRangeQueries(): array
     {
-        return $this->facetQueries;
+        return $this->rangeQueries;
     }
 
     /**
-     * @param PropertyFacet[] $facetQueries
+     * @param PropertyRange[] $rangeQueries
      * @return FacetQuery
      */
-    public function setFacetQueries(array $facetQueries): FacetQuery
+    public function setRangeQueries(array $rangeQueries): FacetQuery
     {
-        $this->facetQueries = $facetQueries;
+        $this->rangeQueries = $rangeQueries;
         return $this;
     }
 
     /**
-     * @return \DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint[]
+     * @return PropertyValueQuery[]
      */
-    public function getPropertyValueConstraints(): array
+    public function getPropertyValueQueries(): array
     {
-        return $this->propertyValueConstraints;
+        return $this->propertyValueQueries;
     }
 
     /**
-     * @param \DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint[] $propertyValueConstraints
+     * @param PropertyValueQuery[] $propertyValueQueries
      * @return FacetQuery
      */
-    public function setPropertyValueConstraints(array $propertyValueConstraints): FacetQuery
+    public function setPropertyValueQueries(array $propertyValueQueries): FacetQuery
     {
-        $this->propertyValueConstraints = $propertyValueConstraints;
+        $this->propertyValueQueries = $propertyValueQueries;
         return $this;
     }
 

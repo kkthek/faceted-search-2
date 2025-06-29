@@ -10,7 +10,7 @@ class DocumentQuery extends BaseQuery {
     public $extraProperties = [];
 
     /**
-     * @var \DIQA\FacetedSearch2\Model\Request\Sort[]
+     * @var Sort[]
      */
     public $sorts = [];
 

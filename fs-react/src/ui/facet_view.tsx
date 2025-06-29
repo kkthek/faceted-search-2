@@ -34,7 +34,7 @@ function FacetViewProperty(prop: {
 }) {
 
     let propertyValueCount = prop.searchStateFacets ? prop.searchStateFacets.getPropertyValueCount(prop.property) : null;
-    let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property, prop.property.title) !== null;
+    let isSelectedFacet = Tools.findFirst(prop.selectedFacets, (e) => e.property.title, prop.property.title) !== null;
     if (isSelectedFacet) return;
 
 
@@ -58,7 +58,7 @@ function FacetViewProperty(prop: {
     return <CustomTreeItem itemId={Tools.createItemIdForProperty(prop.property)}
                            label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
                            itemAction={() => {
-                               prop.eventHandler.onPropertyClick(prop.property);
+                               prop.eventHandler.onPropertyClick(prop.property.asProperty());
 
                            } }
                            actionIcon={facetsWithOr ? ChecklistIcon : null}

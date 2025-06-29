@@ -48,27 +48,27 @@ export class Property {
 }
 
 @jsonObject
-export class PropertyValueConstraint {
+export class PropertyValueQuery {
     @jsonMember(Property)
     property: Property
 
     @jsonMember(Number)
-    facetLimit: number
+    valueLimit: number
     @jsonMember(Number)
-    facetOffset: number
+    valueOffset: number
     @jsonMember(String)
-    facetContains: string
+    valueContains: string
 
     constructor(property: Property, limit: number = null, offset: number = null, contains: string = null) {
         this.property = property;
-        this.facetLimit = limit;
-        this.facetOffset = offset;
-        this.facetContains = contains;
+        this.valueLimit = limit;
+        this.valueOffset = offset;
+        this.valueContains = contains;
     }
 
-    equals(that: PropertyValueConstraint) {
-        return that.property.equals(this.property) && that.facetContains === this.facetContains
-        && that.facetLimit === this.facetLimit && that.facetOffset === this.facetOffset;
+    equals(that: PropertyValueQuery) {
+        return that.property.equals(this.property) && that.valueContains === this.valueContains
+        && that.valueLimit === this.valueLimit && that.valueOffset === this.valueOffset;
     }
 }
 
@@ -113,88 +113,113 @@ export class MWTitle {
  * Request types
  */
 @jsonObject
-export class PropertyFacet {
-    @jsonMember(String)
-    property: string
-    @jsonMember(Number)
-    type: Datatype
+export class FacetValue {
     @jsonMember({deserializer: value => Tools.deserializeValue(value)})
     value: ValueType|void;
     @jsonMember(MWTitle)
     mwTitle: MWTitle|void;
     @jsonMember(Range)
     range: Range|void
-    @jsonMember(Boolean)
-    ORed: boolean = false;
 
-    constructor(property: string,
-                type: Datatype,
-                value: ValueType|void,
-                mwTitle: MWTitle|void,
-                range: Range|void) {
-        this.property = property;
-        this.type = type;
+
+    constructor(value: ValueType | void, mwTitle: MWTitle | void, range: Range | void) {
         this.value = value;
         this.mwTitle = mwTitle;
         this.range = range;
     }
 
-    setORed(ORed: boolean) {
-        this.ORed = ORed;
-    }
 
-    hasValue(): boolean {
-        return (this.value && this.value !== null || this.mwTitle && this.mwTitle !== null);
-    }
-    hasRange(): boolean {
-        return (this.range && this.range !== null);
-    }
 
-    getProperty() {
-        return new Property(this.property, this.type);
-    }
+    equals(that: FacetValue) {
 
-    static facetForAnyValue(p: Property) {
-        return new PropertyFacet(p.title, p.type, null, null, null);
-    }
-
-    equals(that: PropertyFacet) {
-
-        return this.property === that.property
-            && this.type === that.type
-            && this.value === that.value
+        return this.value === that.value
             && (this.mwTitle === that.mwTitle || (this.mwTitle as MWTitle).equals(that.mwTitle))
             && (this.value === that.value || (this.range as Range).equals(that.range))
-            && this.ORed === that.ORed
             ;
     }
 
     containsValueOrMWTitle(valueCount: ValueCount): boolean {
 
-        let sameValue = this.value && (
-            (this.value as string) === valueCount.value as string
-            || (this.value as number) === valueCount.value as number
-            || ((this.value as Date).toUTCString && (valueCount.value as Date).toUTCString
-                && (this.value as Date).toUTCString() === (valueCount.value as Date).toUTCString())
-        );
-        let sameMWTitle = this.mwTitle
-            && (this.mwTitle === valueCount.mwTitle || (this.mwTitle as MWTitle).equals(valueCount.mwTitle))
-        return sameValue || sameMWTitle;
+            let sameValue =  (
+                (this.value as string) === valueCount.value as string
+                || (this.value as number) === valueCount.value as number
+                || ((this.value as Date).toUTCString && (valueCount.value as Date).toUTCString
+                    && (this.value as Date).toUTCString() === (valueCount.value as Date).toUTCString())
+            );
+            let sameMWTitle = this.mwTitle
+                && (this.mwTitle === valueCount.mwTitle || (this.mwTitle as MWTitle).equals(valueCount.mwTitle))
+            if (sameValue || sameMWTitle) {
+                return true;
+            }
+
+        return false;
     }
 }
 
 @jsonObject
+export class PropertyFacet {
+    @jsonMember(Property)
+    property: Property
+    @jsonArrayMember(FacetValue)
+    values: FacetValue[]
+    constructor(property: Property,
+                values: FacetValue[]
+    ) {
+        this.property = property;
+        this.values = values;
+    }
+
+    hasValue(): boolean {
+        for(let i = 0; i < this.values.length; i++) {
+            if (this.values[i].value && this.values[i].value !== null || this.values[i].mwTitle && this.values[i].mwTitle !== null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    hasRange(): boolean {
+        for(let i = 0; i < this.values.length; i++) {
+            if (this.values[i].range && this.values[i].range !== null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    getProperty() {
+        return this.property;
+    }
+
+    static facetForAnyValue(p: Property) {
+        return new PropertyFacet(p, [new FacetValue(null, null, null)]);
+    }
+
+    equals(that: PropertyFacet) {
+
+        if (this.values.length !== that.values.length) {
+            return false;
+        }
+        let sameValues = true;
+        for(let i = 0; i < this.values.length; i++) {
+            sameValues = sameValues && this.values[i].equals(that.values[i]);
+        }
+
+        return this.property.equals(that.property) && sameValues;
+    }
+
+
+}
+
+@jsonObject
 export class RangeQuery {
-    @jsonMember(String)
-    property: string
-    @jsonMember(Number)
-    type: Datatype
+    @jsonMember(Property)
+    property: Property
     @jsonMember(Range)
     range: Range|void
 
     constructor(property: Property, range: Range | void) {
-        this.property = property.title;
-        this.type = property.type;
+        this.property = property;
         this.range = range;
     }
 }
@@ -233,7 +258,7 @@ export class BaseQuery {
         this.namespaceFacets = namespaceFacets;
     }
     findPropertyFacet(property: Property): PropertyFacet {
-        return Tools.findFirst(this.propertyFacets, (e) => e.property, property.title);
+        return Tools.findFirst(this.propertyFacets, (e) => e.property.title, property.title);
     }
 
     isPropertyFacetSelected(property: Property): boolean {
@@ -302,22 +327,22 @@ export class StatQuery extends BaseQuery {
 @jsonObject
 export class FacetsQuery extends BaseQuery {
     @jsonArrayMember(RangeQuery)
-    facetQueries: RangeQuery[]
-    @jsonArrayMember(PropertyValueConstraint)
-    propertyValueConstraints: PropertyValueConstraint[]
+    rangeQueries: RangeQuery[]
+    @jsonArrayMember(PropertyValueQuery)
+    propertyValueQueries: PropertyValueQuery[]
     constructor( searchText: string,
                  propertyFacets: PropertyFacet[],
                  categoryFacets: string[],
                  namespaceFacets: number[],
-                 facetQueries: RangeQuery[],
-                 facetProperties: PropertyValueConstraint[]) {
+                 rangeQueries: RangeQuery[],
+                 propertyValueQueries: PropertyValueQuery[]) {
         super(searchText, propertyFacets, categoryFacets, namespaceFacets);
-        this.facetQueries = facetQueries;
-        this.propertyValueConstraints = facetProperties;
+        this.rangeQueries = rangeQueries;
+        this.propertyValueQueries = propertyValueQueries;
     }
 
     getRangeProperties(): Property[] {
-        return this.facetQueries.map((e) => new Property(e.property,e.type))
+        return this.rangeQueries.map((e) => e.property)
             .filter((e) => e.isRangeProperty());
     }
 }
@@ -362,6 +387,10 @@ export class PropertyWithURL extends Property implements ElementWithURL {
     displayTitle: string;
     @jsonMember(String)
     url: string
+
+    asProperty(): Property {
+        return new Property(this.title, this.type);
+    }
 }
 
 @jsonObject

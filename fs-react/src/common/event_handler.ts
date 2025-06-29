@@ -6,7 +6,7 @@ import {
     FacetResponse,
     Property,
     PropertyFacet,
-    PropertyValueConstraint,
+    PropertyValueQuery,
     RangeQuery,
     Sort
 } from "./datatypes";
@@ -191,7 +191,7 @@ class EventHandler {
             return;
         }
 
-        let propertyValueConstraint = new PropertyValueConstraint(
+        let propertyValueConstraint = new PropertyValueQuery(
             property,
             text === '' ? this.facetValueLimit : null,
             null,
@@ -209,7 +209,7 @@ class EventHandler {
             return;
         }
 
-        let propertyValueConstraint = new PropertyValueConstraint(property,null,null,null);
+        let propertyValueConstraint = new PropertyValueQuery(property,null,null,null);
         if (this.currentFacetsQueryBuilder.existsPropertyValueConstraint(propertyValueConstraint)) {
             return;
         }
@@ -274,7 +274,7 @@ class EventHandler {
             if (!property.isRangeProperty()) {
 
                 this.currentFacetsQueryBuilder.withPropertyValueConstraint(
-                    new PropertyValueConstraint(
+                    new PropertyValueQuery(
                         property,
                         facetValueLimit,
                         null,

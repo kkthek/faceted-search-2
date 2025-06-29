@@ -13,11 +13,10 @@ final class FacetQueryDeserializerTest extends TestCase {
 {
     "facetQueries": [
         {
-          "property": "Has name",
-          "type": 0,
+          "property": { "title": "Has name", "type": 0 },
           "range": {
-            "from": 1,
-            "to": 25 
+                "from": 1,
+                "to": 25 
           }
         }
     ]
@@ -25,9 +24,9 @@ final class FacetQueryDeserializerTest extends TestCase {
 JSON;
         $facetQuery = FacetQuery::fromJson($json);
 
-        $this->assertEquals(1, count($facetQuery->getFacetQueries()) );
-        $this->assertEquals(1, $facetQuery->getFacetQueries()[0]->getRange()->getFrom() );
-        $this->assertEquals(25, $facetQuery->getFacetQueries()[0]->getRange()->getTo() );
+        $this->assertEquals(1, count($facetQuery->getRangeQueries()) );
+        $this->assertEquals(1, $facetQuery->getRangeQueries()[0]->getRange()->getFrom() );
+        $this->assertEquals(25, $facetQuery->getRangeQueries()[0]->getRange()->getTo() );
 
     }
 
@@ -47,9 +46,9 @@ JSON;
 JSON;
         $facetQuery = FacetQuery::fromJson($json);
 
-        $this->assertEquals(1, count($facetQuery->getPropertyValueConstraints()) );
-        $this->assertEquals("Has name", $facetQuery->getPropertyValueConstraints()[0]->getProperty()->getTitle() );
-        $this->assertEquals(Datatype::STRING, $facetQuery->getPropertyValueConstraints()[0]->getProperty()->getType() );
+        $this->assertEquals(1, count($facetQuery->getPropertyValueQueries()) );
+        $this->assertEquals("Has name", $facetQuery->getPropertyValueQueries()[0]->getProperty()->getTitle() );
+        $this->assertEquals(Datatype::STRING, $facetQuery->getPropertyValueQueries()[0]->getProperty()->getType() );
 
     }
 

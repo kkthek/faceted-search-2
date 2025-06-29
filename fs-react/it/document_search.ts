@@ -1,6 +1,6 @@
 import DocumentQueryBuilder from "../src/common/document_query_builder";
 import Client from "../src/common/client";
-import {Datatype, MWTitle, PropertyFacet} from "../src/common/datatypes";
+import {Datatype, FacetValue, MWTitle, Property, PropertyFacet} from "../src/common/datatypes";
 
 /**
  * Faceted search 2
@@ -62,8 +62,8 @@ describe('document-search', function () {
     it('request document with wikipage property constraint', function () {
         globalResult = null;
         let query = new DocumentQueryBuilder()
-            .withPropertyFacet(new PropertyFacet('Works at', Datatype.wikipage,
-                null, new MWTitle('DIQA-GmbH', 'DIQA'), null))
+            .withPropertyFacet(new PropertyFacet(new Property('Works at', Datatype.wikipage),
+                [new FacetValue(null, new MWTitle('DIQA-GmbH', 'DIQA'), null)]))
             .build();
         client.searchDocuments(query).then((e) => {
             globalResult = e;
