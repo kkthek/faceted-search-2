@@ -24,7 +24,7 @@ class FacetQueryBuilder {
     }
 
     withoutPropertyFacet(pf: Property) {
-        Tools.removeAll(this.query.propertyFacets, (e) => e.property, pf.title);
+        Tools.removeAll(this.query.propertyFacets, (e) => e.property.title, pf.title);
         return this;
     }
 
@@ -34,7 +34,7 @@ class FacetQueryBuilder {
     }
 
     clearFacetsQueriesForProperty(p : Property) {
-        Tools.removeAll(this.query.facetQueries, (e) => e.property, p.title);
+        Tools.removeAll(this.query.facetQueries, (e) => e.property.title, p.title);
         return this;
     }
 

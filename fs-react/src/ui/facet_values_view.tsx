@@ -22,9 +22,9 @@ function FacetValues(prop: {
 
     let property = prop.property;
     let propertyFacet = new PropertyFacet(
-        property.title,
-        property.type,
-        [new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range)]);
+        property,[
+            new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range)
+        ]);
 
     let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem itemId={itemId}

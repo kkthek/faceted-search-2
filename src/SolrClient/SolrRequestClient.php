@@ -80,8 +80,8 @@ class SolrRequestClient implements FacetedSearchClient
 
         $facetQueries = [];
         foreach ($q->facetQueries as $p) {
-            $property = Helper::generateSOLRPropertyForSearch($p->property, $p->type);
-            $range = self::encodeRange($p->range, $p->type);
+            $property = Helper::generateSOLRPropertyForSearch($p->property->title, $p->property->type);
+            $range = self::encodeRange($p->range, $p->property->type);
             $facetQueries[] = $property . ":[" . $range . "]";
         }
         $queryParams['facet.query'] = $facetQueries;
@@ -276,32 +276,31 @@ class SolrRequestClient implements FacetedSearchClient
         $valueConstraints = [];
         foreach ($propertyFacets as $f) {
 
-            $values = $f->getValues();
-            foreach ($values as $v) {
+            foreach ($f->getValues() as $v) {
                 /* @var $f PropertyFacet */
-                if ($f->type === Datatype::WIKIPAGE) {
-                    $pAsValue = 'smwh_properties:' . Helper::generateSOLRProperty($f->property, Datatype::WIKIPAGE);
+                if ($f->property->type === Datatype::WIKIPAGE) {
+                    $pAsValue = 'smwh_properties:' . Helper::generateSOLRProperty($f->property->title, Datatype::WIKIPAGE);
                     if (!in_array($pAsValue, $propertyConstraints)) {
                         $propertyConstraints[] = $pAsValue;
                     }
                     if (!is_null($v->mwTitle)) {
-                        $p = Helper::generateSOLRPropertyForSearch($f->property, Datatype::WIKIPAGE);
+                        $p = Helper::generateSOLRPropertyForSearch($f->property->title, Datatype::WIKIPAGE);
                         $value = Helper::quoteValue($v->mwTitle->title . '|' . $v->mwTitle->displayTitle, Datatype::WIKIPAGE);
                         $valueConstraints[] = $p . ':' . $value;
                     }
                 } else {
-                    $pAsValue = 'smwh_attributes:' . Helper::generateSOLRProperty($f->property, $f->type);
+                    $pAsValue = 'smwh_attributes:' . Helper::generateSOLRProperty($f->property->title, $f->property->type);
                     if (!in_array($pAsValue, $propertyConstraints)) {
                         $propertyConstraints[] = $pAsValue;
                     }
-                    $p = Helper::generateSOLRPropertyForSearch($f->property, $f->type);
+                    $p = Helper::generateSOLRPropertyForSearch($f->property->title, $f->property->type);
 
                     if (!is_null($v->range)) {
-                        $value = "[" . self::encodeRange($v->range, $f->type) . "]";
+                        $value = "[" . self::encodeRange($v->range, $f->property->type) . "]";
                         $valueConstraints[] = "$p:$value";
-                    } else if (!is_null($v->value) && ($f->type === Datatype::STRING || $f->type === Datatype::NUMBER || $f->type === Datatype::BOOLEAN
-                            || $f->type === Datatype::DATETIME)) {
-                        $value = Helper::quoteValue($v->value, $f->type);
+                    } else if (!is_null($v->value) && ($f->property->type === Datatype::STRING || $f->property->type === Datatype::NUMBER || $f->property->type === Datatype::BOOLEAN
+                            || $f->property->type === Datatype::DATETIME)) {
+                        $value = Helper::quoteValue($v->value, $f->property->type);
                         $valueConstraints[] = "$p:$value";
                     }
                 }

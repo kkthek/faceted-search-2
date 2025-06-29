@@ -2,43 +2,42 @@
 
 namespace DIQA\FacetedSearch2\Model\Request;
 
-use DIQA\FacetedSearch2\Model\Common\MWTitle;
-use DIQA\FacetedSearch2\Model\Common\Range;
+use DIQA\FacetedSearch2\Model\Common\Property;
 
 class PropertyFacet {
 
-    public string $property;
-    public int $type;
+    public Property $property;
 
     /** @var FacetValue[] */
     public array $values;
 
     /**
      * PropertyFacet constructor.
-     * @param string $property
-     * @param int $type
+     * @param Property $property
+     * @param array $values
      */
-    public function __construct(string $property, int $type, array $values)
+    public function __construct(Property $property, array $values)
     {
         $this->property = $property;
-        $this->type = $type;
         $this->values = $values;
     }
 
     /**
-     * @return string
+     * @return Property
      */
-    public function getProperty(): string
+    public function getProperty(): Property
     {
         return $this->property;
     }
 
     /**
-     * @return int
+     * @param Property $property
+     * @return PropertyFacet
      */
-    public function getType(): int
+    public function setProperty(Property $property): PropertyFacet
     {
-        return $this->type;
+        $this->property = $property;
+        return $this;
     }
 
     /**

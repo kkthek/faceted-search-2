@@ -33,7 +33,7 @@ function FacetOrDialog(prop: {
     let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
 
-    let facet = Tools.findFirstByPredicate(prop.selectedFacets, e => e.property === prop.property.title);
+    let facet = Tools.findFirstByPredicate(prop.selectedFacets, e => e.property.title === prop.property.title);
     let selectedValues: FacetValue[] = facet == null ? [] : facet.values;
     let onChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
         let facetValue = new FacetValue(v.value, v.mwTitle, v.range);
@@ -95,7 +95,7 @@ function FacetOrDialog(prop: {
                         if (selectedValues.length === 0) {
                             prop.eventHandler.onRemoveAllFacetsForProperty(prop.property);
                         } else {
-                            prop.eventHandler.onValueClick(new PropertyFacet(prop.property.title, prop.property.type, selectedValues));
+                            prop.eventHandler.onValueClick(new PropertyFacet(prop.property, selectedValues));
                         }
                         prop.handleClose();
                     }} autoFocus>Ok</Button>

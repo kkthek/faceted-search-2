@@ -158,18 +158,14 @@ export class FacetValue {
 
 @jsonObject
 export class PropertyFacet {
-    @jsonMember(String)
-    property: string
-    @jsonMember(Number)
-    type: Datatype
+    @jsonMember(Property)
+    property: Property
     @jsonArrayMember(FacetValue)
     values: FacetValue[]
-    constructor(property: string,
-                type: Datatype,
+    constructor(property: Property,
                 values: FacetValue[]
     ) {
         this.property = property;
-        this.type = type;
         this.values = values;
     }
 
@@ -192,11 +188,11 @@ export class PropertyFacet {
     }
 
     getProperty() {
-        return new Property(this.property, this.type);
+        return this.property;
     }
 
     static facetForAnyValue(p: Property) {
-        return new PropertyFacet(p.title, p.type, [new FacetValue(null, null, null)]);
+        return new PropertyFacet(p, [new FacetValue(null, null, null)]);
     }
 
     equals(that: PropertyFacet) {
@@ -209,10 +205,7 @@ export class PropertyFacet {
             sameValues = sameValues && this.values[i].equals(that.values[i]);
         }
 
-        return this.property === that.property
-            && this.type === that.type
-            && sameValues
-            ;
+        return this.property.equals(that.property) && sameValues;
     }
 
 
@@ -220,16 +213,13 @@ export class PropertyFacet {
 
 @jsonObject
 export class RangeQuery {
-    @jsonMember(String)
-    property: string
-    @jsonMember(Number)
-    type: Datatype
+    @jsonMember(Property)
+    property: Property
     @jsonMember(Range)
     range: Range|void
 
     constructor(property: Property, range: Range | void) {
-        this.property = property.title;
-        this.type = property.type;
+        this.property = property;
         this.range = range;
     }
 }
@@ -268,7 +258,7 @@ export class BaseQuery {
         this.namespaceFacets = namespaceFacets;
     }
     findPropertyFacet(property: Property): PropertyFacet {
-        return Tools.findFirst(this.propertyFacets, (e) => e.property, property.title);
+        return Tools.findFirst(this.propertyFacets, (e) => e.property.title, property.title);
     }
 
     isPropertyFacetSelected(property: Property): boolean {
@@ -352,7 +342,7 @@ export class FacetsQuery extends BaseQuery {
     }
 
     getRangeProperties(): Property[] {
-        return this.facetQueries.map((e) => new Property(e.property,e.type))
+        return this.facetQueries.map((e) => e.property)
             .filter((e) => e.isRangeProperty());
     }
 }
@@ -397,6 +387,10 @@ export class PropertyWithURL extends Property implements ElementWithURL {
     displayTitle: string;
     @jsonMember(String)
     url: string
+
+    asProperty(): Property {
+        return new Property(this.title, this.type);
+    }
 }
 
 @jsonObject

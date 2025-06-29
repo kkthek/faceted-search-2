@@ -2,60 +2,40 @@
 
 namespace DIQA\FacetedSearch2\Model\Request;
 
+use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;
 
 class PropertyRange {
 
-    public string $property;
-    public int $type;
+    public Property $property;
     public Range $range;
 
     /**
      * PropertyRange constructor.
-     * @param string $title
-     * @param int $type
+     * @param Property $property
      * @param Range $range
      */
-    public function __construct(string $title, int $type, Range $range)
+    public function __construct(Property $property, Range $range)
     {
-        $this->property = $title;
-        $this->type = $type;
+        $this->property = $property;
         $this->range = $range;
     }
 
     /**
-     * @return string
+     * @return Property
      */
-    public function getProperty(): string
+    public function getProperty(): Property
     {
         return $this->property;
     }
 
     /**
-     * @param string $property
+     * @param Property $property
      * @return PropertyRange
      */
-    public function setProperty(string $property): PropertyRange
+    public function setProperty(Property $property): PropertyRange
     {
         $this->property = $property;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getType(): int
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param int $type
-     * @return PropertyRange
-     */
-    public function setType(int $type): PropertyRange
-    {
-        $this->type = $type;
         return $this;
     }
 
