@@ -13,11 +13,10 @@ final class FacetQueryDeserializerTest extends TestCase {
 {
     "facetQueries": [
         {
-          "property": "Has name",
-          "type": 0,
+          "property": { "title": "Has name", "type": 0 },
           "range": {
-            "from": 1,
-            "to": 25 
+                "from": 1,
+                "to": 25 
           }
         }
     ]

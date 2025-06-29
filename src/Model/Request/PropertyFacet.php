@@ -16,7 +16,7 @@ class PropertyFacet {
      * @param Property $property
      * @param array $values
      */
-    public function __construct(Property $property, array $values)
+    public function __construct(Property $property, array $values = [])
     {
         $this->property = $property;
         $this->values = $values;

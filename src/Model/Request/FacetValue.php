@@ -16,7 +16,7 @@ class FacetValue {
      * @param MWTitle|null $mwTitle
      * @param Range|null $range
      */
-    public function __construct(?string $value, ?MWTitle $mwTitle, ?Range $range)
+    public function __construct(?string $value = null, ?MWTitle $mwTitle = null, ?Range $range = null)
     {
         $this->value = $value;
         $this->mwTitle = $mwTitle;
