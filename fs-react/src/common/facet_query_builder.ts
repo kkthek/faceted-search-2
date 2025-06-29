@@ -29,42 +29,42 @@ class FacetQueryBuilder {
     }
 
     withFacetQuery(rangeQuery: RangeQuery): FacetQueryBuilder {
-        this.query.facetQueries.push(rangeQuery);
+        this.query.rangeQueries.push(rangeQuery);
         return this;
     }
 
     clearFacetsQueriesForProperty(p : Property) {
-        Tools.removeAll(this.query.facetQueries, (e) => e.property.title, p.title);
+        Tools.removeAll(this.query.rangeQueries, (e) => e.property.title, p.title);
         return this;
     }
 
     withPropertyValueConstraint(propertyValueConstraint: PropertyValueConstraint): FacetQueryBuilder {
 
-        let constraint = Tools.replaceFirst(this.query.propertyValueConstraints,
+        let constraint = Tools.replaceFirst(this.query.propertyValueQueries,
             (e) => e.property.title, propertyValueConstraint.property.title, propertyValueConstraint);
         if (constraint === null) {
-            this.query.propertyValueConstraints.push(propertyValueConstraint);
+            this.query.propertyValueQueries.push(propertyValueConstraint);
         }
         return this;
     }
 
     existsPropertyValueConstraint(propertyValueConstraint: PropertyValueConstraint): boolean {
-        return Tools.findFirstByPredicate(this.query.propertyValueConstraints,
+        return Tools.findFirstByPredicate(this.query.propertyValueQueries,
             (e) => e.equals(propertyValueConstraint)) != null;
     }
 
     clearPropertyValueConstraintForProperty(p : Property) {
-        Tools.removeAll(this.query.propertyValueConstraints, (e) => e.property.title, p.title);
+        Tools.removeAll(this.query.propertyValueQueries, (e) => e.property.title, p.title);
         return this;
     }
 
     clearAllPropertyValueConstraints() {
-        this.query.propertyValueConstraints = [];
+        this.query.propertyValueQueries = [];
         return this;
     }
 
     clearAllFacetQueries() {
-        this.query.facetQueries = [];
+        this.query.rangeQueries = [];
         return this;
     }
 

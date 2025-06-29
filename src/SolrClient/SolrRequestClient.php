@@ -71,7 +71,7 @@ class SolrRequestClient implements FacetedSearchClient
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
             $q->namespaceFacets, []);
 
-        $facetPropertiesWithoutConstraints = array_filter($q->getPropertyValueConstraints(), fn($e) => !$e->hasConstraints());
+        $facetPropertiesWithoutConstraints = array_filter($q->getPropertyValueQueries(), fn($e) => !$e->hasConstraints());
 
         foreach ($facetPropertiesWithoutConstraints as $v) {
             /* @var $v PropertyValueConstraint */
@@ -79,7 +79,7 @@ class SolrRequestClient implements FacetedSearchClient
         }
 
         $facetQueries = [];
-        foreach ($q->facetQueries as $p) {
+        foreach ($q->getRangeQueries() as $p) {
             $property = Helper::generateSOLRPropertyForSearch($p->property->title, $p->property->type);
             $range = self::encodeRange($p->range, $p->property->type);
             $facetQueries[] = $property . ":[" . $range . "]";
@@ -88,7 +88,7 @@ class SolrRequestClient implements FacetedSearchClient
         $response = new SolrResponseParser($this->requestSOLR($queryParams));
         $result = $response->parseFacetResponse();
 
-        $facetPropertiesWithConstraints = array_filter($q->getPropertyValueConstraints(), fn($e) => $e->hasConstraints());
+        $facetPropertiesWithConstraints = array_filter($q->getPropertyValueQueries(), fn($e) => $e->hasConstraints());
         foreach ($facetPropertiesWithConstraints as $v) {
             $singleQueryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
                 $q->namespaceFacets, []);

@@ -327,22 +327,22 @@ export class StatQuery extends BaseQuery {
 @jsonObject
 export class FacetsQuery extends BaseQuery {
     @jsonArrayMember(RangeQuery)
-    facetQueries: RangeQuery[]
+    rangeQueries: RangeQuery[]
     @jsonArrayMember(PropertyValueConstraint)
-    propertyValueConstraints: PropertyValueConstraint[]
+    propertyValueQueries: PropertyValueConstraint[]
     constructor( searchText: string,
                  propertyFacets: PropertyFacet[],
                  categoryFacets: string[],
                  namespaceFacets: number[],
-                 facetQueries: RangeQuery[],
-                 facetProperties: PropertyValueConstraint[]) {
+                 rangeQueries: RangeQuery[],
+                 propertyValueQueries: PropertyValueConstraint[]) {
         super(searchText, propertyFacets, categoryFacets, namespaceFacets);
-        this.facetQueries = facetQueries;
-        this.propertyValueConstraints = facetProperties;
+        this.rangeQueries = rangeQueries;
+        this.propertyValueQueries = propertyValueQueries;
     }
 
     getRangeProperties(): Property[] {
-        return this.facetQueries.map((e) => e.property)
+        return this.rangeQueries.map((e) => e.property)
             .filter((e) => e.isRangeProperty());
     }
 }

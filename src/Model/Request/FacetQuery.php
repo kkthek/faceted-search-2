@@ -8,12 +8,12 @@ class FacetQuery extends BaseQuery {
     /**
      * @var PropertyRange[]
      */
-    public $facetQueries = [];
+    public $rangeQueries = [];
 
     /**
      * @var PropertyValueConstraint[]
      */
-    public $propertyValueConstraints = [];
+    public $propertyValueQueries = [];
 
     public static function fromJson($json): FacetQuery
     {
@@ -24,36 +24,36 @@ class FacetQuery extends BaseQuery {
     /**
      * @return PropertyRange[]
      */
-    public function getFacetQueries(): array
+    public function getRangeQueries(): array
     {
-        return $this->facetQueries;
+        return $this->rangeQueries;
     }
 
     /**
-     * @param PropertyRange[] $facetQueries
+     * @param PropertyRange[] $rangeQueries
      * @return FacetQuery
      */
-    public function setFacetQueries(array $facetQueries): FacetQuery
+    public function setRangeQueries(array $rangeQueries): FacetQuery
     {
-        $this->facetQueries = $facetQueries;
+        $this->rangeQueries = $rangeQueries;
         return $this;
     }
 
     /**
      * @return PropertyValueConstraint[]
      */
-    public function getPropertyValueConstraints(): array
+    public function getPropertyValueQueries(): array
     {
-        return $this->propertyValueConstraints;
+        return $this->propertyValueQueries;
     }
 
     /**
-     * @param PropertyValueConstraint[] $propertyValueConstraints
+     * @param PropertyValueConstraint[] $propertyValueQueries
      * @return FacetQuery
      */
-    public function setPropertyValueConstraints(array $propertyValueConstraints): FacetQuery
+    public function setPropertyValueQueries(array $propertyValueQueries): FacetQuery
     {
-        $this->propertyValueConstraints = $propertyValueConstraints;
+        $this->propertyValueQueries = $propertyValueQueries;
         return $this;
     }
 
