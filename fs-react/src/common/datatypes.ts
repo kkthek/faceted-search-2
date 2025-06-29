@@ -48,27 +48,27 @@ export class Property {
 }
 
 @jsonObject
-export class PropertyValueConstraint {
+export class PropertyValueQuery {
     @jsonMember(Property)
     property: Property
 
     @jsonMember(Number)
-    facetLimit: number
+    valueLimit: number
     @jsonMember(Number)
-    facetOffset: number
+    valueOffset: number
     @jsonMember(String)
-    facetContains: string
+    valueContains: string
 
     constructor(property: Property, limit: number = null, offset: number = null, contains: string = null) {
         this.property = property;
-        this.facetLimit = limit;
-        this.facetOffset = offset;
-        this.facetContains = contains;
+        this.valueLimit = limit;
+        this.valueOffset = offset;
+        this.valueContains = contains;
     }
 
-    equals(that: PropertyValueConstraint) {
-        return that.property.equals(this.property) && that.facetContains === this.facetContains
-        && that.facetLimit === this.facetLimit && that.facetOffset === this.facetOffset;
+    equals(that: PropertyValueQuery) {
+        return that.property.equals(this.property) && that.valueContains === this.valueContains
+        && that.valueLimit === this.valueLimit && that.valueOffset === this.valueOffset;
     }
 }
 
@@ -328,14 +328,14 @@ export class StatQuery extends BaseQuery {
 export class FacetsQuery extends BaseQuery {
     @jsonArrayMember(RangeQuery)
     rangeQueries: RangeQuery[]
-    @jsonArrayMember(PropertyValueConstraint)
-    propertyValueQueries: PropertyValueConstraint[]
+    @jsonArrayMember(PropertyValueQuery)
+    propertyValueQueries: PropertyValueQuery[]
     constructor( searchText: string,
                  propertyFacets: PropertyFacet[],
                  categoryFacets: string[],
                  namespaceFacets: number[],
                  rangeQueries: RangeQuery[],
-                 propertyValueQueries: PropertyValueConstraint[]) {
+                 propertyValueQueries: PropertyValueQuery[]) {
         super(searchText, propertyFacets, categoryFacets, namespaceFacets);
         this.rangeQueries = rangeQueries;
         this.propertyValueQueries = propertyValueQueries;

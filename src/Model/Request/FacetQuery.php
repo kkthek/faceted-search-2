@@ -11,7 +11,7 @@ class FacetQuery extends BaseQuery {
     public $rangeQueries = [];
 
     /**
-     * @var PropertyValueConstraint[]
+     * @var PropertyValueQuery[]
      */
     public $propertyValueQueries = [];
 
@@ -40,7 +40,7 @@ class FacetQuery extends BaseQuery {
     }
 
     /**
-     * @return PropertyValueConstraint[]
+     * @return PropertyValueQuery[]
      */
     public function getPropertyValueQueries(): array
     {
@@ -48,7 +48,7 @@ class FacetQuery extends BaseQuery {
     }
 
     /**
-     * @param PropertyValueConstraint[] $propertyValueQueries
+     * @param PropertyValueQuery[] $propertyValueQueries
      * @return FacetQuery
      */
     public function setPropertyValueQueries(array $propertyValueQueries): FacetQuery

@@ -1,4 +1,4 @@
-import {BaseQuery, DocumentQuery, FacetsQuery, Property, PropertyValueConstraint, RangeQuery} from "./datatypes";
+import {BaseQuery, DocumentQuery, FacetsQuery, Property, PropertyValueQuery, RangeQuery} from "./datatypes";
 import Tools from "../util/tools";
 import {TypedJSON} from "typedjson";
 
@@ -38,7 +38,7 @@ class FacetQueryBuilder {
         return this;
     }
 
-    withPropertyValueConstraint(propertyValueConstraint: PropertyValueConstraint): FacetQueryBuilder {
+    withPropertyValueConstraint(propertyValueConstraint: PropertyValueQuery): FacetQueryBuilder {
 
         let constraint = Tools.replaceFirst(this.query.propertyValueQueries,
             (e) => e.property.title, propertyValueConstraint.property.title, propertyValueConstraint);
@@ -48,7 +48,7 @@ class FacetQueryBuilder {
         return this;
     }
 
-    existsPropertyValueConstraint(propertyValueConstraint: PropertyValueConstraint): boolean {
+    existsPropertyValueConstraint(propertyValueConstraint: PropertyValueQuery): boolean {
         return Tools.findFirstByPredicate(this.query.propertyValueQueries,
             (e) => e.equals(propertyValueConstraint)) != null;
     }

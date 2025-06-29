@@ -10,7 +10,7 @@ use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\PropertyFacet;
-use DIQA\FacetedSearch2\Model\Request\PropertyValueConstraint;
+use DIQA\FacetedSearch2\Model\Request\PropertyValueQuery;
 use DIQA\FacetedSearch2\Model\Request\Sort;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
@@ -74,7 +74,7 @@ class SolrRequestClient implements FacetedSearchClient
         $facetPropertiesWithoutConstraints = array_filter($q->getPropertyValueQueries(), fn($e) => !$e->hasConstraints());
 
         foreach ($facetPropertiesWithoutConstraints as $v) {
-            /* @var $v PropertyValueConstraint */
+            /* @var $v PropertyValueQuery */
             $queryParams['facet.field'][] = Helper::generateSOLRPropertyForSearch($v->getProperty()->getTitle(), $v->getProperty()->getType());
         }
 
@@ -92,19 +92,19 @@ class SolrRequestClient implements FacetedSearchClient
         foreach ($facetPropertiesWithConstraints as $v) {
             $singleQueryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
                 $q->namespaceFacets, []);
-            /* @var $v PropertyValueConstraint */
+            /* @var $v PropertyValueQuery */
             $singleQueryParams['facet.field'] = [Helper::generateSOLRPropertyForSearch($v->getProperty()->getTitle(),
                 $v->getProperty()->type)];
-            if (!is_null($v->getFacetContains())) {
-                $singleQueryParams['facet.contains'] = $v->getFacetContains();
+            if (!is_null($v->getValueContains())) {
+                $singleQueryParams['facet.contains'] = $v->getValueContains();
                 $singleQueryParams['facet.contains.ignoreCase'] = 'true';
                 $singleQueryParams['facet.sort'] = 'count';
             }
-            if (!is_null($v->getFacetLimit())) {
-                $singleQueryParams['facet.limit'] = $v->getFacetLimit();
+            if (!is_null($v->getValueLimit())) {
+                $singleQueryParams['facet.limit'] = $v->getValueLimit();
             }
-            if (!is_null($v->getFacetOffset())) {
-                $singleQueryParams['facet.offset'] = $v->getFacetOffset();
+            if (!is_null($v->getValueOffset())) {
+                $singleQueryParams['facet.offset'] = $v->getValueOffset();
             }
             $parser = new SolrResponseParser($this->requestSOLR($singleQueryParams));
             $result->merge($parser->parseFacetResponse());
