@@ -11,7 +11,7 @@ final class FacetQueryDeserializerTest extends TestCase {
     {
         $json = <<<JSON
 {
-    "facetQueries": [
+    "rangeQueries": [
         {
           "property": { "title": "Has name", "type": 0 },
           "range": {
@@ -34,7 +34,7 @@ JSON;
     {
         $json = <<<JSON
 {
-    "propertyValueConstraints": [
+    "propertyValueQueries": [
         {
           "property": {
             "title": "Has name",

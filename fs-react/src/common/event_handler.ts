@@ -3,7 +3,7 @@ import FacetQueryBuilder from "./facet_query_builder";
 import {
     BaseQuery,
     DocumentsResponse,
-    FacetResponse,
+    FacetResponse, FacetValue,
     Property,
     PropertyFacet,
     PropertyValueQuery,
@@ -159,26 +159,26 @@ class EventHandler {
             .clearFacetsForProperty(property);
 
         this.currentFacetsQueryBuilder
-            .clearFacetsQueriesForProperty(property)
-            .clearPropertyValueConstraintForProperty(property);
+            .clearRangeQueriesForProperty(property)
+            .clearPropertyValueQueryForProperty(property);
 
         this.expandFacet(property.getItemId());
         this.updateDocuments();
         this.updateFacetValuesForProperty(property);
     }
 
-    onRemovePropertyFacet(propertyFacet: PropertyFacet) {
+    onRemovePropertyFacet(propertyFacet: PropertyFacet, facetValue: FacetValue = null) {
 
         this.currentDocumentsQueryBuilder
             .withOffset(0)
-            .withoutPropertyFacet(propertyFacet);
+            .withoutPropertyFacet(propertyFacet, facetValue);
 
         let property = propertyFacet.getProperty();
         let existsFacets = this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property);
         if (!existsFacets) {
             this.currentFacetsQueryBuilder
-                .clearFacetsQueriesForProperty(property)
-                .clearPropertyValueConstraintForProperty(property);
+                .clearRangeQueriesForProperty(property)
+                .clearPropertyValueQueryForProperty(property);
         }
 
         this.updateDocuments();
@@ -196,11 +196,11 @@ class EventHandler {
             text === '' ? this.facetValueLimit : null,
             null,
             text === '' ? null : text);
-        if (this.currentFacetsQueryBuilder.existsPropertyValueConstraint(propertyValueConstraint)) {
+        if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueConstraint)) {
             return;
         }
 
-        this.currentFacetsQueryBuilder.withPropertyValueConstraint(propertyValueConstraint);
+        this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueConstraint);
         this.updateFacets();
     }
 
@@ -210,11 +210,11 @@ class EventHandler {
         }
 
         let propertyValueConstraint = new PropertyValueQuery(property,null,null,null);
-        if (this.currentFacetsQueryBuilder.existsPropertyValueConstraint(propertyValueConstraint)) {
+        if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueConstraint)) {
             return;
         }
 
-        this.currentFacetsQueryBuilder.withPropertyValueConstraint(propertyValueConstraint);
+        this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueConstraint);
         this.updateFacets();
     }
 
@@ -261,8 +261,8 @@ class EventHandler {
     onRemoveAllFacetsClick() {
         this.currentDocumentsQueryBuilder.clearAllFacets();
         this.currentFacetsQueryBuilder
-            .clearAllFacetQueries()
-            .clearAllPropertyValueConstraints();
+            .clearAllRangeQueries()
+            .clearAllPropertyValueQueries();
 
         this.updateDocuments();
         this.updateFacets();
@@ -273,7 +273,7 @@ class EventHandler {
         properties.forEach(property => {
             if (!property.isRangeProperty()) {
 
-                this.currentFacetsQueryBuilder.withPropertyValueConstraint(
+                this.currentFacetsQueryBuilder.withPropertyValueQuery(
                     new PropertyValueQuery(
                         property,
                         facetValueLimit,
@@ -314,9 +314,9 @@ class EventHandler {
         let response = await this.client.searchStats(sqb.build());
         response.stats.forEach((stat) => {
 
-            this.currentFacetsQueryBuilder.clearFacetsQueriesForProperty(stat.property);
+            this.currentFacetsQueryBuilder.clearRangeQueriesForProperty(stat.property);
             stat.clusters.forEach((range) => {
-                this.currentFacetsQueryBuilder.withFacetQuery(new RangeQuery(stat.property, range));
+                this.currentFacetsQueryBuilder.withRangeQuery(new RangeQuery(stat.property, range));
             });
         });
 

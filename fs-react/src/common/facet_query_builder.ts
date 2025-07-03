@@ -23,48 +23,48 @@ class FacetQueryBuilder {
         return this;
     }
 
-    withoutPropertyFacet(pf: Property) {
-        Tools.removeAll(this.query.propertyFacets, (e) => e.property.title, pf.title);
+    withoutPropertyFacet(p: Property) {
+        Tools.removeAll(this.query.propertyFacets, (e) => e.property.title, p.title);
         return this;
     }
 
-    withFacetQuery(rangeQuery: RangeQuery): FacetQueryBuilder {
+    withRangeQuery(rangeQuery: RangeQuery): FacetQueryBuilder {
         this.query.rangeQueries.push(rangeQuery);
         return this;
     }
 
-    clearFacetsQueriesForProperty(p : Property) {
+    clearRangeQueriesForProperty(p : Property) {
         Tools.removeAll(this.query.rangeQueries, (e) => e.property.title, p.title);
         return this;
     }
 
-    withPropertyValueConstraint(propertyValueConstraint: PropertyValueQuery): FacetQueryBuilder {
+    clearAllRangeQueries() {
+        this.query.rangeQueries = [];
+        return this;
+    }
+
+    withPropertyValueQuery(propertyValueQuery: PropertyValueQuery): FacetQueryBuilder {
 
         let constraint = Tools.replaceFirst(this.query.propertyValueQueries,
-            (e) => e.property.title, propertyValueConstraint.property.title, propertyValueConstraint);
+            (e) => e.property.title, propertyValueQuery.property.title, propertyValueQuery);
         if (constraint === null) {
-            this.query.propertyValueQueries.push(propertyValueConstraint);
+            this.query.propertyValueQueries.push(propertyValueQuery);
         }
         return this;
     }
 
-    existsPropertyValueConstraint(propertyValueConstraint: PropertyValueQuery): boolean {
+    existsPropertyValueQuery(propertyValueConstraint: PropertyValueQuery): boolean {
         return Tools.findFirstByPredicate(this.query.propertyValueQueries,
             (e) => e.equals(propertyValueConstraint)) != null;
     }
 
-    clearPropertyValueConstraintForProperty(p : Property) {
+    clearPropertyValueQueryForProperty(p : Property) {
         Tools.removeAll(this.query.propertyValueQueries, (e) => e.property.title, p.title);
         return this;
     }
 
-    clearAllPropertyValueConstraints() {
+    clearAllPropertyValueQueries() {
         this.query.propertyValueQueries = [];
-        return this;
-    }
-
-    clearAllFacetQueries() {
-        this.query.rangeQueries = [];
         return this;
     }
 

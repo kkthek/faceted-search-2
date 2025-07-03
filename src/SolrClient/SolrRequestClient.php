@@ -40,12 +40,12 @@ class SolrRequestClient implements FacetedSearchClient
     {
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
             $q->namespaceFacets, $q->extraProperties);
-        $sortsAndLimits = $this->getSortsAndLimits($q->sorts, $q->limit, $q->offset);
+        $sortsAndLimits = $this->encodeSortsAndLimits($q->sorts, $q->limit, $q->offset);
         $queryParams = array_merge($queryParams, $sortsAndLimits);
 
         $response = new SolrResponseParser($this->requestSOLR($queryParams));
         $docResponse = $response->parse()
-            ->setDebugInfo(self::buildQueryParams($queryParams));
+            ->setDebugInfo(Util::buildQueryParams($queryParams));
 
         $this->fillEmptyCategoryFacetCounts($docResponse, $q);
         return $docResponse;
@@ -63,7 +63,7 @@ class SolrRequestClient implements FacetedSearchClient
         $queryParams['stats.field'] = $statsFields;
         $response = new SolrResponseParser($this->requestSOLR($queryParams));
         return $response->parseStatsResponse()
-            ->setDebugInfo(self::buildQueryParams($queryParams));
+            ->setDebugInfo(Util::buildQueryParams($queryParams));
     }
 
     public function requestFacets(FacetQuery $q): FacetResponse
@@ -111,7 +111,7 @@ class SolrRequestClient implements FacetedSearchClient
 
         }
 
-        return $result->setDebugInfo(self::buildQueryParams($queryParams));;
+        return $result->setDebugInfo(Util::buildQueryParams($queryParams));;
     }
 
     /**
@@ -219,23 +219,21 @@ class SolrRequestClient implements FacetedSearchClient
 
         $params['wt'] = 'json';
 
-        $ANDedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => count($e->values) === 1);
-        $fq = self::encodePropertyFacets($ANDedFacets, false);
-
-        $ORedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => count($e->values) > 1);
-        $fq = array_merge($fq, self::encodePropertyFacets($ORedFacets, true));
-
-        $fq = array_merge($fq, self::encodeCategoryFacets($categoryFacets));
-        $fq = array_merge($fq, self::encodeNamespaceFacets($namespaceFacets));
-        $fq = array_merge($fq, self::encodeNamespaceConstraints());
+        $fq = array_merge(
+            self::encodePropertyFacets($propertyFacetConstraints),
+            self::encodeCategoryFacets($categoryFacets),
+            self::encodeNamespaceFacets($namespaceFacets),
+            self::encodeNamespaceConstraints()
+        );
         $params['fq'] = $fq;
 
-        $params['q.alt'] = $searchText === '' ? 'smwh_search_field:(*)' : self::encodeQuery(preg_split("/\s+/", $searchText));
+        $params['q.alt'] = $searchText === '' ? 'smwh_search_field:(*)' : self::encodeSearchQuery(preg_split("/\s+/", $searchText));
 
         return $params;
     }
 
-    private static function encodeNamespaceConstraints() {
+    private static function encodeNamespaceConstraints(): array
+    {
         global $fs2gNamespaceConstraint;
         if (!isset($fs2gNamespaceConstraint) || count($fs2gNamespaceConstraint) === 0) {
             return [];
@@ -259,22 +257,24 @@ class SolrRequestClient implements FacetedSearchClient
         return [];
     }
 
-    private function getSortsAndLimits(array $sorts /* @var Sort[] */, $limit, $offset) {
+    private function encodeSortsAndLimits(array $sorts /* @var Sort[] */, $limit, $offset): array
+    {
         $params = [];
         $params['rows'] = $limit;
         $params['start'] = $offset;
-        $params['sort'] = self::serializeSorts($sorts);
+        $params['sort'] = self::serializeSortsCommaSeparated($sorts);
         return $params;
     }
 
-    private static function encodePropertyFacets(array $propertyFacets, bool $valuesORed): array
+    private static function encodePropertyFacets(array $propertyFacets): array
     {
         if (count($propertyFacets) === 0) {
             return [];
         }
-        $propertyConstraints = [];
-        $valueConstraints = [];
+        $result = [];
         foreach ($propertyFacets as $f) {
+            $propertyConstraints = [];
+            $valueConstraints = [];
 
             foreach ($f->getValues() as $v) {
                 /* @var $f PropertyFacet */
@@ -305,12 +305,13 @@ class SolrRequestClient implements FacetedSearchClient
                     }
                 }
             }
+            if (count($valueConstraints) > 1) {
+                $result = array_merge($result, $propertyConstraints, ["(" . implode(' OR ', $valueConstraints) . ")"]);
+            } else {
+                $result = array_merge($result, $propertyConstraints, $valueConstraints);
+            }
         }
-        if ($valuesORed) {
-            return array_merge($propertyConstraints, ["(" . implode(' OR ', $valueConstraints) . ")"]);
-        } else {
-            return array_merge($propertyConstraints, $valueConstraints);
-        }
+        return $result;
     }
 
 
@@ -346,7 +347,7 @@ class SolrRequestClient implements FacetedSearchClient
         return [join(' OR ', $facetValues)];
     }
 
-    private static function serializeSorts(array $sorts): string
+    private static function serializeSortsCommaSeparated(array $sorts): string
     {
         $arr = array_map(function (Sort $s) {
             $order = $s->order === Order::DESC ? 'desc' : 'asc';
@@ -366,7 +367,7 @@ class SolrRequestClient implements FacetedSearchClient
         return implode(", ", $arr);
     }
 
-    private static function encodeQuery(array $terms): string
+    private static function encodeSearchQuery(array $terms): string
     {
         $searchTerms = implode(' AND ', $terms);
         $searchTermsWithPlus = implode(' AND ', array_map(fn($e) => "+$e", $terms));
@@ -384,7 +385,7 @@ class SolrRequestClient implements FacetedSearchClient
             $headerFields[] = "Content-Type: application/x-www-form-urlencoded; charset=UTF-8";
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
             $ch = curl_init();
-            $queryString = self::buildQueryParams($queryParams);
+            $queryString = Util::buildQueryParams($queryParams);
             $url = Helper::getSOLRBaseUrl() . "/select";
 
             curl_setopt($ch, CURLOPT_URL, $url);
@@ -458,21 +459,6 @@ class SolrRequestClient implements FacetedSearchClient
         }
     }
 
-
-
-    private static function buildQueryParams(array $params) {
-        $encodedParams = [];
-
-        foreach ($params as $key => $value) {
-            if (is_array($value)) {
-                $encodedParams = array_merge($encodedParams, array_map(fn($e) => "$key=" . urlencode($e), $value));
-            } else {
-                $encodedParams[] = "$key=" . urlencode($value);
-            }
-        }
-
-        return implode("&", $encodedParams);
-    }
 
     /**
      * Fills empty category facet counts if category facet is selected but there are no results

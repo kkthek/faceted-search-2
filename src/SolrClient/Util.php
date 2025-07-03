@@ -10,15 +10,20 @@ class Util {
         return array($header, str_replace("%0A%0D%0A%0D", "\r\n\r\n", $res));
     }
 
-    public static function groupArray($array, callable $getKey) {
-        $arr = [];
-        foreach ($array as $item) {
-            if (!array_key_exists($getKey($item), $arr)) {
-                $arr[$getKey($item)] = [$item];
+    public static function buildQueryParams(array $params): string
+    {
+        $encodedParams = [];
+
+        foreach ($params as $key => $value) {
+            if (is_array($value)) {
+                $encodedParams = array_merge($encodedParams, array_map(fn($e) => "$key=" . urlencode($e), $value));
             } else {
-                $arr[$getKey($item)][] = $item;
+                $encodedParams[] = "$key=" . urlencode($value);
             }
         }
-        return $arr;
+
+        return implode("&", $encodedParams);
     }
+
+
 }

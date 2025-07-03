@@ -8,7 +8,7 @@ class QueryUtils {
         return new FacetQueryBuilder()
             .updateBaseQuery(query)
             .withoutPropertyFacet(property)
-            .withPropertyValueConstraint(new PropertyValueQuery(property))
+            .withPropertyValueQuery(new PropertyValueQuery(property))
             .build();
 
     }
