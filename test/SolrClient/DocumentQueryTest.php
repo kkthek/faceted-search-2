@@ -30,7 +30,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Has name', Datatype::STRING));
-        $p->setValues([new FacetValue('Markus')]);
+        $p->setValues([FacetValue::fromValue('Markus')]);
 
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
@@ -43,7 +43,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Has name', Datatype::STRING));
-        $p->setValues([new FacetValue('Markus'), new FacetValue('Dieter')]);
+        $p->setValues([FacetValue::fromValue('Markus'), FacetValue::fromValue('Dieter')]);
 
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
@@ -56,7 +56,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Has name', Datatype::STRING));
-        $p->setValues([new FacetValue()]);
+        $p->setValues([FacetValue::allValues()]);
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
         $response = $this->client->requestDocuments($q);
@@ -68,7 +68,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Has age', Datatype::NUMBER));
-        $p->setValues([new FacetValue(null, null, new Range(40, 60))]);
+        $p->setValues([FacetValue::fromRange(new Range(40, 60))]);
 
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
@@ -81,7 +81,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Has age', Datatype::NUMBER));
-        $p->setValues([new FacetValue(null, null, new Range(80, 90))]);
+        $p->setValues([FacetValue::fromRange(new Range(80, 90))]);
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
         $response = $this->client->requestDocuments($q);
@@ -93,7 +93,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Was born at', Datatype::DATETIME));
-        $p->setValues([new FacetValue(null, null, new Range('1969-01-01T00:00:00Z', '1970-01-01T00:00:00Z'))]);
+        $p->setValues([FacetValue::fromRange(new Range('1969-01-01T00:00:00Z', '1970-01-01T00:00:00Z'))]);
 
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
@@ -106,7 +106,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Was born at', Datatype::DATETIME));
-        $p->setValues([new FacetValue(null, null, new Range('1970-01-01T00:00:00Z', '1971-01-01T00:00:00Z'))]);
+        $p->setValues([FacetValue::fromRange(new Range('1970-01-01T00:00:00Z', '1971-01-01T00:00:00Z'))]);
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
         $response = $this->client->requestDocuments($q);
@@ -118,7 +118,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Is on pension', Datatype::BOOLEAN));
-        $p->setValues([new FacetValue('false')]);
+        $p->setValues([FacetValue::fromValue('false')]);
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
         $response = $this->client->requestDocuments($q);
@@ -139,7 +139,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Works at', Datatype::WIKIPAGE));
-        $p->setValues([new FacetValue(null, new MWTitle('DIQA-GmbH', 'DIQA'), null)]);
+        $p->setValues([FacetValue::fromTitle(new MWTitle('DIQA-GmbH', 'DIQA'))]);
 
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
@@ -152,7 +152,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Works at', Datatype::WIKIPAGE));
-        $p->setValues([new FacetValue()]);
+        $p->setValues([FacetValue::allValues()]);
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
         $response = $this->client->requestDocuments($q);

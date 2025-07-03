@@ -1,4 +1,13 @@
-import {Datatype, DocumentQuery, DocumentsResponse, Order, Property, PropertyFacet, Sort} from "./datatypes";
+import {
+    Datatype,
+    DocumentQuery,
+    DocumentsResponse,
+    FacetValue,
+    Order,
+    Property,
+    PropertyFacet,
+    Sort
+} from "./datatypes";
 import Tools from "../util/tools";
 import ConfigUtils from "../util/config_utils";
 import {TypedJSON} from "typedjson";
@@ -49,17 +58,25 @@ class DocumentQueryBuilder {
     }
 
     clearFacetsForProperty(property: Property): DocumentQueryBuilder {
-        Tools.removeAll(this.query.propertyFacets, (e) => e.property, property.title);
+        Tools.removeAll(this.query.propertyFacets, (e) => e.property.title, property.title);
         return this;
     }
 
-    withoutPropertyFacet(pf: PropertyFacet) {
-        Tools.removeFirstByPredicate(this.query.propertyFacets, (e) => e.equals(pf));
+    withoutPropertyFacet(pf: PropertyFacet, facetValue: FacetValue = null) {
+        if (facetValue === null) {
+            Tools.removeFirstByPredicate(this.query.propertyFacets, (e) => e.equalsOrWithinRange(pf));
+        } else {
+            const f = Tools.findFirstByPredicate(this.query.propertyFacets, (e) => e.equalsOrWithinRange(pf));
+            Tools.removeFirstByPredicate(f.values, (v) => v.equalsOrWithinRange(facetValue));
+            if (f.values.length === 0) {
+                this.withoutPropertyFacet(pf);
+            }
+        }
         return this;
     }
 
     existsPropertyFacetForProperty(p: Property): boolean {
-        return Tools.findFirst(this.query.propertyFacets, (e) => e.property, p.title) != null;
+        return Tools.findFirst(this.query.propertyFacets, (e) => e.property.title, p.title) !== null;
     }
 
     withCategoryFacet(category: string): DocumentQueryBuilder {

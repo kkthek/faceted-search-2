@@ -42,7 +42,7 @@ describe('fecets-search', function () {
         globalResult = null;
         let range = new Range(new Date(Date.parse("1969-01-01T00:00:00Z")), new Date(Date.parse("1970-01-01T00:00:00Z")));
         let query = new FacetsQueryBuilder()
-            .withFacetQuery(new RangeQuery(new Property('Was born at',Datatype.datetime),
+            .withRangeQuery(new RangeQuery(new Property('Was born at',Datatype.datetime),
                     range))
             .build();
         client.searchFacets(query).then((e) => {

@@ -219,12 +219,7 @@ class SolrRequestClient implements FacetedSearchClient
 
         $params['wt'] = 'json';
 
-        $ANDedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => count($e->values) === 1);
-        $fq = self::encodePropertyFacets($ANDedFacets, false);
-
-        $ORedFacets = array_filter($propertyFacetConstraints, fn(PropertyFacet $e) => count($e->values) > 1);
-        $fq = array_merge($fq, self::encodePropertyFacets($ORedFacets, true));
-
+        $fq = self::encodePropertyFacets($propertyFacetConstraints);
         $fq = array_merge($fq, self::encodeCategoryFacets($categoryFacets));
         $fq = array_merge($fq, self::encodeNamespaceFacets($namespaceFacets));
         $fq = array_merge($fq, self::encodeNamespaceConstraints());
@@ -267,14 +262,15 @@ class SolrRequestClient implements FacetedSearchClient
         return $params;
     }
 
-    private static function encodePropertyFacets(array $propertyFacets, bool $valuesORed): array
+    private static function encodePropertyFacets(array $propertyFacets): array
     {
         if (count($propertyFacets) === 0) {
             return [];
         }
-        $propertyConstraints = [];
-        $valueConstraints = [];
+        $result = [];
         foreach ($propertyFacets as $f) {
+            $propertyConstraints = [];
+            $valueConstraints = [];
 
             foreach ($f->getValues() as $v) {
                 /* @var $f PropertyFacet */
@@ -305,12 +301,13 @@ class SolrRequestClient implements FacetedSearchClient
                     }
                 }
             }
+            if (count($valueConstraints) > 1) {
+                $result = array_merge($result, $propertyConstraints, ["(" . implode(' OR ', $valueConstraints) . ")"]);
+            } else {
+                $result = array_merge($result, $propertyConstraints, $valueConstraints);
+            }
         }
-        if ($valuesORed) {
-            return array_merge($propertyConstraints, ["(" . implode(' OR ', $valueConstraints) . ")"]);
-        } else {
-            return array_merge($propertyConstraints, $valueConstraints);
-        }
+        return $result;
     }
 
 

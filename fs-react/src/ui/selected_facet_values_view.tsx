@@ -24,17 +24,18 @@ function SelectedFacetValues(prop: {
     let value = DisplayTools.serializeFacetValue(prop.property, prop.propertyValueCount);
 
     let property = prop.property;
+    let facetValue = new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
     let propertyFacet = new PropertyFacet(
         property,
         [
-            new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range)
+            facetValue
         ]);
 
     let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem key={property.title + value + prop.propertyValueCount.count}
         itemId={itemId}
         actionIcon={prop.removable ? DeleteIcon : null}
-        action={() => prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet)}
+        action={() => prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet, facetValue)}
         label={value + " (" + prop.propertyValueCount.count+")"}
         itemAction={() => prop.eventHandler.onValueClick(propertyFacet)}>
 

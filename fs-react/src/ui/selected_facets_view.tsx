@@ -23,9 +23,9 @@ function SelectedFacets(prop: {
 
     let propertyFacet = query.findPropertyFacet(prop.propertyValueCount.property);
     if (!propertyFacet) return;
-    let hasValue = propertyFacet.hasValue() || propertyFacet.hasRange();
+    let hasValue = propertyFacet.hasValueOrMWTitle() || propertyFacet.hasRange();
     let wikiContext = useContext(WikiContext);
-    let facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(propertyFacet.property);
+    let facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(propertyFacet.property.title);
 
     const itemlist = prop.propertyValueCount.values.map((v,i ) => {
 

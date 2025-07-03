@@ -68,25 +68,35 @@ export class PropertyValueQuery {
 
     equals(that: PropertyValueQuery) {
         return that.property.equals(this.property) && that.valueContains === this.valueContains
-        && that.valueLimit === this.valueLimit && that.valueOffset === this.valueOffset;
+            && that.valueLimit === this.valueLimit && that.valueOffset === this.valueOffset;
     }
 }
 
 @jsonObject
 export class Range {
     @jsonMember({deserializer: value => Tools.deserializeValue(value)})
-    from: Date|number
+    from: Date | number
     @jsonMember({deserializer: value => Tools.deserializeValue(value)})
-    to: Date|number
+    to: Date | number
 
     constructor(from: Date | number, to: Date | number) {
         this.from = from;
         this.to = to;
     }
 
-    equals(that: Range|void) {
+    equals(that: Range | void) {
         if (!that) return false;
         return this.from === (that as Range).from && this.to === (that as Range).to;
+    }
+
+    withinRange(that: Range | void) {
+        if (!that) return false;
+        if (this.from as number && this.to as number) {
+            return this.from <= (that as Range).from && this.to >= (that as Range).to;
+        } else {
+            return (this.from as Date).getTime() <= (that.from as Date).getTime()
+                && (this.to as Date).getTime() >= (that.to as Date).getTime();
+        }
     }
 }
 
@@ -103,7 +113,7 @@ export class MWTitle {
         this.displayTitle = displayTitle;
     }
 
-    equals(that: MWTitle|void) {
+    equals(that: MWTitle | void) {
         if (!that) return false;
         return this.title === (that as MWTitle).title && this.displayTitle === (that as MWTitle).displayTitle;
     }
@@ -115,11 +125,11 @@ export class MWTitle {
 @jsonObject
 export class FacetValue {
     @jsonMember({deserializer: value => Tools.deserializeValue(value)})
-    value: ValueType|void;
+    value: ValueType | void;
     @jsonMember(MWTitle)
-    mwTitle: MWTitle|void;
+    mwTitle: MWTitle | void;
     @jsonMember(Range)
-    range: Range|void
+    range: Range | void
 
 
     constructor(value: ValueType | void, mwTitle: MWTitle | void, range: Range | void) {
@@ -129,30 +139,48 @@ export class FacetValue {
     }
 
 
-
     equals(that: FacetValue) {
 
-        return this.value === that.value
-            && (this.mwTitle === that.mwTitle || (this.mwTitle as MWTitle).equals(that.mwTitle))
-            && (this.value === that.value || (this.range as Range).equals(that.range))
+        return FacetValue.sameValue(this.value, that.value)
+            && FacetValue.sameMWTitle(this.mwTitle, that.mwTitle)
+            && FacetValue.sameRange(this.range, that.range)
             ;
     }
 
-    containsValueOrMWTitle(valueCount: ValueCount): boolean {
+    equalsOrWithinRange(that: FacetValue) {
 
-            let sameValue =  (
-                (this.value as string) === valueCount.value as string
-                || (this.value as number) === valueCount.value as number
-                || ((this.value as Date).toUTCString && (valueCount.value as Date).toUTCString
-                    && (this.value as Date).toUTCString() === (valueCount.value as Date).toUTCString())
-            );
-            let sameMWTitle = this.mwTitle
-                && (this.mwTitle === valueCount.mwTitle || (this.mwTitle as MWTitle).equals(valueCount.mwTitle))
-            if (sameValue || sameMWTitle) {
-                return true;
-            }
+        return FacetValue.sameValue(this.value, that.value)
+            && FacetValue.sameMWTitle(this.mwTitle, that.mwTitle)
+            && FacetValue.withinRange(this.range, that.range)
+            ;
+    }
 
-        return false;
+    containsValueOrMWTitle(value: ValueType|void, mwTitle: MWTitle|void): boolean {
+
+        return (this.value && FacetValue.sameValue(this.value, value))
+            || (this.mwTitle && FacetValue.sameMWTitle(this.mwTitle, mwTitle));
+
+    }
+
+    static sameValue(a: ValueType|void, b: ValueType|void) {
+        return (a === b)
+            || (a as string) === b as string
+            || (a as number) === b as number
+            || (a as boolean) === b as boolean
+            || ((a as Date).toUTCString && (b as Date).toUTCString
+                && (a as Date).toUTCString() === (b as Date).toUTCString());
+    }
+
+    static sameMWTitle(a: MWTitle|void, b: MWTitle|void) {
+        return (a === b || (a as MWTitle).equals(b));
+    }
+
+    static sameRange(a: Range|void, b: Range|void) {
+        return (a === b || (a as Range).equals(b));
+    }
+
+    static withinRange(a: Range|void, b: Range|void) {
+        return (a === b || (a as Range).withinRange(b));
     }
 }
 
@@ -162,6 +190,7 @@ export class PropertyFacet {
     property: Property
     @jsonArrayMember(FacetValue)
     values: FacetValue[]
+
     constructor(property: Property,
                 values: FacetValue[]
     ) {
@@ -169,22 +198,12 @@ export class PropertyFacet {
         this.values = values;
     }
 
-    hasValue(): boolean {
-        for(let i = 0; i < this.values.length; i++) {
-            if (this.values[i].value && this.values[i].value !== null || this.values[i].mwTitle && this.values[i].mwTitle !== null) {
-                return true;
-            }
-        }
-        return false;
+    hasValueOrMWTitle(): boolean {
+        return this.values.some((e) => e.value || e.mwTitle);
     }
 
     hasRange(): boolean {
-        for(let i = 0; i < this.values.length; i++) {
-            if (this.values[i].range && this.values[i].range !== null) {
-                return true;
-            }
-        }
-        return false;
+        return this.values.some((e) => e.range);
     }
 
     getProperty() {
@@ -200,15 +219,24 @@ export class PropertyFacet {
         if (this.values.length !== that.values.length) {
             return false;
         }
-        let sameValues = true;
-        for(let i = 0; i < this.values.length; i++) {
-            sameValues = sameValues && this.values[i].equals(that.values[i]);
-        }
 
-        return this.property.equals(that.property) && sameValues;
+        let valueSetIsEqual = this.values.every((e) => that.values.find((f) => f.equals(e)))
+                    && that.values.every((e) => this.values.find((f) => f.equals(e)));
+
+        return this.property.equals(that.property) && valueSetIsEqual;
     }
 
+    equalsOrWithinRange(that: PropertyFacet) {
 
+        if (this.values.length !== that.values.length) {
+            return false;
+        }
+
+        let valueSetIsEqual = this.values.every((e) => that.values.find((f) => f.equalsOrWithinRange(e)))
+            && that.values.every((e) => this.values.find((f) => f.equalsOrWithinRange(e)));
+
+        return this.property.equals(that.property) && valueSetIsEqual;
+    }
 }
 
 @jsonObject
@@ -216,7 +244,7 @@ export class RangeQuery {
     @jsonMember(Property)
     property: Property
     @jsonMember(Range)
-    range: Range|void
+    range: Range | void
 
     constructor(property: Property, range: Range | void) {
         this.property = property;
@@ -231,6 +259,7 @@ export class Sort {
         this.property = property;
         this.order = order;
     }
+
     @jsonMember(Property)
     property: Property;
     @jsonMember(Number)
@@ -248,15 +277,17 @@ export class BaseQuery {
     namespaceFacets: number[];
     @jsonArrayMember(PropertyFacet)
     propertyFacets: PropertyFacet[];
-    constructor( searchText: string,
-                 propertyFacets: PropertyFacet[],
-                 categoryFacets: string[],
-                 namespaceFacets: number[]) {
+
+    constructor(searchText: string,
+                propertyFacets: PropertyFacet[],
+                categoryFacets: string[],
+                namespaceFacets: number[]) {
         this.searchText = searchText;
         this.propertyFacets = propertyFacets;
         this.categoryFacets = categoryFacets;
         this.namespaceFacets = namespaceFacets;
     }
+
     findPropertyFacet(property: Property): PropertyFacet {
         return Tools.findFirst(this.propertyFacets, (e) => e.property.title, property.title);
     }
@@ -279,11 +310,12 @@ export class BaseQuery {
 
     updateBaseQuery(base: BaseQuery): void {
         this.searchText = base.searchText;
-        this.propertyFacets = Tools.deepClone( base.propertyFacets);
-        this.categoryFacets = Tools.deepClone( base.categoryFacets);
-        this.namespaceFacets = Tools.deepClone( base.namespaceFacets);
+        this.propertyFacets = Tools.deepClone(base.propertyFacets);
+        this.categoryFacets = Tools.deepClone(base.categoryFacets);
+        this.namespaceFacets = Tools.deepClone(base.namespaceFacets);
     }
 }
+
 @jsonObject
 export class DocumentQuery extends BaseQuery {
     @jsonArrayMember(Property)
@@ -294,14 +326,15 @@ export class DocumentQuery extends BaseQuery {
     limit: number | null;
     @jsonMember(Number)
     offset: number | null;
-    constructor( searchText: string,
-                 propertyFacets: PropertyFacet[],
-                 categoryFacets: string[],
-                 namespaceFacets: number[],
-                 extraProperties: Property[],
-                 sorts: Sort[],
-                 limit: number,
-                 offset: number) {
+
+    constructor(searchText: string,
+                propertyFacets: PropertyFacet[],
+                categoryFacets: string[],
+                namespaceFacets: number[],
+                extraProperties: Property[],
+                sorts: Sort[],
+                limit: number,
+                offset: number) {
         super(searchText, propertyFacets, categoryFacets, namespaceFacets);
 
         this.extraProperties = extraProperties;
@@ -310,6 +343,7 @@ export class DocumentQuery extends BaseQuery {
         this.offset = offset;
     }
 }
+
 @jsonObject
 export class StatQuery extends BaseQuery {
     statsProperties: Property[]
@@ -324,18 +358,20 @@ export class StatQuery extends BaseQuery {
 
     }
 }
+
 @jsonObject
 export class FacetsQuery extends BaseQuery {
     @jsonArrayMember(RangeQuery)
     rangeQueries: RangeQuery[]
     @jsonArrayMember(PropertyValueQuery)
     propertyValueQueries: PropertyValueQuery[]
-    constructor( searchText: string,
-                 propertyFacets: PropertyFacet[],
-                 categoryFacets: string[],
-                 namespaceFacets: number[],
-                 rangeQueries: RangeQuery[],
-                 propertyValueQueries: PropertyValueQuery[]) {
+
+    constructor(searchText: string,
+                propertyFacets: PropertyFacet[],
+                categoryFacets: string[],
+                namespaceFacets: number[],
+                rangeQueries: RangeQuery[],
+                propertyValueQueries: PropertyValueQuery[]) {
         super(searchText, propertyFacets, categoryFacets, namespaceFacets);
         this.rangeQueries = rangeQueries;
         this.propertyValueQueries = propertyValueQueries;
@@ -396,18 +432,18 @@ export class PropertyWithURL extends Property implements ElementWithURL {
 @jsonObject
 export class ValueCount {
     @jsonMember({deserializer: value => Tools.deserializeValue(value)})
-    value: string|number|Date|null;
+    value: string | number | Date | null;
     @jsonMember(MWTitleWithURL)
-    mwTitle: MWTitleWithURL|null;
+    mwTitle: MWTitleWithURL | null;
     @jsonMember(Range)
-    range: Range|null;
+    range: Range | null;
     @jsonMember(Number)
     count: number;
 
     compare(valueCount: ValueCount) {
-        if (this.value && valueCount.value ) {
+        if (this.value && valueCount.value) {
             return this.value.toLocaleString().localeCompare(valueCount.value.toLocaleString());
-        } else if(this.mwTitle && valueCount.mwTitle) {
+        } else if (this.mwTitle && valueCount.mwTitle) {
             return this.mwTitle.title.toLocaleString().localeCompare(valueCount.mwTitle.title.toLocaleString());
         }
         return 0;
@@ -440,13 +476,12 @@ export class FacetResponse {
 }
 
 
-
 @jsonObject
 export class PropertyFacetValues {
     @jsonMember(PropertyWithURL)
     property: PropertyWithURL
 
-    @jsonArrayMember(String,{deserializer: Tools.arrayDeserializer})
+    @jsonArrayMember(String, {deserializer: Tools.arrayDeserializer})
     values: string[] | number[] | boolean[] | Date[] | MWTitleWithURL[]
 }
 

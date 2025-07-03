@@ -23,6 +23,22 @@ class FacetValue {
         $this->range = $range;
     }
 
+    public static function allValues() {
+        return new FacetValue();
+    }
+
+    public static function fromValue($value) {
+        return new FacetValue($value);
+    }
+
+    public static function fromTitle(MWTitle $MWTitle) {
+        return new FacetValue(null, $MWTitle);
+    }
+
+    public static function fromRange(Range $range) {
+        return new FacetValue(null, null, $range);
+    }
+
     /**
      * @return string|null
      */
