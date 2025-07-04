@@ -13,7 +13,7 @@ class PropertyFacet {
 
     /**
      * PropertyFacet constructor.
-     * @param Property $property
+     * @param \DIQA\FacetedSearch2\Model\Common\Property $property
      * @param array $values
      */
     public function __construct(Property $property, array $values = [])
@@ -23,7 +23,7 @@ class PropertyFacet {
     }
 
     /**
-     * @return Property
+     * @return \DIQA\FacetedSearch2\Model\Common\Property
      */
     public function getProperty(): Property
     {
@@ -31,7 +31,7 @@ class PropertyFacet {
     }
 
     /**
-     * @param Property $property
+     * @param \DIQA\FacetedSearch2\Model\Common\Property $property
      * @return PropertyFacet
      */
     public function setProperty(Property $property): PropertyFacet

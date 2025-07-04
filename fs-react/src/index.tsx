@@ -100,7 +100,6 @@ function App() {
                     />,
                     <SaveSearchLink key={'saveSearchLink'}
                                     documentQuery={currentDocumentsQueryBuilder.build()}
-                                    facetQuery={currentFacetsQueryBuilder.build()}
                     />
                 ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
                     ['sortView', 'searchView', 'saveSearchLink']))}
@@ -181,8 +180,8 @@ function applyQueryConstraints() {
         currentDocumentsQueryBuilder.withQueryFromJson(atob(q));
         currentFacetsQueryBuilder.updateBaseQuery(currentDocumentsQueryBuilder.build());
     }
-    wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: Property) => {
-        currentDocumentsQueryBuilder.withExtraProperty(p);
+    wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: any) => {
+        currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
 }
 

@@ -11,7 +11,7 @@ class Sort {
 
     /**
      * Sort constructor.
-     * @param Property $property
+     * @param \DIQA\FacetedSearch2\Model\Common\Property $property
      * @param int $order
      */
     public function __construct(Property $property, int $order)
@@ -21,7 +21,7 @@ class Sort {
     }
 
     /**
-     * @return Property
+     * @return \DIQA\FacetedSearch2\Model\Common\Property
      */
     public function getProperty(): Property
     {

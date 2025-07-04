@@ -23,6 +23,9 @@ function PopupComponent(prop: {
         console.warn('fs2gShowFileInOverlay can either be set to "false" or to an array of file types, eg. ["pdf","png",... ].')
         return;
     }
+    if (fileTypesToShowInOverlay === false) {
+        return;
+    }
 
     let previewPopup;
     let previewUrlPropertyValues = prop.doc.getPropertyFacetValues("Diqa import fullpath")
@@ -31,7 +34,7 @@ function PopupComponent(prop: {
         previewUrlPropertyValues = oldPreviewUrlPropertyValues ?? previewUrlPropertyValues;
     }
 
-    if (fileTypesToShowInOverlay !== false && previewUrlPropertyValues.values.length > 0
+    if (previewUrlPropertyValues.values.length > 0
         && fileTypesToShowInOverlay.includes(ConfigUtils.getFileExtension(previewUrlPropertyValues.values[0] as string))) {
         previewPopup = <span>
             <span

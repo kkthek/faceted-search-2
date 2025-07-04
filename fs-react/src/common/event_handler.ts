@@ -209,12 +209,12 @@ class EventHandler {
             return;
         }
 
-        let propertyValueConstraint = new PropertyValueQuery(property,null,null,null);
-        if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueConstraint)) {
+        let propertyValueQuery = PropertyValueQuery.forAllValues(property);
+        if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueQuery)) {
             return;
         }
 
-        this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueConstraint);
+        this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueQuery);
         this.updateFacets();
     }
 
@@ -270,8 +270,9 @@ class EventHandler {
 
     private updateFacetValuesForProperties(properties: Property[], facetValueLimit: number = null) {
 
-        properties.forEach(property => {
-            if (!property.isRangeProperty()) {
+        properties
+            .filter(p => !p.isRangeProperty())
+            .forEach(property => {
 
                 this.currentFacetsQueryBuilder.withPropertyValueQuery(
                     new PropertyValueQuery(
@@ -280,13 +281,14 @@ class EventHandler {
                         null,
                         null));
 
-            }
-        })
+
+            })
 
         let rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
-        properties.forEach(property => {
-            rangeProperties = property.isRangeProperty() ? [property, ...rangeProperties] : rangeProperties;
-        });
+        properties
+            .filter(p => p.isRangeProperty())
+            .forEach(property => rangeProperties.push(property));
+
         this.requestRanges(rangeProperties)
             .then(() => this.updateFacets())
             .catch((e) => {

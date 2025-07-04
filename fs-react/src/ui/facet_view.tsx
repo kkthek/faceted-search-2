@@ -58,7 +58,7 @@ function FacetViewProperty(prop: {
     return <CustomTreeItem itemId={Tools.createItemIdForProperty(prop.property)}
                            label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
                            itemAction={() => {
-                               prop.eventHandler.onPropertyClick(prop.property.asProperty());
+                               prop.eventHandler.onPropertyClick(prop.property);
 
                            } }
                            actionIcon={facetsWithOr ? ChecklistIcon : null}
