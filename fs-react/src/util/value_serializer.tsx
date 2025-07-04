@@ -2,6 +2,7 @@ import React, {ReactElement} from "react";
 import {Datatype, MWTitleWithURL, PropertyFacetValues} from "../common/datatypes";
 import WikiLink from "../ui/wiki_link";
 import DisplayTools from "./display_tools";
+import Tools from "./tools";
 
 class ValueSerializer {
 
@@ -18,15 +19,15 @@ class ValueSerializer {
             items = mwTitles.map((title: MWTitleWithURL) => <WikiLink page={title}/>);
         } else if (pfv.property.type === Datatype.datetime) {
             let values = pfv.values as Date[];
-            items = values.map((date: Date) => <span>{DisplayTools.displayDate(date)}</span>);
+            items = values.map((date: Date) => <span key={Tools.secureUUIDV4()}>{DisplayTools.displayDate(date)}</span>);
         }  else if (pfv.property.type === Datatype.boolean) {
             let values = pfv.values as boolean[];
-            items = values.map((b: boolean) => <span>{b ? "true":"false"}</span>);
+            items = values.map((b: boolean) => <span key={Tools.secureUUIDV4()}>{b ? "true":"false"}</span>);
         } else {
             let values = pfv.values as any[];
-            items = values.map((value: any) => <span>{value}</span>);
+            items = values.map((value: any) => <span key={Tools.secureUUIDV4()}>{value}</span>);
         }
-        return <span>{ValueSerializer.join(items)}</span>;
+        return <span key={Tools.secureUUIDV4()}>{ValueSerializer.join(items)}</span>;
 
     }
 }
