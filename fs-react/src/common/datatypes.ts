@@ -70,6 +70,10 @@ export class PropertyValueQuery {
         return that.property.equals(this.property) && that.valueContains === this.valueContains
             && that.valueLimit === this.valueLimit && that.valueOffset === this.valueOffset;
     }
+
+    static forAllValues(property: Property) {
+        return new PropertyValueQuery(property, null, null, null);
+    }
 }
 
 @jsonObject
@@ -194,7 +198,7 @@ export class PropertyFacet {
     constructor(property: Property,
                 values: FacetValue[]
     ) {
-        this.property = property;
+        this.property = property instanceof PropertyWithURL ? (property as PropertyWithURL).asProperty() : property;
         this.values = values;
     }
 
@@ -308,6 +312,12 @@ export class BaseQuery {
         return (this.propertyFacets || []).length > 0;
     }
 
+    getRangeProperties(): Property[] {
+        return this.propertyFacets
+            .map((e) => e.property)
+            .filter(p => p.isRangeProperty());
+    }
+
     updateBaseQuery(base: BaseQuery): void {
         this.searchText = base.searchText;
         this.propertyFacets = Tools.deepClone(base.propertyFacets);
@@ -377,10 +387,6 @@ export class FacetsQuery extends BaseQuery {
         this.propertyValueQueries = propertyValueQueries;
     }
 
-    getRangeProperties(): Property[] {
-        return this.rangeQueries.map((e) => e.property)
-            .filter((e) => e.isRangeProperty());
-    }
 }
 
 
