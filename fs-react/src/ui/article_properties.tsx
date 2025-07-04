@@ -18,7 +18,9 @@ function ArticleProperties(prop: {
 
     function handleExpandClick() {
         const div = articlePropertiesDiv.current;
-        div.style.display = div.checkVisibility() ? 'none' : 'block';
+        const visible = div.checkVisibility();
+        div.style.display = visible ? 'none' : 'block';
+        if (visible) return;
         prop.client.getDocumentById(prop.doc.id).then((document) => {
             setDocumentById(document);
         })
