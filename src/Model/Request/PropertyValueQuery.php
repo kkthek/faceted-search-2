@@ -14,7 +14,7 @@ class PropertyValueQuery {
 
     /**
      * Property constructor.
-     * @param Property $property
+     * @param \DIQA\FacetedSearch2\Model\Common\Property $property
      * @param int|null $facetLimit
      * @param int|null $facetOffset
      * @param string|null $facetContains
@@ -31,7 +31,7 @@ class PropertyValueQuery {
     }
 
     /**
-     * @return Property
+     * @return \DIQA\FacetedSearch2\Model\Common\Property
      */
     public function getProperty(): Property
     {
