@@ -81,7 +81,8 @@ class SMWDBReader {
         $document->setPropertyValues($doc['smwh_properties'] ?? [])
                 ->setCategories($doc['smwh_categories']?? [])
                 ->setDirectCategories($doc['smwh_directcategories']?? [])
-                ->setBoost($options['smwh_boost_dummy']['boost'] ?? 1.0);
+                ->setBoost($options['smwh_boost_dummy']['boost'] ?? 1.0)
+                ->setFulltext($doc['smwh_full_text']);
 
         return $document;
     }
@@ -147,10 +148,8 @@ class SMWDBReader {
             $client = ConfigTools::getFacetedSearchClient();
             $metadata = $this->getDocumentMetadata($pageTitle);
             if (is_null($metadata)) return '';
-            $docData = $client->requestFileExtraction( file_get_contents($metadata['filePath']), $metadata['contentType'] );
-            if( array_key_exists('text', $docData) ) {
-                $text = $docData['text'] ?? '';
-            }
+            $text = $client->requestFileExtraction( file_get_contents($metadata['filePath']), $metadata['contentType'] );
+
         } catch( Exception $e ) {
             $messages[] = $e->getMessage();
             $text = $e->getMessage();
