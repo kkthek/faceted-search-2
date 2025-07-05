@@ -55,10 +55,16 @@ class Setup
 
         define('FS2_EXTENSION_VERSION', true);
 
-        global $fs2gFacetedSearchForMW;
-        if (!$fs2gFacetedSearchForMW) {
+        if (defined('ER_EXTENSION_VERSION')) {
+            // if old version is installed in parallel, keep the it the standard search and ignore the FS2 setting
             global $wgSpecialPages;
-            unset($wgSpecialPages['Search']);
+            $wgSpecialPages['Search'] = "DIQA\\FacetedSearch\\Specials\\FSFacetedSearchSpecial";
+        } else {
+            global $fs2gFacetedSearchForMW;
+            if (!$fs2gFacetedSearchForMW) {
+                global $wgSpecialPages;
+                unset($wgSpecialPages['Search']);
+            }
         }
 
         global $fs2gEnableIncrementalIndexer;
