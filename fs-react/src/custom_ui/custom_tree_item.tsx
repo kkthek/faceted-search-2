@@ -52,10 +52,11 @@ const CustomTreeItemRoot = styled(TreeItemRoot)<{
 }));
 
 const CustomTreeItemContent = styled(TreeItemContent)(({ theme }) => ({
-    marginBottom: theme.spacing(0.3),
+    marginBottom: theme.spacing(0),
     color: ((theme as any).vars || theme).palette.text.secondary,
     borderRadius: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    padding: theme.spacing(0.5),
+    paddingRight: theme.spacing(0),
     paddingLeft: `calc(${theme.spacing(1)} + var(--TreeView-itemChildrenIndentation) * var(--TreeView-itemDepth))`,
     fontWeight: theme.typography.fontWeightMedium,
     '&[data-expanded]': {
@@ -71,7 +72,7 @@ const CustomTreeItemContent = styled(TreeItemContent)(({ theme }) => ({
 }));
 
 const CustomTreeItemIconContainer = styled(TreeItemIconContainer)(({ theme }) => ({
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(0),
 }));
 
 const CustomTreeItem = React.forwardRef(function CustomTreeItem(
@@ -128,11 +129,12 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
                             display: 'flex',
                             flexGrow: 1,
                             alignItems: 'center',
-                            p: 0.5,
+                            p: 0,
                             pr: 0,
+                            mb: 0
                         }}
                     >
-                        {LabelIcon ? <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} /> : ''}
+                        {LabelIcon ? <Box component={LabelIcon} color="inherit" sx={{ mr: 2 }} /> : ''}
                         <Typography onClick={itemAction}
                             {...getLabelProps({
                                 variant: 'body2',
