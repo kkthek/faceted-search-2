@@ -1,6 +1,6 @@
-import React, {Dispatch, SetStateAction, useContext, useState} from "react";
-import {Property, PropertyValueCount,} from "../common/datatypes";
-import EventHandler, {SearchStateFacet} from "../common/event_handler";
+import React, {useContext, useState} from "react";
+import {Property, PropertyFacetCount, PropertyValueCount,} from "../common/datatypes";
+import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -11,9 +11,11 @@ import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
 import {WikiContext} from "../index";
 import QueryUtils from "../util/query_utils";
 import Tools from "../util/tools";
+import FacetProperty from "./facet_property";
 
 function SelectedFacets(prop: {
     propertyValueCount: PropertyValueCount
+    facetCount: PropertyFacetCount
     searchStateFacet: SearchStateFacet,
     eventHandler: EventHandler
     onOrDialogClick: (property: Property) => void
@@ -42,7 +44,10 @@ function SelectedFacets(prop: {
 
     return <CustomTreeItem key={prop.propertyValueCount.property.title}
                            itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
-                           label={prop.propertyValueCount.property.displayTitle}
+                           label={<FacetProperty
+                               displayTitle={prop.propertyValueCount.property.displayTitle}
+                               frequency={prop.facetCount.count}
+                           />}
                            action={() => {
                                if (!hasValue || itemlist.length === 0) {
                                    prop.eventHandler.onRemovePropertyFacet(propertyFacet)
@@ -58,6 +63,7 @@ function SelectedFacets(prop: {
 function SelectedFacetsView(prop: {
     client: Client
     searchStateFacet: SearchStateFacet,
+    searchStateDocument: SearchStateDocument,
     expandedFacets: string[],
     eventHandler: EventHandler
 }) {
@@ -76,15 +82,16 @@ function SelectedFacetsView(prop: {
         });
     }
 
-
+    const propertyFacetCounts = prop.searchStateDocument?.documentResponse.propertyFacetCounts;
     const facetValues = prop.searchStateFacet.facetsResponse.valueCounts.map((v, i) => {
 
             let query = prop.searchStateFacet.query;
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (!isSelectedFacet) return;
-
+            const facetCount = Tools.findFirstByPredicate(propertyFacetCounts, p => p.property.title === v.property.title);
             return <SelectedFacets key={v.property.title}
                                    propertyValueCount={v}
+                                   facetCount={facetCount}
                                    searchStateFacet={prop.searchStateFacet}
                                    eventHandler={prop.eventHandler}
                                    onOrDialogClick={onOrDialogClick}/>

@@ -119,6 +119,7 @@ function App() {
                     </Box>,
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
+                                        searchStateDocument={searchStateDocument}
                                         searchStateFacet={searchFacetState}
                                         expandedFacets={expandedFacets}
                                         eventHandler={eventHandler}

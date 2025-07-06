@@ -5,6 +5,7 @@ import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Tools from "../util/tools";
 import EventHandler from "../common/event_handler";
+import FacetProperty from "./facet_property";
 
 function SelectedFacetValues(prop: {
     query: BaseQuery,
@@ -36,7 +37,10 @@ function SelectedFacetValues(prop: {
         itemId={itemId}
         actionIcon={prop.removable ? DeleteIcon : null}
         action={() => prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet, facetValue)}
-        label={value + " (" + prop.propertyValueCount.count+")"}
+        label={<FacetProperty
+            displayTitle={value}
+            frequency={prop.propertyValueCount.count}
+        />}
         itemAction={() => prop.eventHandler.onValueClick(propertyFacet)}>
 
     </CustomTreeItem>

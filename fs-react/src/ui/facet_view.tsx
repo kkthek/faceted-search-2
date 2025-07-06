@@ -21,6 +21,7 @@ import {Typography} from "@mui/material";
 import Client from "../common/client";
 import QueryUtils from "../util/query_utils";
 import FacetExtensionPoint from "../extensions/facet_ep";
+import FacetProperty from "./facet_property";
 
 function FacetViewProperty(prop: {
     query: BaseQuery,
@@ -56,7 +57,10 @@ function FacetViewProperty(prop: {
                 !(prop.property.isRangeProperty() || prop.property.isBooleanProperty());
 
     return <CustomTreeItem itemId={Tools.createItemIdForProperty(prop.property)}
-                           label={prop.property.displayTitle + " ("+prop.propertyFacetCount?.count+")"}
+                           label={<FacetProperty
+                               displayTitle={prop.property.displayTitle}
+                               frequency={prop.propertyFacetCount?.count}
+                           />}
                            itemAction={() => {
                                prop.eventHandler.onPropertyClick(prop.property);
 
