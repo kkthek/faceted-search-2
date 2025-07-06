@@ -5,6 +5,7 @@ import {Box, Typography} from "@mui/material";
 import RoomIcon from '@mui/icons-material/Room';
 
 import GisDialog from "./gis_dialog";
+import CustomTreeItem from "../custom_ui/custom_tree_item";
 
 function GisFacet(prop: {
     client: Client
@@ -20,9 +21,9 @@ function GisFacet(prop: {
     };
 
     return <Box>
-        <Typography id={'fs-gis-button'} onClick={() => {
+        <CustomTreeItem itemId={'fs-gis-button'} label={'Open GIS-Browser'} actionIcon={RoomIcon}  onClick={() => {
             setOpenOrDialog(true);
-        }}><RoomIcon id={'fs-gis-icon'}/> Open GIS</Typography>
+        }} />
         <GisDialog open={openOrDialog}
                        client={prop.client}
                        handleClose={handleCloseFacetOrDialog}
