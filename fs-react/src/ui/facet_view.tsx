@@ -163,14 +163,14 @@ function FacetView(prop: {
         >
             {listItems}
             {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={'none'}></CustomTreeItem>: ''}
+            <FacetExtensionPoint key={'facetExtensionPoint'}
+                                 client={prop.client}
+                                 searchStateDocument={prop.searchStateDocument}
+                                 searchStateFacets={prop.searchStateFacets}
+                                 expandedFacets={prop.expandedFacets}
+                                 eventHandler={prop.eventHandler}
+            />
         </SimpleTreeView>
-        <FacetExtensionPoint key={'facetExtensionPoint'}
-                             client={prop.client}
-                             searchStateDocument={prop.searchStateDocument}
-                             searchStateFacets={prop.searchStateFacets}
-                             expandedFacets={prop.expandedFacets}
-                             eventHandler={prop.eventHandler}
-        />
         <FacetOrDialog open={openOrDialog.open}
                        client={prop.client}
                        handleClose={handleCloseFacetOrDialog}
