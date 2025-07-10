@@ -13,11 +13,7 @@ function FacetExtensionPoint(prop: {
 }) {
     return <Box>
         {/* Put your extension components here */}
-        <GisFacet client={prop.client}
-                  searchStateDocument={prop.searchStateDocument}
-                  searchStateFacets={prop.searchStateFacets}
-                  expandedFacets={prop.expandedFacets}
-                  eventHandler={prop.eventHandler}/>
+        <GisFacet searchStateDocument={prop.searchStateDocument} eventHandler={prop.eventHandler} />
     </Box>;
 }
 

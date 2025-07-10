@@ -15,7 +15,6 @@ import Tools from "../util/tools";
 
 function GisDialog(prop: {
     open: boolean,
-    client: Client,
     handleClose: () => void,
     selectedFacets: PropertyFacet[],
     eventHandler: EventHandler

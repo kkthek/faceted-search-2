@@ -1,34 +1,29 @@
-import React, {useState} from "react";
-import Client from "../common/client";
-import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
-import {Box, Typography} from "@mui/material";
+import React, {useContext, useState} from "react";
+import EventHandler, {SearchStateDocument} from "../common/event_handler";
+import {Box} from "@mui/material";
 import RoomIcon from '@mui/icons-material/Room';
 
 import GisDialog from "./gis_dialog";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
+import {WikiContext} from "../index";
 
 function GisFacet(prop: {
-    client: Client
     searchStateDocument: SearchStateDocument,
-    searchStateFacets: SearchStateFacet,
-    expandedFacets: string[],
     eventHandler: EventHandler
 }) {
-
+    let wikiContext = useContext(WikiContext);
     const [openOrDialog, setOpenOrDialog] = useState<boolean>(false);
-    const handleCloseFacetOrDialog = () => {
-        setOpenOrDialog(false);
-    };
 
     return <Box>
-        <CustomTreeItem itemId={'fs-gis-button'} label={'Open GIS-Browser'} actionIcon={RoomIcon}  onClick={() => {
-            setOpenOrDialog(true);
-        }} />
+        <CustomTreeItem itemId={'fs-gis-button'}
+                        label={wikiContext.msg('fs-open-gis-browser')}
+                        actionIcon={RoomIcon}
+                        onClick={() => setOpenOrDialog(true)} />
+
         <GisDialog open={openOrDialog}
-                       client={prop.client}
-                       handleClose={handleCloseFacetOrDialog}
-                       selectedFacets={prop.searchStateDocument.query.propertyFacets}
-                       eventHandler={prop.eventHandler}
+                   handleClose={() => setOpenOrDialog(false)}
+                   selectedFacets={prop.searchStateDocument.query.propertyFacets}
+                   eventHandler={prop.eventHandler}
         />
     </Box>;
 }

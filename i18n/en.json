@@ -33,5 +33,6 @@
 	"prefs-facetedsearch2": "FacetedSearch2",
 
 	"fs-gis-map-title": "GIS-Browser",
-	"fs-facet-gis": "Select a section of the map"
+	"fs-facet-gis": "Select a section of the map",
+	"fs-open-gis-browser": "Open GIS Browser"
 }
