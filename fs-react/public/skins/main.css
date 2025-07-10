@@ -1,3 +1,6 @@
+/**
+ General layout
+ */
 #fs-content {
     display: flex;
 }
@@ -10,30 +13,11 @@
 }
 
 #fs-facets > div {
-    margin: 10px;
+    margin: 5px;
 }
 div.fs-boxes {
     margin-top: 3px;
     display: flex;
-}
-
-div.fs-create-article {
-    margin-left: 20px;
-}
-
-div.promoted {
-    background: lightpink;
-}
-
-div.demoted {
-    background: lightgray;
-}
-
-div.fs-or-content {
-    width: 800px;
-    height: 500px;
-    padding: 20px;
-    overflow: auto;
 }
 
 
@@ -45,7 +29,7 @@ div.fs-or-content {
     }
 
     #fs-facets {
-        width: 35%;
+        width: 34%;
     }
 
     #fs-results {
@@ -95,6 +79,9 @@ div.fs-or-content {
 /**
  * Searchbar
  */
+div.fs-create-article {
+    margin-left: 20px;
+}
 
 
 /**
@@ -124,20 +111,52 @@ div.fs-or-content {
     margin-top: 15px;
 }
 
+div.promoted {
+    background: lightpink;
+}
+
+div.demoted {
+    background: lightgray;
+}
+
+#fs-result-view-number {
+    color: #666;
+}
+
 /**
  * Facets
  */
-
-#fs-facets-existing {
-    padding: 10px;
-}
-
 #fs-facets {
     display: flex;
     flex-direction: column;
 }
 
-#fs-selected-facets {
-    padding: 10px;
+.fs-facet-title {
+    color: #1B599B;
+    font-size: 1rem;
 }
 
+.fs-facet-count {
+    color: #666;
+    font-size: 1rem;
+}
+
+#fs-no-facet-selected {
+    color: #666;
+}
+
+/*
+ Dialogs
+ */
+div.fs-or-content {
+    width: 800px;
+    height: 500px;
+    padding: 20px;
+    overflow: auto;
+}
+
+
+/* global */
+#root a {
+    color: #1B599B;
+}

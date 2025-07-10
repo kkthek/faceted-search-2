@@ -115,7 +115,8 @@ function App() {
                 {Tools.reorder([
                     <Box key={'selectedFacetLabel'}>
                         <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
-                        {anyFacetSelected ? '' : "(" + wikiContext.msg('fs-no-facets-selected') + ")"}
+                        {anyFacetSelected ? '' :
+                            <span id={'fs-no-facet-selected'}>{"(" + wikiContext.msg('fs-no-facets-selected') + ")"}</span> }
                     </Box>,
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}

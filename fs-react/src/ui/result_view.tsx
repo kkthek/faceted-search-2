@@ -34,7 +34,7 @@ function ResultView(prop: {
     }
 
     return <div id={'fs-resultview'}>
-        <Typography>{wikiContext.msg('fs-results-from-to', from, to, prop.numResults)}</Typography>
+        <Typography id={'fs-result-view-number'}>{wikiContext.msg('fs-results-from-to', from, to, prop.numResults)}</Typography>
         <Divider/>
         <Stack>
             {listItems}

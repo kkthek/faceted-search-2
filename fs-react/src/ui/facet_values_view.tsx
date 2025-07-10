@@ -4,7 +4,7 @@ import DisplayTools from "../util/display_tools";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import Tools from "../util/tools";
 import EventHandler from "../common/event_handler";
-import FacetProperty from "./facet_property";
+import FacetWithCount from "./facet_with_count";
 
 function FacetValues(prop: {
     query: BaseQuery,
@@ -29,9 +29,9 @@ function FacetValues(prop: {
 
     let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
     return <CustomTreeItem itemId={itemId}
-                           label={<FacetProperty
+                           label={<FacetWithCount
                                displayTitle={value}
-                               frequency={prop.propertyValueCount.count}
+                               count={prop.propertyValueCount.count}
                            />}
                            itemAction={() => {
                                prop.eventHandler.onValueClick(propertyFacet);
