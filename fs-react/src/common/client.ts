@@ -74,8 +74,8 @@ class Client {
         return deserializer.parse(json);
     }
 
-    async getCustomEndpoint(path: string): Promise<any> {
-        const response = await fetch(this.baseUrl + path, {
+    async getCustomEndpoint(url: string): Promise<any> {
+        const response = await fetch(url, {
             ...HTTP_REQUEST_OPTIONS
         });
         await this.handleErrorIfAny(response);

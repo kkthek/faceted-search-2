@@ -38,8 +38,9 @@ let globals: any = {};
 if (isInWikiContext) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
-    solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
     globals.mwApiUrl = wgServer + wgScriptPath + "/api.php";
+    globals.mwRestUrl = wgServer + wgScriptPath + "/rest.php";
+    solrProxyUrl = globals.mwRestUrl + "/FacetedSearch2/v1/proxy";
     wikiContext = new WikiContextInterface(
         browserWindow.mw.config.values,
         browserWindow.mw.user.options.values,
@@ -49,6 +50,7 @@ if (isInWikiContext) {
     );
 } else {
     solrProxyUrl = "http://localhost:9000";
+    globals.mwRestUrl = solrProxyUrl;
     globals.mwApiUrl = solrProxyUrl + '/api.php';
 }
 

@@ -76,7 +76,7 @@ try {
         echo json_encode($client->requestFacets($query));
     } else if (endsWith($url, '/FacetedSearch2/v1/settings')) {
         echo json_encode(getConfigForDevContext());
-    } else if (endsWith($url, '/FacetedSearch2/v1/sample-group-hierarchy')) {
+    } else if (endsWith($url, '/sample-group-hierarchy')) {
         echo json_encode([
             'Group3' => [ 'Markus', 'Horst' ],
             'Group4' => ['Peter', 'Timo']
