@@ -6,6 +6,7 @@ import CustomTreeItem from "../custom_ui/custom_tree_item";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import {Box, Typography} from "@mui/material";
 import ConfigUtils from "../util/config_utils";
+import FacetWithCount from "./facet_with_count";
 
 function FacetViewCategory( prop: {
     title: string,
@@ -17,7 +18,7 @@ function FacetViewCategory( prop: {
     let title = prop.categoryFacetCount.displayTitle != '' ? prop.categoryFacetCount.displayTitle : prop.title;
     let count = prop.categoryFacetCount?.count;
     return <CustomTreeItem itemId={prop.categoryFacetCount.category}
-                           label={title + " (" + count + ")"}
+                           label={<FacetWithCount displayTitle={title} count={count}/>}
                            onClick={() => prop.eventHandler.onCategoryClick(prop.title)}
                      className={'fs-facets'}>
 
@@ -53,7 +54,7 @@ function CategoryView( prop: {
     );
 
     return <Box id={'fs-category-view'}>
-        <Typography>{wikiContext.msg('fs-available-categories')}</Typography>
+        <Typography sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-categories')}</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
             {listItems}
             {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={'none'}></CustomTreeItem>: ''}

@@ -11,7 +11,7 @@ import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
 import {WikiContext} from "../index";
 import QueryUtils from "../util/query_utils";
 import Tools from "../util/tools";
-import FacetProperty from "./facet_property";
+import FacetWithCount from "./facet_with_count";
 
 function SelectedFacets(prop: {
     propertyValueCount: PropertyValueCount
@@ -44,9 +44,9 @@ function SelectedFacets(prop: {
 
     return <CustomTreeItem key={prop.propertyValueCount.property.title}
                            itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
-                           label={<FacetProperty
+                           label={<FacetWithCount
                                displayTitle={prop.propertyValueCount.property.displayTitle}
-                               frequency={prop.facetCount.count}
+                               count={prop.facetCount.count}
                            />}
                            action={() => {
                                if (!hasValue || itemlist.length === 0) {

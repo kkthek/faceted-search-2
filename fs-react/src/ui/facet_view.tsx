@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useContext, useState} from "react";
+import React, {useContext, useState} from "react";
 import {
     BaseQuery,
     FacetResponse,
@@ -21,7 +21,7 @@ import {Typography} from "@mui/material";
 import Client from "../common/client";
 import QueryUtils from "../util/query_utils";
 import FacetExtensionPoint from "../extensions/facet_ep";
-import FacetProperty from "./facet_property";
+import FacetWithCount from "./facet_with_count";
 
 function FacetViewProperty(prop: {
     query: BaseQuery,
@@ -57,9 +57,9 @@ function FacetViewProperty(prop: {
                 !(prop.property.isRangeProperty() || prop.property.isBooleanProperty());
 
     return <CustomTreeItem itemId={Tools.createItemIdForProperty(prop.property)}
-                           label={<FacetProperty
+                           label={<FacetWithCount
                                displayTitle={prop.property.displayTitle}
-                               frequency={prop.propertyFacetCount?.count}
+                               count={prop.propertyFacetCount?.count}
                            />}
                            itemAction={() => {
                                prop.eventHandler.onPropertyClick(prop.property);
@@ -154,7 +154,7 @@ function FacetView(prop: {
 
 
     return <div id={'fs-facetview'}>
-        <Typography>{wikiContext.msg('fs-available-properties')}</Typography>
+        <Typography sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-properties')}</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'}
                         disableSelection
                         disabledItemsFocusable

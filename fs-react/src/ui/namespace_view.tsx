@@ -3,6 +3,7 @@ import React, {useContext, useState} from "react";
 import {WikiContext} from "../index";
 import EventHandler, {SearchStateDocument} from "../common/event_handler";
 import {ToggleButton, ToggleButtonGroup} from "@mui/material";
+import FacetWithCount from "./facet_with_count";
 
 function NamespaceFacet(prop: {
     namespaceFacetCount: NamespaceFacetCount | null,
@@ -13,12 +14,14 @@ function NamespaceFacet(prop: {
 
 
     let namespaceText = namespaces[prop.namespaceFacetCount.namespace] ?? 'unknown namespace';
-    let countText = prop.namespaceFacetCount.count > 0 ? "("+prop.namespaceFacetCount.count+")" : '';
+    let countText = prop.namespaceFacetCount.count > 0 ? prop.namespaceFacetCount.count : null;
 
     namespaceText = namespaceText === '' ? 'Main' : namespaceText;
     return <ToggleButton sx={{marginTop: '3px'}}
                          size={'small'}
-                         value={prop.namespaceFacetCount.namespace}>{countText}&nbsp;{namespaceText}</ToggleButton>
+                         value={prop.namespaceFacetCount.namespace}>
+        <FacetWithCount displayTitle={namespaceText} count={countText}/>
+    </ToggleButton>
 }
 
 function NamespaceView(prop: {
