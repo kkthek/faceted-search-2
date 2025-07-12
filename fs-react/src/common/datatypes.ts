@@ -244,19 +244,6 @@ export class PropertyFacet {
 }
 
 @jsonObject
-export class RangeQuery {
-    @jsonMember(Property)
-    property: Property
-    @jsonMember(Range)
-    range: Range | void
-
-    constructor(property: Property, range: Range | void) {
-        this.property = property;
-        this.range = range;
-    }
-}
-
-@jsonObject
 export class Sort {
 
     constructor(property: Property, order: Order) {
@@ -371,8 +358,8 @@ export class StatQuery extends BaseQuery {
 
 @jsonObject
 export class FacetsQuery extends BaseQuery {
-    @jsonArrayMember(RangeQuery)
-    rangeQueries: RangeQuery[]
+    @jsonArrayMember(Property)
+    rangeQueries: Property[]
     @jsonArrayMember(PropertyValueQuery)
     propertyValueQueries: PropertyValueQuery[]
 
@@ -380,7 +367,7 @@ export class FacetsQuery extends BaseQuery {
                 propertyFacets: PropertyFacet[],
                 categoryFacets: string[],
                 namespaceFacets: number[],
-                rangeQueries: RangeQuery[],
+                rangeQueries: Property[],
                 propertyValueQueries: PropertyValueQuery[]) {
         super(searchText, propertyFacets, categoryFacets, namespaceFacets);
         this.rangeQueries = rangeQueries;

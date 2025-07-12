@@ -78,11 +78,17 @@ class SolrRequestClient implements FacetedSearchClient
             $queryParams['facet.field'][] = Helper::generateSOLRPropertyForSearch($v->getProperty()->getTitle(), $v->getProperty()->getType());
         }
 
+        $statsQuery = new StatsQuery();
+        $statsQuery->setStatsProperties($q->getRangeQueries());
+        $statsResponse = $this->requestStats($statsQuery);
+
         $facetQueries = [];
-        foreach ($q->getRangeQueries() as $p) {
-            $property = Helper::generateSOLRPropertyForSearch($p->property->title, $p->property->type);
-            $range = self::encodeRange($p->range, $p->property->type);
-            $facetQueries[] = $property . ":[" . $range . "]";
+        foreach ($statsResponse->getStats() as $stat) {
+            $property = Helper::generateSOLRPropertyForSearch($stat->property->title, $stat->property->type);
+            foreach($stat->clusters as $range) {
+                $encodedRange = self::encodeRange($range, $stat->property->type);
+                $facetQueries[] = $property . ":[" . $encodedRange . "]";
+            }
         }
         $queryParams['facet.query'] = $facetQueries;
         $response = new SolrResponseParser($this->requestSOLR($queryParams));

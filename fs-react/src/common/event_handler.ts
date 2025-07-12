@@ -3,14 +3,13 @@ import FacetQueryBuilder from "./facet_query_builder";
 import {
     BaseQuery,
     DocumentsResponse,
-    FacetResponse, FacetValue,
+    FacetResponse,
+    FacetValue,
     Property,
     PropertyFacet,
     PropertyValueQuery,
-    RangeQuery,
     Sort
 } from "./datatypes";
-import StatQueryBuilder from "./stat_query_builder";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
 import Tools from "../util/tools";
@@ -135,18 +134,17 @@ class EventHandler {
     onValuesClick(propertyFacets: PropertyFacet[]) {
 
         if (propertyFacets.length === 0) return;
-        let properties = propertyFacets.map(pf => pf.getProperty());
-        properties = Tools.createUniqueArray(properties, (p) => p.title);
 
-        properties.forEach(property => {
+        propertyFacets.forEach((pf) => {
             this.currentDocumentsQueryBuilder
                 .withOffset(0)
-                .clearFacetsForProperty(property);
+                .clearFacetsForProperty(pf.property)
+                .withPropertyFacet(pf);
         });
 
-        propertyFacets.forEach((pf) => this.currentDocumentsQueryBuilder.withPropertyFacet(pf));
-
         this.updateDocuments();
+
+        let properties = propertyFacets.map(pf => pf.getProperty());
         properties.forEach(property => {
             this.expandFacet(property.getItemId());
         });
@@ -284,44 +282,19 @@ class EventHandler {
 
             })
 
-        let rangeProperties = this.currentFacetsQueryBuilder.build().getRangeProperties();
         properties
             .filter(p => p.isRangeProperty())
-            .forEach(property => rangeProperties.push(property));
-
-        this.requestRanges(rangeProperties)
-            .then(() => this.updateFacets())
-            .catch((e) => {
-                console.error("Requesting new ranges failed");
-                console.error(e);
-                this.setError(e.message);
+            .forEach(p => {
+                this.currentFacetsQueryBuilder.clearRangeQueriesForProperty(p);
+                this.currentFacetsQueryBuilder.withRangeQuery(p);
             });
+
+        this.updateFacets();
 
     }
 
     private updateFacetValuesForProperty(property: Property, facetValueLimit: number = null) {
         this.updateFacetValuesForProperties([property], facetValueLimit);
-    }
-
-    private async requestRanges(properties: Property[]) {
-
-        if (properties.length === 0) {
-            return;
-        }
-
-        const sqb = new StatQueryBuilder();
-        sqb.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
-        properties.forEach((p) => sqb.withStatField(p));
-
-        let response = await this.client.searchStats(sqb.build());
-        response.stats.forEach((stat) => {
-
-            this.currentFacetsQueryBuilder.clearRangeQueriesForProperty(stat.property);
-            stat.clusters.forEach((range) => {
-                this.currentFacetsQueryBuilder.withRangeQuery(new RangeQuery(stat.property, range));
-            });
-        });
-
     }
 
     private updateDocuments() {
