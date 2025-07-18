@@ -6,7 +6,7 @@ import ValueSerializer from "../util/value_serializer";
 import Client from "../common/client";
 import {Button, Table, TableBody, TableCell, TableRow} from "@mui/material";
 
-function ArticleProperties(prop: {
+const ArticleProperties = function ArticleProperties(prop: {
     doc: Document,
     client: Client
 }) {
@@ -14,21 +14,21 @@ function ArticleProperties(prop: {
     let showArticleProperties = wikiContext.config['fs2gShowArticleProperties'];
     if (!showArticleProperties) return;
     let articlePropertiesDiv = useRef<any>(null);
-    const [documentById, setDocumentById] = useState((): Document => null);
+    const [document, setDocument] = useState((): Document => null);
 
     function handleExpandClick() {
         const div = articlePropertiesDiv.current;
         const visible = div.checkVisibility();
         div.style.display = visible ? 'none' : 'block';
-        if (visible) return;
+        if (visible || document !== null) return;
         prop.client.getDocumentById(prop.doc.id).then((document) => {
-            setDocumentById(document);
+            setDocument(document);
         })
     }
 
     let rows: ReactElement[] = [];
-    if (documentById !== null) {
-        rows = documentById.propertyFacets
+    if (document !== null) {
+        rows = document.propertyFacets
             .sort((a, b) => a.property.title.localeCompare(b.property.title))
             .map((pfv) => {
             return <Row key={'article-properties-'+prop.doc.id+pfv.property.title} pfv={pfv}/>
@@ -43,7 +43,7 @@ function ArticleProperties(prop: {
             </Table>
         </div>
     </div>;
-}
+};
 
 function Row(prop: {pfv: PropertyFacetValues}) {
     return <TableRow>

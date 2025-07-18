@@ -3,12 +3,12 @@ import React from "react";
 
 function FacetWithCount(prop: {
     displayTitle: string,
-    count: number|void
+    count?: number
 }) {
-    return <span>
+    return <React.Fragment>
         <span className={'fs-facet-title'}>{prop.displayTitle}</span>
         {prop.count ? <span className={'fs-facet-count'}>&nbsp;({prop.count})</span> : ''}
-    </span>;
+    </React.Fragment>;
 }
 
 export default FacetWithCount;

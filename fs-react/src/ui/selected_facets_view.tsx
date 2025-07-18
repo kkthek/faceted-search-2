@@ -32,10 +32,8 @@ function SelectedFacets(prop: {
     const itemlist = prop.propertyValueCount.values.map((v,i ) => {
 
         return <SelectedFacetValues key={prop.propertyValueCount.property.title + i}
-                     query={prop.searchStateFacet.query}
                      selectedPropertyFacet={propertyFacet}
                      propertyValueCount={v}
-                     property={prop.propertyValueCount.property}
                      removable={hasValue}
                      eventHandler={prop.eventHandler}
                      index={i}

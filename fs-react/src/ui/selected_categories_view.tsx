@@ -4,6 +4,7 @@ import {WikiContext} from "../index";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FacetWithCount from "./facet_with_count";
 
 
 function SelectedCategoriesView(prop: {
@@ -21,7 +22,10 @@ function SelectedCategoriesView(prop: {
             return  <CustomTreeItem key={v.category}
                                     itemId={v.category}
                                     actionIcon={DeleteIcon}
-                                    label={v.category}
+                                    label={<FacetWithCount
+                                        displayTitle={v.category}
+                                        count={v.count}
+                                    />}
                                     action={() => prop.eventHandler.onCategoryRemoveClick(v.category)} />
         }
     );

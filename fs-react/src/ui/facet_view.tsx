@@ -162,7 +162,9 @@ function FacetView(prop: {
                         onItemExpansionToggle={handleItemExpansionToggle}
         >
             {listItems}
-            {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={'none'}></CustomTreeItem>: ''}
+            {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={<FacetWithCount
+                displayTitle={'none'}
+            />}></CustomTreeItem>: ''}
             <FacetExtensionPoint key={'facetExtensionPoint'}
                                  client={prop.client}
                                  searchStateDocument={prop.searchStateDocument}

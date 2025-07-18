@@ -1,4 +1,4 @@
-import {BaseQuery, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import {FacetValue, PropertyFacet, ValueCount} from "../common/datatypes";
 import React from "react";
 import DisplayTools from "../util/display_tools";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
@@ -8,9 +8,7 @@ import EventHandler from "../common/event_handler";
 import FacetWithCount from "./facet_with_count";
 
 function SelectedFacetValues(prop: {
-    query: BaseQuery,
     selectedPropertyFacet: PropertyFacet,
-    property: Property
     propertyValueCount: ValueCount | null,
     eventHandler: EventHandler
     removable: boolean
@@ -18,13 +16,13 @@ function SelectedFacetValues(prop: {
     index: number
 }) {
 
-    if (prop.propertyValueCount === null || !prop.property) {
+    if (prop.propertyValueCount === null || !prop.selectedPropertyFacet) {
         return;
     }
 
-    let value = DisplayTools.serializeFacetValue(prop.property, prop.propertyValueCount);
+    let property = prop.selectedPropertyFacet.property;
+    let value = DisplayTools.serializeFacetValue(property, prop.propertyValueCount);
 
-    let property = prop.property;
     let facetValue = new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
     let propertyFacet = new PropertyFacet(
         property,
