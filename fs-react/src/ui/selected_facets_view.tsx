@@ -67,18 +67,10 @@ function SelectedFacetsView(prop: {
 }) {
     if (!prop.searchStateFacet) return;
 
-    const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
-
-    const handleCloseFacetOrDialog = () => {
-        setOpenOrDialog(new ORDialogInput());
-    };
-
-    const onOrDialogClick = function(p: Property) {
-        let query = QueryUtils.prepareQueryWithoutFacet(prop.searchStateFacet.query, p);
-        prop.client.searchFacets(query).then((facetResponse) => {
-            setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
-        });
-    }
+    const [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick] = ORDialogInput.createORDialogState(
+        prop.searchStateFacet.query,
+        prop.client
+    );
 
     const propertyFacetCounts = prop.searchStateDocument?.documentResponse.propertyFacetCounts;
     const facetValues = prop.searchStateFacet.facetsResponse.valueCounts.map((v, i) => {

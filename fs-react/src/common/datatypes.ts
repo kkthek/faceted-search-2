@@ -342,21 +342,6 @@ export class DocumentQuery extends BaseQuery {
 }
 
 @jsonObject
-export class StatQuery extends BaseQuery {
-    statsProperties: Property[]
-
-    constructor(searchText: string,
-                propertyFacets: PropertyFacet[],
-                categoryFacets: string[],
-                namespaceFacets: number[],
-                statsProperties: Property[]) {
-        super(searchText, propertyFacets, categoryFacets, namespaceFacets);
-        this.statsProperties = statsProperties;
-
-    }
-}
-
-@jsonObject
 export class FacetsQuery extends BaseQuery {
     @jsonArrayMember(Property)
     rangeQueries: Property[]

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext} from "react";
 import {
     BaseQuery,
     FacetResponse,
@@ -19,7 +19,6 @@ import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
 import {Typography} from "@mui/material";
 import Client from "../common/client";
-import QueryUtils from "../util/query_utils";
 import FacetExtensionPoint from "../extensions/facet_ep";
 import FacetWithCount from "./facet_with_count";
 
@@ -103,20 +102,10 @@ function FacetView(prop: {
     let wikiContext = useContext(WikiContext);
     let shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fs2gShownFacets'], prop.searchStateDocument.query);
 
-    const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
-
-    const handleCloseFacetOrDialog = () => {
-        setOpenOrDialog(new ORDialogInput());
-    };
-
-
-    const onOrDialogClick = function(p: Property) {
-
-        let query = QueryUtils.prepareQueryWithoutFacet(prop.searchStateDocument.query, p);
-        prop.client.searchFacets(query).then((facetResponse) => {
-            setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
-        });
-    }
+    const [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick] = ORDialogInput.createORDialogState(
+        prop.searchStateDocument.query,
+        prop.client
+    );
 
     const listItems = propertyFacetCounts
         .filter((facetCount) => shownFacets.includes(facetCount.property.title) || shownFacets.length === 0 )

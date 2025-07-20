@@ -12,7 +12,6 @@ import {
 } from "./datatypes";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
-import Tools from "../util/tools";
 import {WikiContextInterface} from "./wiki_context";
 
 export interface SearchStateDocument {

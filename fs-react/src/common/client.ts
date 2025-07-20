@@ -4,14 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {
-    DocumentQuery,
-    FacetsQuery,
-    DocumentsResponse,
-    FacetResponse,
-    StatsResponse,
-    StatQuery, Document
-} from "./datatypes";
+import {Document, DocumentQuery, DocumentsResponse, FacetResponse, FacetsQuery} from "./datatypes";
 import {TypedJSON} from "typedjson";
 
 const HTTP_REQUEST_OPTIONS: any = {
@@ -48,17 +41,6 @@ class Client {
         });
         await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(Document);
-        const json = await response.json();
-        return deserializer.parse(json);
-    }
-
-    async searchStats(query: StatQuery): Promise<StatsResponse> {
-        const response = await fetch(this.baseUrl + "/stats", {
-            ...HTTP_REQUEST_OPTIONS,
-            body: JSON.stringify(query)
-        });
-        await this.handleErrorIfAny(response);
-        const deserializer = new TypedJSON(StatsResponse);
         const json = await response.json();
         return deserializer.parse(json);
     }
