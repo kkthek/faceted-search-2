@@ -142,6 +142,9 @@ export class FacetValue {
         this.range = range;
     }
 
+    static fromValueCount(valueCount: ValueCount) {
+        return new FacetValue(valueCount.value, valueCount.mwTitle, valueCount.range);
+    }
 
     equals(that: FacetValue) {
 
@@ -572,6 +575,16 @@ export class DocumentsResponse {
     containsNamespace(ns: number): boolean {
         return Tools.findFirst(this.namespaceFacetCounts, (e) => e.namespace.toString(), ns.toString()) != null;
     }
+
+    getPropertyFacetCount(property: Property) {
+        return Tools.findFirstByPredicate(this.propertyFacetCounts, p => p.property.title === property.title);
+    }
+
+    getPropertyFacetCountByItemId(itemId: string) {
+        return Tools.findFirstByPredicate(this.propertyFacetCounts,
+            (pfc) => pfc.property.getItemId() === itemId);
+    }
+
 }
 
 @jsonObject

@@ -72,14 +72,14 @@ function SelectedFacetsView(prop: {
         prop.client
     );
 
-    const propertyFacetCounts = prop.searchStateDocument?.documentResponse.propertyFacetCounts;
+    const documentResponse = prop.searchStateDocument?.documentResponse
     const facetValues = prop.searchStateFacet.facetsResponse.valueCounts.map((v, i) => {
 
             let query = prop.searchStateFacet.query;
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (!isSelectedFacet) return;
-            if (!propertyFacetCounts) return;
-            const facetCount = Tools.findFirstByPredicate(propertyFacetCounts, p => p.property.title === v.property.title);
+            if (!documentResponse) return;
+            const facetCount = documentResponse.getPropertyFacetCount(v.property);
             return <SelectedFacets key={v.property.title}
                                    propertyValueCount={v}
                                    facetCount={facetCount}
