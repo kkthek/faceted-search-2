@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import {WikiContext} from "../index";
-import {Box, InputLabel, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
-import DocumentQueryBuilder from "../common/document_query_builder";
+import {Box, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 import {DocumentQuery} from "../common/datatypes";
 import EventHandler from "../common/event_handler";
 
@@ -16,7 +15,7 @@ class DropdownEntry {
     }
 
     static createEntries(categoryFilters: any) {
-        let entries = [];
+        const entries = [];
         for(let category in categoryFilters) {
             let id = category === '' ? '-no-filter-' : category;
             let label = categoryFilters[category];
@@ -37,16 +36,16 @@ function CategoryDropdown(prop: {
     documentQuery: DocumentQuery,
     eventHandler: EventHandler
 }) {
-    let wikiContext = useContext(WikiContext);
-    let categoryFilter = wikiContext.config['fs2gCategoryFilter'];
-    let showCategories = wikiContext.config['fs2gShowCategories'];
-    let useCategoryDropdown = wikiContext.isObjectConfigured('fs2gCategoryFilter');
+    const wikiContext = useContext(WikiContext);
+    const categoryFilter = wikiContext.config['fs2gCategoryFilter'];
+    const showCategories = wikiContext.config['fs2gShowCategories'];
+    const useCategoryDropdown = wikiContext.isObjectConfigured('fs2gCategoryFilter');
     if (!useCategoryDropdown) return;
     if (!showCategories) return;
 
-    let entries = DropdownEntry.createEntries(categoryFilter);
-    let categoryFacets = prop.documentQuery.categoryFacets;
-    let preselectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : '-no-filter-';
+    const entries = DropdownEntry.createEntries(categoryFilter);
+    const categoryFacets = prop.documentQuery.categoryFacets;
+    const preselectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : '-no-filter-';
     const [category, setCategory] = useState(preselectedCategory);
     useEffect(() => {
         setCategory(preselectedCategory);
@@ -57,7 +56,7 @@ function CategoryDropdown(prop: {
         prop.eventHandler.onCategoryDropDownClick(event.target.value === '-no-filter-' ? '' : event.target.value);
     };
 
-    let categoryOptions = entries.map((entry) =>
+    const categoryOptions = entries.map((entry) =>
         <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>
     );
 

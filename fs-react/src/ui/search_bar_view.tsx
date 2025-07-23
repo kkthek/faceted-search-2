@@ -4,29 +4,32 @@ import {Box, Button, TextField} from "@mui/material";
 import EventHandler from "../common/event_handler";
 import {useDebounce} from "../util/custom_hooks";
 import CreateArticleLink from "./create_article";
+import {BaseQuery} from "../common/datatypes";
 
 function SearchBar(prop: {
     searchText: string
     eventHandler: EventHandler
-    firstRenderRequired: boolean
+    restoreFromQuery: boolean
+    query: BaseQuery
 
 }) {
-    let wikiContext = useContext(WikiContext);
-    let placeholderText = wikiContext.config['fs2gPlaceholderText'];
-    if (!placeholderText) {
-        placeholderText = wikiContext.msg('fs-search-placeholder');
-    }
+    const wikiContext = useContext(WikiContext);
+    const placeholderText = wikiContext.config['fs2gPlaceholderText'] ?? wikiContext.msg('fs-search-placeholder');
 
-    const firstRenderRequired = useRef(prop.firstRenderRequired);
+    const restoreFromQuery = useRef(prop.restoreFromQuery);
     const [searchText, setSearchText] = useState(prop.searchText);
     const debouncedSearchValue = useDebounce(searchText, 500);
+
     useEffect(() => {
-        if (!firstRenderRequired.current) {
-            firstRenderRequired.current = true;
+        if (restoreFromQuery.current) {
+            // required because facet query is not stored in the URL for length optimization reasons
+            // in case that the q-param is used, facet values/ranges must be re-created once
+            prop.eventHandler.onValuesClick(prop.query.propertyFacets);
+            restoreFromQuery.current = false;
             return;
         }
         prop.eventHandler.onSearchClick(debouncedSearchValue);
-    }, [debouncedSearchValue, firstRenderRequired]);
+    }, [debouncedSearchValue, restoreFromQuery]);
 
     return <Box id={'fs-searchbar'} sx={{'display': 'flex'}}>
         <TextField id="fs-searchbar-button-text"

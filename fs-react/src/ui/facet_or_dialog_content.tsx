@@ -111,7 +111,7 @@ function PropertyValueTree(prop: {
         let groups: Groups;
         if (groupConfigurationByUrl) {
             const path = groupConfigurationByUrl.trim();
-            prop.client.getCustomEndpoint(path).then((jsonObject) => {
+            prop.client.getCustomEndpoint(wikiContext.globals.mwRestUrl + path).then((jsonObject) => {
                 groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, prop.property, jsonObject);
                 setContent(groups);
             });

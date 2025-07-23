@@ -142,6 +142,9 @@ export class FacetValue {
         this.range = range;
     }
 
+    static fromValueCount(valueCount: ValueCount) {
+        return new FacetValue(valueCount.value, valueCount.mwTitle, valueCount.range);
+    }
 
     equals(that: FacetValue) {
 
@@ -244,19 +247,6 @@ export class PropertyFacet {
 }
 
 @jsonObject
-export class RangeQuery {
-    @jsonMember(Property)
-    property: Property
-    @jsonMember(Range)
-    range: Range | void
-
-    constructor(property: Property, range: Range | void) {
-        this.property = property;
-        this.range = range;
-    }
-}
-
-@jsonObject
 export class Sort {
 
     constructor(property: Property, order: Order) {
@@ -355,24 +345,9 @@ export class DocumentQuery extends BaseQuery {
 }
 
 @jsonObject
-export class StatQuery extends BaseQuery {
-    statsProperties: Property[]
-
-    constructor(searchText: string,
-                propertyFacets: PropertyFacet[],
-                categoryFacets: string[],
-                namespaceFacets: number[],
-                statsProperties: Property[]) {
-        super(searchText, propertyFacets, categoryFacets, namespaceFacets);
-        this.statsProperties = statsProperties;
-
-    }
-}
-
-@jsonObject
 export class FacetsQuery extends BaseQuery {
-    @jsonArrayMember(RangeQuery)
-    rangeQueries: RangeQuery[]
+    @jsonArrayMember(Property)
+    rangeQueries: Property[]
     @jsonArrayMember(PropertyValueQuery)
     propertyValueQueries: PropertyValueQuery[]
 
@@ -380,7 +355,7 @@ export class FacetsQuery extends BaseQuery {
                 propertyFacets: PropertyFacet[],
                 categoryFacets: string[],
                 namespaceFacets: number[],
-                rangeQueries: RangeQuery[],
+                rangeQueries: Property[],
                 propertyValueQueries: PropertyValueQuery[]) {
         super(searchText, propertyFacets, categoryFacets, namespaceFacets);
         this.rangeQueries = rangeQueries;
@@ -600,6 +575,16 @@ export class DocumentsResponse {
     containsNamespace(ns: number): boolean {
         return Tools.findFirst(this.namespaceFacetCounts, (e) => e.namespace.toString(), ns.toString()) != null;
     }
+
+    getPropertyFacetCount(property: Property) {
+        return Tools.findFirstByPredicate(this.propertyFacetCounts, p => p.property.title === property.title);
+    }
+
+    getPropertyFacetCountByItemId(itemId: string) {
+        return Tools.findFirstByPredicate(this.propertyFacetCounts,
+            (pfc) => pfc.property.getItemId() === itemId);
+    }
+
 }
 
 @jsonObject

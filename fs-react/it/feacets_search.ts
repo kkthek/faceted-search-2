@@ -1,5 +1,5 @@
 import Client from "../src/common/client";
-import {Datatype, Property, Range, RangeQuery} from "../src/common/datatypes";
+import {Datatype, Property, Range} from "../src/common/datatypes";
 import FacetsQueryBuilder from "../src/common/facet_query_builder";
 
 /**
@@ -42,8 +42,7 @@ describe('fecets-search', function () {
         globalResult = null;
         let range = new Range(new Date(Date.parse("1969-01-01T00:00:00Z")), new Date(Date.parse("1970-01-01T00:00:00Z")));
         let query = new FacetsQueryBuilder()
-            .withRangeQuery(new RangeQuery(new Property('Was born at',Datatype.datetime),
-                    range))
+            .withRangeQuery(new Property('Was born at',Datatype.datetime))
             .build();
         client.searchFacets(query).then((e) => {
             globalResult = e;

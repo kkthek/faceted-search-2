@@ -1,4 +1,4 @@
-import {BaseQuery, DocumentQuery, FacetsQuery, Property, PropertyValueQuery, RangeQuery} from "./datatypes";
+import {BaseQuery, FacetsQuery, Property, PropertyValueQuery} from "./datatypes";
 import Tools from "../util/tools";
 import {TypedJSON} from "typedjson";
 
@@ -28,13 +28,13 @@ class FacetQueryBuilder {
         return this;
     }
 
-    withRangeQuery(rangeQuery: RangeQuery): FacetQueryBuilder {
-        this.query.rangeQueries.push(rangeQuery);
+    withRangeQuery(property: Property): FacetQueryBuilder {
+        this.query.rangeQueries.push(property);
         return this;
     }
 
     clearRangeQueriesForProperty(p : Property) {
-        Tools.removeAll(this.query.rangeQueries, (e) => e.property.title, p.title);
+        Tools.removeAll(this.query.rangeQueries, (e) => e.title, p.title);
         return this;
     }
 

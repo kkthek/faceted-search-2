@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {FacetResponse, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import {BaseQuery, FacetResponse, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
 import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
 import {WikiContext} from "../index";
@@ -14,6 +14,7 @@ import Tools from "../util/tools";
 import {useDebounce} from "../util/custom_hooks";
 import EventHandler from "../common/event_handler";
 import Client from "../common/client";
+import QueryUtils from "../util/query_utils";
 
 function FacetOrDialog(prop: {
         open: boolean,
@@ -112,10 +113,29 @@ export class ORDialogInput {
     property: Property;
     facetResponse: FacetResponse;
 
-
     constructor(open: boolean = false, property: Property = null, facetResponse: FacetResponse = null) {
         this.open = open;
         this.property = property;
         this.facetResponse = facetResponse;
     }
+
+    static createORDialogState(baseQuery: BaseQuery, client: Client): [ORDialogInput, ()=>void, (p: Property)=>void] {
+        const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
+
+        const handleCloseFacetOrDialog = function() {
+            setOpenOrDialog(new ORDialogInput());
+        };
+
+
+        const onOrDialogClick = function(p: Property): void {
+
+            let query = QueryUtils.prepareQueryWithoutFacet(baseQuery, p);
+            client.searchFacets(query).then((facetResponse) => {
+                setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
+            });
+        }
+
+        return [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick];
+    }
 }
+

@@ -38,8 +38,9 @@ let globals: any = {};
 if (isInWikiContext) {
     const wgServer = browserWindow.mw.config.get("wgServer");
     const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
-    solrProxyUrl = wgServer + wgScriptPath + "/rest.php/FacetedSearch2/v1/proxy";
     globals.mwApiUrl = wgServer + wgScriptPath + "/api.php";
+    globals.mwRestUrl = wgServer + wgScriptPath + "/rest.php";
+    solrProxyUrl = globals.mwRestUrl + "/FacetedSearch2/v1/proxy";
     wikiContext = new WikiContextInterface(
         browserWindow.mw.config.values,
         browserWindow.mw.user.options.values,
@@ -49,6 +50,7 @@ if (isInWikiContext) {
     );
 } else {
     solrProxyUrl = "http://localhost:9000";
+    globals.mwRestUrl = solrProxyUrl;
     globals.mwApiUrl = solrProxyUrl + '/api.php';
 }
 
@@ -80,8 +82,6 @@ function App() {
         client
     );
 
-    updateFacetsIfFromQuery(eventHandler);
-
     const anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
 
@@ -94,8 +94,9 @@ function App() {
                     />,
                     <SearchBar key={'searchBar'}
                                searchText={currentDocumentsQueryBuilder.build().searchText}
-                               firstRenderRequired={q === null}
+                               restoreFromQuery={q !== null}
                                eventHandler={eventHandler}
+                               query={Tools.deepClone(currentDocumentsQueryBuilder.build())}
 
                     />,
                     <SaveSearchLink key={'saveSearchLink'}
@@ -185,18 +186,6 @@ function applyQueryConstraints() {
     wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: any) => {
         currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
-}
-
-function updateFacetsIfFromQuery(eventHandler: EventHandler) {
-    if (q === null) {
-        return;
-    }
-    // required because facet query is not stored in the URL for length optimization reasons
-    // it must be re-created once
-    useEffect(() => {
-        const propertyFacets = Tools.deepClone(currentDocumentsQueryBuilder.build().propertyFacets);
-        eventHandler.onValuesClick(propertyFacets);
-    }, [q]);
 }
 
 function startApp() {

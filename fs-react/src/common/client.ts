@@ -4,14 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {
-    DocumentQuery,
-    FacetsQuery,
-    DocumentsResponse,
-    FacetResponse,
-    StatsResponse,
-    StatQuery, Document
-} from "./datatypes";
+import {Document, DocumentQuery, DocumentsResponse, FacetResponse, FacetsQuery} from "./datatypes";
 import {TypedJSON} from "typedjson";
 
 const HTTP_REQUEST_OPTIONS: any = {
@@ -52,17 +45,6 @@ class Client {
         return deserializer.parse(json);
     }
 
-    async searchStats(query: StatQuery): Promise<StatsResponse> {
-        const response = await fetch(this.baseUrl + "/stats", {
-            ...HTTP_REQUEST_OPTIONS,
-            body: JSON.stringify(query)
-        });
-        await this.handleErrorIfAny(response);
-        const deserializer = new TypedJSON(StatsResponse);
-        const json = await response.json();
-        return deserializer.parse(json);
-    }
-
     async searchFacets(query: FacetsQuery): Promise<FacetResponse> {
         const response = await fetch(this.baseUrl + "/facets", {
             ...HTTP_REQUEST_OPTIONS,
@@ -74,8 +56,8 @@ class Client {
         return deserializer.parse(json);
     }
 
-    async getCustomEndpoint(path: string): Promise<any> {
-        const response = await fetch(this.baseUrl + path, {
+    async getCustomEndpoint(url: string): Promise<any> {
+        const response = await fetch(url, {
             ...HTTP_REQUEST_OPTIONS
         });
         await this.handleErrorIfAny(response);

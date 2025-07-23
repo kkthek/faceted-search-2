@@ -32,10 +32,8 @@ function SelectedFacets(prop: {
     const itemlist = prop.propertyValueCount.values.map((v,i ) => {
 
         return <SelectedFacetValues key={prop.propertyValueCount.property.title + i}
-                     query={prop.searchStateFacet.query}
                      selectedPropertyFacet={propertyFacet}
                      propertyValueCount={v}
-                     property={prop.propertyValueCount.property}
                      removable={hasValue}
                      eventHandler={prop.eventHandler}
                      index={i}
@@ -69,26 +67,19 @@ function SelectedFacetsView(prop: {
 }) {
     if (!prop.searchStateFacet) return;
 
-    const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
+    const [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick] = ORDialogInput.createORDialogState(
+        prop.searchStateFacet.query,
+        prop.client
+    );
 
-    const handleCloseFacetOrDialog = () => {
-        setOpenOrDialog(new ORDialogInput());
-    };
-
-    const onOrDialogClick = function(p: Property) {
-        let query = QueryUtils.prepareQueryWithoutFacet(prop.searchStateFacet.query, p);
-        prop.client.searchFacets(query).then((facetResponse) => {
-            setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
-        });
-    }
-
-    const propertyFacetCounts = prop.searchStateDocument?.documentResponse.propertyFacetCounts;
+    const documentResponse = prop.searchStateDocument?.documentResponse
     const facetValues = prop.searchStateFacet.facetsResponse.valueCounts.map((v, i) => {
 
             let query = prop.searchStateFacet.query;
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (!isSelectedFacet) return;
-            const facetCount = Tools.findFirstByPredicate(propertyFacetCounts, p => p.property.title === v.property.title);
+            if (!documentResponse) return;
+            const facetCount = documentResponse.getPropertyFacetCount(v.property);
             return <SelectedFacets key={v.property.title}
                                    propertyValueCount={v}
                                    facetCount={facetCount}
