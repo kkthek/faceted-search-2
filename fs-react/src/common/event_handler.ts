@@ -132,8 +132,6 @@ class EventHandler {
 
     onValuesClick(propertyFacets: PropertyFacet[]) {
 
-        if (propertyFacets.length === 0) return;
-
         propertyFacets.forEach((pf) => {
             this.currentDocumentsQueryBuilder
                 .withOffset(0)
@@ -296,7 +294,7 @@ class EventHandler {
         this.updateFacetValuesForProperties([property], facetValueLimit);
     }
 
-    private updateDocuments() {
+    public updateDocuments() {
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
@@ -309,7 +307,7 @@ class EventHandler {
         });
     }
 
-    private updateFacets() {
+    public updateFacets() {
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
             this.setFacetState({
