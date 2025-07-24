@@ -1,7 +1,6 @@
 import React from "react";
 import Client from "../common/client";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
-import {Box} from "@mui/material";
 import GisFacet from "../gis/gis_facet";
 
 function FacetExtensionPoint(prop: {
@@ -11,10 +10,11 @@ function FacetExtensionPoint(prop: {
     expandedFacets: string[],
     eventHandler: EventHandler
 }) {
-    return <Box>
+    return <React.Fragment>
         {/* Put your extension components here */}
         <GisFacet searchStateDocument={prop.searchStateDocument} eventHandler={prop.eventHandler} />
-    </Box>;
+    </React.Fragment>;
+
 }
 
 export default FacetExtensionPoint;

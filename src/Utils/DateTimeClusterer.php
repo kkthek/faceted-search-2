@@ -60,6 +60,12 @@ class DateTimeClusterer implements Clusterer
 
     private function findIncrement(int $min, int $max, int $numSteps)
     {
+        if ($min === 0) {
+            $min = "00000101000000"; // 1. Jan 0000, 0:00:00am
+        }
+        if ($max === 0) {
+            $max = "99991231235959"; // 31. Dec 9999 23:59:59pm
+        }
         $minDT = Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $min);
         $maxDT = Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $max);
         $start = [

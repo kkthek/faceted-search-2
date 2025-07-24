@@ -3,16 +3,21 @@ import {WikiContext} from "../index";
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import ConfigUtils from "../util/config_utils";
 import EventHandler from "../common/event_handler";
+import {Sort} from "../common/datatypes";
+
+interface SortConfig {
+    [key: string]: Sort;
+}
 
 function SortView(prop : {
     eventHandler: EventHandler
 }) {
-    let wikiContext = useContext(WikiContext);
-    let defaultSortOrder = wikiContext.config['fs2gDefaultSortOrder'];
-    let showSortView = wikiContext.config['fs2gShowSortOrder'];
+    const wikiContext = useContext(WikiContext);
+    const defaultSortOrder = wikiContext.config['fs2gDefaultSortOrder'];
+    const showSortView = wikiContext.config['fs2gShowSortOrder'];
     if (!showSortView) return;
 
-    let sorts: any = {
+    let sorts: SortConfig = {
         score: ConfigUtils.getSortByName('score'),
         newest: ConfigUtils.getSortByName('newest'),
         oldest: ConfigUtils.getSortByName('oldest'),
@@ -27,9 +32,12 @@ function SortView(prop : {
         setSort(event.target.value);
     };
 
+    const entries = Object.keys(sorts).map(id =>
+        <MenuItem key={id} value={id}>{wikiContext.msg('fs-'+id)}</MenuItem>
+    );
 
     return <FormControl id={'sort-order-select-control'}>
-        <InputLabel id="sort-order-select-label">Sort order</InputLabel>
+        <InputLabel id="sort-order-select-label">{wikiContext.msg('fs-sort-order')}</InputLabel>
         <Select
             labelId="sort-order-select-label"
             id="sort-order-select"
@@ -38,11 +46,7 @@ function SortView(prop : {
             size={'small'}
             onChange={handleChange}
         >
-            <MenuItem value={'score'}>{wikiContext.msg('score_desc')}</MenuItem>
-            <MenuItem value={'newest'}>{wikiContext.msg('_MDAT_desc')}</MenuItem>
-            <MenuItem value={'oldest'}>{wikiContext.msg('_MDAT_asc')}</MenuItem>
-            <MenuItem value={'ascending'}>{wikiContext.msg('displaytitle_asc')}</MenuItem>
-            <MenuItem value={'descending'}>{wikiContext.msg('displaytitle_desc')}</MenuItem>
+            {entries}
         </Select>
     </FormControl>
 

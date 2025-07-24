@@ -4,9 +4,9 @@ import {Document} from "../common/datatypes";
 function UserDefinedLinksExtensionPoint(prop: {
     doc: Document
 }) {
-    return <span>
+    return <React.Fragment>
         {/* Put your extension components here */}
-    </span>;
+    </React.Fragment>;
 }
 
 export default UserDefinedLinksExtensionPoint;

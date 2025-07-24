@@ -30,9 +30,9 @@ final class FacetQueryTest extends BaseTest {
 
         $q = new FacetQuery();
 
-        $p = new PropertyRange(new Property('Was born at', Datatype::DATETIME), new Range('1969-01-01T00:00:00Z', '1970-01-01T00:00:00Z'));
+        $p = new Property('Was born at', Datatype::DATETIME);
 
-        $p2 = new PropertyRange(new Property('Publication date', Datatype::DATETIME), new Range('1970-01-01T00:00:00Z', '1971-01-01T00:00:00Z'));
+        $p2 = new Property('Publication date', Datatype::DATETIME);
 
         $q->setRangeQueries([$p, $p2]);
         $response = $this->client->requestFacets($q);

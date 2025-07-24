@@ -19,14 +19,23 @@ class Client {
 
     private readonly baseUrl: string;
 
+    private oldDocumentSearchAbort: AbortController;
+    private oldFacetSearchAbort: AbortController;
+
     constructor(url: string) {
         this.baseUrl = url;
+
     }
 
     async searchDocuments(query: DocumentQuery): Promise<DocumentsResponse> {
+        if (this.oldDocumentSearchAbort) {
+            this.oldDocumentSearchAbort.abort();
+        }
+        this.oldDocumentSearchAbort = new AbortController();
         const response = await fetch(this.baseUrl + "/documents", {
             ...HTTP_REQUEST_OPTIONS,
-            body: JSON.stringify(query)
+            body: JSON.stringify(query),
+            signal: this.oldDocumentSearchAbort.signal
         });
         await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(DocumentsResponse);
@@ -46,9 +55,14 @@ class Client {
     }
 
     async searchFacets(query: FacetsQuery): Promise<FacetResponse> {
+        if (this.oldFacetSearchAbort) {
+            this.oldFacetSearchAbort.abort();
+        }
+        this.oldFacetSearchAbort = new AbortController();
         const response = await fetch(this.baseUrl + "/facets", {
             ...HTTP_REQUEST_OPTIONS,
-            body: JSON.stringify(query)
+            body: JSON.stringify(query),
+            signal: this.oldFacetSearchAbort.signal
         });
         await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(FacetResponse);

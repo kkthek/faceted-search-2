@@ -146,6 +146,18 @@ export class FacetValue {
         return new FacetValue(valueCount.value, valueCount.mwTitle, valueCount.range);
     }
 
+    static fromRange(range: Range) {
+        return new FacetValue(null, null, range);
+    }
+
+    static fromMWTitle(mwTitle: MWTitle) {
+        return new FacetValue(null, mwTitle, null);
+    }
+
+    static fromValue(value: ValueType) {
+        return new FacetValue(value, null, null);
+    }
+
     equals(that: FacetValue) {
 
         return FacetValue.sameValue(this.value, that.value)
@@ -585,27 +597,5 @@ export class DocumentsResponse {
             (pfc) => pfc.property.getItemId() === itemId);
     }
 
-}
-
-@jsonObject
-export class Stats {
-    @jsonMember(PropertyWithURL)
-    property: PropertyWithURL;
-    @jsonMember(Number)
-    min: number;
-    @jsonMember(Number)
-    max: number;
-    @jsonMember(Number)
-    count: number;
-    @jsonMember(Number)
-    sum: number;
-    @jsonArrayMember(Range)
-    clusters: Range[]
-}
-
-@jsonObject
-export class StatsResponse {
-    @jsonArrayMember(Stats)
-    stats: Stats[];
 }
 

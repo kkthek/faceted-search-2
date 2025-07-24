@@ -14,7 +14,7 @@ function NamespaceFacet(prop: {
 
 
     let namespaceText = namespaces[prop.namespaceFacetCount.namespace] ?? 'unknown namespace';
-    let countText = prop.namespaceFacetCount.count > 0 ? prop.namespaceFacetCount.count : null;
+    let countText = prop.namespaceFacetCount.count > 0 ? prop.namespaceFacetCount.count : undefined;
 
     namespaceText = namespaceText === '' ? 'Main' : namespaceText;
     return <ToggleButton sx={{marginTop: '3px'}}

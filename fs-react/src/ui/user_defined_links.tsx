@@ -28,7 +28,7 @@ function UserDefinedLinks(prop: { doc: Document }) {
 
     const items = [];
     for(let label in allLinks) {
-        let url: string = allLinks[label];
+        const url: string = allLinks[label];
         let fullUrl = wgServer + wgScriptPath + "/" + url;
         fullUrl = ConfigUtils.replaceSMWVariables(prop.doc, fullUrl);
         fullUrl = fullUrl.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
