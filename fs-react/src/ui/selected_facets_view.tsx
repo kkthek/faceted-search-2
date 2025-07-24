@@ -44,7 +44,7 @@ function SelectedFacets(prop: {
                            itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
                            label={<FacetWithCount
                                displayTitle={prop.propertyValueCount.property.displayTitle}
-                               count={prop.facetCount.count}
+                               count={prop.facetCount?.count ?? 0}
                            />}
                            action={() => {
                                if (!hasValue || itemlist.length === 0) {

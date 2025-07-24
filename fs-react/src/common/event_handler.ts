@@ -258,7 +258,7 @@ class EventHandler {
         this.currentFacetsQueryBuilder
             .clearAllRangeQueries()
             .clearAllPropertyValueQueries();
-
+        this.setExpandedFacets([]);
         this.updateDocuments();
         this.updateFacets();
     }
