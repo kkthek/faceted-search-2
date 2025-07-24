@@ -11,7 +11,7 @@ function GisFacet(prop: {
     searchStateDocument: SearchStateDocument,
     eventHandler: EventHandler
 }) {
-    let wikiContext = useContext(WikiContext);
+    const wikiContext = useContext(WikiContext);
     const [openOrDialog, setOpenOrDialog] = useState<boolean>(false);
 
     return <Box>
@@ -22,7 +22,7 @@ function GisFacet(prop: {
 
         <GisDialog open={openOrDialog}
                    handleClose={() => setOpenOrDialog(false)}
-                   selectedFacets={prop.searchStateDocument.query.propertyFacets}
+                   baseQuery={prop.searchStateDocument.query}
                    eventHandler={prop.eventHandler}
         />
     </Box>;

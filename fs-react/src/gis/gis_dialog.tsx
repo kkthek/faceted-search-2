@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {Datatype, FacetValue, Property, PropertyFacet, Range} from "../common/datatypes";
+import {BaseQuery, Datatype, FacetValue, Property, PropertyFacet, Range} from "../common/datatypes";
 import {Box} from "@mui/material";
 import {WikiContext} from "../index";
 import EventHandler from "../common/event_handler";
@@ -16,14 +16,17 @@ import Tools from "../util/tools";
 function GisDialog(prop: {
     open: boolean,
     handleClose: () => void,
-    selectedFacets: PropertyFacet[],
+    baseQuery: BaseQuery,
     eventHandler: EventHandler
 
 }) {
-    let wikiContext = useContext(WikiContext);
+    const PROPERTY_COORDINATE_X = new Property('KoordinateX', Datatype.number);
+    const PROPERTY_COORDINATE_Y = new Property('KoordinateY', Datatype.number);
 
+    const wikiContext = useContext(WikiContext);
     const iframe = useRef<any>(null);
     const apiEndpoint = wikiContext.globals.mwApiUrl;
+
     const iframeUrl = new URL(apiEndpoint);
     iframeUrl.searchParams.set('action', 'odbgeo');
     iframeUrl.searchParams.set('method', 'getiFrame');
@@ -50,25 +53,26 @@ function GisDialog(prop: {
         const minx = Math.floor(extent.bottom);
         const maxx = Math.floor(extent.top);
 
-        const koordX = new PropertyFacet(new Property("KoordinateX", Datatype.number), [new FacetValue(null, null, new Range(minx, maxx))]);
-        const koordY = new PropertyFacet(new Property("KoordinateY", Datatype.number), [new FacetValue(null, null, new Range(miny, maxy))]);
+        const koordX = new PropertyFacet(PROPERTY_COORDINATE_X,[FacetValue.fromRange(new Range(minx, maxx))]);
+        const koordY = new PropertyFacet(PROPERTY_COORDINATE_Y,[FacetValue.fromRange(new Range(miny, maxy))]);
 
         prop.eventHandler.onValuesClick([koordX, koordY]);
     }
 
     function getSelectedLocation() {
-        const koordX = Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.property.title === 'KoordinateX');
-        const koordY = Tools.findFirstByPredicate(prop.selectedFacets, (e) => e.property.title === 'KoordinateY');
-        if (koordX !== null && koordY !== null) {
-            const koordXRange = koordX.values[0].range;
-            const koordYRange = koordY.values[0].range;
-            const minx = Math.floor((koordXRange as Range).from as number);
-            const miny = Math.floor((koordYRange as Range).from as number);
-            const maxx = Math.floor((koordXRange as Range).to as number);
-            const maxy = Math.floor((koordYRange as Range).to as number);
-            return `${miny},${minx},${maxy},${maxx}`;
+        const koordX = prop.baseQuery.findPropertyFacet(PROPERTY_COORDINATE_X);
+        const koordY = prop.baseQuery.findPropertyFacet(PROPERTY_COORDINATE_Y);
+        if (koordX === null || koordY === null) {
+            return null;
         }
-        return null;
+        const koordXRange = koordX.values[0].range;
+        const koordYRange = koordY.values[0].range;
+        const minx = Math.floor((koordXRange as Range).from as number);
+        const miny = Math.floor((koordYRange as Range).from as number);
+        const maxx = Math.floor((koordXRange as Range).to as number);
+        const maxy = Math.floor((koordYRange as Range).to as number);
+        return `${miny},${minx},${maxy},${maxx}`;
+
     }
 
     return (
