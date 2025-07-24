@@ -301,6 +301,7 @@ class EventHandler {
                 query: this.currentDocumentsQueryBuilder.build()
             });
         }).catch((e) => {
+            if (e.name === 'AbortError') return;
             console.error("Request to backend failed");
             console.error(e);
             this.setError(e.message);
@@ -315,6 +316,7 @@ class EventHandler {
                 query: this.currentFacetsQueryBuilder.build()
             });
         }).catch((e) => {
+            if (e.name === 'AbortError') return;
             console.error("Request to backend failed");
             console.error(e);
             this.setError(e.message);

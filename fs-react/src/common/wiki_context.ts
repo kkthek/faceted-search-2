@@ -32,14 +32,16 @@ export class WikiContextInterfaceMock extends WikiContextInterface {
     private readonly langMap: any;
 
     constructor(result: any = {}, globals: any) {
-        let msgFunction = (id: string, ...params: string[]) => {
-            let text = this.langMap[id] ? this.langMap[id] : "<" + id + ">";
-            for(let i = 0; i < params.length; i++) {
-                text = text.replace(new RegExp('\\$'+(i+1)), params[i]);
-            }
-            return text;
-        };
-        super(result.settings, result.options, "dummy user", msgFunction, globals);
+        super(result.settings, result.options, "dummy user", null, globals);
         this.langMap = result.lang;
+        this.msg = this.msgFunction;
     }
+
+    msgFunction(id: string, ...params: string[]) {
+        let text = this.langMap[id] ? this.langMap[id] : "<" + id + ">";
+        for(let i = 0; i < params.length; i++) {
+            text = text.replace(new RegExp('\\$'+(i+1)), params[i]);
+        }
+        return text;
+    };
 }

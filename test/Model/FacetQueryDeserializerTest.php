@@ -13,11 +13,7 @@ final class FacetQueryDeserializerTest extends TestCase {
 {
     "rangeQueries": [
         {
-          "property": { "title": "Has name", "type": 0 },
-          "range": {
-                "from": 1,
-                "to": 25 
-          }
+           "title": "Has name", "type": 0 
         }
     ]
 }
@@ -25,8 +21,9 @@ JSON;
         $facetQuery = FacetQuery::fromJson($json);
 
         $this->assertEquals(1, count($facetQuery->getRangeQueries()) );
-        $this->assertEquals(1, $facetQuery->getRangeQueries()[0]->getRange()->getFrom() );
-        $this->assertEquals(25, $facetQuery->getRangeQueries()[0]->getRange()->getTo() );
+        $this->assertEquals('Has name', $facetQuery->getRangeQueries()[0]->getTitle());
+        $this->assertEquals(0, $facetQuery->getRangeQueries()[0]->getType());
+
 
     }
 

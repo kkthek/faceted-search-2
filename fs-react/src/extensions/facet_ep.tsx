@@ -1,7 +1,6 @@
 import React from "react";
 import Client from "../common/client";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
-import {Box} from "@mui/material";
 
 function FacetExtensionPoint(prop: {
     client: Client
@@ -10,9 +9,9 @@ function FacetExtensionPoint(prop: {
     expandedFacets: string[],
     eventHandler: EventHandler
 }) {
-    return <Box>
+    return <React.Fragment>
         {/* Put your extension components here */}
-    </Box>;
+    </React.Fragment>;
 }
 
 export default FacetExtensionPoint;

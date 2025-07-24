@@ -4,6 +4,8 @@ import {Box, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/materia
 import {DocumentQuery} from "../common/datatypes";
 import EventHandler from "../common/event_handler";
 
+const NO_CATEGORY_FILTER = '-no-category-filter-';
+
 class DropdownEntry {
 
     readonly id: string
@@ -17,7 +19,7 @@ class DropdownEntry {
     static createEntries(categoryFilters: any) {
         const entries = [];
         for(let category in categoryFilters) {
-            let id = category === '' ? '-no-filter-' : category;
+            let id = category === '' ? NO_CATEGORY_FILTER : category;
             let label = categoryFilters[category];
             label = this.decodeHtml(label);
             entries.push(new DropdownEntry(id, label));
@@ -25,7 +27,7 @@ class DropdownEntry {
         return entries;
     }
 
-    static decodeHtml(html: string) {
+    private static decodeHtml(html: string) {
         const txt = document.createElement("textarea");
         txt.innerHTML = html;
         return txt.value;
@@ -43,17 +45,16 @@ function CategoryDropdown(prop: {
     if (!useCategoryDropdown) return;
     if (!showCategories) return;
 
+
     const entries = DropdownEntry.createEntries(categoryFilter);
     const categoryFacets = prop.documentQuery.categoryFacets;
-    const preselectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : '-no-filter-';
-    const [category, setCategory] = useState(preselectedCategory);
-    useEffect(() => {
-        setCategory(preselectedCategory);
-    }, [preselectedCategory])
+    const preSelectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : NO_CATEGORY_FILTER;
+    const [selectedCategory, setSelectedCategory] = useState(preSelectedCategory);
 
     const handleChange = (event: SelectChangeEvent) => {
-        setCategory(event.target.value);
-        prop.eventHandler.onCategoryDropDownClick(event.target.value === '-no-filter-' ? '' : event.target.value);
+        setSelectedCategory(event.target.value);
+        const category = event.target.value === NO_CATEGORY_FILTER ? '' : event.target.value;
+        prop.eventHandler.onCategoryDropDownClick(category);
     };
 
     const categoryOptions = entries.map((entry) =>
@@ -61,11 +62,11 @@ function CategoryDropdown(prop: {
     );
 
     return <Box className={'fs-category-dropdown'}>
-        <Typography>Available categories</Typography>
+        <Typography>{wikiContext.msg('fs-available-categories')}</Typography>
         <Select
             labelId="sort-order-select-label"
             id="sort-order-select"
-            value={category}
+            value={selectedCategory}
             size={'small'}
             sx={{"marginLeft": "10px"}}
             onChange={handleChange}
