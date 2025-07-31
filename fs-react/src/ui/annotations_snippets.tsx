@@ -8,19 +8,19 @@ import Tools from "../util/tools";
 
 
 function Annotations(prop: {doc: Document}) {
-    let wikiContext = useContext(WikiContext);
-    let annotationsInSnippets = wikiContext.config['fs2gAnnotationsInSnippet'];
+    const wikiContext = useContext(WikiContext);
+    const annotationsInSnippets = wikiContext.config['fs2gAnnotationsInSnippet'];
 
     for(let category in annotationsInSnippets) {
-        let categoryFound = prop.doc.getCategoryFacetValue(category) != null;
+        const categoryFound = prop.doc.getCategoryFacetValue(category) != null;
         if (!categoryFound) continue;
 
         let index = 0;
-        let rows = Tools.splitArray2NTuples(annotationsInSnippets[category], 2)
+        const rows = Tools.splitArray2NTuples(annotationsInSnippets[category], 2)
             .map((tuples: string[]) => {
 
-            let pfvCell1 = prop.doc.getPropertyFacetValues(tuples[0]);
-            let pfvCell2 = tuples[1] ? prop.doc.getPropertyFacetValues(tuples[1]) : null;
+            const pfvCell1 = prop.doc.getPropertyFacetValues(tuples[0]);
+            const pfvCell2 = tuples[1] ? prop.doc.getPropertyFacetValues(tuples[1]) : null;
 
             return  <TableRow key={'annotation-'+prop.doc.id+"_"+index++}>
                         <TableCell>

@@ -9,14 +9,14 @@ function NamespaceFacet(prop: {
     namespaceFacetCount: NamespaceFacetCount | null,
 
 }) {
-    let wikiContext = useContext(WikiContext);
-    let namespaces = wikiContext.config['wgFormattedNamespaces'];
+    const wikiContext = useContext(WikiContext);
+    const namespaces = wikiContext.config['wgFormattedNamespaces'];
 
 
     let namespaceText = namespaces[prop.namespaceFacetCount.namespace] ?? 'unknown namespace';
-    let countText = prop.namespaceFacetCount.count > 0 ? prop.namespaceFacetCount.count : undefined;
-
     namespaceText = namespaceText === '' ? 'Main' : namespaceText;
+    const countText = prop.namespaceFacetCount.count > 0 ? prop.namespaceFacetCount.count : undefined;
+
     return <ToggleButton sx={{marginTop: '3px'}}
                          size={'small'}
                          value={prop.namespaceFacetCount.namespace}>
@@ -29,10 +29,10 @@ function NamespaceView(prop: {
     eventHandler: EventHandler
 }) {
     if (!prop.searchStateDocument) return;
-    let wikiContext = useContext(WikiContext);
-    let showNamespaces = wikiContext.config['fs2gShowNamespaces'];
+    const wikiContext = useContext(WikiContext);
+    const showNamespaces = wikiContext.config['fs2gShowNamespaces'];
     if (!showNamespaces) return;
-    let namespacesFromWiki = wikiContext.config['wgFormattedNamespaces'];
+    const namespacesFromWiki = wikiContext.config['wgFormattedNamespaces'];
 
     const [namespaces, setNamespaces] = useState([] as number[]);
 
@@ -44,11 +44,11 @@ function NamespaceView(prop: {
         setNamespaces(namespaces);
     };
 
-    let documentsResponse = prop.searchStateDocument.documentResponse;
+    const documentsResponse = prop.searchStateDocument.documentResponse;
     const namespaceFacetCounts = documentsResponse.namespaceFacetCounts;
 
     for (let ns in namespacesFromWiki) {
-        let nsAsNumber = parseInt(ns);
+        const nsAsNumber = parseInt(ns);
         if (!documentsResponse.containsNamespace(nsAsNumber)) {
             namespaceFacetCounts.push(new NamespaceFacetCount(nsAsNumber, namespacesFromWiki[ns], 0))
         }

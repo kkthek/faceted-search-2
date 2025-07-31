@@ -1,4 +1,4 @@
-import {Datatype, Property, PropertyWithURL, ValueCount} from "../common/datatypes";
+import {Datatype, Property, ValueCount} from "../common/datatypes";
 
 class DisplayTools {
 

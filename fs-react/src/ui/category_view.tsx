@@ -15,8 +15,8 @@ function FacetViewCategory( prop: {
     eventHandler: EventHandler
 }) {
 
-    let title = prop.categoryFacetCount.displayTitle != '' ? prop.categoryFacetCount.displayTitle : prop.title;
-    let count = prop.categoryFacetCount?.count;
+    const title = prop.categoryFacetCount.displayTitle != '' ? prop.categoryFacetCount.displayTitle : prop.title;
+    const count = prop.categoryFacetCount?.count;
     return <CustomTreeItem itemId={prop.categoryFacetCount.category}
                            label={<FacetWithCount displayTitle={title} count={count}/>}
                            onClick={() => prop.eventHandler.onCategoryClick(prop.title)}
@@ -29,10 +29,10 @@ function CategoryView( prop: {
     eventHandler: EventHandler
 
 }) {
-    let wikiContext = useContext(WikiContext);
-    let showCategories = wikiContext.config['fs2gShowCategories'];
-    let shownCategoryFacets = wikiContext.config['fs2gShownCategoryFacets'];
-    let useCategoryDropdown = wikiContext.isObjectConfigured('fs2gCategoryFilter');
+    const wikiContext = useContext(WikiContext);
+    const showCategories = wikiContext.config['fs2gShowCategories'];
+    const shownCategoryFacets = wikiContext.config['fs2gShownCategoryFacets'];
+    const useCategoryDropdown = wikiContext.isObjectConfigured('fs2gCategoryFilter');
     if (useCategoryDropdown) return;
     if (!prop.searchStateDocument || !showCategories) return;
 

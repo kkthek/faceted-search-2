@@ -16,10 +16,10 @@ function FacetValues(prop: {
         return;
     }
 
-    let displayLabel = DisplayTools.serializeFacetValue(prop.property, prop.propertyValueCount);
+    const displayLabel = DisplayTools.serializeFacetValue(prop.property, prop.propertyValueCount);
 
-    let property = prop.property;
-    let propertyFacet = new PropertyFacet(property,[ FacetValue.fromValueCount(prop.propertyValueCount) ]);
+    const property = prop.property;
+    const propertyFacet = new PropertyFacet(property,[ FacetValue.fromValueCount(prop.propertyValueCount) ]);
 
     return <CustomTreeItem itemId={Tools.secureUUIDV4()}
                            label={<FacetWithCount displayTitle={displayLabel} count={prop.propertyValueCount.count} />}

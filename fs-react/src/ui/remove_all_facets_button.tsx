@@ -7,7 +7,7 @@ function RemoveAllFacetsButton(prop: {
     searchStateFacet: SearchStateFacet,
     eventHandler: EventHandler
 }) {
-    let wikiContext = useContext(WikiContext);
+    const wikiContext = useContext(WikiContext);
 
     if (!prop.searchStateFacet?.query.isAnyPropertySelected()
         && !prop.searchStateFacet?.query.isAnyCategorySelected()) {
