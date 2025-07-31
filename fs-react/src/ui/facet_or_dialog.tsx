@@ -21,22 +21,22 @@ function FacetOrDialog(prop: {
         client: Client,
         handleClose: () => void,
         searchStateFacets: FacetResponse,
-        selectedFacets: PropertyFacet[],
+        baseQuery: BaseQuery,
         property: Property,
         eventHandler: EventHandler
 
 }) {
-    let wikiContext = useContext(WikiContext);
+    const wikiContext = useContext(WikiContext);
     const [searchText, setSearchText] = useState((): string => '');
     const debouncedSearchText = useDebounce(searchText, 300);
 
     if (!prop.property) return;
-    let pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
+    const pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
     if (!pvc) return;
 
-    let facet = Tools.findFirstByPredicate(prop.selectedFacets, e => e.property.title === prop.property.title);
+    const facet = prop.baseQuery.findPropertyFacet(prop.property);
     let selectedValues: FacetValue[] = facet == null ? [] : facet.values;
-    let onChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
+    const onDialogContentChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
         let facetValue = new FacetValue(v.value, v.mwTitle, v.range);
         if (checked) {
             selectedValues.push(facetValue);
@@ -46,10 +46,19 @@ function FacetOrDialog(prop: {
 
     }
 
-    let onBulkChange = function(e: SyntheticEvent, values: ValueCount[]) {
+    const onDialogContentBulkChange = function(e: SyntheticEvent, values: ValueCount[]) {
         selectedValues = values.map((v) => {
             return new FacetValue(v.value, v.mwTitle, v.range);
         });
+    }
+
+    const onOK = function() {
+        if (selectedValues.length === 0) {
+            prop.eventHandler.onRemoveAllFacetsForProperty(prop.property);
+        } else {
+            prop.eventHandler.onValueClick(new PropertyFacet(prop.property, selectedValues));
+        }
+        prop.handleClose();
     }
 
     return (
@@ -82,8 +91,8 @@ function FacetOrDialog(prop: {
                             <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}
                                                   selectedValues={selectedValues}
                                                   property={prop.property}
-                                                  onChange={onChange}
-                                                  onBulkChange={onBulkChange}
+                                                  onChange={onDialogContentChange}
+                                                  onBulkChange={onDialogContentBulkChange}
                                                   filterText={debouncedSearchText}
                                                   client={prop.client}
                             />
@@ -92,14 +101,7 @@ function FacetOrDialog(prop: {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={prop.handleClose}>Cancel</Button>
-                    <Button onClick={() => {
-                        if (selectedValues.length === 0) {
-                            prop.eventHandler.onRemoveAllFacetsForProperty(prop.property);
-                        } else {
-                            prop.eventHandler.onValueClick(new PropertyFacet(prop.property, selectedValues));
-                        }
-                        prop.handleClose();
-                    }} autoFocus>Ok</Button>
+                    <Button onClick={onOK} autoFocus>Ok</Button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>

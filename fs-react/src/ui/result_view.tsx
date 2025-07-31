@@ -17,18 +17,18 @@ function ResultView(prop: {
     const [pageIndex, setPageIndex] = useState(1);
     const wikiContext = useContext(WikiContext);
 
-    const NUMBER_RESULTS_ONE_PAGE = wikiContext.config['fs2gHitsPerPage'];
-    const totalNumberOfPages = Math.trunc(prop.numResults / NUMBER_RESULTS_ONE_PAGE) + 1;
+    const fs2gHitsPerPage = wikiContext.config['fs2gHitsPerPage'];
+    const totalNumberOfPages = Math.trunc(prop.numResults / fs2gHitsPerPage) + 1;
 
     const listItems = prop.results.map((doc, i) =>
         <SearchResult key={doc.id} doc={doc} client={prop.client}/>
     );
 
-    const from = (pageIndex - 1) * NUMBER_RESULTS_ONE_PAGE + 1;
-    const to = Math.min(from + NUMBER_RESULTS_ONE_PAGE - 1, prop.numResults);
+    const from = (pageIndex - 1) * fs2gHitsPerPage + 1;
+    const to = Math.min(from + fs2gHitsPerPage - 1, prop.numResults);
 
     function onPageIndexChange(event: React.ChangeEvent<unknown>, pageIndex: number) {
-        prop.eventHandler.onPageIndexClick(pageIndex, NUMBER_RESULTS_ONE_PAGE);
+        prop.eventHandler.onPageIndexClick(pageIndex, fs2gHitsPerPage);
         setPageIndex(pageIndex);
         window.scrollTo(0, 0);
     }

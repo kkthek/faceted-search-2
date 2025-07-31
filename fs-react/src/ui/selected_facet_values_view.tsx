@@ -11,32 +11,30 @@ function SelectedFacetValues(prop: {
     selectedPropertyFacet: PropertyFacet,
     propertyValueCount: ValueCount | null,
     eventHandler: EventHandler
-    removable: boolean
 
-    index: number
 }) {
 
     if (prop.propertyValueCount === null || !prop.selectedPropertyFacet) {
         return;
     }
 
-    let property = prop.selectedPropertyFacet.property;
-    let value = DisplayTools.serializeFacetValue(property, prop.propertyValueCount);
+    const property = prop.selectedPropertyFacet.property;
+    const displayValue = DisplayTools.serializeFacetValue(property, prop.propertyValueCount);
+    const facetValue = new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
+    const propertyFacet = new PropertyFacet(property, [facetValue]);
+    const removable = prop.selectedPropertyFacet.hasValueOrMWTitle() || prop.selectedPropertyFacet.hasRange();
 
-    let facetValue = new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
-    let propertyFacet = new PropertyFacet(
-        property,
-        [
-            facetValue
-        ]);
+    const onRemovePropertyFacet = () => {
+        if (!removable) return;
+        prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet, facetValue);
+    }
 
-    let itemId = Tools.createId(property.title + value + prop.propertyValueCount.count + prop.index);
-    return <CustomTreeItem key={property.title + value + prop.propertyValueCount.count}
-        itemId={itemId}
-        actionIcon={prop.removable ? DeleteIcon : null}
-        action={() => prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet, facetValue)}
+    return <CustomTreeItem key={property.title + displayValue + prop.propertyValueCount.count}
+        itemId={Tools.secureUUIDV4()}
+        actionIcon={removable ? DeleteIcon : null}
+        action={onRemovePropertyFacet}
         label={<FacetWithCount
-            displayTitle={value}
+            displayTitle={displayValue}
             count={prop.propertyValueCount.count}
         />}
         itemAction={() => prop.eventHandler.onValueClick(propertyFacet)}>
