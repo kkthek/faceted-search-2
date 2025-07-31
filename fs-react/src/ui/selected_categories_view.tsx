@@ -11,13 +11,13 @@ function SelectedCategoriesView(prop: {
     searchStateDocument: SearchStateDocument,
     eventHandler: EventHandler
 }) {
-    let wikiContext = useContext(WikiContext);
-    let showCategories = wikiContext.config['fs2gShowCategories'];
+    const wikiContext = useContext(WikiContext);
+    const showCategories = wikiContext.config['fs2gShowCategories'];
     if (!prop.searchStateDocument || !showCategories) return;
 
     const categories = prop.searchStateDocument.documentResponse.categoryFacetCounts.map((v, i) => {
-            let query = prop.searchStateDocument.query;
-            let isSelectedFacet = query.isCategoryFacetSelected(v.category);
+            const query = prop.searchStateDocument.query;
+            const isSelectedFacet = query.isCategoryFacetSelected(v.category);
             if (!isSelectedFacet) return;
             return  <CustomTreeItem key={v.category}
                                     itemId={v.category}

@@ -7,8 +7,8 @@ import {WikiContext} from "../index";
 function SaveSearchLink(prop: {
     documentQuery: DocumentQuery
 }) {
-    let wikiContext = useContext(WikiContext);
-    let q = Tools.deepClone(prop.documentQuery);
+    const wikiContext = useContext(WikiContext);
+    const q = Tools.deepClone(prop.documentQuery);
     delete q['extraProperties']; // optimization
 
     const url = new URL(window.location.href);

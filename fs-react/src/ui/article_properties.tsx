@@ -10,10 +10,10 @@ const ArticleProperties = function ArticleProperties(prop: {
     doc: Document,
     client: Client
 }) {
-    let wikiContext = useContext(WikiContext);
-    let showArticleProperties = wikiContext.config['fs2gShowArticleProperties'];
+    const wikiContext = useContext(WikiContext);
+    const showArticleProperties = wikiContext.config['fs2gShowArticleProperties'];
     if (!showArticleProperties) return;
-    let articlePropertiesDiv = useRef<any>(null);
+    const articlePropertiesDiv = useRef<any>(null);
     const [document, setDocument] = useState((): Document => null);
 
     function handleExpandClick() {
@@ -21,9 +21,7 @@ const ArticleProperties = function ArticleProperties(prop: {
         const visible = div.checkVisibility();
         div.style.display = visible ? 'none' : 'block';
         if (visible || document !== null) return;
-        prop.client.getDocumentById(prop.doc.id).then((document) => {
-            setDocument(document);
-        })
+        prop.client.getDocumentById(prop.doc.id).then((document) => setDocument(document));
     }
 
     let rows: ReactElement[] = [];

@@ -10,7 +10,7 @@ function FacetFilter(prop : {
     eventHandler: EventHandler
 }) {
 
-    let wikiContext = useContext(WikiContext);
+    const wikiContext = useContext(WikiContext);
     const [text, setText] = useState((): string => '');
     const [unchanged, setUnchanged] = useState((): boolean => true);
 
@@ -21,8 +21,8 @@ function FacetFilter(prop : {
     }, [debouncedSearchValue]);
 
     if (!prop.property) return;
-    let unsuitableProperty = prop.property.isRangeProperty() || prop.property.isBooleanProperty();
-    let needsNoFilter = prop.numberOfValues < wikiContext.config.fs2gFacetValueLimit;
+    const unsuitableProperty = prop.property.isRangeProperty() || prop.property.isBooleanProperty();
+    const needsNoFilter = prop.numberOfValues < wikiContext.config.fs2gFacetValueLimit;
     if (unsuitableProperty || (unchanged && needsNoFilter)) {
         return;
     }

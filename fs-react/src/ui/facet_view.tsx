@@ -23,13 +23,13 @@ function FacetViewProperty(prop: {
     onOrDialogClick: (property: Property) => void
 }) {
 
-    let property =  prop.propertyFacetCount.property;
-    let propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(property);
-    let isSelectedFacet = prop.searchStateDocument.query.findPropertyFacet(property) !== null;
+    const property =  prop.propertyFacetCount.property;
+    const propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(property);
+    const isSelectedFacet = prop.searchStateDocument.query.findPropertyFacet(property) !== null;
     if (isSelectedFacet) return;
 
-    let wikiContext = useContext(WikiContext);
-    let facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(property.title);
+    const wikiContext = useContext(WikiContext);
+    const facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(property.title);
 
     const values = propertyValueCount?.values.map((v, i) => {
         return <FacetValues key={property.title + i}
@@ -39,7 +39,7 @@ function FacetViewProperty(prop: {
         />
     });
 
-    let showAll = propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
+    const showAll = propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
                 !(property.isRangeProperty() || property.isBooleanProperty());
 
     return <CustomTreeItem itemId={Tools.createItemIdForProperty(property)}
@@ -75,8 +75,8 @@ function FacetView(prop: {
 
 
     const propertyFacetCounts = prop.searchStateDocument.documentResponse.propertyFacetCounts;
-    let wikiContext = useContext(WikiContext);
-    let shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fs2gShownFacets'], prop.searchStateDocument.query);
+    const wikiContext = useContext(WikiContext);
+    const shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fs2gShownFacets'], prop.searchStateDocument.query);
 
     const [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick] = ORDialogInput.createORDialogState(
         prop.searchStateDocument.query,

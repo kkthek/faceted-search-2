@@ -19,9 +19,8 @@ class DropdownEntry {
     static createEntries(categoryFilters: any) {
         const entries = [];
         for(let category in categoryFilters) {
-            let id = category === '' ? NO_CATEGORY_FILTER : category;
-            let label = categoryFilters[category];
-            label = this.decodeHtml(label);
+            const id = category === '' ? NO_CATEGORY_FILTER : category;
+            const label = this.decodeHtml(categoryFilters[category]);
             entries.push(new DropdownEntry(id, label));
         }
         return entries;

@@ -4,13 +4,13 @@ import {WikiContext} from "../index";
 function CreateArticleLink(prop: {
     searchText: string
 }) {
-    let wikiContext = useContext(WikiContext);
-    let createNewPageLink = wikiContext.config['fs2gCreateNewPageLink'];
+    const wikiContext = useContext(WikiContext);
+    const createNewPageLink = wikiContext.config['fs2gCreateNewPageLink'];
     if (!createNewPageLink) return;
     if (prop.searchText === '') return;
 
-    let wgServer = wikiContext.config['wgServer'];
-    let wgArticlePath = wikiContext.config['wgArticlePath'];
+    const wgServer = wikiContext.config['wgServer'];
+    const wgArticlePath = wikiContext.config['wgArticlePath'];
 
     let articleUrl = wgServer+wgArticlePath;
     articleUrl = articleUrl.replace(/\$1/g, encodeURIComponent(prop.searchText)) + createNewPageLink;

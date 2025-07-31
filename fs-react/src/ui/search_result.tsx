@@ -11,12 +11,12 @@ import {Box, Typography} from "@mui/material";
 import UserDefinedLinks from "./user_defined_links";
 
 function SearchResult(prop: { doc: Document, client: Client}) {
-    let wikiContext = useContext(WikiContext);
-    let promotionProperty = wikiContext.config['fs2gPromotionProperty'];
-    let demotionProperty = wikiContext.config['fs2gDemotionProperty'];
-    let showSolrScore = wikiContext.config['fs2gShowSolrScore'];
+    const wikiContext = useContext(WikiContext);
+    const promotionProperty = wikiContext.config['fs2gPromotionProperty'];
+    const demotionProperty = wikiContext.config['fs2gDemotionProperty'];
+    const showSolrScore = wikiContext.config['fs2gShowSolrScore'];
 
-    let classNames = [];
+    const classNames = [];
     if (promotionProperty !== false && prop.doc.containsTrueFacetValue(promotionProperty)) {
         classNames.push('promoted');
     }
@@ -24,7 +24,7 @@ function SearchResult(prop: { doc: Document, client: Client}) {
         classNames.push('demoted');
     }
 
-    let snippet = prop.doc.highlighting.length > 500 ? prop.doc.highlighting.substring(0, 500)+'...': prop.doc.highlighting;
+    const snippet = prop.doc.highlighting.length > 500 ? prop.doc.highlighting.substring(0, 500)+'...': prop.doc.highlighting;
     return <Box className={classNames.join(' ')}>
         <Box className={'fs-search-result'} title={showSolrScore ? "score: " + prop.doc.score : ''}>
             <Typography>

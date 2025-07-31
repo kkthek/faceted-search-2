@@ -17,7 +17,7 @@ function SortView(prop : {
     const showSortView = wikiContext.config['fs2gShowSortOrder'];
     if (!showSortView) return;
 
-    let sorts: SortConfig = {
+    const sorts: SortConfig = {
         score: ConfigUtils.getSortByName('score'),
         newest: ConfigUtils.getSortByName('newest'),
         oldest: ConfigUtils.getSortByName('oldest'),

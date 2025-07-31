@@ -18,7 +18,7 @@ function FacetOrDialogContent(prop: {
     onBulkChange: (e: SyntheticEvent, v: ValueCount[]) => void,
     filterText: string
 }) {
-    let wikiContext = useContext(WikiContext);
+    const wikiContext = useContext(WikiContext);
     let valueCounts = prop.searchStateFacets?.getPropertyValueCount(prop.property).values;
     let filterTextsLowercase = prop.filterText.toLowerCase().split(/\s+/);
 
@@ -35,12 +35,12 @@ function FacetOrDialogContent(prop: {
         </Grid>;
     }
 
-    let selectedItemIds = valueCounts
+    const selectedItemIds = valueCounts
         .filter((value) => Tools.findFirstByPredicate(prop.selectedValues,
             (e) => e.containsValueOrMWTitle(value.value, value.mwTitle)) != null)
         .map(v => v.mwTitle ? v.mwTitle.title : v.value.toString());
 
-    let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title]
+    const groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title]
                             || wikiContext.config.fs2gPropertyGroupingBySeparator[prop.property.title]
                             || wikiContext.config.fs2gPropertyGroupingByUrl[prop.property.title];
 
@@ -65,16 +65,16 @@ function PropertyValueGrid(prop: {
     valueCounts: ValueCount[],
     onChange: (e: SyntheticEvent, checked: boolean, v: ValueCount) => void,
 }) {
-    let values: any = [];
+    const values: any = [];
 
-    let valueCounts = prop.valueCounts.sort((a,b) => a.compare(b));
-    let rows: ValueCount[][] = Tools.splitArray2NTuples(valueCounts, 3);
+    const valueCounts = prop.valueCounts.sort((a,b) => a.compare(b));
+    const rows: ValueCount[][] = Tools.splitArray2NTuples(valueCounts, 3);
 
     rows.forEach((row) => {
         values.push(row.map((value) => {
-            let selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
-            let selectedId = value.mwTitle ? value.mwTitle.title : value.value.toString();
-            let isSelected = prop.selectedItemIds.includes(selectedId)
+            const selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
+            const selectedId = value.mwTitle ? value.mwTitle.title : value.value.toString();
+            const isSelected = prop.selectedItemIds.includes(selectedId)
 
             return <Grid size={4}>
                 <FormControlLabel
@@ -100,11 +100,11 @@ function PropertyValueTree(prop: {
     valueCounts: ValueCount[],
     onBulkChange: (e: SyntheticEvent, v: ValueCount[]) => void
 }) {
-    let wikiContext = useContext(WikiContext);
+    const wikiContext = useContext(WikiContext);
 
-    let groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
-    let groupConfigurationBySeparator = wikiContext.config.fs2gPropertyGroupingBySeparator[prop.property.title];
-    let groupConfigurationByUrl = wikiContext.config.fs2gPropertyGroupingByUrl[prop.property.title];
+    const groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title];
+    const groupConfigurationBySeparator = wikiContext.config.fs2gPropertyGroupingBySeparator[prop.property.title];
+    const groupConfigurationByUrl = wikiContext.config.fs2gPropertyGroupingByUrl[prop.property.title];
 
     const [content, setContent] = useState<Groups>(null);
     useEffect(() => {
@@ -128,7 +128,7 @@ function PropertyValueTree(prop: {
     function onSelectedItemsChange(event: React.SyntheticEvent, itemIds: string[]) {
         itemIds = itemIds.map(i => decodeURIComponent(i));
 
-        let selectedValueCounts = prop.valueCounts.filter(v => {
+        const selectedValueCounts = prop.valueCounts.filter(v => {
             let id = v.mwTitle ? v.mwTitle.title : v.value.toString();
             return itemIds.includes(id);
         });
@@ -147,7 +147,7 @@ function PropertyValueTree(prop: {
 };
 
 function createItemsFromGroups(groups: Groups) {
-    let groupTreeItems = [];
+    const groupTreeItems = [];
     const ordered = Tools.orderKeys(groups ?? {});
     for (let groupId in ordered) {
 
