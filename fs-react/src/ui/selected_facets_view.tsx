@@ -21,24 +21,33 @@ function SelectedFacets(prop: {
     onOrDialogClick: (property: Property) => void
 
 }) {
-    let query = prop.searchStateFacet.query;
+    const query = prop.searchStateFacet.query;
 
-    let propertyFacet = query.findPropertyFacet(prop.propertyValueCount.property);
+    const propertyFacet = query.findPropertyFacet(prop.propertyValueCount.property);
     if (!propertyFacet) return;
-    let hasValue = propertyFacet.hasValueOrMWTitle() || propertyFacet.hasRange();
-    let wikiContext = useContext(WikiContext);
-    let facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(propertyFacet.property.title);
+    const hasValue = propertyFacet.hasValueOrMWTitle() || propertyFacet.hasRange();
+    const wikiContext = useContext(WikiContext);
+    const facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(propertyFacet.property.title);
 
-    const itemlist = prop.propertyValueCount.values.map((v,i ) => {
+    const itemList = prop.propertyValueCount.values.map((v,i ) => {
 
         return <SelectedFacetValues key={prop.propertyValueCount.property.title + i}
                      selectedPropertyFacet={propertyFacet}
                      propertyValueCount={v}
-                     removable={hasValue}
                      eventHandler={prop.eventHandler}
-                     index={i}
         />
     });
+
+    const onPropertyActionClick = () => {
+        if (!hasValue || itemList.length === 0) {
+            prop.eventHandler.onRemovePropertyFacet(propertyFacet)
+        } else if (facetsWithOr) {
+            prop.onOrDialogClick(prop.propertyValueCount.property);
+        }
+
+    };
+
+    const propertyActionIcon = !hasValue || itemList.length === 0 ? DeleteIcon :  (facetsWithOr ? ChecklistIcon: null);
 
     return <CustomTreeItem key={prop.propertyValueCount.property.title}
                            itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
@@ -46,16 +55,9 @@ function SelectedFacets(prop: {
                                displayTitle={prop.propertyValueCount.property.displayTitle}
                                count={prop.facetCount?.count ?? 0}
                            />}
-                           action={() => {
-                               if (!hasValue || itemlist.length === 0) {
-                                   prop.eventHandler.onRemovePropertyFacet(propertyFacet)
-                               } else if (facetsWithOr) {
-                                   prop.onOrDialogClick(prop.propertyValueCount.property);
-                               }
-
-                           } }
-                           actionIcon={!hasValue || itemlist.length === 0 ? DeleteIcon :  (facetsWithOr ? ChecklistIcon: null)}
-            >{itemlist}</CustomTreeItem>
+                           action={onPropertyActionClick}
+                           actionIcon={propertyActionIcon}
+            >{itemList}</CustomTreeItem>
 }
 
 function SelectedFacetsView(prop: {
@@ -109,7 +111,7 @@ function SelectedFacetsView(prop: {
         <FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
                        searchStateFacets={openOrDialog.facetResponse}
-                       selectedFacets={prop.searchStateFacet.query.propertyFacets}
+                       baseQuery={prop.searchStateFacet.query}
                        property={openOrDialog.property}
                        eventHandler={prop.eventHandler}
                        client={prop.client}

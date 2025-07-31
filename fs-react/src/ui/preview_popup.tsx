@@ -13,12 +13,12 @@ function PopupComponent(prop: {
     doc: Document,
 
 }) {
-    let wikiContext = useContext(WikiContext);
-    let fileTypesToShowInOverlay = wikiContext.config['fs2gShowFileInOverlay'];
+    const wikiContext = useContext(WikiContext);
+    const fileTypesToShowInOverlay = wikiContext.config['fs2gShowFileInOverlay'];
 
     const [openDialog, setOpenDialog] = useState(false);
 
-    let validConfig = (typeof fileTypesToShowInOverlay === 'boolean' || fileTypesToShowInOverlay.length);
+    const validConfig = (typeof fileTypesToShowInOverlay === 'boolean' || fileTypesToShowInOverlay.length);
     if (!validConfig || fileTypesToShowInOverlay === true) {
         console.warn('fs2gShowFileInOverlay can either be set to "false" or to an array of file types, eg. ["pdf","png",... ].')
         return;
@@ -27,25 +27,25 @@ function PopupComponent(prop: {
         return;
     }
 
-    let previewPopup;
     let previewUrlPropertyValues = prop.doc.getPropertyFacetValues("Diqa import fullpath")
     if (previewUrlPropertyValues.values.length === 0) {
-        let oldPreviewUrlPropertyValues = prop.doc.getPropertyFacetValues("diqa_import_fullpath"); // fallback
+        const oldPreviewUrlPropertyValues = prop.doc.getPropertyFacetValues("diqa_import_fullpath"); // fallback
         previewUrlPropertyValues = oldPreviewUrlPropertyValues ?? previewUrlPropertyValues;
     }
 
-    if (previewUrlPropertyValues.values.length > 0
-        && fileTypesToShowInOverlay.includes(ConfigUtils.getFileExtension(previewUrlPropertyValues.values[0] as string))) {
-        previewPopup = <span>
+    const fileExtension = ConfigUtils.getFileExtension(previewUrlPropertyValues.values[0] as string);
+    if (previewUrlPropertyValues.values.length === 0 || !fileTypesToShowInOverlay.includes(fileExtension)) {
+        return;
+    }
+
+    return <React.Fragment>
             <span
-            onClick={() => setOpenDialog(true) }
-        ><PreviewIcon/></span>;
+                onClick={() => setOpenDialog(true) }
+            ><PreviewIcon/></span>
         <PreviewPopup open={openDialog}
                       handleClose={() => setOpenDialog(false)}
                       url={previewUrlPropertyValues.values[0] as string}
-        /></span>
-    }
-    return previewPopup;
+        /></React.Fragment>
 }
 
 function PreviewPopup(prop: {
@@ -53,9 +53,9 @@ function PreviewPopup(prop: {
     handleClose: () => void,
     url: string
 }) {
-    let wikiContext = useContext(WikiContext);
-    let ext = ConfigUtils.getFileExtension(prop.url);
-    let mimeType = ConfigUtils.getFileType(ext);
+    const wikiContext = useContext(WikiContext);
+    const ext = ConfigUtils.getFileExtension(prop.url);
+    const mimeType = ConfigUtils.getFileType(ext);
 
     return (
 
