@@ -41,9 +41,7 @@ function CategoryDropdown(prop: {
     const categoryFilter = wikiContext.config['fs2gCategoryFilter'];
     const showCategories = wikiContext.config['fs2gShowCategories'];
     const useCategoryDropdown = wikiContext.isObjectConfigured('fs2gCategoryFilter');
-    if (!useCategoryDropdown) return;
-    if (!showCategories) return;
-
+    if (!useCategoryDropdown || !showCategories) return;
 
     const entries = DropdownEntry.createEntries(categoryFilter);
     const categoryFacets = prop.documentQuery.categoryFacets;
@@ -61,13 +59,11 @@ function CategoryDropdown(prop: {
     );
 
     return <Box className={'fs-category-dropdown'}>
-        <Typography>{wikiContext.msg('fs-available-categories')}</Typography>
         <Select
             labelId="sort-order-select-label"
             id="sort-order-select"
             value={selectedCategory}
             size={'small'}
-            sx={{"marginLeft": "10px"}}
             onChange={handleChange}
 
         >{categoryOptions}</Select>

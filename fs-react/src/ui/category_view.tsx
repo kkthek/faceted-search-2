@@ -54,7 +54,6 @@ function CategoryView( prop: {
     );
 
     return <Box id={'fs-category-view'}>
-        <Typography sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-categories')}</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
             {listItems}
             {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={<FacetWithCount
