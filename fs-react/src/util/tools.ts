@@ -153,7 +153,7 @@ class Tools {
     static reorder(items: ReactElement[], order: number[]) {
         let results: ReactElement[] = [];
         for(let i = 0; i < items.length; i++) {
-            results[i] = items[order[i]];
+            results[i] = order[i] !== undefined ? items[order[i]] : undefined;
         }
         return results;
     }

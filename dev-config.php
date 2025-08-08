@@ -90,21 +90,21 @@ function setConfigForDevContext() {
         $fs2gExtraPropertiesToRequest[] = new Property("Diqa import fullpath", Datatype::STRING);
     }
 
-    $fs2gHeaderControlOrder = ['sortView', 'searchView', 'saveSearchLink'];
+    $fs2gHeaderControlOrder = [ 'sortView', 'searchView', 'saveSearchLink' ];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-        'facetView', 'categoryView', 'categoryDropDown'];
+        'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView'];
 
     $fs2gPropertyGrouping = [
-        'Has name' =>
+       /* 'Has name' =>
                 [
                     'Group1' => [ 'Markus', 'Horst' ],
                     'Group2' => ['Peter', 'Timo']
-                ],
+                ],*/
         //'Works at' => '/'
     ];
 
     $fs2gPropertyGroupingBySeparator = [];// [ 'Works at' => '/'];
-    $fs2gPropertyGroupingByUrl = [];
+    $fs2gPropertyGroupingByUrl = ['Has name' => '/sample-group-hierarchy'];
 
     global $fs2gAdditionalLinks;
     $fs2gAdditionalLinks = [

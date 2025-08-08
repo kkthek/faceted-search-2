@@ -101,9 +101,13 @@ function App() {
                     />,
                     <SaveSearchLink key={'saveSearchLink'}
                                     documentQuery={currentDocumentsQueryBuilder.build()}
+                    />,
+                    <CategoryDropdown key={'categoryView'}
+                                      documentQuery={currentDocumentsQueryBuilder.build()}
+                                      eventHandler={eventHandler}
                     />
                 ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
-                    ['sortView', 'searchView', 'saveSearchLink']))}
+                    ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']))}
 
             </div>
 
@@ -144,18 +148,18 @@ function App() {
                                expandedFacets={expandedFacets}
                                eventHandler={eventHandler}
                     />,
-
-                    <CategoryDropdown key={'categoryView'}
+                    <Typography sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-categories')}</Typography>,
+                    <CategoryDropdown key={'categoryDropDown'}
                                       documentQuery={currentDocumentsQueryBuilder.build()}
                                       eventHandler={eventHandler}
                     />,
-                    <CategoryView key={'categoryDropDown'}
+                    <CategoryView key={'categoryView'}
                                   searchStateDocument={searchStateDocument}
                                   eventHandler={eventHandler}
                     />
                 ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
                     ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-                        'facetView', 'categoryView', 'categoryDropDown']))}
+                        'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView']))}
             </div>
             <div id={'fs-results'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}
