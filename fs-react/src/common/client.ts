@@ -12,7 +12,10 @@ const HTTP_REQUEST_OPTIONS: any = {
     cache: "no-cache",
     credentials: "same-origin",
     redirect: "follow",
-    referrerPolicy: "no-referrer"
+    referrerPolicy: "no-referrer",
+    headers: {
+        "Content-Type": "application/json"
+    }
 }
 
 class Client {
