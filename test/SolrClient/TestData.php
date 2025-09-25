@@ -110,11 +110,12 @@ class TestData {
 
         $p = new Property('Works at', Datatype::WIKIPAGE);
         $pvWorksAt = new PropertyValues($p, [new MWTitle('VW / Audi', 'Audi AG')]);
+        $pvWorksAt2 = new PropertyValues($p, [new MWTitle('DIQA-GmbH', 'DIQA')]);
 
         $p = new Property('Has spouse', Datatype::WIKIPAGE);
         $pvSpouse = new PropertyValues($p, [new MWTitle('Müller, Marina', 'Marina')]);
 
-        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse])
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvWorksAt2, $pvSpouse])
             ->setFulltext("Timo Müller arbeitet bei der Audi AG.")
             ->setCategories(["Employee"])
             ->setDirectCategories(["Employee"])

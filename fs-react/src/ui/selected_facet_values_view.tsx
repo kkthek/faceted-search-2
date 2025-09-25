@@ -22,11 +22,11 @@ function SelectedFacetValues(prop: {
     const displayValue = DisplayTools.serializeFacetValue(property, prop.propertyValueCount);
     const facetValue = new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
     const propertyFacet = new PropertyFacet(property, [facetValue]);
-    const removable = prop.selectedPropertyFacet.hasValueOrMWTitle() || prop.selectedPropertyFacet.hasRange();
+    const removable = prop.selectedPropertyFacet.containsFacet(facetValue);
 
     const onRemovePropertyFacet = () => {
         if (!removable) return;
-        prop.eventHandler.onRemovePropertyFacet(prop.selectedPropertyFacet, facetValue);
+        prop.eventHandler.onRemovePropertyFacet(propertyFacet, facetValue);
     }
 
     return <CustomTreeItem key={property.title + displayValue + prop.propertyValueCount.count}

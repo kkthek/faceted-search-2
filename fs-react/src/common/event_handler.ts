@@ -122,7 +122,6 @@ class EventHandler {
         let property = propertyFacet.getProperty();
         this.currentDocumentsQueryBuilder
             .withOffset(0)
-            .clearFacetsForProperty(property)
             .withPropertyFacet(propertyFacet);
 
         this.expandFacet(property.getItemId());
@@ -135,7 +134,6 @@ class EventHandler {
         propertyFacets.forEach((pf) => {
             this.currentDocumentsQueryBuilder
                 .withOffset(0)
-                .clearFacetsForProperty(pf.property)
                 .withPropertyFacet(pf);
         });
 

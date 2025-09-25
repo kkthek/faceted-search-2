@@ -238,12 +238,11 @@
 			"description": "Show some files in an overlay. Either 'false' or array of file types ['pdf', 'png',...]"
 		},
 		"HeaderControlOrder": {
-			"value": ["sortView", "searchView", "saveSearchLink"],
+			"value": [],
 			"description": "Order of controls in header"
 		},
 		"FacetControlOrder": {
-			"value": ["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "removeAllFacets", "divider",
-				"facetView", "categoryLabel", "categoryDropDown", "categoryView"],
+			"value": [],
 			"description": "Order of controls in left-hand view"
 		},
 		"PropertyGrouping": {

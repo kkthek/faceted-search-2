@@ -25,9 +25,9 @@ function SelectedFacets(prop: {
 
     const propertyFacet = query.findPropertyFacet(prop.propertyValueCount.property);
     if (!propertyFacet) return;
-    const hasValue = propertyFacet.hasValueOrMWTitle() || propertyFacet.hasRange();
+    const isRemovable = !propertyFacet.hasValueOrMWTitle() && !propertyFacet.hasRange();
     const wikiContext = useContext(WikiContext);
-    const facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(propertyFacet.property.title);
+    const facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(prop.propertyValueCount.property.title);
 
     const itemList = prop.propertyValueCount.values.map((v,i ) => {
 
@@ -39,7 +39,7 @@ function SelectedFacets(prop: {
     });
 
     const onPropertyActionClick = () => {
-        if (!hasValue || itemList.length === 0) {
+        if (isRemovable && itemList.length > 0) {
             prop.eventHandler.onRemovePropertyFacet(propertyFacet)
         } else if (facetsWithOr) {
             prop.onOrDialogClick(prop.propertyValueCount.property);
@@ -47,7 +47,7 @@ function SelectedFacets(prop: {
 
     };
 
-    const propertyActionIcon = !hasValue || itemList.length === 0 ? DeleteIcon :  (facetsWithOr ? ChecklistIcon: null);
+    const propertyActionIcon = isRemovable && itemList.length > 0 ? DeleteIcon :  (facetsWithOr ? ChecklistIcon: null);
 
     return <CustomTreeItem key={prop.propertyValueCount.property.title}
                            itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
