@@ -68,7 +68,7 @@ class DocumentQueryBuilder {
             Tools.removeFirstByPredicate(this.query.propertyFacets, (e) => e.property.equals(pf.property));
         } else {
             const f = Tools.findFirstByPredicate(this.query.propertyFacets, (e) => e.property.equals(pf.property));
-            Tools.removeFirstByPredicate(f.values, (v) => v.equalsOrWithinRange(facetValue));
+            Tools.removeFirstByPredicate(f.values, (v) => v.equals(facetValue));
             if (f.values.length === 0) {
                 this.withoutPropertyFacet(pf);
             }

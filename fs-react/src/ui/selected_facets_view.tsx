@@ -1,5 +1,5 @@
-import React, {useContext, useState} from "react";
-import {Property, PropertyFacetCount, PropertyValueCount,} from "../common/datatypes";
+import React, {useContext} from "react";
+import {Property, PropertyFacetCount, PropertyValueCount, Range,} from "../common/datatypes";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
@@ -9,9 +9,9 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 import Client from "../common/client";
 import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
 import {WikiContext} from "../index";
-import QueryUtils from "../util/query_utils";
 import Tools from "../util/tools";
 import FacetWithCount from "./facet_with_count";
+import DisplayTools from "../util/display_tools";
 
 function SelectedFacets(prop: {
     propertyValueCount: PropertyValueCount
@@ -25,7 +25,7 @@ function SelectedFacets(prop: {
 
     const propertyFacet = query.findPropertyFacet(prop.propertyValueCount.property);
     if (!propertyFacet) return;
-    const isRemovable = !propertyFacet.hasValueOrMWTitle() && !propertyFacet.hasRange();
+    const isRemovable = !propertyFacet.hasValueOrMWTitle() || propertyFacet.hasRange();
     const wikiContext = useContext(WikiContext);
     const facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(prop.propertyValueCount.property.title);
 
@@ -49,6 +49,21 @@ function SelectedFacets(prop: {
 
     const propertyActionIcon = isRemovable && itemList.length > 0 ? DeleteIcon :  (facetsWithOr ? ChecklistIcon: null);
 
+
+    let lastRange;
+    if (propertyFacet.property.isRangeProperty()) {
+        const lastValue = propertyFacet.values.length > 0 ? propertyFacet.values[propertyFacet.values.length - 1] : null;
+        if (lastValue !== null) {
+            const r = lastValue.range as Range;
+            lastRange = <CustomTreeItem key={prop.propertyValueCount.property.title+'_lastRange'}
+                                        itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)+'_lastRange'}
+                                        label={DisplayTools.displayRange(propertyFacet.property, r)}
+                                        action={()=>prop.eventHandler.onRemovePropertyFacet(propertyFacet, lastValue)}
+                                        actionIcon={DeleteIcon}
+            />;
+        }
+    }
+
     return <CustomTreeItem key={prop.propertyValueCount.property.title}
                            itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
                            label={<FacetWithCount
@@ -57,7 +72,7 @@ function SelectedFacets(prop: {
                            />}
                            action={onPropertyActionClick}
                            actionIcon={propertyActionIcon}
-            >{itemList}</CustomTreeItem>
+            >{lastRange}{itemList}</CustomTreeItem>
 }
 
 function SelectedFacetsView(prop: {
