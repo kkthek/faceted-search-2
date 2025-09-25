@@ -129,9 +129,13 @@ class EventHandler {
         this.updateFacetValuesForProperty(property);
     }
 
-    onValuesClick(propertyFacets: PropertyFacet[]) {
+    onValuesClick(propertyFacets: PropertyFacet[], removeOld: boolean = true) {
 
         propertyFacets.forEach((pf) => {
+            if (removeOld) {
+                this.currentDocumentsQueryBuilder.
+                    withoutPropertyFacet(pf);
+            }
             this.currentDocumentsQueryBuilder
                 .withOffset(0)
                 .withPropertyFacet(pf);

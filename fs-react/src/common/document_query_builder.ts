@@ -48,7 +48,12 @@ class DocumentQueryBuilder {
         if (pf === null) {
             this.query.propertyFacets.push(propertyFacetConstraint);
         } else {
-            pf.values = [...pf.values, ...propertyFacetConstraint.values];
+            propertyFacetConstraint.values.forEach(vNew => {
+                if (!pf.values.some(vOld => vOld.equals(vNew))) {
+                    pf.values.push(vNew);
+                }
+            });
+
         }
         return this;
     }
