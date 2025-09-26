@@ -237,7 +237,7 @@ export class PropertyFacet {
     }
 
     static facetForAnyValue(p: Property) {
-        return new PropertyFacet(p, []);
+        return new PropertyFacet(p, [new FacetValue(null, null,null)]);
     }
 
     equals(that: PropertyFacet) {
