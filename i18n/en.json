@@ -36,6 +36,7 @@
 
 	"fs-gis-map-title": "GIS-Browser",
 	"fs-facet-gis": "Select a section of the map",
-	"fs-open-gis-browser": "Open GIS Browser"
+	"fs-open-gis-browser": "Open GIS Browser",
+
 	"fs-copy-search-link": 		"Copy link to clipboard"
 }
