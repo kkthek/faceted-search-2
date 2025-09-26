@@ -16,7 +16,7 @@ class ValueSerializer {
 
         if (pfv.property.type === Datatype.wikipage) {
             let mwTitles = pfv.values as MWTitleWithURL[];
-            items = mwTitles.map((title: MWTitleWithURL) => <WikiLink page={title}/>);
+            items = mwTitles.map((title: MWTitleWithURL) => <WikiLink key={title.title} page={title}/>);
         } else if (pfv.property.type === Datatype.datetime) {
             let values = pfv.values as Date[];
             items = values.map((date: Date) => <span key={Tools.secureUUIDV4()}>{DisplayTools.displayDate(date)}</span>);

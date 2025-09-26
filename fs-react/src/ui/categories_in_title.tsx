@@ -8,6 +8,9 @@ import {Typography} from "@mui/material";
 function CategoriesInTitle(prop: { doc: Document }) {
     const wikiContext = useContext(WikiContext);
     const categoriesInTitle = wikiContext.config['fs2gCategoriesToShowInTitle'];
+    if (categoriesInTitle.length === 0) {
+        return;
+    }
     const categoryElements = categoriesInTitle
         .filter((c: string) => prop.doc.getCategoryFacetValue(c) != null)
         .map((c: string) => <span><WikiLink page={prop.doc.getCategoryFacetValue(c)}/></span>);

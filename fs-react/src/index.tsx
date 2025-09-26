@@ -119,7 +119,7 @@ function App() {
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {Tools.reorder([
                     <Box key={'selectedFacetLabel'}>
-                        <Typography>{wikiContext.msg('fs-selected-facets')}</Typography>
+                        <Typography key={'fs-selected-facets'}>{wikiContext.msg('fs-selected-facets')}</Typography>
                         {anyFacetSelected ? '' :
                             <span id={'fs-no-facet-selected'}>{"(" + wikiContext.msg('fs-no-facets-selected') + ")"}</span> }
                     </Box>,
@@ -148,7 +148,7 @@ function App() {
                                expandedFacets={expandedFacets}
                                eventHandler={eventHandler}
                     />,
-                    <Typography sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-categories')}</Typography>,
+                    <Typography key={'fs-available-categories'} sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-categories')}</Typography>,
                     <CategoryDropdown key={'categoryDropDown'}
                                       documentQuery={currentDocumentsQueryBuilder.build()}
                                       eventHandler={eventHandler}
