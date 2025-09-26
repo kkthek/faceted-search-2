@@ -117,6 +117,8 @@ function setConfigForDevContext() {
             "Objektjournal öffnen" => "{SMW:ODB-ID.replace('Objekt','Journal'}"
         ]
     ];
+    global $fs2gDateTimeOffset;
+    $fs2gDateTimeOffset = 0;
 
     global $wgServer, $wgScriptPath;
     $wgServer = "http://locahost:9000";

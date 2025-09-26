@@ -44,7 +44,17 @@ class DocumentQueryBuilder {
     }
 
     withPropertyFacet(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
-        this.query.propertyFacets.push(propertyFacetConstraint);
+        const pf = Tools.findFirst(this.query.propertyFacets, (e) => e.property.title, propertyFacetConstraint.property.title);
+        if (pf === null) {
+            this.query.propertyFacets.push(propertyFacetConstraint);
+        } else {
+            propertyFacetConstraint.values.forEach(vNew => {
+                if (!pf.values.some(vOld => vOld.equals(vNew))) {
+                    pf.values.push(vNew);
+                }
+            });
+
+        }
         return this;
     }
 
@@ -55,10 +65,10 @@ class DocumentQueryBuilder {
 
     withoutPropertyFacet(pf: PropertyFacet, facetValue: FacetValue = null) {
         if (facetValue === null) {
-            Tools.removeFirstByPredicate(this.query.propertyFacets, (e) => e.equalsOrWithinRange(pf));
+            Tools.removeFirstByPredicate(this.query.propertyFacets, (e) => e.property.equals(pf.property));
         } else {
-            const f = Tools.findFirstByPredicate(this.query.propertyFacets, (e) => e.equalsOrWithinRange(pf));
-            Tools.removeFirstByPredicate(f.values, (v) => v.equalsOrWithinRange(facetValue));
+            const f = Tools.findFirstByPredicate(this.query.propertyFacets, (e) => e.property.equals(pf.property));
+            Tools.removeFirstByPredicate(f.values, (v) => v.equals(facetValue));
             if (f.values.length === 0) {
                 this.withoutPropertyFacet(pf);
             }

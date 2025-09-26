@@ -34,6 +34,16 @@ class ConfigTools {
         global $fs2gNamespacesToShow;
         $allowedNamespaces = ConfigTools::getAllowedNamespaces();
         $fs2gNamespacesToShow = array_intersect($fs2gNamespacesToShow, $allowedNamespaces);
+
+        global $fs2gFacetControlOrder;
+        if (count($fs2gFacetControlOrder) === 0) {
+            $fs2gFacetControlOrder = ["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "removeAllFacets", "divider",
+                "facetView", "categoryLabel", "categoryDropDown", "categoryView"];
+        }
+        global $fs2gHeaderControlOrder;
+        if (count($fs2gHeaderControlOrder) === 0) {
+            $fs2gHeaderControlOrder = ["sortView", "searchView", "saveSearchLink"];
+        }
     }
 
     public static function getAllowedNamespaces(): array

@@ -107,6 +107,8 @@ function PropertyValueTree(prop: {
     const groupConfigurationByUrl = wikiContext.config.fs2gPropertyGroupingByUrl[prop.property.title];
 
     const [content, setContent] = useState<Groups>(null);
+    const [selectedItems, setSelectedItems] = useState<string[]>(prop.selectedItemIds.map(i => encodeURIComponent(i)));
+
     useEffect(() => {
         let groups: Groups;
         if (groupConfigurationByUrl) {
@@ -132,14 +134,14 @@ function PropertyValueTree(prop: {
             let id = v.mwTitle ? v.mwTitle.title : v.value.toString();
             return itemIds.includes(id);
         });
-
+        setSelectedItems(itemIds);
         prop.onBulkChange(event, selectedValueCounts);
     }
 
     return <SimpleTreeView checkboxSelection={true}
                            expandedItems={Object.keys(content ?? []).map(e => "group_"+e)}
                            multiSelect={true}
-                           defaultSelectedItems={prop.selectedItemIds.map(i => encodeURIComponent(i))}
+                           selectedItems={selectedItems}
                            selectionPropagation={{descendants: true, parents: true}}
                            onSelectedItemsChange={onSelectedItemsChange}
     >{createItemsFromGroups(content)}

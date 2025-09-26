@@ -1,4 +1,4 @@
-import {Datatype, Property, ValueCount} from "../common/datatypes";
+import {Datatype, Property, Range, ValueCount} from "../common/datatypes";
 
 class DisplayTools {
 
@@ -49,6 +49,13 @@ class DisplayTools {
             }
             return v.range.from + "-" + v.range.to;
         }
+    }
+
+    static displayRange(p: Property,range: Range) {
+        if (p.type === Datatype.datetime) {
+            return this.displayDateRange(range.from as Date, range.to as Date);
+        }
+        return range.from + "-" + range.to;
     }
 
     private static isBeginOfDay(d: Date) {

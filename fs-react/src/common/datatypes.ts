@@ -182,6 +182,9 @@ export class FacetValue {
     }
 
     static sameValue(a: ValueType|void, b: ValueType|void) {
+        if ((a === null && b !== null) || (a !== null && b === null)) {
+            return false;
+        }
         return (a === b)
             || (a as string) === b as string
             || (a as number) === b as number
@@ -217,6 +220,10 @@ export class PropertyFacet {
         this.values = values;
     }
 
+    containsFacet(value: FacetValue): boolean {
+        return this.values.some(e => value !== null && e.equalsOrWithinRange(value));
+    }
+
     hasValueOrMWTitle(): boolean {
         return this.values.some((e) => e.value || e.mwTitle);
     }
@@ -230,7 +237,7 @@ export class PropertyFacet {
     }
 
     static facetForAnyValue(p: Property) {
-        return new PropertyFacet(p, [new FacetValue(null, null, null)]);
+        return new PropertyFacet(p, []);
     }
 
     equals(that: PropertyFacet) {

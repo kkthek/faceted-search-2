@@ -14,8 +14,18 @@ function SaveSearchLink(prop: {
     const url = new URL(window.location.href);
     url.searchParams.set('q',  btoa(JSON.stringify(q)));
 
+    const copyLinkToClipboard = function (event: React.MouseEvent<HTMLElement>) {
+
+        navigator.clipboard.writeText(url.toString()).then(() => {
+            const browserWindow = window as any;
+            if (browserWindow.mw) {
+                browserWindow.mw.notify(wikiContext.msg('fs-copy-search-link'));
+            }
+        });
+        event.preventDefault();
+    }
     return <Box className={'fs-save-search-link'}>
-        <a href={url.toString()}>{wikiContext.msg('fs-link-to-search')}</a>
+        <a href={url.toString()} onClick={copyLinkToClipboard}>{wikiContext.msg('fs-link-to-search')}</a>
     </Box>;
 }
 

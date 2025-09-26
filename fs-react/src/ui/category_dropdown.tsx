@@ -47,6 +47,9 @@ function CategoryDropdown(prop: {
     const categoryFacets = prop.documentQuery.categoryFacets;
     const preSelectedCategory = categoryFacets.length > 0 ? categoryFacets[0] : NO_CATEGORY_FILTER;
     const [selectedCategory, setSelectedCategory] = useState(preSelectedCategory);
+    if (selectedCategory !== preSelectedCategory) {
+        setSelectedCategory(preSelectedCategory);
+    }
 
     const handleChange = (event: SelectChangeEvent) => {
         setSelectedCategory(event.target.value);
