@@ -13,7 +13,7 @@ use MediaWiki\Storage\EditResult;
 use MediaWiki\User\UserIdentity;
 use Parser;
 use SMW\SemanticData;
-use SMWStore;
+use SMW\Store;
 use StatusValue;
 use Title;
 use WikiPage;
@@ -35,7 +35,7 @@ class FSIncrementalUpdater  {
      * @param SemanticData $semanticData
      * @return bool
      */
-    public static function onUpdateDataAfter(SMWStore $store, SemanticData $semanticData) {
+    public static function onUpdateDataAfter(Store $store, SemanticData $semanticData) {
         $wikiTitle = $semanticData->getSubject()->getTitle();
         if (self::shouldCreateUpdateJob()) {
             self::createUpdateJob( $wikiTitle);
@@ -150,11 +150,11 @@ class FSIncrementalUpdater  {
      *                   a fatal error to $status.
      */
     public static function onPageDelete(
-            ProperPageIdentity $page,
-            Authority $deleter,
-            string $reason,
-            StatusValue $status,
-            bool $suppress ) {
+        ProperPageIdentity $page,
+        Authority $deleter,
+        string $reason,
+        StatusValue $status,
+        bool $suppress ) {
 
         try {
             FSIndexer::deleteArticleFromIndex($page->getID());
