@@ -164,6 +164,7 @@ function App() {
             <div id={'fs-results'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}
                             numResults={searchStateDocument ? searchStateDocument.documentResponse.numResults : 0}
+                            pageOffset={currentDocumentsQueryBuilder.build().offset}
                             eventHandler={eventHandler}
                             client={client}/>
             </div>

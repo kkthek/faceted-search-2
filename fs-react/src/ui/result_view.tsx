@@ -10,6 +10,7 @@ import EventHandler from "../common/event_handler";
 function ResultView(prop: {
     results: Document[],
     numResults: number,
+    pageOffset: number,
     eventHandler: EventHandler
     client: Client
 }) {
@@ -19,6 +20,10 @@ function ResultView(prop: {
 
     const fs2gHitsPerPage = wikiContext.config['fs2gHitsPerPage'];
     const totalNumberOfPages = Math.trunc(prop.numResults / fs2gHitsPerPage) + 1;
+    const currentPageIndex = prop.pageOffset/fs2gHitsPerPage+1;
+    if (pageIndex !== currentPageIndex) {
+        setPageIndex(currentPageIndex);
+    }
 
     const listItems = prop.results.map((doc, i) =>
         <SearchResult key={doc.id} doc={doc} client={prop.client}/>
@@ -41,7 +46,7 @@ function ResultView(prop: {
         </Stack>
         <Divider/>
         <Pagination count={totalNumberOfPages}
-                    defaultPage={1}
+                    page={pageIndex}
                     siblingCount={2}
                     onChange={onPageIndexChange}/>
     </div>;
