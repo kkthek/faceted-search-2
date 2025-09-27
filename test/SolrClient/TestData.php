@@ -126,8 +126,10 @@ class TestData {
     public static function generateData5() {
         $document = new Document('66666', "Schmidt, Markus", "", 0);
         $p = new Property('Has name', Datatype::STRING);
-
         $pvName = new PropertyValues($p, ['Markus']);
+
+        $p = new Property('Description', Datatype::STRING);
+        $pvDescription = new PropertyValues($p, ['Loves <b>Football</b> a lot']);
 
         $p = new Property('Has age', Datatype::NUMBER);
         $pvAge = new PropertyValues($p, [54]);
@@ -144,7 +146,7 @@ class TestData {
         $p = new Property('Has spouse', Datatype::WIKIPAGE);
         $pvSpouse = new PropertyValues($p, [new MWTitle('Schmidt, Johanna', 'Johanna')]);
 
-        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse])
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse, $pvDescription])
             ->setFulltext("Markus Schmidt arbeitet bei Firma XY:12/3.")
             ->setCategories(["Employee"])
             ->setDirectCategories(["Employee"])
