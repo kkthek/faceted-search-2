@@ -39,11 +39,13 @@ function FacetFilter(prop : {
         e.stopPropagation();
     }
     return <input type={'text'}
-                  style={{marginLeft: '50px'}}
+                  id={prop.property.title+"-filter-input"}
+                  style={{width: '50%'}}
                   placeholder={'Filter...'}
                   value={text}
                   onChange={onChange}
-                  onKeyDown={onKeyDown}/>;
+                  onKeyDown={onKeyDown}
+    />;
 
 }
 

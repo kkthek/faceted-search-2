@@ -48,10 +48,11 @@ function FacetViewProperty(prop: {
                            actionIcon={facetsWithOr ? ChecklistIcon : null}
                            action={() => prop.onOrDialogClick(property)}
                            className={'fs-facets'}>
-        <FacetFilter eventHandler={prop.eventHandler}
-                     numberOfValues={propertyValueCount?.values.length}
-                     property={propertyValueCount?.property}/>
-
+        <CustomTreeItem itemId={property.title+"-filter"}
+                        label={<FacetFilter eventHandler={prop.eventHandler}
+                                            numberOfValues={propertyValueCount?.values.length}
+                                            property={propertyValueCount?.property}/>}
+        />
         {values}
         { showAll ?
         <CustomTreeItem itemId={property.title + "-showall"}
@@ -121,6 +122,10 @@ function FacetView(prop: {
                         disabledItemsFocusable
                         expandedItems={prop.expandedFacets}
                         onItemExpansionToggle={handleItemExpansionToggle}
+                        onItemFocus={(e, itemId) => {
+                            const input = document.getElementById(`${itemId}-input`);
+                            if (input) input.focus();
+                        }}
         >
             {listItems}
             {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={<FacetWithCount displayTitle={'none'} />} />: ''}
