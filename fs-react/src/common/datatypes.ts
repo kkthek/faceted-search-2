@@ -74,6 +74,10 @@ export class PropertyValueQuery {
     static forAllValues(property: Property) {
         return new PropertyValueQuery(property, null, null, null);
     }
+
+    static forValuesContainingText(property: Property, text: string = null) {
+        return new PropertyValueQuery(property, null, null, text);
+    }
 }
 
 @jsonObject
@@ -140,6 +144,10 @@ export class FacetValue {
         this.value = value;
         this.mwTitle = mwTitle;
         this.range = range;
+    }
+
+    isEmpty() {
+        return this.value === null && this.mwTitle === null && this.range === null;
     }
 
     static fromValueCount(valueCount: ValueCount) {

@@ -190,7 +190,7 @@ class EventHandler {
 
         let propertyValueConstraint = new PropertyValueQuery(
             property,
-            text === '' ? this.facetValueLimit : null,
+            this.facetValueLimit,
             null,
             text === '' ? null : text);
         if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueConstraint)) {
@@ -201,12 +201,12 @@ class EventHandler {
         this.updateFacets();
     }
 
-    onShowAllValues(property: Property) {
+    onShowAllValues(property: Property, filterText: string) {
         if (property.isRangeProperty()) {
             return;
         }
 
-        let propertyValueQuery = PropertyValueQuery.forAllValues(property);
+        let propertyValueQuery = PropertyValueQuery.forValuesContainingText(property, filterText);
         if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueQuery)) {
             return;
         }

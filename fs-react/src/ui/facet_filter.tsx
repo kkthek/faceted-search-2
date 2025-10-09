@@ -1,4 +1,4 @@
-import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
+import React, {KeyboardEvent, MutableRefObject, useContext, useEffect, useState} from "react";
 import {Property} from "../common/datatypes";
 import {WikiContext} from "../index";
 import {useDebounce} from "../util/custom_hooks";
@@ -7,7 +7,8 @@ import EventHandler from "../common/event_handler";
 function FacetFilter(prop : {
     property: Property
     numberOfValues: number
-    eventHandler: EventHandler
+    eventHandler: EventHandler,
+    inputFilterRef: MutableRefObject<any>
 }) {
 
     const wikiContext = useContext(WikiContext);
@@ -39,6 +40,7 @@ function FacetFilter(prop : {
         e.stopPropagation();
     }
     return <input type={'text'}
+                  ref={prop.inputFilterRef}
                   id={prop.property.title+"-filter-input"}
                   style={{width: '50%'}}
                   placeholder={'Filter...'}

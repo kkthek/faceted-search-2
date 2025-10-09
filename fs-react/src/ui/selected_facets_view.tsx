@@ -52,13 +52,13 @@ function SelectedFacets(prop: {
 
     let lastRange;
     if (propertyFacet.property.isRangeProperty()) {
-        const lastValue = propertyFacet.values.length > 0 ? propertyFacet.values[propertyFacet.values.length - 1] : null;
-        if (lastValue !== null) {
-            const r = lastValue.range as Range;
+        const lastConstraint = propertyFacet.values.at(propertyFacet.values.length - 1);
+        if (lastConstraint && !lastConstraint.isEmpty()) {
+            const r = lastConstraint.range as Range;
             lastRange = <CustomTreeItem key={prop.propertyValueCount.property.title+'_lastRange'}
                                         itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)+'_lastRange'}
                                         label={DisplayTools.displayRange(propertyFacet.property, r)}
-                                        action={()=>prop.eventHandler.onRemovePropertyFacet(propertyFacet, lastValue)}
+                                        action={()=>prop.eventHandler.onRemovePropertyFacet(propertyFacet, lastConstraint)}
                                         actionIcon={DeleteIcon}
             />;
         }
