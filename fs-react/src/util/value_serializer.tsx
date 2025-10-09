@@ -25,7 +25,7 @@ class ValueSerializer {
             items = values.map((b: boolean) => <span key={Tools.secureUUIDV4()}>{b ? "true":"false"}</span>);
         } else {
             let values = pfv.values as any[];
-            items = values.map((value: any) => <span key={Tools.secureUUIDV4()}>{value}</span>);
+            items = values.map((value: any) => <span dangerouslySetInnerHTML={{__html: value}}  key={Tools.secureUUIDV4()}></span>);
         }
         return <span key={Tools.secureUUIDV4()}>{ValueSerializer.join(items)}</span>;
 

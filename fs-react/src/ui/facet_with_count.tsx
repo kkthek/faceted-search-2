@@ -6,7 +6,7 @@ function FacetWithCount(prop: {
     count?: number
 }) {
     return <React.Fragment>
-        <span className={'fs-facet-title'}>{prop.displayTitle}</span>
+        <span dangerouslySetInnerHTML={{__html: prop.displayTitle}} className={'fs-facet-title'}></span>
         {prop.count !== undefined ? <span className={'fs-facet-count'}>&nbsp;({prop.count})</span> : ''}
     </React.Fragment>;
 }

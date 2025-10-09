@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useRef} from "react";
 import {FacetResponse, Property, PropertyFacetCount} from "../common/datatypes";
 import Tools from "../util/tools";
 import FacetValues from "./facet_values_view";
@@ -23,6 +23,7 @@ function FacetViewProperty(prop: {
     onOrDialogClick: (property: Property) => void
 }) {
 
+    const inputFilterRef = useRef<any>();
     const property =  prop.propertyFacetCount.property;
     const propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(property);
     const isSelectedFacet = prop.searchStateDocument.query.findPropertyFacet(property) !== null;
@@ -48,15 +49,21 @@ function FacetViewProperty(prop: {
                            actionIcon={facetsWithOr ? ChecklistIcon : null}
                            action={() => prop.onOrDialogClick(property)}
                            className={'fs-facets'}>
-        <FacetFilter eventHandler={prop.eventHandler}
-                     numberOfValues={propertyValueCount?.values.length}
-                     property={propertyValueCount?.property}/>
-
+        <CustomTreeItem itemId={property.title+"-filter"}
+                        label={<FacetFilter eventHandler={prop.eventHandler}
+                                            numberOfValues={propertyValueCount?.values.length}
+                                            property={propertyValueCount?.property}
+                                            inputFilterRef={inputFilterRef}
+                        />}
+        />
         {values}
         { showAll ?
         <CustomTreeItem itemId={property.title + "-showall"}
                         label={"["+wikiContext.msg('fs-show-all')+"]"}
-                        itemAction={() => prop.eventHandler.onShowAllValues(property)}
+                        itemAction={() => {
+                            const filterText = inputFilterRef.current.value as string;
+                            prop.eventHandler.onShowAllValues(property, filterText);
+                        } }
         /> : '' }
 
 
@@ -121,6 +128,10 @@ function FacetView(prop: {
                         disabledItemsFocusable
                         expandedItems={prop.expandedFacets}
                         onItemExpansionToggle={handleItemExpansionToggle}
+                        onItemFocus={(e, itemId) => {
+                            const input = document.getElementById(`${itemId}-input`);
+                            if (input) input.focus();
+                        }}
         >
             {listItems}
             {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={<FacetWithCount displayTitle={'none'} />} />: ''}
