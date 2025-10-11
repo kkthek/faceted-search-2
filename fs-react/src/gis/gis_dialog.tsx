@@ -10,8 +10,7 @@ import {BaseQuery, Datatype, FacetValue, Property, PropertyFacet, Range} from ".
 import {Box} from "@mui/material";
 import {WikiContext} from "../index";
 import EventHandler from "../common/event_handler";
-import Client from "../common/client";
-import Tools from "../util/tools";
+import GisBrowserApi from "./gis_browser_api";
 
 function GisDialog(prop: {
     open: boolean,
@@ -20,12 +19,14 @@ function GisDialog(prop: {
     eventHandler: EventHandler
 
 }) {
+
     const PROPERTY_COORDINATE_X = new Property('KoordinateX', Datatype.number);
     const PROPERTY_COORDINATE_Y = new Property('KoordinateY', Datatype.number);
 
     const wikiContext = useContext(WikiContext);
     const iframe = useRef<any>(null);
     const apiEndpoint = wikiContext.globals.mwApiUrl;
+    const gisBrowserApi = new GisBrowserApi(iframe);
 
     const iframeUrl = new URL(apiEndpoint);
     iframeUrl.searchParams.set('action', 'odbgeo');
@@ -36,32 +37,24 @@ function GisDialog(prop: {
     iframeUrl.searchParams.set('width', '450px');
     iframeUrl.searchParams.set('height', '450px');
 
-    const selectedLocation = getSelectedLocation();
-    if (selectedLocation !== null) {
-        console.log(selectedLocation);
-        iframeUrl.searchParams.set('location', selectedLocation);
+    const koordX = prop.baseQuery.findPropertyFacet(PROPERTY_COORDINATE_X);
+    const koordY = prop.baseQuery.findPropertyFacet(PROPERTY_COORDINATE_Y);
+    const coordinates = getCoordinatesFromFacets(koordX, koordY);
+    if (coordinates !== null) {
+        const [minx, maxx, miny, maxy] = coordinates;
+        iframeUrl.searchParams.set('location', `${miny},${minx},${maxy},${maxx}`);
     }
 
-    function selectNewLocation() {
-        console.log(iframe.current);
-        const olapi = iframe.current.contentWindow.Api;
-        console.log(olapi);
-        const extent = olapi.base.ViewerState.map.getExtent();
-
-        const miny = Math.floor(extent.left);
-        const maxy = Math.floor(extent.right);
-        const minx = Math.floor(extent.bottom);
-        const maxx = Math.floor(extent.top);
-
-        const koordX = new PropertyFacet(PROPERTY_COORDINATE_X,[FacetValue.fromRange(new Range(minx, maxx))]);
-        const koordY = new PropertyFacet(PROPERTY_COORDINATE_Y,[FacetValue.fromRange(new Range(miny, maxy))]);
-
+    function onOkClick(): void {
+        const [minx, maxx, miny, maxy] = gisBrowserApi.getCoordinatesFromGIS();
+        const koordX = new PropertyFacet(PROPERTY_COORDINATE_X, [FacetValue.fromRange(new Range(minx, maxx))]);
+        const koordY = new PropertyFacet(PROPERTY_COORDINATE_Y, [FacetValue.fromRange(new Range(miny, maxy))]);
         prop.eventHandler.onValuesClick([koordX, koordY]);
+        prop.handleClose();
     }
 
-    function getSelectedLocation() {
-        const koordX = prop.baseQuery.findPropertyFacet(PROPERTY_COORDINATE_X);
-        const koordY = prop.baseQuery.findPropertyFacet(PROPERTY_COORDINATE_Y);
+    function getCoordinatesFromFacets(koordX: PropertyFacet | null, koordY: PropertyFacet | null) {
+
         if (koordX === null || koordY === null) {
             return null;
         }
@@ -71,8 +64,7 @@ function GisDialog(prop: {
         const miny = Math.floor((koordYRange as Range).from as number);
         const maxx = Math.floor((koordXRange as Range).to as number);
         const maxy = Math.floor((koordYRange as Range).to as number);
-        return `${miny},${minx},${maxy},${maxx}`;
-
+        return [miny, maxy, minx, maxx];
     }
 
     return (
@@ -103,10 +95,7 @@ function GisDialog(prop: {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={prop.handleClose}>Cancel</Button>
-                    <Button onClick={() => {
-                        selectNewLocation();
-                        prop.handleClose();
-                    }} autoFocus>Ok</Button>
+                    <Button onClick={onOkClick} autoFocus>Ok</Button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>
