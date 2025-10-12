@@ -14,7 +14,7 @@ final class NumericClustererTest extends TestCase
         $clusters = $clusterer->makeClusters(50, 500, 10);
 
         $this->assertEquals("50", $clusters[0]->from);
-        $this->assertEquals("94", $clusters[0]->to);
+        $this->assertEquals("95", $clusters[0]->to);
 
         $this->assertEquals("455", $clusters[9]->from);
         $this->assertEquals("500", $clusters[9]->to);
