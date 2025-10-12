@@ -56,6 +56,7 @@ if (isInWikiContext) {
 
 const client: Client = new Client(solrProxyUrl);
 export let WikiContext = createContext(null);
+export let LOCALE: string;
 
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
@@ -195,6 +196,7 @@ function applyQueryConstraints() {
 
 function startApp() {
     applyQueryConstraints();
+    LOCALE = wikiContext.config['wgUserLanguage'] ?? (wikiContext.config['wgContentLanguage'] ?? 'en');
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
     root.render(<App/>);

@@ -1,37 +1,51 @@
 import {Datatype, Property, Range, ValueCount} from "../common/datatypes";
+import {LOCALE} from "../index";
 
 class DisplayTools {
 
     static displayDate(d: Date) {
-        if (d.getUTCHours() === 0 && d.getUTCMinutes() === 0 && d.getUTCSeconds() === 0) {
-            return this.singleDay(d);
+        let options: Intl.DateTimeFormatOptions;
+        if (DisplayTools.isBeginOfDay(d)) {
+            options = {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            };
         } else {
-            let time = d.toLocaleTimeString('de-DE', {timeZone: 'UTC'});
-            let date = d.toLocaleDateString('de-DE', {timeZone: 'UTC'});
-            return date + " " + time;
+            options = {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "numeric",
+                minute: "numeric",
+                second: "numeric"
+            };
         }
+        const dateTimeFormat = new Intl.DateTimeFormat(LOCALE, options);
+        return dateTimeFormat.format(d);
     }
 
-    static displayDateRange(from: Date, to: Date) {
+    private static displayDateRange(from: Date, to: Date) {
+        let options: Intl.DateTimeFormatOptions;
+
         if (this.isBeginOfYear(from) && this.isEndOfYear(to)) {
-            return from.getUTCFullYear().toString() + " - " + to.getUTCFullYear().toString();
+            options = {year: "numeric"};
         } else if (this.isBeginOfMonth(from) && this.isEndOfMonth(to)) {
-            let fromMonth = from.getUTCMonth() + 1;
-            let fromMonthStr = fromMonth < 10 ? "0"+fromMonth:fromMonth;
-            let toMonth = to.getUTCMonth() + 1;
-            let tomMonthStr = toMonth < 10 ? "0"+toMonth:toMonth;
-            return from.getUTCFullYear().toString() + "/" + fromMonthStr + " - " + to.getUTCFullYear().toString() + "/" + tomMonthStr;
+            options = {year: "numeric", month: "long"};
         } else if (this.isBeginOfDay(from) && this.isEndOfDay(to)) {
-            return this.singleDay(from) + " - " + this.singleDay(to);
-        } else if (from.getTime() === to.getTime()) {
-            return this.singleDay(from)
+            options = {year: "numeric", month: "long", day: "numeric"};
         } else {
-            let fromTime = from.toLocaleTimeString('de-DE', {timeZone: 'UTC'});
-            let fromDate = from.toLocaleDateString('de-DE', {timeZone: 'UTC'});
-            let toTime = to.toLocaleTimeString('de-DE', {timeZone: 'UTC'});
-            let toDate = to.toLocaleDateString('de-DE', {timeZone: 'UTC'});
-            return fromDate + " " +fromTime + " - " + toDate + " " +toTime;
+            options = {year: "numeric", month: "long", day: "numeric", hour: "numeric"};
         }
+
+        const dateTimeFormat = new Intl.DateTimeFormat(LOCALE, options);
+        const fromStr = dateTimeFormat.format(from);
+        const toStr = dateTimeFormat.format(to);
+        return this.showRangeIfNecessary(fromStr, toStr);
+    }
+
+    private static showRangeIfNecessary(from: string, to: string) {
+        return (from === to ? from : from + " - " + to);
     }
 
     static serializeFacetValue(p: Property, v: ValueCount): string {
@@ -41,21 +55,21 @@ class DisplayTools {
             }
             return v.value.toString();
         } else if (v.mwTitle) {
-            return  v.mwTitle.displayTitle;
+            return v.mwTitle.displayTitle;
         } else {
             // range
             if (p.type === Datatype.datetime) {
                 return this.displayDateRange(v.range.from as Date, v.range.to as Date);
             }
-            return v.range.from + "-" + v.range.to;
+            return this.showRangeIfNecessary(v.range.from.toString(), v.range.to.toString());
         }
     }
 
-    static displayRange(p: Property,range: Range) {
+    static displayRange(p: Property, range: Range) {
         if (p.type === Datatype.datetime) {
             return this.displayDateRange(range.from as Date, range.to as Date);
         }
-        return range.from + "-" + range.to;
+        return this.showRangeIfNecessary(range.from.toString(), range.to.toString());
     }
 
     private static isBeginOfDay(d: Date) {
@@ -71,36 +85,22 @@ class DisplayTools {
     }
 
     private static isBeginOfMonth(d: Date) {
-        return d.getUTCDate() === 1
-            && d.getUTCHours() === 0
-            && d.getUTCMinutes() === 0
-            && d.getUTCSeconds() === 0;
+        return d.getUTCDate() === 1 && DisplayTools.isBeginOfDay(d);
     }
 
     private static isEndOfMonth(d: Date) {
-        let datePlusOneSecond = new Date(d.getTime()+1000);
+        let datePlusOneSecond = new Date(d.getTime() + 1000);
         return this.isBeginOfMonth(datePlusOneSecond);
     }
 
     private static isBeginOfYear(d: Date) {
-        return d.getUTCDate() === 1
-            && d.getUTCMonth() === 0
-            && d.getUTCHours() === 0
-            && d.getUTCMinutes() === 0
-            && d.getUTCSeconds() === 0;
+        return d.getUTCMonth() === 0 && DisplayTools.isBeginOfMonth(d);
     }
 
     private static isEndOfYear(d: Date) {
-        return d.getUTCDate() === 31
-            && d.getUTCMonth() === 11
-            && d.getUTCHours() === 23
-            && d.getUTCMinutes() === 59
-            && d.getUTCSeconds() === 59;
+        return d.getUTCMonth() === 11 && DisplayTools.isEndOfMonth(d);
     }
 
-    private static singleDay(d: Date) {
-        return d.getUTCFullYear() + "-" + (d.getUTCMonth()+1) + "-"+d.getUTCDate();
-    }
 }
 
 export default DisplayTools;
