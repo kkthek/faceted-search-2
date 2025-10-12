@@ -130,6 +130,9 @@ function setConfigForDevContext() {
     ];
     global $fs2gDebugMode;
     $fs2gDebugMode = false;
+
+    global $wgUserLanguage;
+    $wgUserLanguage = "de";
 // -------------------------------------------------------
 }
 
