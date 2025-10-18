@@ -56,7 +56,7 @@ function FacetOrDialog(prop: {
         if (selectedValues.length === 0) {
             prop.eventHandler.onRemoveAllFacetsForProperty(prop.property);
         } else {
-            prop.eventHandler.onValueClick(new PropertyFacet(prop.property, selectedValues));
+            prop.eventHandler.onValuesClick([new PropertyFacet(prop.property, selectedValues)]);
         }
         prop.handleClose();
     }
