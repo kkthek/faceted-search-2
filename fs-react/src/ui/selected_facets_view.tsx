@@ -90,9 +90,10 @@ function SelectedFacetsView(prop: {
     );
 
     const documentResponse = prop.searchStateDocument?.documentResponse
-    const facetValues = prop.searchStateFacet.facetsResponse.valueCounts.map((v, i) => {
+    const valueCounts = prop.searchStateFacet.facetsResponse.valueCounts;
+    const query = prop.searchStateFacet.query;
+    const facetValues = valueCounts.map((v, i) => {
 
-            let query = prop.searchStateFacet.query;
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (!isSelectedFacet) return;
             if (!documentResponse) return;

@@ -16,12 +16,13 @@ const ArticleProperties = function ArticleProperties(prop: {
     const articlePropertiesDiv = useRef<any>(null);
     const [document, setDocument] = useState((): Document => null);
 
-    function handleExpandClick() {
+    async function handleExpandClick() {
         const div = articlePropertiesDiv.current;
         const visible = div.checkVisibility();
         div.style.display = visible ? 'none' : 'block';
         if (visible || document !== null) return;
-        prop.client.getDocumentById(prop.doc.id).then((document) => setDocument(document));
+        const doc = await prop.client.getDocumentById(prop.doc.id);
+        setDocument(doc);
     }
 
     let rows: ReactElement[] = [];
@@ -34,7 +35,7 @@ const ArticleProperties = function ArticleProperties(prop: {
     }
 
     return <div>
-        <Button onClick={() => handleExpandClick()} variant="text">{wikiContext.msg('fs-show-properties')}</Button>
+        <Button onClick={handleExpandClick} variant="text">{wikiContext.msg('fs-show-properties')}</Button>
         <div ref={articlePropertiesDiv} style={{'display':'none'}}>
             <Table size="small" aria-label="simple table">
                 <TableBody>{rows}</TableBody>

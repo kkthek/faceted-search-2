@@ -15,8 +15,9 @@ function SelectedCategoriesView(prop: {
     const showCategories = wikiContext.config['fs2gShowCategories'];
     if (!prop.searchStateDocument || !showCategories) return;
 
-    const categories = prop.searchStateDocument.documentResponse.categoryFacetCounts.map((v, i) => {
-            const query = prop.searchStateDocument.query;
+    const query = prop.searchStateDocument.query;
+    let categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
+    const categories = categoryFacetCounts.map((v, i) => {
             const isSelectedFacet = query.isCategoryFacetSelected(v.category);
             if (!isSelectedFacet) return;
             return  <CustomTreeItem key={v.category}

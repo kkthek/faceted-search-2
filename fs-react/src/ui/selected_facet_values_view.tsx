@@ -20,7 +20,7 @@ function SelectedFacetValues(prop: {
 
     const property = prop.selectedPropertyFacet.property;
     const displayValue = DisplayTools.serializeFacetValue(property, prop.propertyValueCount);
-    const facetValue = new FacetValue(prop.propertyValueCount.value, prop.propertyValueCount.mwTitle, prop.propertyValueCount.range);
+    const facetValue = FacetValue.fromValueCount(prop.propertyValueCount);
     const propertyFacet = new PropertyFacet(property, [facetValue]);
     const removable = property.isRangeProperty() ? false : prop.selectedPropertyFacet.containsFacet(facetValue);
 

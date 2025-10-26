@@ -47,9 +47,7 @@ function FacetOrDialog(prop: {
     }
 
     const onDialogContentBulkChange = function(e: SyntheticEvent, values: ValueCount[]) {
-        selectedValues = values.map((v) => {
-            return new FacetValue(v.value, v.mwTitle, v.range);
-        });
+        selectedValues = values.map((v) => FacetValue.fromValueCount(v));
     }
 
     const onOK = function() {

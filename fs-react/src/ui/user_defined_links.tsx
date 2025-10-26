@@ -31,13 +31,13 @@ function UserDefinedLinks(prop: { doc: Document }) {
         const url: string = allLinks[label];
         let fullUrl = wgServer + wgScriptPath + "/" + url;
         fullUrl = ConfigUtils.replaceSMWVariables(prop.doc, fullUrl);
-        fullUrl = fullUrl.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
+        fullUrl = ConfigUtils.replaceMagicWords(prop.doc, fullUrl, wikiContext);
         items.push(<a key={prop.doc.id+label} href={fullUrl}>{`[${label}]`}</a>);
     }
-    return <Box>
+    return <React.Fragment>
         {ValueSerializer.join(items, ' ')}
         <UserDefinedLinksExtensionPoint doc={prop.doc}/>
-    </Box>
+    </React.Fragment>
 }
 
 export default UserDefinedLinks;
