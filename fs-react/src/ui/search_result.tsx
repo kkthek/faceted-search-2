@@ -24,7 +24,11 @@ function SearchResult(prop: { doc: Document, client: Client}) {
         classNames.push('demoted');
     }
 
-    const snippet = prop.doc.highlighting.length > 500 ? prop.doc.highlighting.substring(0, 500)+'...': prop.doc.highlighting;
+    let snippet = prop.doc.highlighting;
+    if (snippet.length > 500) {
+        snippet = snippet.substring(0, 500)+'...';
+    }
+
     return <Box className={classNames.join(' ')}>
         <Box className={'fs-search-result'} title={showSolrScore ? "score: " + prop.doc.score : ''}>
             <Typography>

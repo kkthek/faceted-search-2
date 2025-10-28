@@ -1,74 +1,16 @@
-import React, {useContext, useRef} from "react";
-import {FacetResponse, Property, PropertyFacetCount} from "../common/datatypes";
-import Tools from "../util/tools";
-import FacetValues from "./facet_values_view";
+import React, {useContext} from "react";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
 import {WikiContext} from "../index";
 import ConfigUtils from "../util/config_utils";
 import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../custom_ui/custom_tree_item";
-import ChecklistIcon from '@mui/icons-material/Checklist';
-import FacetFilter from "./facet_filter";
 import {Typography} from "@mui/material";
 import Client from "../common/client";
 import FacetExtensionPoint from "../extensions/facet_ep";
 import FacetWithCount from "./facet_with_count";
+import FacetViewProperty from "./facet";
 
-function FacetViewProperty(prop: {
-    searchStateDocument: SearchStateDocument,
-    searchStateFacets: FacetResponse,
-    propertyFacetCount: PropertyFacetCount,
-    eventHandler: EventHandler
-    onOrDialogClick: (property: Property) => void
-}) {
-
-    const inputFilterRef = useRef<any>();
-    const property =  prop.propertyFacetCount.property;
-    const propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(property);
-    const isSelectedFacet = prop.searchStateDocument.query.findPropertyFacet(property) !== null;
-    if (isSelectedFacet) return;
-
-    const wikiContext = useContext(WikiContext);
-    const facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(property.title);
-
-    const values = propertyValueCount?.values.map((v, i) => {
-        return <FacetValues key={property.title + i}
-                     propertyValueCount={v}
-                     property={property}
-                     eventHandler={prop.eventHandler}
-        />
-    });
-
-    const showAll = propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
-                !(property.isRangeProperty() || property.isBooleanProperty());
-
-    return <CustomTreeItem itemId={Tools.createItemIdForProperty(property)}
-                           label={<FacetWithCount displayTitle={property.displayTitle} count={prop.propertyFacetCount?.count}/>}
-                           itemAction={() => prop.eventHandler.onPropertyClick(property)}
-                           actionIcon={facetsWithOr ? ChecklistIcon : null}
-                           action={() => prop.onOrDialogClick(property)}
-                           className={'fs-facets'}>
-        <CustomTreeItem itemId={property.title+"-filter"}
-                        label={<FacetFilter eventHandler={prop.eventHandler}
-                                            numberOfValues={propertyValueCount?.values.length}
-                                            property={propertyValueCount?.property}
-                                            inputFilterRef={inputFilterRef}
-                        />}
-        />
-        {values}
-        { showAll ?
-        <CustomTreeItem itemId={property.title + "-showall"}
-                        label={"["+wikiContext.msg('fs-show-all')+"]"}
-                        itemAction={() => {
-                            const filterText = inputFilterRef.current.value as string;
-                            prop.eventHandler.onShowAllValues(property, filterText);
-                        } }
-        /> : '' }
-
-
-    </CustomTreeItem>
-}
 
 function FacetView(prop: {
     client: Client
@@ -79,7 +21,6 @@ function FacetView(prop: {
 
 }) {
     if (!prop.searchStateDocument) return;
-
 
     const propertyFacetCounts = prop.searchStateDocument.documentResponse.propertyFacetCounts;
     const wikiContext = useContext(WikiContext);

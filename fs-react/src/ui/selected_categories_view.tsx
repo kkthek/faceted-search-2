@@ -16,24 +16,21 @@ function SelectedCategoriesView(prop: {
     if (!prop.searchStateDocument || !showCategories) return;
 
     const query = prop.searchStateDocument.query;
-    let categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
-    const categories = categoryFacetCounts.map((v, i) => {
+    const categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
+    const categoryTreeItems = categoryFacetCounts.map((v, i) => {
             const isSelectedFacet = query.isCategoryFacetSelected(v.category);
             if (!isSelectedFacet) return;
             return  <CustomTreeItem key={v.category}
                                     itemId={v.category}
                                     actionIcon={DeleteIcon}
-                                    label={<FacetWithCount
-                                        displayTitle={v.category}
-                                        count={v.count}
-                                    />}
+                                    label={<FacetWithCount displayTitle={v.category} count={v.count} />}
                                     action={() => prop.eventHandler.onCategoryRemoveClick(v.category)} />
         }
     );
 
     return <div id={'fs-selected-categoriesview'}>
         <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
-            {categories}
+            {categoryTreeItems}
         </SimpleTreeView>
     </div>;
 }

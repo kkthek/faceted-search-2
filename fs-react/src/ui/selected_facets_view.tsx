@@ -1,79 +1,10 @@
-import React, {useContext} from "react";
-import {Property, PropertyFacetCount, PropertyValueCount, Range,} from "../common/datatypes";
+import React from "react";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
 import {SimpleTreeView} from "@mui/x-tree-view";
-import CustomTreeItem from "../custom_ui/custom_tree_item";
-import DeleteIcon from "@mui/icons-material/Delete";
-import SelectedFacetValues from "./selected_facet_values_view";
-import ChecklistIcon from "@mui/icons-material/Checklist";
 import Client from "../common/client";
 import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
-import {WikiContext} from "../index";
-import Tools from "../util/tools";
-import FacetWithCount from "./facet_with_count";
-import DisplayTools from "../util/display_tools";
+import SelectedFacet from "./selected_facet";
 
-function SelectedFacets(prop: {
-    propertyValueCount: PropertyValueCount
-    facetCount: PropertyFacetCount
-    searchStateFacet: SearchStateFacet,
-    eventHandler: EventHandler
-    onOrDialogClick: (property: Property) => void
-
-}) {
-    const query = prop.searchStateFacet.query;
-
-    const propertyFacet = query.findPropertyFacet(prop.propertyValueCount.property);
-    if (!propertyFacet) return;
-    const isRemovable = !propertyFacet.hasValueOrMWTitle() || propertyFacet.hasRange();
-    const wikiContext = useContext(WikiContext);
-    const facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(prop.propertyValueCount.property.title);
-
-    const itemList = prop.propertyValueCount.values.map((v,i ) => {
-
-        return <SelectedFacetValues key={prop.propertyValueCount.property.title + i}
-                     selectedPropertyFacet={propertyFacet}
-                     propertyValueCount={v}
-                     eventHandler={prop.eventHandler}
-        />
-    });
-
-    const onPropertyActionClick = () => {
-        if (isRemovable && itemList.length > 0) {
-            prop.eventHandler.onRemovePropertyFacet(propertyFacet)
-        } else if (facetsWithOr) {
-            prop.onOrDialogClick(prop.propertyValueCount.property);
-        }
-
-    };
-
-    const propertyActionIcon = isRemovable && itemList.length > 0 ? DeleteIcon :  (facetsWithOr ? ChecklistIcon: null);
-
-
-    let lastRange;
-    if (propertyFacet.property.isRangeProperty()) {
-        const lastConstraint = propertyFacet.values.at(propertyFacet.values.length - 1);
-        if (lastConstraint && !lastConstraint.isEmpty()) {
-            const r = lastConstraint.range as Range;
-            lastRange = <CustomTreeItem key={prop.propertyValueCount.property.title+'_lastRange'}
-                                        itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)+'_lastRange'}
-                                        label={DisplayTools.displayRange(propertyFacet.property, r)}
-                                        action={()=>prop.eventHandler.onRemovePropertyFacet(propertyFacet, lastConstraint)}
-                                        actionIcon={DeleteIcon}
-            />;
-        }
-    }
-
-    return <CustomTreeItem key={prop.propertyValueCount.property.title}
-                           itemId={Tools.createItemIdForProperty(prop.propertyValueCount.property)}
-                           label={<FacetWithCount
-                               displayTitle={prop.propertyValueCount.property.displayTitle}
-                               count={prop.facetCount?.count ?? 0}
-                           />}
-                           action={onPropertyActionClick}
-                           actionIcon={propertyActionIcon}
-            >{lastRange}{itemList}</CustomTreeItem>
-}
 
 function SelectedFacetsView(prop: {
     client: Client
@@ -92,22 +23,26 @@ function SelectedFacetsView(prop: {
     const documentResponse = prop.searchStateDocument?.documentResponse
     const valueCounts = prop.searchStateFacet.facetsResponse.valueCounts;
     const query = prop.searchStateFacet.query;
-    const facetValues = valueCounts.map((v, i) => {
+    const facets = valueCounts.map((v, i) => {
 
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (!isSelectedFacet) return;
             if (!documentResponse) return;
             const facetCount = documentResponse.getPropertyFacetCount(v.property);
-            return <SelectedFacets key={v.property.title}
-                                   propertyValueCount={v}
-                                   facetCount={facetCount}
-                                   searchStateFacet={prop.searchStateFacet}
-                                   eventHandler={prop.eventHandler}
-                                   onOrDialogClick={onOrDialogClick}/>
+            return <SelectedFacet key={v.property.title}
+                                  propertyValueCount={v}
+                                  facetCount={facetCount}
+                                  searchStateFacet={prop.searchStateFacet}
+                                  eventHandler={prop.eventHandler}
+                                  onOrDialogClick={onOrDialogClick}/>
         }
     );
 
-    let onItemExpansionToggle = function(event: React.SyntheticEvent | null, itemId: string, isExpanded: boolean) {
+    let onItemExpansionToggle = function(
+        event: React.SyntheticEvent | null,
+        itemId: string,
+        isExpanded: boolean) {
+
         if (isExpanded) {
             prop.eventHandler.onExpandSelectedFacetClick(itemId)
         } else {
@@ -118,10 +53,16 @@ function SelectedFacetsView(prop: {
     return <div>
         <SimpleTreeView
             expandedItems={prop.expandedFacets}
-            expansionTrigger={'iconContainer'} disableSelection
+            expansionTrigger={'iconContainer'}
+            disableSelection
+            disabledItemsFocusable
             onItemExpansionToggle={onItemExpansionToggle}
+            onItemFocus={(e, itemId) => {
+                const input = document.getElementById(`${itemId}-input`);
+                if (input) input.focus();
+            }}
         >
-            {facetValues}
+            {facets}
         </SimpleTreeView>
 
         <FacetOrDialog open={openOrDialog.open}

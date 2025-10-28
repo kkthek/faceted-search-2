@@ -83,6 +83,12 @@ div.fs-create-article {
     margin-left: 20px;
 }
 
+div.fs-save-search-link {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
 
 /**
  * Results
