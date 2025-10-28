@@ -1,12 +1,12 @@
-import {CategoryFacetCount} from "../common/datatypes";
+import {CategoryFacetCount} from "../../common/datatypes";
 import React, {useContext} from "react";
-import EventHandler, {SearchStateDocument} from "../common/event_handler";
-import {WikiContext} from "../index";
-import CustomTreeItem from "../custom_ui/custom_tree_item";
+import EventHandler, {SearchStateDocument} from "../../common/event_handler";
+import {WikiContext} from "../../index";
+import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import {Box, Typography} from "@mui/material";
-import ConfigUtils from "../util/config_utils";
-import FacetWithCount from "./facet_with_count";
+import ConfigUtils from "../../util/config_utils";
+import FacetWithCount from "../common/facet_with_count";
 
 function FacetViewCategory( prop: {
     title: string,

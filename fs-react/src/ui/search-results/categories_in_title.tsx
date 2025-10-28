@@ -1,8 +1,8 @@
-import {Document} from "../common/datatypes";
+import {Document} from "../../common/datatypes";
 import React, {useContext} from "react";
-import {WikiContext} from "../index";
-import ValueSerializer from "../util/value_serializer";
-import WikiLink from "./wiki_link";
+import {WikiContext} from "../../index";
+import ValueSerializer from "../../util/value_serializer";
+import WikiLink from "../common/wiki_link";
 import {Typography} from "@mui/material";
 
 function CategoriesInTitle(prop: { doc: Document }) {

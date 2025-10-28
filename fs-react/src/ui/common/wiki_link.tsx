@@ -1,4 +1,4 @@
-import {ElementWithURL} from "../common/datatypes";
+import {ElementWithURL} from "../../common/datatypes";
 import React from "react";
 
 

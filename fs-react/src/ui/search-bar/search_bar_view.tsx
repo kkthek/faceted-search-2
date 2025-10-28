@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
-import {WikiContext} from "../index";
+import {WikiContext} from "../../index";
 import {Box, Button, TextField} from "@mui/material";
-import EventHandler from "../common/event_handler";
-import {useDebounce} from "../util/custom_hooks";
+import EventHandler from "../../common/event_handler";
+import {useDebounce} from "../../util/custom_hooks";
 import CreateArticleLink from "./create_article";
-import {BaseQuery} from "../common/datatypes";
+import {BaseQuery} from "../../common/datatypes";
 
 function SearchBar(prop: {
     searchText: string

@@ -6,15 +6,15 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {BaseQuery, FacetResponse, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
+import {BaseQuery, FacetResponse, FacetValue, Property, PropertyFacet, ValueCount} from "../../common/datatypes";
 import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
-import {WikiContext} from "../index";
-import Tools from "../util/tools";
-import {useDebounce} from "../util/custom_hooks";
-import EventHandler from "../common/event_handler";
-import Client from "../common/client";
-import QueryUtils from "../util/query_utils";
+import {WikiContext} from "../../index";
+import Tools from "../../util/tools";
+import {useDebounce} from "../../util/custom_hooks";
+import EventHandler from "../../common/event_handler";
+import Client from "../../common/client";
+import QueryUtils from "../../util/query_utils";
 
 function FacetOrDialog(prop: {
         open: boolean,

@@ -1,14 +1,14 @@
 import React, {useContext} from "react";
-import EventHandler, {SearchStateDocument, SearchStateFacet} from "../common/event_handler";
-import {WikiContext} from "../index";
-import ConfigUtils from "../util/config_utils";
-import FacetOrDialog, {ORDialogInput} from "./facet_or_dialog";
+import EventHandler, {SearchStateDocument, SearchStateFacet} from "../../common/event_handler";
+import {WikiContext} from "../../index";
+import ConfigUtils from "../../util/config_utils";
+import FacetOrDialog, {ORDialogInput} from "../or-dialog/facet_or_dialog";
 import {SimpleTreeView} from "@mui/x-tree-view";
-import CustomTreeItem from "../custom_ui/custom_tree_item";
+import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {Typography} from "@mui/material";
-import Client from "../common/client";
-import FacetExtensionPoint from "../extensions/facet_ep";
-import FacetWithCount from "./facet_with_count";
+import Client from "../../common/client";
+import FacetExtensionPoint from "../../extensions/facet_ep";
+import FacetWithCount from "../common/facet_with_count";
 import FacetViewProperty from "./facet";
 
 

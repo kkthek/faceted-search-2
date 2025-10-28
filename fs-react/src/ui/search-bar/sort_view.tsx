@@ -1,9 +1,9 @@
 import React, {useContext, useState} from "react";
-import {WikiContext} from "../index";
+import {WikiContext} from "../../index";
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
-import ConfigUtils from "../util/config_utils";
-import EventHandler from "../common/event_handler";
-import {Sort} from "../common/datatypes";
+import ConfigUtils from "../../util/config_utils";
+import EventHandler from "../../common/event_handler";
+import {Sort} from "../../common/datatypes";
 
 interface SortConfig {
     [key: string]: Sort;

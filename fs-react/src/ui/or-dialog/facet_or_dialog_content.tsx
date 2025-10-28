@@ -1,13 +1,13 @@
-import {FacetResponse, FacetValue, Property, PropertyFacet, ValueCount} from "../common/datatypes";
-import Tools from "../util/tools";
-import DisplayTools from "../util/display_tools";
+import {FacetResponse, FacetValue, Property, PropertyFacet, ValueCount} from "../../common/datatypes";
+import Tools from "../../util/tools";
+import DisplayTools from "../../util/display_tools";
 import {Checkbox, FormControlLabel, Grid, Typography} from "@mui/material";
 import * as React from "react";
 import {SyntheticEvent, useContext, useEffect, useState} from "react";
-import {WikiContext} from "../index";
+import {WikiContext} from "../../index";
 import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
 import TreeCreator, {GroupItem, Groups} from "./facet_or_dialog_tree";
-import Client from "../common/client";
+import Client from "../../common/client";
 
 function FacetOrDialogContent(prop: {
     client: Client,

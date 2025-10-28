@@ -1,14 +1,14 @@
 import React, {useContext, useRef} from "react";
-import {Property, PropertyFacetCount, PropertyValueCount, Range,} from "../common/datatypes";
-import EventHandler, {SearchStateFacet} from "../common/event_handler";
-import CustomTreeItem from "../custom_ui/custom_tree_item";
+import {Property, PropertyFacetCount, PropertyValueCount, Range,} from "../../common/datatypes";
+import EventHandler, {SearchStateFacet} from "../../common/event_handler";
+import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SelectedFacetValues from "./selected_facet_values_view";
 import ChecklistIcon from "@mui/icons-material/Checklist";
-import {WikiContext} from "../index";
-import Tools from "../util/tools";
-import FacetWithCount from "./facet_with_count";
-import DisplayTools from "../util/display_tools";
+import {WikiContext} from "../../index";
+import Tools from "../../util/tools";
+import FacetWithCount from "../common/facet_with_count";
+import DisplayTools from "../../util/display_tools";
 import FacetFilter from "./facet_filter";
 
 function SelectedFacet(prop: {

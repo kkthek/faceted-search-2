@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {WikiContext} from "../index";
+import {WikiContext} from "../../index";
 
 function CreateArticleLink(prop: {
     searchText: string

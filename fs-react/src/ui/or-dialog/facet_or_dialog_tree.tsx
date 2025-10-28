@@ -1,7 +1,7 @@
-import {Property, ValueCount} from "../common/datatypes";
-import DisplayTools from "../util/display_tools";
+import {Property, ValueCount} from "../../common/datatypes";
+import DisplayTools from "../../util/display_tools";
 import * as React from "react";
-import Tools from "../util/tools";
+import Tools from "../../util/tools";
 
 export class GroupItem {
     id: string

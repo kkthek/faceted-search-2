@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
-import {Document} from "../common/datatypes";
-import {WikiContext} from "../index";
-import ConfigUtils from "../util/config_utils";
+import {Document} from "../../common/datatypes";
+import {WikiContext} from "../../index";
+import ConfigUtils from "../../util/config_utils";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";

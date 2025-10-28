@@ -1,6 +1,6 @@
 import React, {ReactElement} from "react";
 import {Datatype, MWTitleWithURL, PropertyFacetValues} from "../common/datatypes";
-import WikiLink from "../ui/wiki_link";
+import WikiLink from "../ui/common/wiki_link";
 import DisplayTools from "./display_tools";
 import Tools from "./tools";
 

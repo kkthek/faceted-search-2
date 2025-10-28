@@ -1,13 +1,13 @@
 import React, {useContext, useRef} from "react";
-import {FacetResponse, Property, PropertyFacetCount} from "../common/datatypes";
-import Tools from "../util/tools";
+import {FacetResponse, Property, PropertyFacetCount} from "../../common/datatypes";
+import Tools from "../../util/tools";
 import FacetValues from "./facet_values_view";
-import EventHandler, {SearchStateDocument} from "../common/event_handler";
-import {WikiContext} from "../index";
-import CustomTreeItem from "../custom_ui/custom_tree_item";
+import EventHandler, {SearchStateDocument} from "../../common/event_handler";
+import {WikiContext} from "../../index";
+import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
-import FacetWithCount from "./facet_with_count";
+import FacetWithCount from "../common/facet_with_count";
 
 
 function FacetViewProperty(prop: {

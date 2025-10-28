@@ -1,11 +1,11 @@
-import {FacetValue, PropertyFacet, ValueCount} from "../common/datatypes";
+import {FacetValue, PropertyFacet, ValueCount} from "../../common/datatypes";
 import React from "react";
-import DisplayTools from "../util/display_tools";
-import CustomTreeItem from "../custom_ui/custom_tree_item";
+import DisplayTools from "../../util/display_tools";
+import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Tools from "../util/tools";
-import EventHandler from "../common/event_handler";
-import FacetWithCount from "./facet_with_count";
+import Tools from "../../util/tools";
+import EventHandler from "../../common/event_handler";
+import FacetWithCount from "../common/facet_with_count";
 
 function SelectedFacetValues(prop: {
     selectedPropertyFacet: PropertyFacet,

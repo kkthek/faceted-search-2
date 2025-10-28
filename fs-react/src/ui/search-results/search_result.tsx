@@ -1,8 +1,8 @@
-import {Document} from "../common/datatypes";
-import Client from "../common/client";
+import {Document} from "../../common/datatypes";
+import Client from "../../common/client";
 import React, {useContext} from "react";
-import {WikiContext} from "../index";
-import WikiLink from "./wiki_link";
+import {WikiContext} from "../../index";
+import WikiLink from "../common/wiki_link";
 import PreviewPopup from "./preview_popup";
 import CategoriesInTitle from "./categories_in_title";
 import Annotations from "./annotations_snippets";
