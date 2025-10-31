@@ -12,16 +12,16 @@ function GisFacet(prop: {
     eventHandler: EventHandler
 }) {
     const wikiContext = useContext(WikiContext);
-    const [openOrDialog, setOpenOrDialog] = useState<boolean>(false);
+    const [openDialog, setOpenDialog] = useState<boolean>(false);
 
     return <Box>
         <CustomTreeItem itemId={'fs-gis-button'}
                         label={wikiContext.msg('fs-open-gis-browser')}
                         actionIcon={RoomIcon}
-                        onClick={() => setOpenOrDialog(true)} />
+                        onClick={() => setOpenDialog(true)} />
 
-        <GisDialog open={openOrDialog}
-                   handleClose={() => setOpenOrDialog(false)}
+        <GisDialog open={openDialog}
+                   handleClose={() => setOpenDialog(false)}
                    baseQuery={prop.searchStateDocument.query}
                    eventHandler={prop.eventHandler}
         />
