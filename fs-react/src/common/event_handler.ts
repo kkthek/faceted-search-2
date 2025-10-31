@@ -159,9 +159,10 @@ class EventHandler {
             .clearRangeQueriesForProperty(property)
             .clearPropertyValueQueryForProperty(property);
 
-        this.expandFacet(property.getItemId());
         this.updateDocuments();
-        this.updateFacetValuesForProperty(property);
+        this.expandFacet(property.getItemId());
+        this.updateFacetValuesForProperty(property, this.facetValueLimit);
+
     }
 
     onRemovePropertyFacet(propertyFacet: PropertyFacet, facetValue: FacetValue = null) {
@@ -296,7 +297,7 @@ class EventHandler {
         this.updateFacetValuesForProperties([property], facetValueLimit);
     }
 
-    public updateDocuments() {
+    private updateDocuments() {
         this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
@@ -310,7 +311,7 @@ class EventHandler {
         });
     }
 
-    public updateFacets() {
+    private updateFacets() {
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
             this.setFacetState({
