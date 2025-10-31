@@ -8,6 +8,7 @@ import {
     PropertyFacetCount,
     Sort, ValueType
 } from "../common/datatypes";
+import {WikiContextInterface} from "../common/wiki_context";
 
 class ConfigUtils {
 
@@ -91,6 +92,10 @@ class ConfigUtils {
         }
 
         return url;
+    }
+
+    static replaceMagicWords(doc: Document, url: string, wikiContext: WikiContextInterface) {
+        return url.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
     }
 
     static serialize(value: ValueType | MWTitleWithURL): string {

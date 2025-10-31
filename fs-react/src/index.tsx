@@ -6,27 +6,27 @@
  */
 import React, {createContext, useEffect, useState} from 'react';
 import ReactDOM from 'react-dom/client';
-import SearchBar from "./ui/search_bar_view";
-import ResultView from "./ui/result_view";
+import SearchBar from "./ui/search-bar/search_bar_view";
+import ResultView from "./ui/search-results/result_view";
 import Client from "./common/client";
 import DocumentQueryBuilder from "./common/document_query_builder";
-import FacetView from "./ui/facet_view";
-import SelectedFacetsView from "./ui/selected_facets_view";
+import FacetView from "./ui/facets/facet_view";
+import SelectedFacetsView from "./ui/facets/selected_facets_view";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "./common/event_handler";
-import CategoryView from "./ui/category_view";
-import SelectedCategoriesView from "./ui/selected_categories_view";
-import NamespaceView from "./ui/namespace_view";
+import CategoryView from "./ui/search-bar/category_view";
+import SelectedCategoriesView from "./ui/facets/selected_categories_view";
+import NamespaceView from "./ui/search-bar/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
-import SortView from "./ui/sort_view";
+import SortView from "./ui/search-bar/sort_view";
 import {Property} from "./common/datatypes";
-import CategoryDropdown from "./ui/category_dropdown";
+import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Box, Divider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
 import ConfigUtils from "./util/config_utils";
 import Tools from "./util/tools";
-import SaveSearchLink from "./ui/save_search_link";
+import SaveSearchLink from "./ui/search-bar/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
-import RemoveAllFacetsButton from "./ui/remove_all_facets_button";
+import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
