@@ -58,7 +58,7 @@ class TreeCreator {
         return groups;
     }
 
-    static createGroupItemsBySpecifiedValues(valueCounts: ValueCount[], property: Property, specifiedValues: any): Groups {
+    static createGroupItemsBySpecifiedValues(valueCounts: ValueCount[], specifiedValues: any): Groups {
 
         const groups: Groups = {};
         const groupsCopy = Tools.deepClone(specifiedValues);

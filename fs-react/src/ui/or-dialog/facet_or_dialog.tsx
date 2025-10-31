@@ -127,12 +127,12 @@ export class ORDialogInput {
         };
 
 
-        const onOrDialogClick = function(p: Property): void {
+        const onOrDialogClick = async function(p: Property): Promise<void> {
 
-            let query = QueryUtils.prepareQueryWithoutFacet(baseQuery, p);
-            client.searchFacets(query).then((facetResponse) => {
-                setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
-            });
+            const query = QueryUtils.prepareQueryWithoutFacet(baseQuery, p);
+            const facetResponse = await client.searchFacets(query);
+            setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
+
         }
 
         return [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick];
