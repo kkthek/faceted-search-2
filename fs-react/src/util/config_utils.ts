@@ -12,6 +12,10 @@ import {WikiContextInterface} from "../common/wiki_context";
 
 class ConfigUtils {
 
+    static containsOrEmpty(array: any[], value: any) {
+        return array.includes(value) || array.length === 0;
+    }
+
     static getShownFacets(fs2gShownFacets: any, query: BaseQuery): string[] {
 
         let results: string[] = [];

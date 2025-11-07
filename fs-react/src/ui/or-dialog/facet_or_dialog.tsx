@@ -41,7 +41,7 @@ function FacetOrDialog(prop: {
         if (checked) {
             selectedValues.push(facetValue);
         } else {
-            Tools.removeFirstByPredicate(selectedValues, (f) => f.equals(facetValue))
+            selectedValues.removeFirst((f: FacetValue) => f.equals(facetValue))
         }
 
     }

@@ -27,6 +27,7 @@ import Tools from "./util/tools";
 import SaveSearchLink from "./ui/search-bar/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
 import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
+import "./util/array_ext";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;

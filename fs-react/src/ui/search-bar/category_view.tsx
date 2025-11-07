@@ -9,17 +9,20 @@ import ConfigUtils from "../../util/config_utils";
 import FacetWithCount from "../common/facet_with_count";
 
 function FacetViewCategory( prop: {
-    title: string,
+    categoryTitle: string,
     categoryFacetCount: CategoryFacetCount|null,
     selectedCategories: string[],
     eventHandler: EventHandler
 }) {
 
-    const title = prop.categoryFacetCount.displayTitle != '' ? prop.categoryFacetCount.displayTitle : prop.title;
-    const count = prop.categoryFacetCount?.count;
+    let displayTitle= prop.categoryFacetCount.displayTitle;
+    if (displayTitle === '') {
+        displayTitle = prop.categoryTitle;
+    }
+    const count = prop.categoryFacetCount.count;
     return <CustomTreeItem itemId={prop.categoryFacetCount.category}
-                           label={<FacetWithCount displayTitle={title} count={count}/>}
-                           onClick={() => prop.eventHandler.onCategoryClick(prop.title)}
+                           label={<FacetWithCount displayTitle={displayTitle} count={count}/>}
+                           onClick={() => prop.eventHandler.onCategoryClick(prop.categoryTitle)}
                      className={'fs-facets'}>
 
     </CustomTreeItem>
@@ -37,28 +40,35 @@ function CategoryView( prop: {
     if (!prop.searchStateDocument || !showCategories) return;
 
     const categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
+    const selectedCategoryFacets = prop.searchStateDocument.query.categoryFacets;
 
     const listItems = categoryFacetCounts
-        .filter((facetCount) => shownCategoryFacets.includes(facetCount.category) || shownCategoryFacets.length === 0)
-        .filter((facetCount) => !prop.searchStateDocument.query.categoryFacets.includes(facetCount.category))
+        .filter((facetCount) => ConfigUtils.containsOrEmpty(shownCategoryFacets, facetCount.category))
+        .filter((facetCount) => !selectedCategoryFacets.includes(facetCount.category))
         .sort(ConfigUtils.getSortFunctionForCategoryFacets(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount,i) => {
 
             return <FacetViewCategory key={facetCount.category}
-                                      title={facetCount.category}
+                                      categoryTitle={facetCount.category}
                                       categoryFacetCount={facetCount}
                                       eventHandler={prop.eventHandler}
-                                      selectedCategories={prop.searchStateDocument.query.categoryFacets}
+                                      selectedCategories={selectedCategoryFacets}
             />
         }
     );
 
+    let noCategoriesItem;
+    if (listItems.length === 0) {
+        noCategoriesItem =  <CustomTreeItem itemId={'none'} label={<FacetWithCount displayTitle={'none'}/>}></CustomTreeItem>;
+    }
+
     return <Box id={'fs-category-view'}>
-        <SimpleTreeView expansionTrigger={'iconContainer'} disableSelection disabledItemsFocusable>
+        <SimpleTreeView expansionTrigger={'iconContainer'}
+                        disableSelection
+                        disabledItemsFocusable
+        >
             {listItems}
-            {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={<FacetWithCount
-                displayTitle={'none'}
-            />}></CustomTreeItem>: ''}
+            {noCategoriesItem}
         </SimpleTreeView>
     </Box>;
 }

@@ -32,7 +32,7 @@ function FacetView(prop: {
     );
 
     const listItems = propertyFacetCounts
-        .filter((facetCount) => shownFacets.includes(facetCount.property.title) || shownFacets.length === 0 )
+        .filter((facetCount) => ConfigUtils.containsOrEmpty(shownFacets, facetCount.property.title))
         .sort(ConfigUtils.getSortFunctionForPropertyFacets(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount,i) => {
 

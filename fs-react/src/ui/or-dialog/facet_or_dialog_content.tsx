@@ -36,8 +36,8 @@ function FacetOrDialogContent(prop: {
     }
 
     const selectedItemIds = valueCounts
-        .filter((value) => Tools.findFirstByPredicate(prop.selectedValues,
-            (e) => e.containsValueOrMWTitle(value.value, value.mwTitle)) != null)
+        .filter((value) => prop.selectedValues.findFirst(
+            (e: FacetValue) => e.containsValueOrMWTitle(value.value, value.mwTitle)) != null)
         .map(v => v.mwTitle ? v.mwTitle.title : v.value.toString());
 
     const groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title]

@@ -310,7 +310,7 @@ export class BaseQuery {
     }
 
     findPropertyFacet(property: Property): PropertyFacet {
-        return Tools.findFirst(this.propertyFacets, (e) => e.property.title, property.title);
+        return this.propertyFacets.findFirst((e) => e.property.title === property.title);
     }
 
     isPropertyFacetSelected(property: Property): boolean {
@@ -318,7 +318,7 @@ export class BaseQuery {
     }
 
     isCategoryFacetSelected(category: string): boolean {
-        return Tools.findFirst(this.categoryFacets, (e) => e, category) !== null;
+        return this.categoryFacets.findFirst((e: string) => e === category ) !== null;
     }
 
     isAnyCategorySelected() {
@@ -475,7 +475,8 @@ export class FacetResponse {
     valueCounts: PropertyValueCount[];
 
     getPropertyValueCount(property: Property): PropertyValueCount {
-        return Tools.findFirst(this.valueCounts || [], (e) => e.property.title, property.title);
+        if (!this.valueCounts ) { return null;}
+        return this.valueCounts.findFirst((e) => e.property.title === property.title );
     }
 
     isEmpty() {
@@ -571,11 +572,11 @@ export class Document implements ElementWithURL {
     highlighting: string | null;
 
     getPropertyFacetValues(property: string): PropertyFacetValues {
-        return Tools.findFirst(this.propertyFacets, (p) => p.property.title, property);
+        return this.propertyFacets.findFirst((p) => p.property.title === property);
     }
 
     getCategoryFacetValue(category: string) {
-        return Tools.findFirst(this.categoryFacets, (c) => c.category, category);
+        return this.categoryFacets.findFirst((c: CategoryFacetValue) => c.category === category);
     }
 
     containsTrueFacetValue(property: string) {
@@ -600,16 +601,16 @@ export class DocumentsResponse {
     namespaceFacetCounts: NamespaceFacetCount[];
 
     containsNamespace(ns: number): boolean {
-        return Tools.findFirst(this.namespaceFacetCounts, (e) => e.namespace.toString(), ns.toString()) != null;
+        return this.namespaceFacetCounts.findFirst( (e: NamespaceFacetCount) => e.namespace.toString() === ns.toString(), ) != null;
     }
 
     getPropertyFacetCount(property: Property) {
-        return Tools.findFirstByPredicate(this.propertyFacetCounts, p => p.property.title === property.title);
+        return this.propertyFacetCounts.findFirst((p: PropertyFacetCount) => p.property.title === property.title);
     }
 
     getPropertyFacetCountByItemId(itemId: string) {
-        return Tools.findFirstByPredicate(this.propertyFacetCounts,
-            (pfc) => pfc.property.getItemId() === itemId);
+        return this.propertyFacetCounts.findFirst(
+            (pfc: PropertyFacetCount) => pfc.property.getItemId() === itemId);
     }
 
 }
