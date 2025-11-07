@@ -55,11 +55,12 @@ function NamespaceView(prop: {
         }
     }
 
+    const namespacesToShow = wikiContext.config['fs2gNamespacesToShow'];
     const listItems = namespaceFacetCounts
-        .filter(facetCount => ConfigUtils.containsOrEmpty(wikiContext.config['fs2gNamespacesToShow'], facetCount.namespace))
+        .filter(facetCount => namespacesToShow.containsOrEmpty(facetCount.namespace))
         .sort((a: NamespaceFacetCount, b: NamespaceFacetCount) =>
-            wikiContext.config['fs2gNamespacesToShow'].indexOf(a.namespace)
-            - wikiContext.config['fs2gNamespacesToShow'].indexOf(b.namespace))
+            namespacesToShow.indexOf(a.namespace)
+            - namespacesToShow.indexOf(b.namespace))
         .map((facetCount, i) => {
             return <NamespaceFacet key={facetCount.namespace} namespaceFacetCount={facetCount} />
     });

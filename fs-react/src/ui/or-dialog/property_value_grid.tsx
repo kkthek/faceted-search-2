@@ -13,27 +13,27 @@ function PropertyValueGrid(prop: {
 }) {
     const values: any = [];
 
-    const valueCounts = prop.valueCounts.sort((a,b) => a.compare(b));
-    const rows: ValueCount[][] = Tools.splitArray2NTuples(valueCounts, 3);
+    prop.valueCounts
+        .sort((a, b) => a.compare(b))
+        .splitArray2NTuples(3)
+        .forEach((row: ValueCount[]) => {
+            values.push(row.map((value: ValueCount) => {
+                const selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
+                const selectedId = value.mwTitle ? value.mwTitle.title : value.value.toString();
+                const isSelected = prop.selectedItemIds.includes(selectedId)
 
-    rows.forEach((row) => {
-        values.push(row.map((value) => {
-            const selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
-            const selectedId = value.mwTitle ? value.mwTitle.title : value.value.toString();
-            const isSelected = prop.selectedItemIds.includes(selectedId)
+                return <Grid size={4}>
+                    <FormControlLabel
+                        key={selectedValue}
+                        control={<Checkbox defaultChecked={isSelected}/>}
+                        onChange={(event, checked) => {
+                            prop.onChange(event, checked, value);
+                        }}
+                        label={selectedValue + " (" + value.count + ")"}/>
+                </Grid>;
+            }));
 
-            return <Grid size={4}>
-                <FormControlLabel
-                    key={selectedValue}
-                    control={<Checkbox defaultChecked={isSelected}/>}
-                    onChange={(event, checked) => {
-                        prop.onChange(event, checked, value);
-                    }}
-                    label={selectedValue + " (" + value.count + ")"}/>
-            </Grid>;
-        }));
-
-    });
+        });
     return <Grid container spacing={2}>
         {values}
     </Grid>;

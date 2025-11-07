@@ -90,7 +90,7 @@ function App() {
     return <WikiContext.Provider value={wikiContext}>
         <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
-                {Tools.reorder([
+                {[
                     <SortView key={'sortView'}
                               eventHandler={eventHandler}
                     />,
@@ -108,7 +108,7 @@ function App() {
                                       documentQuery={currentDocumentsQueryBuilder.build()}
                                       eventHandler={eventHandler}
                     />
-                ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
+                ].reorder(ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
                     ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']))}
 
             </div>
@@ -119,7 +119,7 @@ function App() {
             />
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
-                {Tools.reorder([
+                {[
                     <Box key={'selectedFacetLabel'}>
                         <Typography key={'fs-selected-facets'}>{wikiContext.msg('fs-selected-facets')}</Typography>
                         {anyFacetSelected ? '' :
@@ -159,7 +159,7 @@ function App() {
                                   searchStateDocument={searchStateDocument}
                                   eventHandler={eventHandler}
                     />
-                ], ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
+                ].reorder(ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
                     ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
                         'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView']))}
             </div>

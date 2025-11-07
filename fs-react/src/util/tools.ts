@@ -27,26 +27,6 @@ class Tools {
         );
     }
 
-    static range(limit: number) {
-        return Array(limit).fill(0).map((x,i)=>i);
-    }
-
-    static splitArray2NTuples<T>(arr: T[], size: number): T[][] {
-        let results: T[][] = [];
-        let length = Math.trunc(arr.length / size);
-        length += arr.length % size === 0 ? 0 : 1;
-        for(let i = 0; i < length; i++) {
-            let row: T[] = [];
-            for(let j = 0; j < size; j++) {
-                if (arr[i*size+j]) {
-                    row.push(arr[i*size+j]);
-                }
-            }
-            results.push(row);
-        }
-        return results;
-    }
-
     static deepClone<T>(obj: T): T {
         if (typeof obj !== 'object' || obj === null) {
             return obj;
@@ -59,21 +39,6 @@ class Tools {
             }
         }
         return Object.assign(res, obj) as T;
-    }
-
-    static reorder(items: ReactElement[], order: number[]) {
-        let results: ReactElement[] = [];
-        for(let i = 0; i < items.length; i++) {
-            results[i] = order[i] !== undefined ? items[order[i]] : undefined;
-        }
-        return results;
-    }
-
-    static intersect(array1: ValueCount[], array2: string[]) {
-        return array1.filter(v => {
-            const value = v.mwTitle ? v.mwTitle.title : v.value.toString();
-            return array2.includes(value);
-        });
     }
 
     static createId(rawId: string) {

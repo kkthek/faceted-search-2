@@ -63,7 +63,10 @@ class TreeCreator {
         const groups: Groups = {};
         const groupsCopy = Tools.deepClone(specifiedValues);
         for (let groupId in groupsCopy) {
-            const groupItems = Tools.intersect(valueCounts, groupsCopy[groupId]);
+            const groupItems = valueCounts.intersect(
+                (v) => v.mwTitle ? v.mwTitle.title : v.value.toString(),
+                groupsCopy[groupId]
+            );
             groups[groupId] = new Group(groupId);
             groupItems.map((v) => {
                 const value =  v.mwTitle ? v.mwTitle.title : v.value.toString()

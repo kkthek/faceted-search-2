@@ -43,7 +43,7 @@ function CategoryView( prop: {
     const selectedCategoryFacets = prop.searchStateDocument.query.categoryFacets;
 
     const listItems = categoryFacetCounts
-        .filter((facetCount) => ConfigUtils.containsOrEmpty(shownCategoryFacets, facetCount.category))
+        .filter((facetCount) => shownCategoryFacets.containsOrEmpty(facetCount.category))
         .filter((facetCount) => !selectedCategoryFacets.includes(facetCount.category))
         .sort(ConfigUtils.getSortFunctionForCategoryFacets(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount,i) => {
