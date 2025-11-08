@@ -2,6 +2,7 @@ import {Property, ValueCount} from "../../common/datatypes";
 import DisplayTools from "../../util/display_tools";
 import * as React from "react";
 import Tools from "../../util/tools";
+import ObjectTools from "../../util/object_tools";
 
 export class GroupItem {
     id: string
@@ -41,7 +42,7 @@ class TreeCreator {
         valueCounts.forEach((v) => {
 
             const valueLabel = DisplayTools.serializeFacetValue(property, v);
-            const valueId = v.mwTitle ? v.mwTitle.title : v.value.toString();
+            const valueId = v.serialize();
             const parts = valueId.split(separator);
             if (parts.length === 1) {
                 groups['__ungrouped__'] = groups['__ungrouped__'] ?? new Group('-');
@@ -61,15 +62,15 @@ class TreeCreator {
     static createGroupItemsBySpecifiedValues(valueCounts: ValueCount[], specifiedValues: any): Groups {
 
         const groups: Groups = {};
-        const groupsCopy = Tools.deepClone(specifiedValues);
+        const groupsCopy = ObjectTools.deepClone(specifiedValues);
         for (let groupId in groupsCopy) {
             const groupItems = valueCounts.intersect(
-                (v) => v.mwTitle ? v.mwTitle.title : v.value.toString(),
+                (v) => v.serialize(),
                 groupsCopy[groupId]
             );
             groups[groupId] = new Group(groupId);
             groupItems.map((v) => {
-                const value =  v.mwTitle ? v.mwTitle.title : v.value.toString()
+                const value =  v.serialize()
                 return new GroupItem(value, value, v.count)
             })
             .forEach(item => groups[groupId].addGroupItem(item));

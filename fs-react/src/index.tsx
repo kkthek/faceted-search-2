@@ -28,6 +28,7 @@ import SaveSearchLink from "./ui/search-bar/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
 import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
 import "./util/array_ext";
+import ObjectTools from "./util/object_tools";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -87,6 +88,13 @@ function App() {
     const anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
         || searchStateDocument?.query.isAnyCategorySelected();
 
+    const headerControlsOrder = wikiContext.config.fs2gHeaderControlOrder.calculatePermutation(
+        ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']
+    );
+    const facetControlsOrder = wikiContext.config.fs2gFacetControlOrder.calculatePermutation(
+        ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
+            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView']);
+
     return <WikiContext.Provider value={wikiContext}>
         <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
@@ -98,7 +106,7 @@ function App() {
                                searchText={currentDocumentsQueryBuilder.build().searchText}
                                restoreFromQuery={q !== null}
                                eventHandler={eventHandler}
-                               query={Tools.deepClone(currentDocumentsQueryBuilder.build())}
+                               query={ObjectTools.deepClone(currentDocumentsQueryBuilder.build())}
 
                     />,
                     <SaveSearchLink key={'saveSearchLink'}
@@ -108,8 +116,7 @@ function App() {
                                       documentQuery={currentDocumentsQueryBuilder.build()}
                                       eventHandler={eventHandler}
                     />
-                ].reorder(ConfigUtils.calculatePermutation(wikiContext.config.fs2gHeaderControlOrder,
-                    ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']))}
+                ].reorder(headerControlsOrder)}
 
             </div>
 
@@ -159,9 +166,7 @@ function App() {
                                   searchStateDocument={searchStateDocument}
                                   eventHandler={eventHandler}
                     />
-                ].reorder(ConfigUtils.calculatePermutation(wikiContext.config.fs2gFacetControlOrder,
-                    ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-                        'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView']))}
+                ].reorder(facetControlsOrder)}
             </div>
             <div id={'fs-results'}>
                 <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}

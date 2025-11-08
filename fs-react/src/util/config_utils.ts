@@ -6,26 +6,11 @@ import {
     Order,
     Property,
     PropertyFacetCount,
-    Sort, ValueType
+    Sort, ValueCount, ValueType
 } from "../common/datatypes";
 import {WikiContextInterface} from "../common/wiki_context";
 
 class ConfigUtils {
-
-    static containsOrEmpty(array: any[], value: any) {
-        return array.includes(value) || array.length === 0;
-    }
-
-    static getShownFacets(fs2gShownFacets: any, query: BaseQuery): string[] {
-
-        let results: string[] = [];
-        query.categoryFacets.forEach((category) => {
-            let propertiesOfCategory = fs2gShownFacets[category] || [];
-            results = [...results, ...propertiesOfCategory];
-        });
-        // @ts-ignore
-        return [...new Set(results)]
-    }
 
     static getSortFunctionForPropertyFacets(sortType: string) {
         switch(sortType) {
@@ -77,10 +62,6 @@ class ConfigUtils {
         }
     }
 
-    static calculatePermutation(order: string[], defaultOrder: string[]) {
-        return order.map((e) => defaultOrder.indexOf(e));
-    }
-
     static replaceSMWVariables(doc: Document, url: string) {
 
         const smwVariables = url.matchAll(/\{SMW:([^}]+)\}/gi);
@@ -91,7 +72,10 @@ class ConfigUtils {
             let pfv = doc.getPropertyFacetValues(propertyName);
             if (pfv === null) continue;
 
-            let value = pfv.values.map((value: ValueType | MWTitleWithURL) => this.serialize(value)).join(',');
+            let value = pfv.values.map((value: ValueType | MWTitleWithURL) => {
+                let mwTitle = value as MWTitle;
+                return mwTitle ? mwTitle.title : value.toString();
+            }).join(',');
             url = url.replace(`{SMW:${propertyName}}`, encodeURIComponent(value));
         }
 
@@ -100,11 +84,6 @@ class ConfigUtils {
 
     static replaceMagicWords(doc: Document, url: string, wikiContext: WikiContextInterface) {
         return url.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
-    }
-
-    static serialize(value: ValueType | MWTitleWithURL): string {
-        let mwTitle = value as MWTitle;
-        return mwTitle ? mwTitle.title : value.toString();
     }
 
 }

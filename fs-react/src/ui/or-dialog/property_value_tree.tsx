@@ -6,6 +6,7 @@ import {WikiContext} from "../../index";
 import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
 import TreeCreator, {GroupItem, Groups} from "./tree_generator";
 import Client from "../../common/client";
+import ObjectTools from "../../util/object_tools";
 
 function PropertyValueTree(prop: {
     client: Client,
@@ -45,7 +46,7 @@ function PropertyValueTree(prop: {
         itemIds = itemIds.map(i => decodeURIComponent(i));
 
         const selectedValueCounts = prop.valueCounts.filter(v => {
-            let id = v.mwTitle ? v.mwTitle.title : v.value.toString();
+            let id = v.serialize();
             return itemIds.includes(id);
         });
         setSelectedItems(itemIds);
@@ -64,7 +65,7 @@ function PropertyValueTree(prop: {
 
 function createItemsFromGroups(groups: Groups) {
     const groupTreeItems = [];
-    const ordered = Tools.orderKeys(groups ?? {});
+    const ordered = ObjectTools.orderKeys(groups ?? {});
     for (let groupId in ordered) {
 
         if (groupId === '__ungrouped__') {

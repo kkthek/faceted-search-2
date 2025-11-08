@@ -1,6 +1,6 @@
 declare global {
     interface Array<T> {
-        createUniqueArray(getKey: (e: T) => string): Array<T>;
+        createUniqueArray(getKey?: (e: T) => string): Array<T>;
         findFirst<T>(predicate: (e: T) => boolean): T;
         removeFirst<T>(predicate: (e: T) => boolean): T;
         replaceFirst<T>(predicate: (e: T) => boolean, replacement: T): T;
@@ -8,11 +8,13 @@ declare global {
         containsOrEmpty(value: T): boolean;
         splitArray2NTuples<T>(size: number): T[][];
         reorder(order: number[]) : T[];
-        intersect(getKey: (e: T) => string, keyArrayToIntersect: string[]): T[]
+        intersect(getKey: (e: T) => string, keyArrayToIntersect: string[]): T[];
+        calculatePermutation(defaultOrder: string[]): number[];
     }
 }
 
-Array.prototype.createUniqueArray = function <T>(getKey: (e: T) => string): T[] {
+Array.prototype.createUniqueArray = function <T>(getKey: (e: T) => string = c=> c.toString()): T[] {
+
     let mapObj = new Map()
     let result: T[]  = [];
     this.forEach((v: T) => {
@@ -106,6 +108,9 @@ Array.prototype.intersect = function<T>(getKey: (e: T) => string, keyArrayToInte
     });
 }
 
+Array.prototype.calculatePermutation = function(defaultOrder: string[]) {
+    return this.map((e: string) => defaultOrder.indexOf(e));
+}
 export default Array;
 
 

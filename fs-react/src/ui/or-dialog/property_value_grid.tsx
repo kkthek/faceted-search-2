@@ -19,7 +19,7 @@ function PropertyValueGrid(prop: {
         .forEach((row: ValueCount[]) => {
             values.push(row.map((value: ValueCount) => {
                 const selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
-                const selectedId = value.mwTitle ? value.mwTitle.title : value.value.toString();
+                const selectedId = value.serialize();
                 const isSelected = prop.selectedItemIds.includes(selectedId)
 
                 return <Grid size={4}>

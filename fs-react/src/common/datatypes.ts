@@ -7,6 +7,8 @@
 
 import Tools from "../util/tools";
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
+import ValueDeserializer from "../util/value_deserializer";
+import ObjectTools from "../util/object_tools";
 
 export interface ElementWithURL {
     url: string,
@@ -82,9 +84,9 @@ export class PropertyValueQuery {
 
 @jsonObject
 export class Range {
-    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
+    @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     from: Date | number
-    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
+    @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     to: Date | number
 
     constructor(from: Date | number, to: Date | number) {
@@ -132,7 +134,7 @@ export class MWTitle {
  */
 @jsonObject
 export class FacetValue {
-    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
+    @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     value: ValueType | void;
     @jsonMember(MWTitle)
     mwTitle: MWTitle | void;
@@ -337,9 +339,9 @@ export class BaseQuery {
 
     updateBaseQuery(base: BaseQuery): void {
         this.searchText = base.searchText;
-        this.propertyFacets = Tools.deepClone(base.propertyFacets);
-        this.categoryFacets = Tools.deepClone(base.categoryFacets);
-        this.namespaceFacets = Tools.deepClone(base.namespaceFacets);
+        this.propertyFacets = ObjectTools.deepClone(base.propertyFacets);
+        this.categoryFacets = ObjectTools.deepClone(base.categoryFacets);
+        this.namespaceFacets = ObjectTools.deepClone(base.namespaceFacets);
     }
 }
 
@@ -439,7 +441,7 @@ export class PropertyWithURL extends Property implements ElementWithURL {
 
 @jsonObject
 export class ValueCount {
-    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
+    @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     value: string | number | Date | null;
     @jsonMember(MWTitleWithURL)
     mwTitle: MWTitleWithURL | null;
@@ -455,6 +457,10 @@ export class ValueCount {
             return this.mwTitle.title.toLocaleString().localeCompare(valueCount.mwTitle.title.toLocaleString());
         }
         return 0;
+    }
+
+    serialize(): string {
+        return this.mwTitle ? this.mwTitle.title : this.value.toString();
     }
 }
 
@@ -490,7 +496,7 @@ export class PropertyFacetValues {
     @jsonMember(PropertyWithURL)
     property: PropertyWithURL
 
-    @jsonArrayMember(String, {deserializer: Tools.arrayDeserializer})
+    @jsonArrayMember(String, {deserializer: ValueDeserializer.arrayDeserializer})
     values: string[] | number[] | boolean[] | Date[] | MWTitleWithURL[]
 }
 
