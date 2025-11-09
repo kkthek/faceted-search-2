@@ -1,36 +1,15 @@
-import {
-    BaseQuery,
-    CategoryFacetCount,
-    Datatype,
-    Document, MWTitle, MWTitleWithURL,
-    Order,
-    Property,
-    PropertyFacetCount,
-    Sort, ValueCount, ValueType
-} from "../common/datatypes";
+import {Datatype, Document, MWTitle, Order, Property, Sort, Sortable, ValueType} from "../common/datatypes";
 import {WikiContextInterface} from "../common/wiki_context";
 
 class ConfigUtils {
 
-    static getSortFunctionForPropertyFacets(sortType: string) {
+    static getSortFunction<T extends Sortable<T>>(sortType: string): (a: T, b: T) => number {
         switch(sortType) {
             case 'sort-by-count':
-                return (a: PropertyFacetCount, b: PropertyFacetCount) => b.count - a.count;
+                return (a: T, b: T) => a.compareByCount(b);
             default:
             case 'sort-alphabetically':
-                return (a: PropertyFacetCount, b: PropertyFacetCount) =>
-                     a.property.title.toLowerCase().localeCompare(b.property.title.toLowerCase())
-        }
-    }
-
-    static getSortFunctionForCategoryFacets(sortType: string) {
-        switch(sortType) {
-            case 'sort-by-count':
-                return (a: CategoryFacetCount, b: CategoryFacetCount) => b.count - a.count;
-            default:
-            case 'sort-alphabetically':
-                return (a: CategoryFacetCount, b: CategoryFacetCount) =>
-                    a.category.toLowerCase().localeCompare(b.category.toLowerCase())
+                return (a: T, b: T) => a.compareAlphabetically(b);
         }
     }
 
@@ -68,12 +47,12 @@ class ConfigUtils {
 
         // @ts-ignore
         for (let smwVariable of smwVariables) {
-            let propertyName = smwVariable[1];
-            let pfv = doc.getPropertyFacetValues(propertyName);
+            const propertyName = smwVariable[1];
+            const pfv = doc.getPropertyFacetValues(propertyName);
             if (pfv === null) continue;
 
-            let value = pfv.values.map((value: ValueType | MWTitleWithURL) => {
-                let mwTitle = value as MWTitle;
+            const value = pfv.values.map((value: ValueType | MWTitle) => {
+                const mwTitle = value as MWTitle;
                 return mwTitle ? mwTitle.title : value.toString();
             }).join(',');
             url = url.replace(`{SMW:${propertyName}}`, encodeURIComponent(value));

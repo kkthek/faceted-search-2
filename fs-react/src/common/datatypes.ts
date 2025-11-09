@@ -518,22 +518,41 @@ export class NamespaceFacetValue {
     displayTitle: string
 }
 
+export interface Sortable<T> {
+    compareAlphabetically(that: T): number;
+    compareByCount(that: T): number;
+}
+
 @jsonObject
-export class CategoryFacetCount {
+export class CategoryFacetCount implements Sortable<CategoryFacetCount>{
     @jsonMember(String)
     category: string;
     @jsonMember(String)
     displayTitle: string;
     @jsonMember(Number)
     count: number;
+
+    compareAlphabetically(that: CategoryFacetCount): number {
+        return this.category.toLowerCase().localeCompare(that.category.toLowerCase());
+    }
+    compareByCount(that: CategoryFacetCount): number {
+        return that.count - this.count;
+    }
 }
 
 @jsonObject
-export class PropertyFacetCount {
+export class PropertyFacetCount implements Sortable<PropertyFacetCount>{
     @jsonMember(PropertyWithURL)
     property: PropertyWithURL;
     @jsonMember(Number)
     count: number;
+
+    compareAlphabetically(that: PropertyFacetCount): number {
+        return this.property.title.toLowerCase().localeCompare(that.property.title.toLowerCase());
+    }
+    compareByCount(that: PropertyFacetCount): number {
+        return that.count - this.count;
+    }
 }
 
 @jsonObject

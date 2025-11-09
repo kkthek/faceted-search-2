@@ -40,7 +40,7 @@ function FacetView(prop: {
 
     const listItems = propertyFacetCounts
         .filter((facetCount) => shownProperties.containsOrEmpty(facetCount.property.title))
-        .sort(ConfigUtils.getSortFunctionForPropertyFacets(wikiContext.options['fs2-sort-order-preferences']))
+        .sort(ConfigUtils.getSortFunction(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount,i) => {
 
         return <FacetViewProperty key={facetCount.property.title+facetCount.property.type}
