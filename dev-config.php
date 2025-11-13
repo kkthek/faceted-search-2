@@ -133,6 +133,9 @@ function setConfigForDevContext() {
 
     global $wgUserLanguage;
     $wgUserLanguage = "de";
+
+    global $fs2gTagCloudProperty;
+    $fs2gTagCloudProperty = "Has name";
 // -------------------------------------------------------
 }
 

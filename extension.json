@@ -260,7 +260,11 @@
 		"DateTimeZone": {
 			"value": "Europe/Berlin",
 			"description": "Adds/Subtracts an offset regarding the timezone to the datatime values which are stored in UTC"
-		}
+		},
+        "TagCloudProperty": {
+            "value": false,
+            "description": "If set to a property name, it shows tag cloud in the left-hand view. The property must be of datatype 'string'."
+      }
 	},
 	"manifest_version": 2
 }

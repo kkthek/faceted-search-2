@@ -40,6 +40,7 @@ function FacetView(prop: {
 
     const listItems = propertyFacetCounts
         .filter((facetCount) => shownProperties.containsOrEmpty(facetCount.property.title))
+        .filter((facetCount) => facetCount.property.title !== wikiContext.config['fs2gTagCloudProperty'])
         .sort(ConfigUtils.getSortFunction(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount,i) => {
 

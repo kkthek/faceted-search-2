@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React, {createContext, useEffect, useState} from 'react';
+import React, {createContext, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search-bar/search_bar_view";
 import ResultView from "./ui/search-results/result_view";
@@ -18,17 +18,16 @@ import SelectedCategoriesView from "./ui/facets/selected_categories_view";
 import NamespaceView from "./ui/search-bar/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
-import {Property} from "./common/datatypes";
+import {Datatype, Property, PropertyValueQuery} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Box, Divider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
-import ConfigUtils from "./util/config_utils";
-import Tools from "./util/tools";
 import SaveSearchLink from "./ui/search-bar/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
 import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
 import "./util/array_ext";
 import ObjectTools from "./util/object_tools";
+import TagCloudFacet from "./ui/facets/tag-cloud";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -125,6 +124,11 @@ function App() {
                            eventHandler={eventHandler}
             />
 
+            <TagCloudFacet key={'tagCloud'}
+                           searchStateFacets={searchFacetState}
+                           eventHandler={eventHandler}
+            />
+
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {[
                     <Box key={'selectedFacetLabel'}>
@@ -132,6 +136,7 @@ function App() {
                         {anyFacetSelected ? '' :
                             <span id={'fs-no-facet-selected'}>{"(" + wikiContext.msg('fs-no-facets-selected') + ")"}</span> }
                     </Box>,
+
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
                                         searchStateDocument={searchStateDocument}
@@ -198,6 +203,12 @@ function applyQueryConstraints() {
     wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: any) => {
         currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
+    if (wikiContext.config.fs2gTagCloudProperty) {
+        currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(
+            new Property(wikiContext.config.fs2gTagCloudProperty, Datatype.string),
+            wikiContext.config.fs2gFacetValueLimit
+        ));
+    }
 }
 
 function startApp() {

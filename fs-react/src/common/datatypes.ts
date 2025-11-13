@@ -73,8 +73,8 @@ export class PropertyValueQuery {
             && that.valueLimit === this.valueLimit && that.valueOffset === this.valueOffset;
     }
 
-    static forAllValues(property: Property) {
-        return new PropertyValueQuery(property, null, null, null);
+    static forAllValues(property: Property, limit: number = null, offset: number = null) {
+        return new PropertyValueQuery(property, limit, offset, null);
     }
 
     static forValuesContainingText(property: Property, text: string = null) {

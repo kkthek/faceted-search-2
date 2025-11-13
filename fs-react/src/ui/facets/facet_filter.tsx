@@ -9,6 +9,7 @@ function FacetFilter(prop : {
     numberOfValues: number
     eventHandler: EventHandler,
     inputFilterRef: MutableRefObject<any>
+    width?: string
 }) {
 
     const wikiContext = useContext(WikiContext);
@@ -42,7 +43,7 @@ function FacetFilter(prop : {
     return <input type={'text'}
                   ref={prop.inputFilterRef}
                   id={prop.property.title+"-filter-input"}
-                  style={{width: '50%'}}
+                  style={{width: prop.width ?? '50%'}}
                   placeholder={'Filter...'}
                   value={text}
                   onChange={onChange}
