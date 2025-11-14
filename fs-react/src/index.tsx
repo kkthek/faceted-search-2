@@ -28,6 +28,7 @@ import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
 import "./util/array_ext";
 import ObjectTools from "./util/object_tools";
 import TagCloudFacet from "./ui/facets/tag-cloud";
+import CategoryTree from "./ui/facets/category_tree";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -92,7 +93,7 @@ function App() {
     );
     const facetControlsOrder = wikiContext.config.fs2gFacetControlOrder.calculatePermutation(
         ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView']);
+            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree']);
 
     return <WikiContext.Provider value={wikiContext}>
         <div id={'fs-content'}>
@@ -169,6 +170,10 @@ function App() {
                     />,
                     <CategoryView key={'categoryView'}
                                   searchStateDocument={searchStateDocument}
+                                  eventHandler={eventHandler}
+                    />,
+                    <CategoryTree key={'categoryTree'}
+                                  client={client}
                                   eventHandler={eventHandler}
                     />
                 ].reorder(facetControlsOrder)}

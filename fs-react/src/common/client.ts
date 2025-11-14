@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {Document, DocumentQuery, DocumentsResponse, FacetResponse, FacetsQuery} from "./datatypes";
+import {CategoryNode, Document, DocumentQuery, DocumentsResponse, FacetResponse, FacetsQuery} from "./datatypes";
 import {TypedJSON} from "typedjson";
 
 const HTTP_REQUEST_OPTIONS: any = {
@@ -69,6 +69,16 @@ class Client {
         });
         await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(FacetResponse);
+        const json = await response.json();
+        return deserializer.parse(json);
+    }
+
+    async getCategoryTree(): Promise<CategoryNode> {
+        const response = await fetch(this.baseUrl + "/category-tree", {
+            ...HTTP_REQUEST_OPTIONS
+        });
+        await this.handleErrorIfAny(response);
+        const deserializer = new TypedJSON(CategoryNode);
         const json = await response.json();
         return deserializer.parse(json);
     }

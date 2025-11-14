@@ -92,7 +92,7 @@ function setConfigForDevContext() {
 
     $fs2gHeaderControlOrder = [ 'sortView', 'searchView', 'saveSearchLink' ];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-        'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView'];
+        'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree'];
 
     $fs2gPropertyGrouping = [
        /* 'Has name' =>
@@ -135,7 +135,10 @@ function setConfigForDevContext() {
     $wgUserLanguage = "de";
 
     global $fs2gTagCloudProperty;
-    $fs2gTagCloudProperty = "Has name";
+    $fs2gTagCloudProperty = false; //"Has name";
+
+    global $fs2gShowCategoryTree;
+    $fs2gShowCategoryTree = false;
 // -------------------------------------------------------
 }
 

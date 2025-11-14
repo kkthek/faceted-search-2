@@ -640,3 +640,14 @@ export class DocumentsResponse {
 
 }
 
+@jsonObject
+export class CategoryNode {
+    @jsonMember(String)
+    category: string;
+
+    @jsonMember(String)
+    displayTitle: string | null;
+
+    @jsonArrayMember(() => CategoryNode)
+    children: CategoryNode[];
+}
