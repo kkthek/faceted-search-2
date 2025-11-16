@@ -174,6 +174,7 @@ function App() {
                     />,
                     <CategoryTree key={'categoryTree'}
                                   client={client}
+                                  searchStateDocument={searchStateDocument}
                                   eventHandler={eventHandler}
                     />
                 ].reorder(facetControlsOrder)}
