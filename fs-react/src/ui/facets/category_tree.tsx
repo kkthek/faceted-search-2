@@ -6,6 +6,7 @@ import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {Typography} from "@mui/material";
 import {WikiContext} from "../../index";
+import CategoryTreeFilter from "./category_tree_filter";
 
 function CategoryTree(prop: {
     client: Client,
@@ -13,19 +14,26 @@ function CategoryTree(prop: {
 }) {
     const wikiContext = useContext(WikiContext);
     if (!wikiContext.config['fs2gShowCategoryTree']) return;
-    const [categoryTree, setCategoryTree] = useState<CategoryNode>(null);
+
+    const [categoryTree, setCategoryTree] = useState<[CategoryNode, CategoryNode]>([null, null]);
+
     useEffect(() => {
-        prop.client.getCategoryTree().then((response) => {
-            setCategoryTree(response);
-        });
+        (async function fetchData() {
+            const response = await prop.client.getCategoryTree();
+            let tree = response.createParentReferences();
+            setCategoryTree([tree, tree]);
+        }());
     }, [prop.client]);
 
-    if (!categoryTree) return;
+    const [filteredTree, fullTree] = categoryTree;
+    if (!filteredTree) return;
 
     return <div id={'fs-category-tree'}>
         <Typography>Category Tree</Typography>
+        <CategoryTreeFilter setCategoryTree={setCategoryTree} treeState={categoryTree} />
         <SimpleTreeView>
-            {categoryTree.children.map(node => <CategoryItem key={node.category} node={node}
+            {filteredTree.children.map(node => <CategoryItem key={node.category + node.parent.category}
+                                                             node={node}
                                                              eventHandler={prop.eventHandler}/>)}
         </SimpleTreeView>
     </div>
@@ -33,10 +41,12 @@ function CategoryTree(prop: {
 
 function CategoryItem(prop: { node: CategoryNode, eventHandler: EventHandler }) {
 
-    return <CustomTreeItem key={prop.node.category} itemId={prop.node.category}
-                           label={prop.node.category}
+    return <CustomTreeItem key={prop.node.category + prop.node.parent.category}
+                           itemId={prop.node.category}
+                           label={prop.node.displayTitle ?? prop.node.category}
                            itemAction={() => prop.eventHandler.onCategoryClick(prop.node.category)}>
-        {prop.node.children.map(node => <CategoryItem key={node.category} node={node}
+        {prop.node.children.map(node => <CategoryItem key={node.category + node.parent.category}
+                                                      node={node}
                                                       eventHandler={prop.eventHandler}/>)}
     </CustomTreeItem>
 

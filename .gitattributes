@@ -2,6 +2,7 @@ vm-ubuntu export-ignore
 test export-ignore
 fs-react/it export-ignore
 fs-react/src export-ignore
+fs-react/test export-ignore
 fs-react/*.json export-ignore
 fs-react/*.js export-ignore
 fs-react/public/index.html export-ignore
