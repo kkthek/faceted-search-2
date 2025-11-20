@@ -8,7 +8,8 @@
     "build": "webpack --mode=production",
     "test": "mocha --import=tsx 'test/**/*.ts'",
     "start": "webpack serve --open --mode=development",
-    "it-test": "mocha --import=tsx 'it/**/*.ts'"
+    "it-test": "mocha --import=tsx 'it/**/*.ts'",
+    "installjs": "copy dist\\*.js public /Y"
   },
   "keywords": [],
   "author": "",
