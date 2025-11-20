@@ -18,14 +18,14 @@ class CategoryTreeGenerator
     {
         $CATEGORY_NAMESPACE = NS_CATEGORY;
         $sql = <<<SQL
-SELECT page_from.page_title AS from_category, cl_to AS to_category,
+SELECT DISTINCT page_from.page_title AS from_category, cl_to AS to_category,
        props_from.pp_value AS from_displaytitle, props_to.pp_value AS to_displaytitle
 
 FROM page page_from
 LEFT JOIN categorylinks ON page_from.page_id = categorylinks.cl_from
 LEFT JOIN page_props props_from ON props_from.pp_page = page_from.page_id AND props_from.pp_propname = 'displaytitle'
 
-LEFT JOIN page AS page_to ON categorylinks.cl_to = page_to.page_title
+LEFT JOIN page AS page_to ON categorylinks.cl_to = page_to.page_title AND page_to.page_namespace = $CATEGORY_NAMESPACE
 LEFT JOIN page_props props_to ON props_to.pp_page = page_to.page_id AND props_to.pp_propname = 'displaytitle'
 WHERE page_from.page_namespace = $CATEGORY_NAMESPACE
 SQL;

@@ -656,6 +656,7 @@ export class CategoryNode {
     constructor(category: string, children: CategoryNode[], displayTitle: string = null) {
         this.category = category;
         this.children = children;
+        this.displayTitle = displayTitle;
     }
 
     createParentReferences(node: CategoryNode|null = null): CategoryNode {
