@@ -18,22 +18,58 @@ function CategoryTree(prop: {
     if (!wikiContext.config['fs2gShowCategoryTree']) return;
 
     const [categoryTree, setCategoryTree] = useState<[CategoryNode, CategoryNode]>([null, null]);
+    const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
+    const categories = prop.searchStateDocument?.documentResponse
+        .categoryFacetCounts.map(cfc => cfc.category) ?? [];
 
     useEffect(() => {
-        (async function fetchData() {
-            const response = await prop.client.getCategoryTree();
-            let tree = response.createParentReferences();
-            setCategoryTree([tree, tree]);
-        }());
-    }, [prop.client]);
+        const [filteredTree, fullTree] = categoryTree;
+        if (!filteredTree) {
+            (async function fetchCategoryTree() {
+                const response = await prop.client.getCategoryTree();
+                const tree = response.createParentReferences();
+                setCategoryTree([tree, tree]);
+                setExpandedFacets(tree.getNodeItemIds());
+            }());
+        } else {
+
+            let newFilteredTree = fullTree.filterForCategories(categories);
+            setCategoryTree([newFilteredTree, fullTree]);
+            setExpandedFacets(newFilteredTree.getNodeItemIds());
+
+        }
+    }, [prop.searchStateDocument]);
 
     const [filteredTree, fullTree] = categoryTree;
     if (!filteredTree) return;
 
+
+    const handleItemExpansionToggle = (
+        event: React.SyntheticEvent | null,
+        itemId: string,
+        isExpanded: boolean,
+    ) => {
+
+        if (isExpanded) {
+            setExpandedFacets([...expandedFacets, itemId]);
+        } else {
+            setExpandedFacets(expandedFacets.filter(id => id !== itemId));
+        }
+
+    };
+
+
     return <div id={'fs-category-tree'}>
         <Typography>Category Tree</Typography>
-        <CategoryTreeFilter setCategoryTree={setCategoryTree} treeState={categoryTree} />
-        <SimpleTreeView>
+        <CategoryTreeFilter setCategoryTree={setCategoryTree}
+                            treeState={categoryTree}
+                            searchStateDocument={prop.searchStateDocument}
+        />
+        <SimpleTreeView expandedItems={expandedFacets}
+                        disableSelection
+                        disabledItemsFocusable
+                        onItemExpansionToggle={handleItemExpansionToggle}
+        >
             {filteredTree.children.map(node => <CategoryItem key={node.category + node.parent.category}
                                                              node={node}
                                                              searchStateDocument={prop.searchStateDocument}
@@ -51,11 +87,11 @@ function CategoryItem(prop: {
     const categoryFacetCount = prop.searchStateDocument?.documentResponse.categoryFacetCounts
         .find(v => v.category === prop.node.category);
 
-    return <CustomTreeItem key={prop.node.category + prop.node.parent.category}
-                           itemId={prop.node.category}
+    let itemId = prop.node.category + prop.node.parent.category;
+    return <CustomTreeItem key={itemId}
+                           itemId={itemId}
                            label={<FacetWithCount displayTitle={prop.node.displayTitle ?? prop.node.category}
-                               count={categoryFacetCount?.count}
-                           />}
+                           count={categoryFacetCount?.count}/>}
                            itemAction={() => prop.eventHandler.onCategoryClick(prop.node.category)}>
         {prop.node.children.map(node => <CategoryItem key={node.category + node.parent.category}
                                                       node={node}

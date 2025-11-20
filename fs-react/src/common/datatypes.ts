@@ -673,21 +673,40 @@ export class CategoryNode {
         || (this.displayTitle && this.displayTitle.toLowerCase().includes(part.toLowerCase())));
     }
 
-    filterNodes(text: string) {
+    filterForText(text: string) {
         if (text.trim() === '') return this;
         const allMatchingNodes = this.filterNodes_((c)=> c.contains(text), this);
         if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);
-        let allCategoriesOnPath: any = {};
+        const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
+        return this.copyTree_((c)=> allCategoriesOnPath.includes(c.category), this)
+            .createParentReferences();
+    }
+
+    filterForCategories(categories: string[]): CategoryNode {
+        if (categories.length === 0) return this;
+        const allMatchingNodes = this.filterNodes_((c)=> categories.includes(c.category), this);
+        if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);
+        const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
+        return this.copyTree_((c)=> allCategoriesOnPath.includes(c.category), this)
+            .createParentReferences();
+    }
+
+    getNodeItemIds(node: CategoryNode = this): string[] {
+        const found = node.children.map(child => child.category + child.parent?.category)
+            .concat(node.parent ? node.category+ node.parent.category : node.category);
+        node.children.forEach(node => found.push(...this.getNodeItemIds(node)));
+        return found;
+    }
+
+    private getCategoriesOnPathToRoot(allMatchingNodes: CategoryNode[]) {
+        const allCategoriesOnPath: any = {};
         allMatchingNodes.forEach(node => {
             do {
                 allCategoriesOnPath[node.category] = true;
                 node = node.parent;
             } while (node !== undefined)
         });
-        allCategoriesOnPath = Object.keys(allCategoriesOnPath);
-        return this.copyTree_((c)=> allCategoriesOnPath.includes(c.category), this)
-            .createParentReferences();
-
+        return Object.keys(allCategoriesOnPath);
     }
 
     private copyTree_(predicate: (node: CategoryNode) => boolean, node: CategoryNode): CategoryNode {

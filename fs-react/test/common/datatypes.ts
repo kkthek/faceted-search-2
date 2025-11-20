@@ -24,7 +24,7 @@ describe('datatypes', function () {
             ])
         ]).createParentReferences();
 
-        let filteredTree = node.filterNodes('ABA');
+        let filteredTree = node.filterForText('ABA');
         log(filteredTree);
 
         let nodes = [];
@@ -32,6 +32,33 @@ describe('datatypes', function () {
         log(nodes);
 
         assert.deepEqual(nodes, [ 'A', 'AB', 'ABA', 'ABAA' ]);
+
+    });
+});
+
+describe('datatypes', function () {
+    it('test node item ids', function () {
+
+        let node = new CategoryNode('A', [
+            new CategoryNode('AA', [
+                new CategoryNode('AAA', []),
+            ]), new CategoryNode('AB', [
+                new CategoryNode('ABA', [
+                    new CategoryNode('ABAA', []),
+                ]),
+            ])
+        ]).createParentReferences();
+
+        let itemIds = node.getNodeItemIds(node);
+        log(itemIds);
+        assert.deepEqual(itemIds, [
+            'AAA',     'ABA',
+            'A',       'AAAAA',
+            'AAA',     'AAAAA',
+            'ABAAB',   'ABA',
+            'ABAAABA', 'ABAAB',
+            'ABAAABA'
+        ]);
 
     });
 });
