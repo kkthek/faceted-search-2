@@ -19,6 +19,7 @@ function FacetFilter(prop : {
     const debouncedSearchValue = useDebounce(text, 500);
     useEffect(() => {
         if (!prop.property) return;
+        if (unchanged && debouncedSearchValue === '') return;
         prop.eventHandler.onFacetValueContains(debouncedSearchValue, prop.property)
     }, [debouncedSearchValue]);
 

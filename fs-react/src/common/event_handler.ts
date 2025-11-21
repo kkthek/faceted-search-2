@@ -95,7 +95,7 @@ class EventHandler {
 
         this.expandFacet(p.getItemId());
         this.updateDocuments();
-        this.updateFacetValuesForProperty(p);
+        this.updateFacetValuesForProperty(p, this.facetValueLimit);
     }
 
     onExpandFacetClick(p: Property) {
@@ -126,7 +126,7 @@ class EventHandler {
 
         this.expandFacet(property.getItemId());
         this.updateDocuments();
-        this.updateFacetValuesForProperty(property);
+        this.updateFacetValuesForProperty(property, this.facetValueLimit);
     }
 
     onValuesClick(propertyFacets: PropertyFacet[], removeOld: boolean = true) {
@@ -147,7 +147,7 @@ class EventHandler {
         properties.forEach(property => {
             this.expandFacet(property.getItemId());
         });
-        this.updateFacetValuesForProperties(properties);
+        this.updateFacetValuesForProperties(properties, this.facetValueLimit);
     }
 
     onRemoveAllFacetsForProperty(property: Property) {
