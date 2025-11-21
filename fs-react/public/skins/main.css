@@ -31,9 +31,7 @@ div.fs-boxes {
     justify-content: center;
     flex-direction: row;
     align-items: center;
-    height: 100px;
 }
-
 
 @media (min-width: 1000px) {
 
@@ -170,6 +168,10 @@ div.demoted {
  */
 span.tag-cloud-tag {
     cursor: pointer;
+    border: blue 1px solid;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 3px !important;
 }
 
 /*
