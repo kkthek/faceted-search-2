@@ -44,7 +44,7 @@ class DocumentQueryBuilder {
     }
 
     withPropertyFacet(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
-        const pf = Tools.findFirst(this.query.propertyFacets, (e) => e.property.title, propertyFacetConstraint.property.title);
+        const pf = this.query.propertyFacets.findFirst((e: PropertyFacet) => e.property.title === propertyFacetConstraint.property.title);
         if (pf === null) {
             this.query.propertyFacets.push(propertyFacetConstraint);
         } else {
@@ -59,16 +59,16 @@ class DocumentQueryBuilder {
     }
 
     clearFacetsForProperty(property: Property): DocumentQueryBuilder {
-        Tools.removeAll(this.query.propertyFacets, (e) => e.property.title, property.title);
+        this.query.propertyFacets.removeAll((e: PropertyFacet) => e.property.title === property.title);
         return this;
     }
 
     withoutPropertyFacet(pf: PropertyFacet, facetValue: FacetValue = null) {
         if (facetValue === null) {
-            Tools.removeFirstByPredicate(this.query.propertyFacets, (e) => e.property.equals(pf.property));
+            this.query.propertyFacets.removeFirst( (e: PropertyFacet) => e.property.equals(pf.property));
         } else {
-            const f = Tools.findFirstByPredicate(this.query.propertyFacets, (e) => e.property.equals(pf.property));
-            Tools.removeFirstByPredicate(f.values, (v) => v.equals(facetValue));
+            const f = this.query.propertyFacets.findFirst((e: PropertyFacet) => e.property.equals(pf.property));
+            f.values.removeFirst((v: FacetValue) => v.equals(facetValue));
             if (f.values.length === 0) {
                 this.withoutPropertyFacet(pf);
             }
@@ -77,7 +77,7 @@ class DocumentQueryBuilder {
     }
 
     existsPropertyFacetForProperty(p: Property): boolean {
-        return Tools.findFirst(this.query.propertyFacets, (e) => e.property.title, p.title) !== null;
+        return this.query.propertyFacets.findFirst( (e: PropertyFacet) => e.property.title === p.title) !== null;
     }
 
     withCategoryFacet(category: string): DocumentQueryBuilder {
@@ -89,7 +89,7 @@ class DocumentQueryBuilder {
     }
 
     withoutCategoryFacet(category: string): DocumentQueryBuilder {
-        Tools.removeFirst(this.query.categoryFacets, (e) => e, category);
+        this.query.categoryFacets.removeFirst((e: string) => e === category);
         return this;
     }
 

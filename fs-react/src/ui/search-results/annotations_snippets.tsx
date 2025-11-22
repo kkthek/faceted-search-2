@@ -16,7 +16,8 @@ function Annotations(prop: {doc: Document}) {
         if (!categoryFound) continue;
 
         let index = 0;
-        const rows = Tools.splitArray2NTuples(annotationsInSnippets[category], 2)
+        const rows = annotationsInSnippets[category]
+            .splitArray2NTuples(2)
             .map((tuples: string[]) => {
 
             const pfvCell1 = prop.doc.getPropertyFacetValues(tuples[0]);

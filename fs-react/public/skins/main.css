@@ -5,7 +5,7 @@
     display: flex;
 }
 
-#fs-header, #fs-namespaces {
+#fs-header, #fs-namespaces, #fs-tagcloud {
     background: lightgrey;
     padding: 15px;
     border-radius: 5px;
@@ -20,6 +20,18 @@ div.fs-boxes {
     display: flex;
 }
 
+#fs-tagcloud {
+    margin-top: 3px;
+
+}
+
+#fs-tagcloud-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+}
 
 @media (min-width: 1000px) {
 
@@ -149,6 +161,17 @@ div.demoted {
 
 #fs-no-facet-selected {
     color: #666;
+}
+
+/*
+ * Tag cloud
+ */
+span.tag-cloud-tag {
+    cursor: pointer;
+    border: blue 1px solid;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 3px !important;
 }
 
 /*

@@ -9,6 +9,7 @@ function FacetFilter(prop : {
     numberOfValues: number
     eventHandler: EventHandler,
     inputFilterRef: MutableRefObject<any>
+    width?: string
 }) {
 
     const wikiContext = useContext(WikiContext);
@@ -18,6 +19,7 @@ function FacetFilter(prop : {
     const debouncedSearchValue = useDebounce(text, 500);
     useEffect(() => {
         if (!prop.property) return;
+        if (unchanged && debouncedSearchValue === '') return;
         prop.eventHandler.onFacetValueContains(debouncedSearchValue, prop.property)
     }, [debouncedSearchValue]);
 
@@ -42,7 +44,7 @@ function FacetFilter(prop : {
     return <input type={'text'}
                   ref={prop.inputFilterRef}
                   id={prop.property.title+"-filter-input"}
-                  style={{width: '50%'}}
+                  style={{width: prop.width ?? '50%'}}
                   placeholder={'Filter...'}
                   value={text}
                   onChange={onChange}

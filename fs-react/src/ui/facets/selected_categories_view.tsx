@@ -23,7 +23,7 @@ function SelectedCategoriesView(prop: {
             return  <CustomTreeItem key={v.category}
                                     itemId={v.category}
                                     actionIcon={DeleteIcon}
-                                    label={<FacetWithCount displayTitle={v.category} count={v.count} />}
+                                    label={<FacetWithCount displayTitle={v.displayTitle} count={v.count} />}
                                     action={() => prop.eventHandler.onCategoryRemoveClick(v.category)} />
         }
     );

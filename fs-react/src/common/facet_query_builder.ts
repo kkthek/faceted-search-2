@@ -1,4 +1,4 @@
-import {BaseQuery, FacetsQuery, Property, PropertyValueQuery} from "./datatypes";
+import {BaseQuery, FacetsQuery, Property, PropertyFacet, PropertyValueQuery} from "./datatypes";
 import Tools from "../util/tools";
 import {TypedJSON} from "typedjson";
 
@@ -24,7 +24,7 @@ class FacetQueryBuilder {
     }
 
     withoutPropertyFacet(p: Property) {
-        Tools.removeAll(this.query.propertyFacets, (e) => e.property.title, p.title);
+        this.query.propertyFacets.removeAll((e: PropertyFacet) => e.property.title === p.title);
         return this;
     }
 
@@ -34,7 +34,7 @@ class FacetQueryBuilder {
     }
 
     clearRangeQueriesForProperty(p : Property) {
-        Tools.removeAll(this.query.rangeQueries, (e) => e.title, p.title);
+        this.query.rangeQueries.removeAll((e: Property) => e.title === p.title);
         return this;
     }
 
@@ -45,8 +45,8 @@ class FacetQueryBuilder {
 
     withPropertyValueQuery(propertyValueQuery: PropertyValueQuery): FacetQueryBuilder {
 
-        let constraint = Tools.replaceFirst(this.query.propertyValueQueries,
-            (e) => e.property.title, propertyValueQuery.property.title, propertyValueQuery);
+        let constraint = this.query.propertyValueQueries.replaceFirst(
+            (e: PropertyValueQuery) => e.property.title === propertyValueQuery.property.title, propertyValueQuery);
         if (constraint === null) {
             this.query.propertyValueQueries.push(propertyValueQuery);
         }
@@ -54,12 +54,12 @@ class FacetQueryBuilder {
     }
 
     existsPropertyValueQuery(propertyValueConstraint: PropertyValueQuery): boolean {
-        return Tools.findFirstByPredicate(this.query.propertyValueQueries,
-            (e) => e.equals(propertyValueConstraint)) != null;
+        return this.query.propertyValueQueries.findFirst(
+            (e: PropertyValueQuery) => e.equals(propertyValueConstraint)) != null;
     }
 
     clearPropertyValueQueryForProperty(p : Property) {
-        Tools.removeAll(this.query.propertyValueQueries, (e) => e.property.title, p.title);
+        this.query.propertyValueQueries.removeAll((e: PropertyValueQuery) => e.property.title === p.title);
         return this;
     }
 

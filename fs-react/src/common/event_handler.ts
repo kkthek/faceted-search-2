@@ -1,7 +1,7 @@
 import DocumentQueryBuilder from "./document_query_builder";
 import FacetQueryBuilder from "./facet_query_builder";
 import {
-    BaseQuery,
+    BaseQuery, Datatype,
     DocumentsResponse,
     FacetResponse,
     FacetValue,
@@ -35,6 +35,7 @@ class EventHandler {
     private readonly setExpandedFacets: Dispatch<SetStateAction<string[]>>;
     private readonly setError: Dispatch<SetStateAction<string>>;
     private readonly facetValueLimit: number;
+    private readonly tagCloudProperty: string;
     private expandedFacets: string[];
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
@@ -52,6 +53,7 @@ class EventHandler {
         this.setFacetState = setFacetState;
         this.setError = setError;
         this.facetValueLimit = wikiContext.config.fs2gFacetValueLimit;
+        this.tagCloudProperty = wikiContext.config.fs2gTagCloudProperty;
 
         this.expandedFacets = [];
         this.setExpandedFacets = setExpandedFacets;
@@ -95,7 +97,7 @@ class EventHandler {
 
         this.expandFacet(p.getItemId());
         this.updateDocuments();
-        this.updateFacetValuesForProperty(p);
+        this.updateFacetValuesForProperty(p, this.facetValueLimit);
     }
 
     onExpandFacetClick(p: Property) {
@@ -126,15 +128,14 @@ class EventHandler {
 
         this.expandFacet(property.getItemId());
         this.updateDocuments();
-        this.updateFacetValuesForProperty(property);
+        this.updateFacetValuesForProperty(property, this.facetValueLimit);
     }
 
     onValuesClick(propertyFacets: PropertyFacet[], removeOld: boolean = true) {
 
         propertyFacets.forEach((pf) => {
             if (removeOld) {
-                this.currentDocumentsQueryBuilder.
-                    withoutPropertyFacet(pf);
+                this.currentDocumentsQueryBuilder.withoutPropertyFacet(pf);
             }
             this.currentDocumentsQueryBuilder
                 .withOffset(0)
@@ -147,7 +148,7 @@ class EventHandler {
         properties.forEach(property => {
             this.expandFacet(property.getItemId());
         });
-        this.updateFacetValuesForProperties(properties);
+        this.updateFacetValuesForProperties(properties, this.facetValueLimit);
     }
 
     onRemoveAllFacetsForProperty(property: Property) {
@@ -261,9 +262,21 @@ class EventHandler {
         this.currentFacetsQueryBuilder
             .clearAllRangeQueries()
             .clearAllPropertyValueQueries();
+        this.setTagCloudValueQuery();
+
         this.setExpandedFacets([]);
         this.updateDocuments();
         this.updateFacets();
+    }
+
+    private setTagCloudValueQuery() {
+        if (this.tagCloudProperty === '') {
+            return;
+        }
+        this.currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(
+            new Property(this.tagCloudProperty, Datatype.string),
+            this.facetValueLimit
+        ));
     }
 
     private updateFacetValuesForProperties(properties: Property[], facetValueLimit: number = null) {

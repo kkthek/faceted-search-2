@@ -24,7 +24,14 @@ function FacetView(prop: {
 
     const propertyFacetCounts = prop.searchStateDocument.documentResponse.propertyFacetCounts;
     const wikiContext = useContext(WikiContext);
-    const shownFacets = ConfigUtils.getShownFacets(wikiContext.config['fs2gShownFacets'], prop.searchStateDocument.query);
+    const fs2gShownFacets = wikiContext.config['fs2gShownFacets'];
+
+    let shownProperties: string[] = [];
+    prop.searchStateDocument.query.categoryFacets.forEach((category) => {
+        let propertiesOfCategory = fs2gShownFacets[category] || [];
+        shownProperties = [...shownProperties, ...propertiesOfCategory];
+    });
+    shownProperties = shownProperties.createUniqueArray();
 
     const [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick] = ORDialogInput.createORDialogState(
         prop.searchStateDocument.query,
@@ -32,8 +39,9 @@ function FacetView(prop: {
     );
 
     const listItems = propertyFacetCounts
-        .filter((facetCount) => shownFacets.includes(facetCount.property.title) || shownFacets.length === 0 )
-        .sort(ConfigUtils.getSortFunctionForPropertyFacets(wikiContext.options['fs2-sort-order-preferences']))
+        .filter((facetCount) => shownProperties.containsOrEmpty(facetCount.property.title))
+        .filter((facetCount) => facetCount.property.title !== wikiContext.config['fs2gTagCloudProperty'])
+        .sort(ConfigUtils.getSortFunction(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount,i) => {
 
         return <FacetViewProperty key={facetCount.property.title+facetCount.property.type}

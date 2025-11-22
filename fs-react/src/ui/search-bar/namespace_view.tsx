@@ -4,6 +4,7 @@ import {WikiContext} from "../../index";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import {ToggleButton, ToggleButtonGroup} from "@mui/material";
 import FacetWithCount from "../common/facet_with_count";
+import ConfigUtils from "../../util/config_utils";
 
 function NamespaceFacet(prop: {
     namespaceFacetCount: NamespaceFacetCount | null,
@@ -54,12 +55,12 @@ function NamespaceView(prop: {
         }
     }
 
+    const namespacesToShow = wikiContext.config['fs2gNamespacesToShow'];
     const listItems = namespaceFacetCounts
-        .filter(facetCount => wikiContext.config['fs2gNamespacesToShow'].length === 0 ||
-            wikiContext.config['fs2gNamespacesToShow'].includes(facetCount.namespace))
+        .filter(facetCount => namespacesToShow.containsOrEmpty(facetCount.namespace))
         .sort((a: NamespaceFacetCount, b: NamespaceFacetCount) =>
-            wikiContext.config['fs2gNamespacesToShow'].indexOf(a.namespace)
-            - wikiContext.config['fs2gNamespacesToShow'].indexOf(b.namespace))
+            namespacesToShow.indexOf(a.namespace)
+            - namespacesToShow.indexOf(b.namespace))
         .map((facetCount, i) => {
             return <NamespaceFacet key={facetCount.namespace} namespaceFacetCount={facetCount} />
     });

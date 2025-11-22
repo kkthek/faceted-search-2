@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {KeyboardEvent, useContext, useEffect, useRef, useState} from "react";
 import {WikiContext} from "../../index";
 import {Box, Button, TextField} from "@mui/material";
 import EventHandler from "../../common/event_handler";
@@ -31,20 +31,28 @@ function SearchBar(prop: {
         prop.eventHandler.onSearchClick(debouncedSearchValue);
     }, [debouncedSearchValue, restoreFromQuery]);
 
+    const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            prop.eventHandler.onSearchClick(searchText);
+        }
+    };
+
     return <Box id={'fs-searchbar'} sx={{'display': 'flex'}}>
         <TextField id="fs-searchbar-button-text"
                    label={placeholderText}
                    size={'small'}
                    variant="outlined"
                    value={searchText}
-                   onKeyDown={(e) => { if (e.key === 'Enter') { prop.eventHandler.onSearchClick(searchText); } } }
+                   onKeyDown={onKeyDown}
                    onChange={(e)=> setSearchText(e.target.value)}
         />
 
         <Button id={'fs-searchbar-button'}
                 size={'medium'}
                 variant="outlined"
-                onClick={() => prop.eventHandler.onSearchClick(searchText)}>{wikiContext.msg('fs-search-button')}</Button>
+                onClick={() => prop.eventHandler.onSearchClick(searchText)}>
+            {wikiContext.msg('fs-search-button')}
+        </Button>
         <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>
         </Box>;
 }

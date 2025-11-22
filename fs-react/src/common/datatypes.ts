@@ -7,6 +7,8 @@
 
 import Tools from "../util/tools";
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
+import ValueDeserializer from "../util/value_deserializer";
+import ObjectTools from "../util/object_tools";
 
 export interface ElementWithURL {
     url: string,
@@ -71,8 +73,8 @@ export class PropertyValueQuery {
             && that.valueLimit === this.valueLimit && that.valueOffset === this.valueOffset;
     }
 
-    static forAllValues(property: Property) {
-        return new PropertyValueQuery(property, null, null, null);
+    static forAllValues(property: Property, limit: number = null, offset: number = null) {
+        return new PropertyValueQuery(property, limit, offset, null);
     }
 
     static forValuesContainingText(property: Property, text: string = null) {
@@ -82,9 +84,9 @@ export class PropertyValueQuery {
 
 @jsonObject
 export class Range {
-    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
+    @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     from: Date | number
-    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
+    @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     to: Date | number
 
     constructor(from: Date | number, to: Date | number) {
@@ -132,7 +134,7 @@ export class MWTitle {
  */
 @jsonObject
 export class FacetValue {
-    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
+    @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     value: ValueType | void;
     @jsonMember(MWTitle)
     mwTitle: MWTitle | void;
@@ -310,7 +312,7 @@ export class BaseQuery {
     }
 
     findPropertyFacet(property: Property): PropertyFacet {
-        return Tools.findFirst(this.propertyFacets, (e) => e.property.title, property.title);
+        return this.propertyFacets.findFirst((e) => e.property.title === property.title);
     }
 
     isPropertyFacetSelected(property: Property): boolean {
@@ -318,7 +320,7 @@ export class BaseQuery {
     }
 
     isCategoryFacetSelected(category: string): boolean {
-        return Tools.findFirst(this.categoryFacets, (e) => e, category) !== null;
+        return this.categoryFacets.findFirst((e: string) => e === category ) !== null;
     }
 
     isAnyCategorySelected() {
@@ -337,9 +339,9 @@ export class BaseQuery {
 
     updateBaseQuery(base: BaseQuery): void {
         this.searchText = base.searchText;
-        this.propertyFacets = Tools.deepClone(base.propertyFacets);
-        this.categoryFacets = Tools.deepClone(base.categoryFacets);
-        this.namespaceFacets = Tools.deepClone(base.namespaceFacets);
+        this.propertyFacets = ObjectTools.deepClone(base.propertyFacets);
+        this.categoryFacets = ObjectTools.deepClone(base.categoryFacets);
+        this.namespaceFacets = ObjectTools.deepClone(base.namespaceFacets);
     }
 }
 
@@ -439,7 +441,7 @@ export class PropertyWithURL extends Property implements ElementWithURL {
 
 @jsonObject
 export class ValueCount {
-    @jsonMember({deserializer: value => Tools.deserializeValue(value)})
+    @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     value: string | number | Date | null;
     @jsonMember(MWTitleWithURL)
     mwTitle: MWTitleWithURL | null;
@@ -455,6 +457,10 @@ export class ValueCount {
             return this.mwTitle.title.toLocaleString().localeCompare(valueCount.mwTitle.title.toLocaleString());
         }
         return 0;
+    }
+
+    serialize(): string {
+        return this.mwTitle ? this.mwTitle.title : this.value.toString();
     }
 }
 
@@ -475,7 +481,8 @@ export class FacetResponse {
     valueCounts: PropertyValueCount[];
 
     getPropertyValueCount(property: Property): PropertyValueCount {
-        return Tools.findFirst(this.valueCounts || [], (e) => e.property.title, property.title);
+        if (!this.valueCounts ) { return null;}
+        return this.valueCounts.findFirst((e) => e.property.title === property.title );
     }
 
     isEmpty() {
@@ -489,7 +496,7 @@ export class PropertyFacetValues {
     @jsonMember(PropertyWithURL)
     property: PropertyWithURL
 
-    @jsonArrayMember(String, {deserializer: Tools.arrayDeserializer})
+    @jsonArrayMember(String, {deserializer: ValueDeserializer.arrayDeserializer})
     values: string[] | number[] | boolean[] | Date[] | MWTitleWithURL[]
 }
 
@@ -511,22 +518,41 @@ export class NamespaceFacetValue {
     displayTitle: string
 }
 
+export interface Sortable<T> {
+    compareAlphabetically(that: T): number;
+    compareByCount(that: T): number;
+}
+
 @jsonObject
-export class CategoryFacetCount {
+export class CategoryFacetCount implements Sortable<CategoryFacetCount>{
     @jsonMember(String)
     category: string;
     @jsonMember(String)
     displayTitle: string;
     @jsonMember(Number)
     count: number;
+
+    compareAlphabetically(that: CategoryFacetCount): number {
+        return this.category.toLowerCase().localeCompare(that.category.toLowerCase());
+    }
+    compareByCount(that: CategoryFacetCount): number {
+        return that.count - this.count;
+    }
 }
 
 @jsonObject
-export class PropertyFacetCount {
+export class PropertyFacetCount implements Sortable<PropertyFacetCount>{
     @jsonMember(PropertyWithURL)
     property: PropertyWithURL;
     @jsonMember(Number)
     count: number;
+
+    compareAlphabetically(that: PropertyFacetCount): number {
+        return this.property.title.toLowerCase().localeCompare(that.property.title.toLowerCase());
+    }
+    compareByCount(that: PropertyFacetCount): number {
+        return that.count - this.count;
+    }
 }
 
 @jsonObject
@@ -571,11 +597,11 @@ export class Document implements ElementWithURL {
     highlighting: string | null;
 
     getPropertyFacetValues(property: string): PropertyFacetValues {
-        return Tools.findFirst(this.propertyFacets, (p) => p.property.title, property);
+        return this.propertyFacets.findFirst((p) => p.property.title === property);
     }
 
     getCategoryFacetValue(category: string) {
-        return Tools.findFirst(this.categoryFacets, (c) => c.category, category);
+        return this.categoryFacets.findFirst((c: CategoryFacetValue) => c.category === category);
     }
 
     containsTrueFacetValue(property: string) {
@@ -600,17 +626,107 @@ export class DocumentsResponse {
     namespaceFacetCounts: NamespaceFacetCount[];
 
     containsNamespace(ns: number): boolean {
-        return Tools.findFirst(this.namespaceFacetCounts, (e) => e.namespace.toString(), ns.toString()) != null;
+        return this.namespaceFacetCounts.findFirst( (e: NamespaceFacetCount) => e.namespace.toString() === ns.toString(), ) != null;
     }
 
     getPropertyFacetCount(property: Property) {
-        return Tools.findFirstByPredicate(this.propertyFacetCounts, p => p.property.title === property.title);
+        return this.propertyFacetCounts.findFirst((p: PropertyFacetCount) => p.property.title === property.title);
     }
 
     getPropertyFacetCountByItemId(itemId: string) {
-        return Tools.findFirstByPredicate(this.propertyFacetCounts,
-            (pfc) => pfc.property.getItemId() === itemId);
+        return this.propertyFacetCounts.findFirst(
+            (pfc: PropertyFacetCount) => pfc.property.getItemId() === itemId);
     }
 
 }
 
+@jsonObject
+export class CategoryNode {
+    @jsonMember(String)
+    category: string;
+
+    @jsonMember(String)
+    displayTitle: string | null;
+
+    @jsonArrayMember(() => CategoryNode)
+    children: CategoryNode[];
+
+    parent: CategoryNode | null;
+
+    constructor(category: string, children: CategoryNode[], displayTitle: string = null) {
+        this.category = category;
+        this.children = children;
+        this.displayTitle = displayTitle;
+    }
+
+    createParentReferences(node: CategoryNode|null = null): CategoryNode {
+        if (node === null) node = this;
+        node.children.forEach(child => {
+            child.parent = node;
+            this.createParentReferences(child);
+        });
+        return node;
+    }
+
+    contains(text: string) {
+        const parts = text.split(/\s+/);
+        return parts.every(part => this.category.toLowerCase().includes(part.toLowerCase())
+        || (this.displayTitle && this.displayTitle.toLowerCase().includes(part.toLowerCase())));
+    }
+
+    filterForText(text: string) {
+        if (text.trim() === '') return this;
+        const allMatchingNodes = this.filterNodes_((c)=> c.contains(text), this);
+        if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);
+        const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
+        return this.copyTree_((c)=> allCategoriesOnPath.includes(c.category), this)
+            .createParentReferences();
+    }
+
+    filterForCategories(categories: string[]): CategoryNode {
+        if (categories.length === 0) return this;
+        const allMatchingNodes = this.filterNodes_((c)=> categories.includes(c.category), this);
+        if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);
+        const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
+        return this.copyTree_((c)=> allCategoriesOnPath.includes(c.category), this)
+            .createParentReferences();
+    }
+
+    getNodeItemIds(node: CategoryNode = this): string[] {
+        const found = node.children.map(child => child.category + child.parent?.category)
+            .concat(node.parent ? node.category+ node.parent.category : node.category);
+        node.children.forEach(node => found.push(...this.getNodeItemIds(node)));
+        return found;
+    }
+
+    private getCategoriesOnPathToRoot(allMatchingNodes: CategoryNode[]) {
+        const allCategoriesOnPath: any = {};
+        allMatchingNodes.forEach(node => {
+            do {
+                allCategoriesOnPath[node.category] = true;
+                node = node.parent;
+            } while (node !== undefined)
+        });
+        return Object.keys(allCategoriesOnPath);
+    }
+
+    private copyTree_(predicate: (node: CategoryNode) => boolean, node: CategoryNode): CategoryNode {
+        if (!predicate(node)) return null;
+        const newNode = new CategoryNode(node.category, [], node.displayTitle);
+        node.children
+            .filter(child => predicate(child))
+            .forEach(child => {
+                const c = this.copyTree_(predicate, child);
+                if (c !== null) {
+                    newNode.children.push(c);
+                }
+        });
+        return newNode;
+    }
+
+    private filterNodes_(predicate:(child: CategoryNode) => boolean, node: CategoryNode) {
+        const found = node.children.filter(child => predicate(child));
+        node.children.forEach(node => found.push(...this.filterNodes_(predicate, node)));
+        return found;
+    }
+}

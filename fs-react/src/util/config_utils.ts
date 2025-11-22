@@ -1,47 +1,15 @@
-import {
-    BaseQuery,
-    CategoryFacetCount,
-    Datatype,
-    Document, MWTitle, MWTitleWithURL,
-    Order,
-    Property,
-    PropertyFacetCount,
-    Sort, ValueType
-} from "../common/datatypes";
+import {Datatype, Document, MWTitle, Order, Property, Sort, Sortable, ValueType} from "../common/datatypes";
 import {WikiContextInterface} from "../common/wiki_context";
 
 class ConfigUtils {
 
-    static getShownFacets(fs2gShownFacets: any, query: BaseQuery): string[] {
-
-        let results: string[] = [];
-        query.categoryFacets.forEach((category) => {
-            let propertiesOfCategory = fs2gShownFacets[category] || [];
-            results = [...results, ...propertiesOfCategory];
-        });
-        // @ts-ignore
-        return [...new Set(results)]
-    }
-
-    static getSortFunctionForPropertyFacets(sortType: string) {
+    static getSortFunction<T extends Sortable<T>>(sortType: string): (a: T, b: T) => number {
         switch(sortType) {
             case 'sort-by-count':
-                return (a: PropertyFacetCount, b: PropertyFacetCount) => b.count - a.count;
+                return (a: T, b: T) => a.compareByCount(b);
             default:
             case 'sort-alphabetically':
-                return (a: PropertyFacetCount, b: PropertyFacetCount) =>
-                     a.property.title.toLowerCase().localeCompare(b.property.title.toLowerCase())
-        }
-    }
-
-    static getSortFunctionForCategoryFacets(sortType: string) {
-        switch(sortType) {
-            case 'sort-by-count':
-                return (a: CategoryFacetCount, b: CategoryFacetCount) => b.count - a.count;
-            default:
-            case 'sort-alphabetically':
-                return (a: CategoryFacetCount, b: CategoryFacetCount) =>
-                    a.category.toLowerCase().localeCompare(b.category.toLowerCase())
+                return (a: T, b: T) => a.compareAlphabetically(b);
         }
     }
 
@@ -73,21 +41,20 @@ class ConfigUtils {
         }
     }
 
-    static calculatePermutation(order: string[], defaultOrder: string[]) {
-        return order.map((e) => defaultOrder.indexOf(e));
-    }
-
     static replaceSMWVariables(doc: Document, url: string) {
 
         const smwVariables = url.matchAll(/\{SMW:([^}]+)\}/gi);
 
         // @ts-ignore
         for (let smwVariable of smwVariables) {
-            let propertyName = smwVariable[1];
-            let pfv = doc.getPropertyFacetValues(propertyName);
+            const propertyName = smwVariable[1];
+            const pfv = doc.getPropertyFacetValues(propertyName);
             if (pfv === null) continue;
 
-            let value = pfv.values.map((value: ValueType | MWTitleWithURL) => this.serialize(value)).join(',');
+            const value = pfv.values.map((value: ValueType | MWTitle) => {
+                const mwTitle = value as MWTitle;
+                return mwTitle ? mwTitle.title : value.toString();
+            }).join(',');
             url = url.replace(`{SMW:${propertyName}}`, encodeURIComponent(value));
         }
 
@@ -96,11 +63,6 @@ class ConfigUtils {
 
     static replaceMagicWords(doc: Document, url: string, wikiContext: WikiContextInterface) {
         return url.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
-    }
-
-    static serialize(value: ValueType | MWTitleWithURL): string {
-        let mwTitle = value as MWTitle;
-        return mwTitle ? mwTitle.title : value.toString();
     }
 
 }

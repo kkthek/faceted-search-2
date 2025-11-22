@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {Document, DocumentQuery, DocumentsResponse, FacetResponse, FacetsQuery} from "./datatypes";
+import {CategoryNode, Document, DocumentQuery, DocumentsResponse, FacetResponse, FacetsQuery} from "./datatypes";
 import {TypedJSON} from "typedjson";
 
 const HTTP_REQUEST_OPTIONS: any = {
@@ -12,7 +12,11 @@ const HTTP_REQUEST_OPTIONS: any = {
     cache: "no-cache",
     credentials: "same-origin",
     redirect: "follow",
-    referrerPolicy: "no-referrer",
+    referrerPolicy: "no-referrer"
+}
+
+const HTTP_REQUEST_JSON_OPTIONS: any = {
+    ...HTTP_REQUEST_OPTIONS,
     headers: {
         "Content-Type": "application/json"
     }
@@ -36,7 +40,7 @@ class Client {
         }
         this.oldDocumentSearchAbort = new AbortController();
         const response = await fetch(this.baseUrl + "/documents", {
-            ...HTTP_REQUEST_OPTIONS,
+            ...HTTP_REQUEST_JSON_OPTIONS,
             body: JSON.stringify(query),
             signal: this.oldDocumentSearchAbort.signal
         });
@@ -48,7 +52,7 @@ class Client {
 
     async getDocumentById(id: string): Promise<Document> {
         const response = await fetch(this.baseUrl + "/document-by-id", {
-            ...HTTP_REQUEST_OPTIONS,
+            ...HTTP_REQUEST_JSON_OPTIONS,
             body: JSON.stringify({id: id})
         });
         await this.handleErrorIfAny(response);
@@ -63,12 +67,22 @@ class Client {
         }
         this.oldFacetSearchAbort = new AbortController();
         const response = await fetch(this.baseUrl + "/facets", {
-            ...HTTP_REQUEST_OPTIONS,
+            ...HTTP_REQUEST_JSON_OPTIONS,
             body: JSON.stringify(query),
             signal: this.oldFacetSearchAbort.signal
         });
         await this.handleErrorIfAny(response);
         const deserializer = new TypedJSON(FacetResponse);
+        const json = await response.json();
+        return deserializer.parse(json);
+    }
+
+    async getCategoryTree(): Promise<CategoryNode> {
+        const response = await fetch(this.baseUrl + "/category-tree", {
+            ...HTTP_REQUEST_OPTIONS
+        });
+        await this.handleErrorIfAny(response);
+        const deserializer = new TypedJSON(CategoryNode);
         const json = await response.json();
         return deserializer.parse(json);
     }

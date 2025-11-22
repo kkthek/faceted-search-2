@@ -54,6 +54,7 @@ use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\DocumentByIdQuery;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
+use DIQA\FacetedSearch2\CategoryNode;
 
 require_once 'dev-config.php';
 setConfigForDevContext();
@@ -84,6 +85,14 @@ try {
     } else if (endsWith($url, '/FacetedSearch2/v1/proxy/document-by-id')) {
         $query = DocumentByIdQuery::fromJson($entityBody);
         echo json_encode($client->requestDocument($query->getId()));
+    } else if (endsWith($url, '/FacetedSearch2/v1/proxy/category-tree')) {
+        $tree = CategoryNode::fromTuples([
+            ['from' => 'Employee', 'to' => 'Person', 'from_displaytitle' => 'Employee', 'to_displaytitle' => 'Person' ],
+            ['from' => 'Person', 'to' => NULL, 'from_displaytitle' => 'Person', 'to_displaytitle' => NULL ],
+            ['from' => 'Pensionist', 'to' => 'Person', 'from_displaytitle' => 'Pensionist', 'to_displaytitle' => 'Person' ],
+            ['from' => 'Unemployed', 'to' => NULL, 'from_displaytitle' => 'Unemployed', 'to_displaytitle' => NULL ]
+        ]);
+        echo json_encode($tree);
     } else {
         throw new Exception("endpoint '$url' not supported", 400);
     }

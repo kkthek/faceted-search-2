@@ -3,12 +3,13 @@ import {Box} from "@mui/material";
 import {DocumentQuery} from "../../common/datatypes";
 import Tools from "../../util/tools";
 import {WikiContext} from "../../index";
+import ObjectTools from "../../util/object_tools";
 
 function SaveSearchLink(prop: {
     documentQuery: DocumentQuery
 }) {
     const wikiContext = useContext(WikiContext);
-    const q = Tools.deepClone(prop.documentQuery);
+    const q = ObjectTools.deepClone(prop.documentQuery);
     delete q['extraProperties']; // optimization
 
     const url = new URL(window.location.href);
