@@ -1,19 +1,21 @@
 import React, {Dispatch, KeyboardEvent, SetStateAction, useEffect, useState} from "react";
-import {CategoryNode} from "../../common/datatypes";
+import {CategoryNode, TextFilters} from "../../common/datatypes";
 import {useDebounce} from "../../util/custom_hooks";
-import {SearchStateDocument} from "../../common/event_handler";
+import EventHandler, {SearchStateDocument} from "../../common/event_handler";
+import ObjectTools from "../../util/object_tools";
 
 function CategoryTreeFilter(prop : {
     setCategoryTree: Dispatch<SetStateAction<[CategoryNode, CategoryNode]>>,
     treeState: [CategoryNode, CategoryNode],
-    searchStateDocument: SearchStateDocument
+    searchStateDocument: SearchStateDocument,
+    textFilters: TextFilters,
+    eventHandler: EventHandler
 }) {
 
-    const [text, setText] = useState((): string => '');
     const [filteredTree, fullTree] = prop.treeState;
     const categories = prop.searchStateDocument?.documentResponse
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
-
+    let text = prop.textFilters['category_tree'] ?? '';
     const debouncedSearchValue = useDebounce(text, 500);
     useEffect(() => {
         if (!prop.treeState) return;
@@ -36,7 +38,11 @@ function CategoryTreeFilter(prop : {
     id={'category-tree-filter-input'}
     placeholder={'Filter...'}
     value={text}
-    onChange={(e) => setText(e.target.value)}
+    onChange={(e) => {
+        const f = ObjectTools.deepClone(prop.textFilters);
+        f['category_tree'] = e.target.value;
+        prop.eventHandler.setTextFilters(f);
+    }}
     onKeyDown={onKeyDown}
     />;
 

@@ -45,7 +45,7 @@ class EventHandler {
                 setFacetState: Dispatch<SetStateAction<SearchStateFacet>>,
                 setExpandedFacets: Dispatch<SetStateAction<string[]>>,
                 setError: Dispatch<SetStateAction<string>>,
-                setFilter: Dispatch<SetStateAction<TextFilters>>,
+                setTextFilters: Dispatch<SetStateAction<TextFilters>>,
                 wikiContext: WikiContextInterface,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
@@ -54,7 +54,7 @@ class EventHandler {
         this.setSearchState = setDocumentState;
         this.setFacetState = setFacetState;
         this.setError = setError;
-        this.setTextFiltersState = setFilter;
+        this.setTextFiltersState = setTextFilters;
         this.facetValueLimit = wikiContext.config.fs2gFacetValueLimit;
         this.tagCloudProperty = wikiContext.config.fs2gTagCloudProperty;
 

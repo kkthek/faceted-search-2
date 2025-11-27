@@ -73,7 +73,7 @@ function App() {
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
     const [error, setError] = useState('');
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
-    const [filters, setFilters] = useState<TextFilters>({});
+    const [textFilters, setTextFilters] = useState<TextFilters>({});
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
@@ -82,7 +82,7 @@ function App() {
         setSearchFacetState,
         setExpandedFacets,
         setError,
-        setFilters,
+        setTextFilters,
         wikiContext,
         client
     );
@@ -130,7 +130,7 @@ function App() {
             <TagCloudFacet key={'tagCloud'}
                            searchStateFacets={searchFacetState}
                            eventHandler={eventHandler}
-                           textFilters={filters}
+                           textFilters={textFilters}
             />
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
@@ -147,7 +147,7 @@ function App() {
                                         searchStateFacet={searchFacetState}
                                         expandedFacets={expandedFacets}
                                         eventHandler={eventHandler}
-                                        textFilters={filters}
+                                        textFilters={textFilters}
 
                     />,
                     <SelectedCategoriesView key={'selectedCategoryView'}
@@ -166,7 +166,7 @@ function App() {
                                searchStateFacets={searchFacetState}
                                expandedFacets={expandedFacets}
                                eventHandler={eventHandler}
-                               textFilters={filters}
+                               textFilters={textFilters}
                     />,
                     <Typography key={'fs-available-categories'} sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-categories')}</Typography>,
                     <CategoryDropdown key={'categoryDropDown'}
@@ -180,6 +180,7 @@ function App() {
                     <CategoryTree key={'categoryTree'}
                                   client={client}
                                   searchStateDocument={searchStateDocument}
+                                  textFilters={textFilters}
                                   eventHandler={eventHandler}
                     />
                 ].reorder(facetControlsOrder)}

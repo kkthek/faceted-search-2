@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import Client from "../../common/client";
-import {CategoryNode} from "../../common/datatypes";
+import {CategoryNode, TextFilters} from "../../common/datatypes";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {Typography} from "@mui/material";
@@ -12,6 +12,7 @@ import FacetWithCount from "../common/facet_with_count";
 function CategoryTree(prop: {
     client: Client,
     searchStateDocument: SearchStateDocument,
+    textFilters: TextFilters,
     eventHandler: EventHandler
 }) {
     const wikiContext = useContext(WikiContext);
@@ -64,6 +65,8 @@ function CategoryTree(prop: {
         <CategoryTreeFilter setCategoryTree={setCategoryTree}
                             treeState={categoryTree}
                             searchStateDocument={prop.searchStateDocument}
+                            textFilters={prop.textFilters}
+                            eventHandler={prop.eventHandler}
         />
         <SimpleTreeView expandedItems={expandedFacets}
                         disableSelection
