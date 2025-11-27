@@ -1,5 +1,5 @@
-import React, {useContext, useRef} from "react";
-import {TextFilters, Property, PropertyFacetCount, PropertyValueCount, Range,} from "../../common/datatypes";
+import React, {useContext} from "react";
+import {Property, PropertyFacetCount, PropertyValueCount, Range, TextFilters,} from "../../common/datatypes";
 import EventHandler, {SearchStateFacet} from "../../common/event_handler";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -27,7 +27,9 @@ function SelectedFacet(prop: {
     const wikiContext = useContext(WikiContext);
     const facetsWithOr = wikiContext.config['fs2gFacetsWithOR'].includes(property.title);
 
-    const facetValues = prop.propertyValueCount.values.map((v,i ) => {
+    const facetValues = prop.propertyValueCount.values
+        .sort((a, b) => a.compareToSelectedFirst(b, propertyFacet))
+        .map((v,i ) => {
 
         return <SelectedFacetValues key={property.title + i}
                                     selectedPropertyFacet={propertyFacet}

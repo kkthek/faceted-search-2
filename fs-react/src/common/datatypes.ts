@@ -463,6 +463,15 @@ export class ValueCount {
         return 0;
     }
 
+    compareToSelectedFirst(other: ValueCount, propertyFacet: PropertyFacet) {
+        const facetValueA = FacetValue.fromValueCount(this);
+        const facetValueB = FacetValue.fromValueCount(other);
+        const containsA = propertyFacet.containsFacet(facetValueA);
+        const containsB = propertyFacet.containsFacet(facetValueB);
+        if (containsA && containsB || !containsA && !containsB) return 0;
+        return containsA && !containsB ? -1 : 1;
+    }
+
     serialize(): string {
         return this.mwTitle ? this.mwTitle.title : this.value.toString();
     }
