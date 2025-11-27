@@ -1,5 +1,5 @@
 import React, {useContext, useRef} from "react";
-import {Property, PropertyFacetCount, PropertyValueCount, Range,} from "../../common/datatypes";
+import {TextFilters, Property, PropertyFacetCount, PropertyValueCount, Range,} from "../../common/datatypes";
 import EventHandler, {SearchStateFacet} from "../../common/event_handler";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -17,10 +17,9 @@ function SelectedFacet(prop: {
     searchStateFacet: SearchStateFacet,
     eventHandler: EventHandler
     onOrDialogClick: (property: Property) => void
-
+    textFilters: TextFilters
 }) {
     const query = prop.searchStateFacet.query;
-    const inputFilterRef = useRef<any>();
     const property = prop.propertyValueCount.property;
     const propertyFacet = query.findPropertyFacet(property);
     if (!propertyFacet) return;
@@ -74,7 +73,7 @@ function SelectedFacet(prop: {
         showAllTreeItem = <CustomTreeItem itemId={property.title + "-showall"}
                                           label={"["+wikiContext.msg('fs-show-all')+"]"}
                                           itemAction={() => {
-                                              const filterText = inputFilterRef.current.value as string;
+                                              const filterText = prop.textFilters[property.title];
                                               prop.eventHandler.onShowAllValues(property, filterText);
                                           } }
         />;
@@ -84,7 +83,7 @@ function SelectedFacet(prop: {
                                          label={<FacetFilter eventHandler={prop.eventHandler}
                                                              numberOfValues={prop.propertyValueCount?.values.length}
                                                              property={prop.propertyValueCount?.property}
-                                                             inputFilterRef={inputFilterRef}
+                                                             textFilters={prop.textFilters}
                                          />}
     />;
 

@@ -10,6 +10,10 @@ import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 import ValueDeserializer from "../util/value_deserializer";
 import ObjectTools from "../util/object_tools";
 
+export interface TextFilters {
+    [title:string] : string;
+}
+
 export interface ElementWithURL {
     url: string,
     displayTitle: string

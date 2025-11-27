@@ -4,7 +4,7 @@ import {
     BaseQuery, Datatype,
     DocumentsResponse,
     FacetResponse,
-    FacetValue,
+    FacetValue, TextFilters,
     Property,
     PropertyFacet,
     PropertyValueQuery,
@@ -34,6 +34,7 @@ class EventHandler {
     private readonly setFacetState: Dispatch<SetStateAction<SearchStateFacet>>;
     private readonly setExpandedFacets: Dispatch<SetStateAction<string[]>>;
     private readonly setError: Dispatch<SetStateAction<string>>;
+    private readonly setTextFiltersState: Dispatch<SetStateAction<TextFilters>>;
     private readonly facetValueLimit: number;
     private readonly tagCloudProperty: string;
     private expandedFacets: string[];
@@ -44,6 +45,7 @@ class EventHandler {
                 setFacetState: Dispatch<SetStateAction<SearchStateFacet>>,
                 setExpandedFacets: Dispatch<SetStateAction<string[]>>,
                 setError: Dispatch<SetStateAction<string>>,
+                setFilter: Dispatch<SetStateAction<TextFilters>>,
                 wikiContext: WikiContextInterface,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
@@ -52,6 +54,7 @@ class EventHandler {
         this.setSearchState = setDocumentState;
         this.setFacetState = setFacetState;
         this.setError = setError;
+        this.setTextFiltersState = setFilter;
         this.facetValueLimit = wikiContext.config.fs2gFacetValueLimit;
         this.tagCloudProperty = wikiContext.config.fs2gTagCloudProperty;
 
@@ -59,6 +62,14 @@ class EventHandler {
         this.setExpandedFacets = setExpandedFacets;
 
         this.createClosuresForEventHandlers();
+    }
+
+    setTextFilters(filter: TextFilters): void {
+        this.setTextFiltersState(filter);
+    }
+
+    resetTextFilters(): void {
+        this.setTextFiltersState({});
     }
 
     private createClosuresForEventHandlers() {
@@ -79,6 +90,7 @@ class EventHandler {
 
         this.updateDocuments();
         this.updateFacets();
+        this.resetTextFilters();
     }
 
     onSortChange(sort: Sort) {
@@ -98,6 +110,7 @@ class EventHandler {
         this.expandFacet(p.getItemId());
         this.updateDocuments();
         this.updateFacetValuesForProperty(p, this.facetValueLimit);
+        this.resetTextFilters();
     }
 
     onExpandFacetClick(p: Property) {
@@ -129,6 +142,7 @@ class EventHandler {
         this.expandFacet(property.getItemId());
         this.updateDocuments();
         this.updateFacetValuesForProperty(property, this.facetValueLimit);
+        this.resetTextFilters();
     }
 
     onValuesClick(propertyFacets: PropertyFacet[], removeOld: boolean = true) {
@@ -149,6 +163,7 @@ class EventHandler {
             this.expandFacet(property.getItemId());
         });
         this.updateFacetValuesForProperties(properties, this.facetValueLimit);
+        this.resetTextFilters();
     }
 
     onRemoveAllFacetsForProperty(property: Property) {
@@ -163,6 +178,7 @@ class EventHandler {
         this.updateDocuments();
         this.expandFacet(property.getItemId());
         this.updateFacetValuesForProperty(property, this.facetValueLimit);
+        this.resetTextFilters();
 
     }
 
@@ -181,7 +197,8 @@ class EventHandler {
         }
 
         this.updateDocuments();
-        this.updateFacetValuesForProperty(property, existsFacets ? null : this.facetValueLimit);
+        this.updateFacetValuesForProperty(property, this.facetValueLimit);
+        this.resetTextFilters();
     }
 
     onFacetValueContains(text: string, property: Property) {
@@ -224,6 +241,7 @@ class EventHandler {
 
         this.updateDocuments();
         this.updateFacets();
+        this.resetTextFilters();
     }
 
     onCategoryClick(category: string) {
@@ -233,6 +251,7 @@ class EventHandler {
 
         this.updateDocuments();
         this.updateFacets();
+        this.resetTextFilters();
     }
 
     onCategoryDropDownClick(category: string) {

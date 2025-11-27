@@ -4,6 +4,7 @@ import {SimpleTreeView} from "@mui/x-tree-view";
 import Client from "../../common/client";
 import FacetOrDialog, {ORDialogInput} from "../or-dialog/facet_or_dialog";
 import SelectedFacet from "./selected_facet";
+import {TextFilters} from "../../common/datatypes";
 
 
 function SelectedFacetsView(prop: {
@@ -12,6 +13,7 @@ function SelectedFacetsView(prop: {
     searchStateDocument: SearchStateDocument,
     expandedFacets: string[],
     eventHandler: EventHandler
+    textFilters: TextFilters
 }) {
     if (!prop.searchStateFacet) return;
 
@@ -34,7 +36,9 @@ function SelectedFacetsView(prop: {
                                   facetCount={facetCount}
                                   searchStateFacet={prop.searchStateFacet}
                                   eventHandler={prop.eventHandler}
-                                  onOrDialogClick={onOrDialogClick}/>
+                                  onOrDialogClick={onOrDialogClick}
+                                  textFilters={prop.textFilters}
+            />
         }
     );
 

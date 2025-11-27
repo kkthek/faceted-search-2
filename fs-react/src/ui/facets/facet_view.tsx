@@ -10,6 +10,7 @@ import Client from "../../common/client";
 import FacetExtensionPoint from "../../extensions/facet_ep";
 import FacetWithCount from "../common/facet_with_count";
 import FacetViewProperty from "./facet";
+import {TextFilters} from "../../common/datatypes";
 
 
 function FacetView(prop: {
@@ -18,6 +19,7 @@ function FacetView(prop: {
     searchStateFacets: SearchStateFacet,
     expandedFacets: string[],
     eventHandler: EventHandler
+    textFilters: TextFilters
 
 }) {
     if (!prop.searchStateDocument) return;
@@ -50,6 +52,7 @@ function FacetView(prop: {
                            propertyFacetCount={facetCount}
                            eventHandler={prop.eventHandler}
                            onOrDialogClick={onOrDialogClick}
+                           textFilters={prop.textFilters}
         />
     }
     );

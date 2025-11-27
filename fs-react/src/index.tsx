@@ -18,7 +18,7 @@ import SelectedCategoriesView from "./ui/facets/selected_categories_view";
 import NamespaceView from "./ui/search-bar/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
-import {Datatype, Property, PropertyValueQuery} from "./common/datatypes";
+import {Datatype, TextFilters, Property, PropertyValueQuery} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Box, Divider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
@@ -67,12 +67,13 @@ const urlParams = new URLSearchParams(window.location.search);
 const q = urlParams.get('q');
 const searchText = urlParams.get('search');
 
+
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
-    const [error, setError] = React.useState('');
-
+    const [error, setError] = useState('');
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
+    const [filters, setFilters] = useState<TextFilters>({});
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
@@ -81,6 +82,7 @@ function App() {
         setSearchFacetState,
         setExpandedFacets,
         setError,
+        setFilters,
         wikiContext,
         client
     );
@@ -128,6 +130,7 @@ function App() {
             <TagCloudFacet key={'tagCloud'}
                            searchStateFacets={searchFacetState}
                            eventHandler={eventHandler}
+                           textFilters={filters}
             />
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
@@ -144,6 +147,7 @@ function App() {
                                         searchStateFacet={searchFacetState}
                                         expandedFacets={expandedFacets}
                                         eventHandler={eventHandler}
+                                        textFilters={filters}
 
                     />,
                     <SelectedCategoriesView key={'selectedCategoryView'}
@@ -162,6 +166,7 @@ function App() {
                                searchStateFacets={searchFacetState}
                                expandedFacets={expandedFacets}
                                eventHandler={eventHandler}
+                               textFilters={filters}
                     />,
                     <Typography key={'fs-available-categories'} sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-categories')}</Typography>,
                     <CategoryDropdown key={'categoryDropDown'}
