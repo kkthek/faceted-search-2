@@ -1,10 +1,12 @@
-import React, {Dispatch, KeyboardEvent, SetStateAction, useEffect, useState} from "react";
+import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useState} from "react";
 import {CategoryNode, TextFilters} from "../../common/datatypes";
 import {useDebounce} from "../../util/custom_hooks";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
+import {TextField} from "@mui/material";
+import {WikiContext} from "../../index";
 
-function CategoryTreeFilter(prop : {
+function CategoryTreeFilter(prop: {
     setCategoryTree: Dispatch<SetStateAction<[CategoryNode, CategoryNode]>>,
     treeState: [CategoryNode, CategoryNode],
     searchStateDocument: SearchStateDocument,
@@ -12,39 +14,46 @@ function CategoryTreeFilter(prop : {
     eventHandler: EventHandler
 }) {
 
+    const wikiContext = useContext(WikiContext);
     const [filteredTree, fullTree] = prop.treeState;
     const categories = prop.searchStateDocument?.documentResponse
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
-    let text = prop.textFilters['category_tree'] ?? '';
+    const text = prop.textFilters['category_tree'] ?? '';
     const debouncedSearchValue = useDebounce(text, 500);
     useEffect(() => {
         if (!prop.treeState) return;
         const filteredTree = fullTree
             .filterForCategories(categories)
             .filterForText(text);
-        prop.setCategoryTree([ filteredTree, fullTree ]);
+        prop.setCategoryTree([filteredTree, fullTree]);
     }, [debouncedSearchValue]);
 
     if (!prop.treeState) return;
 
-    const onKeyDown = function(e: KeyboardEvent<HTMLDivElement>) {
+    const onKeyDown = function (e: KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Enter") {
-            prop.setCategoryTree([ fullTree.filterForText(text), fullTree ]);
+            prop.setCategoryTree([fullTree.filterForText(text), fullTree]);
+        } else if (e.key === "Escape") {
+            setFilter('');
         }
         e.stopPropagation();
     }
-    return <input type={'text'}
 
-    id={'category-tree-filter-input'}
-    placeholder={'Filter...'}
-    value={text}
-    onChange={(e) => {
+    const setFilter = function (text: string): void {
         const f = ObjectTools.deepClone(prop.textFilters);
-        f['category_tree'] = e.target.value;
+        f['category_tree'] = text;
         prop.eventHandler.setTextFilters(f);
-    }}
-    onKeyDown={onKeyDown}
+    }
+
+    return <TextField id={'category-tree-filter-input'}
+                      placeholder={wikiContext.msg('fs-filter-category-tree')}
+                      size={'small'}
+                      variant="outlined"
+                      value={text}
+                      onChange={(e) => setFilter(e.target.value)}
+                      onKeyDown={onKeyDown}
     />;
 
 }
+
 export default CategoryTreeFilter;

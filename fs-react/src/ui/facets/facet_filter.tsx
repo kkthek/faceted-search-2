@@ -4,6 +4,7 @@ import {WikiContext} from "../../index";
 import {useDebounce} from "../../util/custom_hooks";
 import EventHandler from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
+import {TextField} from "@mui/material";
 
 function FacetFilter(prop : {
     property: Property
@@ -33,22 +34,31 @@ function FacetFilter(prop : {
     }
 
     const onChange = function(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
-        const f = ObjectTools.deepClone(prop.textFilters);
-        f[prop.property.title] = e.target.value;
-        prop.eventHandler.setTextFilters(f);
+        setFilter(e.target.value);
         setUnchanged(false);
     }
 
     const onKeyDown = function(e: KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Enter") {
             prop.eventHandler.onFacetValueContains(text, prop.property);
+        } else if (e.key === "Escape") {
+            setFilter('');
         }
         e.stopPropagation();
     }
-    return <input type={'text'}
+
+    const setFilter = function(text: string): void {
+        const f = ObjectTools.deepClone(prop.textFilters);
+        f[prop.property.title] = text;
+        prop.eventHandler.setTextFilters(f);
+    }
+
+    return <TextField
                   id={prop.property.title+"-filter-input"}
                   style={{width: prop.width ?? '50%'}}
-                  placeholder={'Filter...'}
+                  placeholder={wikiContext.msg('fs-filter-property', prop.property.title)}
+                  size={'small'}
+                  variant="outlined"
                   value={text}
                   onChange={onChange}
                   onKeyDown={onKeyDown}
