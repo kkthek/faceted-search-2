@@ -468,7 +468,7 @@ export class ValueCount {
         const facetValueB = FacetValue.fromValueCount(other);
         const containsA = propertyFacet.containsFacet(facetValueA);
         const containsB = propertyFacet.containsFacet(facetValueB);
-        if (containsA && containsB || !containsA && !containsB) return 0;
+        if (containsA === containsB) return 0;
         return containsA && !containsB ? -1 : 1;
     }
 
