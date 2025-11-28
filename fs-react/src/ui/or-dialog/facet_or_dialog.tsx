@@ -83,7 +83,15 @@ function FacetOrDialog(prop: {
                                onChange={(event) => {
                                     setSearchText(event.target.value);
                                }}
-                               variant="outlined"/>
+                               onKeyDown={(event) => {
+                                   if (event.key === 'Escape') {
+                                       if (searchText === '') return;
+                                       setSearchText('');
+                                       event.stopPropagation();
+                                    }
+                               }}
+                               value={searchText}
+                               variant="standard"/>
                     <FormGroup>
                         <Box className={'fs-or-content'}>
                             <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}

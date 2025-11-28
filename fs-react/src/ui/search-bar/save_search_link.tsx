@@ -1,7 +1,6 @@
 import React, {useContext} from "react";
-import {Box} from "@mui/material";
+import {Box, Link} from "@mui/material";
 import {DocumentQuery} from "../../common/datatypes";
-import Tools from "../../util/tools";
 import {WikiContext} from "../../index";
 import ObjectTools from "../../util/object_tools";
 
@@ -19,14 +18,14 @@ function SaveSearchLink(prop: {
 
         navigator.clipboard.writeText(url.toString()).then(() => {
             const browserWindow = window as any;
-            if (browserWindow.mw) {
-                browserWindow.mw.notify(wikiContext.msg('fs-copy-search-link'));
-            }
+            browserWindow.mw?.notify(wikiContext.msg('fs-copy-search-link'));
         });
         event.preventDefault();
     }
     return <Box className={'fs-save-search-link'}>
-        <a href={url.toString()} onClick={copyLinkToClipboard}>{wikiContext.msg('fs-link-to-search')}</a>
+        <Link href={url.toString()}
+              onClick={copyLinkToClipboard}
+        >{wikiContext.msg('fs-link-to-search')}</Link>
     </Box>;
 }
 

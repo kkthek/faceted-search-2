@@ -1,17 +1,18 @@
 import {createTheme} from "@mui/material";
-import {blueGrey, lightBlue} from "@mui/material/colors";
+import {amber, blue, blueGrey, cyan, grey, indigo, lightBlue} from "@mui/material/colors";
 
 const DEFAULT_THEME = createTheme({
     palette: {
-        primary: blueGrey,
-        secondary: lightBlue,
+        primary: indigo,
+        secondary: blueGrey,
+        text: {primary: indigo[800], secondary: blueGrey[600]}
     },
     components: {
         // Inputs
         MuiOutlinedInput: {
             styleOverrides: {
                 root: {
-                    backgroundColor: "#eee", // As an example color
+                    backgroundColor: "#fff", // As an example color
                     "& .MuiOutlinedInput-notchedOutline": {
                         border: "none"
                     },

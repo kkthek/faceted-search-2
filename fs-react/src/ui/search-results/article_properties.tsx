@@ -35,7 +35,7 @@ const ArticleProperties = function ArticleProperties(prop: {
     }
 
     return <div>
-        <Button onClick={handleExpandClick} variant="text">{wikiContext.msg('fs-show-properties')}</Button>
+        <Button onClick={handleExpandClick} variant="text" color={"secondary"}>{wikiContext.msg('fs-show-properties')}</Button>
         <div ref={articlePropertiesDiv} style={{'display':'none'}}>
             <Table size="small" aria-label="simple table">
                 <TableBody>{rows}</TableBody>

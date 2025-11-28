@@ -1,4 +1,6 @@
 import React from "react";
+import {Typography} from "@mui/material";
+import Span, {Span2} from "../../custom_ui/span";
 
 
 function FacetWithCount(prop: {
@@ -6,8 +8,8 @@ function FacetWithCount(prop: {
     count?: number
 }) {
     return <React.Fragment>
-        <span dangerouslySetInnerHTML={{__html: prop.displayTitle}} className={'fs-facet-title'}></span>
-        {prop.count !== undefined ? <span className={'fs-facet-count'}>&nbsp;({prop.count})</span> : ''}
+        <Span color={'primary'} dangerouslySetInnerHTML={{__html: prop.displayTitle}} className={'fs-facet-title'}></Span>
+        {prop.count !== undefined ? <Span2 className={'fs-facet-count'}>&nbsp;({prop.count})</Span2> : ''}
     </React.Fragment>;
 }
 

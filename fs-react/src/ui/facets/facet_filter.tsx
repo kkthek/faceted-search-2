@@ -58,7 +58,7 @@ function FacetFilter(prop : {
                   style={{width: prop.width ?? '50%'}}
                   placeholder={wikiContext.msg('fs-filter-property', prop.property.title)}
                   size={'small'}
-                  variant="outlined"
+                  variant="standard"
                   value={text}
                   onChange={onChange}
                   onKeyDown={onKeyDown}

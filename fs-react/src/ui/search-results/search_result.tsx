@@ -9,6 +9,7 @@ import Annotations from "./annotations_snippets";
 import ArticleProperties from "./article_properties";
 import {Box, Typography} from "@mui/material";
 import UserDefinedLinks from "./user_defined_links";
+import Span from "../../custom_ui/span";
 
 function SearchResult(prop: { doc: Document, client: Client}) {
     const wikiContext = useContext(WikiContext);
@@ -32,12 +33,12 @@ function SearchResult(prop: { doc: Document, client: Client}) {
     return <Box className={classNames.join(' ')}>
         <Box className={'fs-search-result'} title={showSolrScore ? "score: " + prop.doc.score : ''}>
             <Typography>
-                <span className={'fs-search-result-title'}><WikiLink page={prop.doc}/></span>
+                <Span sx={{'fontWeight':'bold'}} className={'fs-search-result-title'}><WikiLink page={prop.doc}/></Span>
                 <PreviewPopup doc={prop.doc} />
             </Typography>
 
         </Box>
-        <Box><Typography><span dangerouslySetInnerHTML={{ __html: snippet }}></span></Typography>
+        <Box><Typography><Span dangerouslySetInnerHTML={{ __html: snippet }}></Span></Typography>
             <CategoriesInTitle doc={prop.doc}/>
             <UserDefinedLinks doc={prop.doc}/>
             <Annotations doc={prop.doc}/>
