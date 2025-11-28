@@ -18,9 +18,9 @@ import SelectedCategoriesView from "./ui/facets/selected_categories_view";
 import NamespaceView from "./ui/search-bar/namespace_view";
 import FacetQueryBuilder from "./common/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
-import {Datatype, TextFilters, Property, PropertyValueQuery} from "./common/datatypes";
+import {Datatype, Property, PropertyValueQuery, TextFilters} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
-import {Box, Divider, Typography} from "@mui/material";
+import {Box, Divider, ThemeProvider, Typography} from "@mui/material";
 import ErrorView from "./custom_ui/error_view";
 import SaveSearchLink from "./ui/search-bar/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
@@ -29,6 +29,7 @@ import "./util/array_ext";
 import ObjectTools from "./util/object_tools";
 import TagCloudFacet from "./ui/facets/tag-cloud";
 import CategoryTree from "./ui/facets/category_tree";
+import DEFAULT_THEME from "./custom_ui/theme";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -97,7 +98,9 @@ function App() {
         ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
             'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree']);
 
+
     return <WikiContext.Provider value={wikiContext}>
+        <ThemeProvider theme={DEFAULT_THEME}>
         <div id={'fs-content'}>
             <div id={'fs-header'} className={'fs-boxes'}>
                 {[
@@ -195,6 +198,7 @@ function App() {
 
             <ErrorView error={error} setError={setError}/>
         </div>
+        </ThemeProvider>
     </WikiContext.Provider>;
 }
 
