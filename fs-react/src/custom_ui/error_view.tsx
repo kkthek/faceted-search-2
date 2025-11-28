@@ -17,6 +17,8 @@ function ErrorView(prop: {
         prop.setError('');
     };
 
+    const errorText = prop.error.length > 200 ? prop.error.substring(0, 200) + "..." : prop.error;
+
     return <Snackbar
         open={prop.error !== ''}
         autoHideDuration={6000}
@@ -28,7 +30,7 @@ function ErrorView(prop: {
             variant="filled"
             sx={{ width: '100%' }}
         >
-            {prop.error}
+            {errorText}
         </Alert>
     </Snackbar>
 }
