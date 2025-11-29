@@ -3,7 +3,7 @@ import {Datatype, MWTitleWithURL, PropertyFacetValues} from "../common/datatypes
 import WikiLink from "../ui/common/wiki_link";
 import DisplayTools from "./display_tools";
 import Tools from "./tools";
-import Span, {Span2} from "../custom_ui/span";
+import Span from "../custom_ui/span";
 
 class ValueSerializer {
 
@@ -20,13 +20,13 @@ class ValueSerializer {
             items = mwTitles.map((title: MWTitleWithURL) => <WikiLink key={title.title} page={title}/>);
         } else if (pfv.property.type === Datatype.datetime) {
             let values = pfv.values as Date[];
-            items = values.map((date: Date) => <Span2 key={Tools.secureUUIDV4()}>{DisplayTools.displayDate(date)}</Span2>);
+            items = values.map((date: Date) => <Span color={"secondary"} key={Tools.secureUUIDV4()}>{DisplayTools.displayDate(date)}</Span>);
         }  else if (pfv.property.type === Datatype.boolean) {
             let values = pfv.values as boolean[];
-            items = values.map((b: boolean) => <Span2 key={Tools.secureUUIDV4()}>{b ? "true":"false"}</Span2>);
+            items = values.map((b: boolean) => <Span color={"secondary"} key={Tools.secureUUIDV4()}>{b ? "true":"false"}</Span>);
         } else {
             let values = pfv.values as any[];
-            items = values.map((value: any) => <Span2 dangerouslySetInnerHTML={{__html: value}}  key={Tools.secureUUIDV4()}></Span2>);
+            items = values.map((value: any) => <Span color={"secondary"} dangerouslySetInnerHTML={{__html: value}}  key={Tools.secureUUIDV4()}></Span>);
         }
         return <React.Fragment key={Tools.secureUUIDV4()}>{ValueSerializer.join(items)}</React.Fragment>;
 

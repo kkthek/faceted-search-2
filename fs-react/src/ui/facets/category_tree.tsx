@@ -61,12 +61,13 @@ function CategoryTree(prop: {
 
 
     return <div id={'fs-category-tree'}>
-        <Typography>Category Tree</Typography>
+        <Typography variant={"subtitle1"}>Category Tree</Typography>
         <CategoryTreeFilter setCategoryTree={setCategoryTree}
                             treeState={categoryTree}
                             searchStateDocument={prop.searchStateDocument}
                             textFilters={prop.textFilters}
                             eventHandler={prop.eventHandler}
+
         />
         <SimpleTreeView expandedItems={expandedFacets}
                         disableSelection

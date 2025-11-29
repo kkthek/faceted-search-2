@@ -67,6 +67,10 @@ div.fs-boxes {
         flex-direction: column;
     }
 
+    #fs-searchbar-button {
+        margin-top: 10px;
+    }
+
     #fs-header > div {
         margin-top: 10px;
     }
@@ -134,10 +138,6 @@ div.demoted {
     background: lightgray;
 }
 
-#fs-result-view-number {
-    color: #666;
-}
-
 /**
  * Facets
  */
@@ -146,13 +146,6 @@ div.demoted {
     flex-direction: column;
 }
 
-
-
-
-
-#fs-no-facet-selected {
-    color: #666;
-}
 
 /*
  * Tag cloud

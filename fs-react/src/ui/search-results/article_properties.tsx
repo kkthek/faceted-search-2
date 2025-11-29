@@ -4,7 +4,7 @@ import {Document, PropertyFacetValues} from "../../common/datatypes";
 import WikiLink from "../common/wiki_link";
 import ValueSerializer from "../../util/value_serializer";
 import Client from "../../common/client";
-import {Button, Table, TableBody, TableCell, TableRow} from "@mui/material";
+import {Box, Button, Table, TableBody, TableCell, TableRow} from "@mui/material";
 
 const ArticleProperties = function ArticleProperties(prop: {
     doc: Document,
@@ -13,8 +13,8 @@ const ArticleProperties = function ArticleProperties(prop: {
     const wikiContext = useContext(WikiContext);
     const showArticleProperties = wikiContext.config['fs2gShowArticleProperties'];
     if (!showArticleProperties) return;
-    const articlePropertiesDiv = useRef<any>(null);
-    const [document, setDocument] = useState((): Document => null);
+    const articlePropertiesDiv = useRef<HTMLDivElement>(null);
+    const [document, setDocument] = useState<Document>(null);
 
     async function handleExpandClick() {
         const div = articlePropertiesDiv.current;
@@ -34,14 +34,14 @@ const ArticleProperties = function ArticleProperties(prop: {
         });
     }
 
-    return <div>
+    return <Box>
         <Button onClick={handleExpandClick} variant="text" color={"secondary"}>{wikiContext.msg('fs-show-properties')}</Button>
-        <div ref={articlePropertiesDiv} style={{'display':'none'}}>
+        <Box ref={articlePropertiesDiv} style={{'display':'none'}}>
             <Table size="small" aria-label="simple table">
                 <TableBody>{rows}</TableBody>
             </Table>
-        </div>
-    </div>;
+        </Box>
+    </Box>;
 };
 
 function Row(prop: {pfv: PropertyFacetValues}) {

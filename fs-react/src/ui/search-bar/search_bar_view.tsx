@@ -34,6 +34,8 @@ function SearchBar(prop: {
     const onKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
             prop.eventHandler.onSearchClick(searchText);
+        } else if (e.key === 'Escape') {
+            setSearchText('');
         }
     };
 

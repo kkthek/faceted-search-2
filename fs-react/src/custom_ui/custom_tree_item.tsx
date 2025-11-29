@@ -138,7 +138,6 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
                         {LabelIcon ? <Box component={LabelIcon} color="inherit" sx={{ mr: 2 }} /> : ''}
                         <Span onClick={itemAction}
                             {...getLabelProps({
-                                variant: 'body2',
                                 sx: { display: 'flex', fontWeight: 'inherit', flexGrow: 1 },
                             })}
                         />

@@ -74,7 +74,7 @@ function FacetView(prop: {
 
 
     return <div id={'fs-facetview'}>
-        <Typography sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-properties')}</Typography>
+        <Typography variant={"subtitle1"}>{wikiContext.msg('fs-available-properties')}</Typography>
         <SimpleTreeView expansionTrigger={'iconContainer'}
                         disableSelection
                         disabledItemsFocusable

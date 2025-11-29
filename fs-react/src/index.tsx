@@ -30,6 +30,7 @@ import ObjectTools from "./util/object_tools";
 import TagCloudFacet from "./ui/facets/tag-cloud";
 import CategoryTree from "./ui/facets/category_tree";
 import DEFAULT_THEME from "./custom_ui/theme";
+import Span from "./custom_ui/span";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -139,9 +140,9 @@ function App() {
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {[
                     <Box key={'selectedFacetLabel'}>
-                        <Typography key={'fs-selected-facets'}>{wikiContext.msg('fs-selected-facets')}</Typography>
+                        <Typography key={'fs-selected-facets'} variant={"subtitle1"}>{wikiContext.msg('fs-selected-facets')}</Typography>
                         {anyFacetSelected ? '' :
-                            <span id={'fs-no-facet-selected'}>{"(" + wikiContext.msg('fs-no-facets-selected') + ")"}</span> }
+                            <Span color={"secondary"} id={'fs-no-facet-selected'}>{"(" + wikiContext.msg('fs-no-facets-selected') + ")"}</Span> }
                     </Box>,
 
                     <SelectedFacetsView key={'selectedFacetView'}
@@ -171,7 +172,7 @@ function App() {
                                eventHandler={eventHandler}
                                textFilters={textFilters}
                     />,
-                    <Typography key={'fs-available-categories'} sx={{marginBottom: '15px'}}>{wikiContext.msg('fs-available-categories')}</Typography>,
+                    <Typography key={'fs-available-categories'} variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}</Typography>,
                     <CategoryDropdown key={'categoryDropDown'}
                                       documentQuery={currentDocumentsQueryBuilder.build()}
                                       eventHandler={eventHandler}

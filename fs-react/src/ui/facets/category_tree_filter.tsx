@@ -47,6 +47,7 @@ function CategoryTreeFilter(prop: {
 
     return <TextField id={'category-tree-filter-input'}
                       placeholder={wikiContext.msg('fs-filter-category-tree')}
+                      sx={{marginTop: '5px', marginBottom: '5px'}}
                       size={'small'}
                       variant="standard"
                       value={text}

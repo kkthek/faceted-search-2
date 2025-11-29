@@ -10,6 +10,7 @@ import Tools from "../../util/tools";
 import FacetWithCount from "../common/facet_with_count";
 import DisplayTools from "../../util/display_tools";
 import FacetFilter from "./facet_filter";
+import Span from "../../custom_ui/span";
 
 function SelectedFacet(prop: {
     propertyValueCount: PropertyValueCount
@@ -73,7 +74,7 @@ function SelectedFacet(prop: {
         !(property.isRangeProperty() || property.isBooleanProperty());
     if (showAll) {
         showAllTreeItem = <CustomTreeItem itemId={property.title + "-showall"}
-                                          label={"["+wikiContext.msg('fs-show-all')+"]"}
+                                          label={<Span color={'secondary'}>{"[" + wikiContext.msg('fs-show-all') + "]"}</Span>}
                                           itemAction={() => {
                                               const filterText = prop.textFilters[property.title];
                                               prop.eventHandler.onShowAllValues(property, filterText);

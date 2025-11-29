@@ -8,6 +8,7 @@ import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
 import FacetWithCount from "../common/facet_with_count";
+import Span from "../../custom_ui/span";
 
 
 function FacetViewProperty(prop: {
@@ -40,7 +41,7 @@ function FacetViewProperty(prop: {
         !(property.isRangeProperty() || property.isBooleanProperty());
     if (showAll) {
         showAllTreeItem = <CustomTreeItem itemId={property.title + "-showall"}
-                                          label={"[" + wikiContext.msg('fs-show-all') + "]"}
+                                          label={<Span color={'secondary'}>{"[" + wikiContext.msg('fs-show-all') + "]"}</Span>}
                                           itemAction={() => {
                                               const filterText = prop.textFilters[property.title];
                                               prop.eventHandler.onShowAllValues(property, filterText);
