@@ -21,7 +21,7 @@ import SortView from "./ui/search-bar/sort_view";
 import {Datatype, Property, PropertyValueQuery, TextFilters} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Box, Divider, ThemeProvider, Typography} from "@mui/material";
-import ErrorView from "./custom_ui/error_view";
+import ErrorView from "./ui/common/error_view";
 import SaveSearchLink from "./ui/search-bar/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
 import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
