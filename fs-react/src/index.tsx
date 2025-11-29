@@ -27,7 +27,7 @@ import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_cont
 import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
 import "./util/array_ext";
 import ObjectTools from "./util/object_tools";
-import TagCloudFacet from "./ui/facets/tag-cloud";
+import TagCloudFacet from "./ui/facets/tag_cloud";
 import CategoryTree from "./ui/facets/category_tree";
 import DEFAULT_THEME from "./custom_ui/theme";
 import Span from "./custom_ui/span";
