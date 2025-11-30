@@ -1,19 +1,22 @@
-import {Property} from "../common/datatypes";
+import {FacetValue, Property} from "../common/datatypes";
 
 class Tools {
 
 
     static createItemIdForProperty(property: Property) {
         const rawId = property.title + "_" + property.type
-        return Tools.createId(rawId);
+        return Tools.removeNonIdChars(rawId);
     }
 
-    static secureUUIDV4() {
-        return (""+1e7+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, (c: any) =>
-            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-        );
+    static createItemIdForFacet(property: Property, facetValue: FacetValue) {
+        return Tools.createItemIdForValue(property, facetValue.toString());
     }
-    private static createId(rawId: string) {
+
+    static createItemIdForValue(property: Property, facetValue: string) {
+        return Tools.createItemIdForProperty(property) + "_" + Tools.removeNonIdChars(facetValue);
+    }
+
+    private static removeNonIdChars(rawId: string) {
         return rawId.replace(/[\W]/g, '')
     }
 

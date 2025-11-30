@@ -35,5 +35,7 @@
 	"prefs-facetedsearch2": 	"FacetedSearch2",
 	"fs-copy-search-link": 		"Link in Zwischenablage kopiert",
     "fs-filter-property": 		"Filtere nach '$1' Werten...",
-    "fs-filter-category-tree":  "Filtere Kategoriebaum..."
+    "fs-filter-category-tree":  "Filtere Kategoriebaum...",
+    "fs-bool-value-true":       "Wahr",
+    "fs-bool-value-false":      "Falsch"
 }

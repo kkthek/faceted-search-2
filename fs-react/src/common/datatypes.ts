@@ -112,6 +112,10 @@ export class Range {
                 && (this.to as Date).getTime() >= (that.to as Date).getTime();
         }
     }
+
+    toString(): string {
+        return `${this.from}-${this.to}`;
+    }
 }
 
 
@@ -193,6 +197,11 @@ export class FacetValue {
         return (this.value && FacetValue.sameValue(this.value, value))
             || (this.mwTitle && FacetValue.sameMWTitle(this.mwTitle, mwTitle));
 
+    }
+
+    toString(): string {
+        if (this.range) return this.range.toString();
+        return this.mwTitle ? this.mwTitle.title : (this.value as string).toString();
     }
 
     static sameValue(a: ValueType|void, b: ValueType|void) {
