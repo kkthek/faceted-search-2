@@ -25,6 +25,10 @@ export class WikiContextInterface {
     getFirstInObject(setting: string): string {
         return Object.keys(this.config[setting])[0]
     }
+
+    getLocale(): string {
+        return this.config['wgUserLanguage'] ?? (this.config['wgContentLanguage'] ?? 'en');
+    }
 }
 
 export class WikiContextInterfaceMock extends WikiContextInterface {

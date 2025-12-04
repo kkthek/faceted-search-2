@@ -44,10 +44,10 @@ const ArticleProperties = function ArticleProperties(prop: {
     </Box>;
 };
 
-function Row(prop: {pfv: PropertyFacetValues}) {
+function Row(prop: {pfv: PropertyFacetValues, key: string}) {
     return <TableRow>
         <TableCell><WikiLink page={prop.pfv.property}/></TableCell>
-        <TableCell>{ValueSerializer.getValues(prop.pfv, "articleproperties")}</TableCell>
+        <TableCell>{ValueSerializer.getValues(prop.pfv, prop.key)}</TableCell>
     </TableRow>
 }
 

@@ -20,17 +20,16 @@ import FacetQueryBuilder from "./common/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
 import {Datatype, Property, PropertyValueQuery, TextFilters} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
-import {Box, Divider, ThemeProvider, Typography} from "@mui/material";
+import {Divider, ThemeProvider, Typography} from "@mui/material";
 import ErrorView from "./ui/common/error_view";
 import SaveSearchLink from "./ui/search-bar/save_search_link";
 import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
 import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
 import "./util/array_ext";
-import ObjectTools from "./util/object_tools";
 import TagCloudFacet from "./ui/facets/tag_cloud";
 import CategoryTree from "./ui/facets/category_tree";
 import DEFAULT_THEME from "./custom_ui/theme";
-import Span from "./custom_ui/span";
+import SelectedFacetsHeader from "./ui/facets/selected_facets_header";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -59,8 +58,7 @@ if (isInWikiContext) {
 }
 
 const client: Client = new Client(solrProxyUrl);
-export let WikiContext = createContext(null);
-export let LOCALE: string;
+export const WikiContext = createContext<WikiContextInterface>(null);
 
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
@@ -73,9 +71,9 @@ const searchText = urlParams.get('search');
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
-    const [error, setError] = useState('');
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
     const [textFilters, setTextFilters] = useState<TextFilters>({});
+    const [error, setError] = useState('');
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
@@ -89,9 +87,6 @@ function App() {
         client
     );
 
-    const anyFacetSelected = searchFacetState?.query.isAnyPropertySelected()
-        || searchStateDocument?.query.isAnyCategorySelected();
-
     const headerControlsOrder = wikiContext.config.fs2gHeaderControlOrder.calculatePermutation(
         ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']
     );
@@ -99,7 +94,7 @@ function App() {
         ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
             'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree']);
 
-
+    const currentDocumentQuery = currentDocumentsQueryBuilder.build();
     return <WikiContext.Provider value={wikiContext}>
         <ThemeProvider theme={DEFAULT_THEME}>
         <div id={'fs-content'}>
@@ -109,17 +104,17 @@ function App() {
                               eventHandler={eventHandler}
                     />,
                     <SearchBar key={'searchBar'}
-                               searchText={currentDocumentsQueryBuilder.build().searchText}
+                               searchText={currentDocumentQuery.searchText}
                                restoreFromQuery={q !== null}
                                eventHandler={eventHandler}
-                               query={ObjectTools.deepClone(currentDocumentsQueryBuilder.build())}
+                               query={currentDocumentQuery}
 
                     />,
                     <SaveSearchLink key={'saveSearchLink'}
-                                    documentQuery={currentDocumentsQueryBuilder.build()}
+                                    documentQuery={currentDocumentQuery}
                     />,
                     <CategoryDropdown key={'categoryView'}
-                                      documentQuery={currentDocumentsQueryBuilder.build()}
+                                      documentQuery={currentDocumentQuery}
                                       eventHandler={eventHandler}
                     />
                 ].reorder(headerControlsOrder)}
@@ -139,11 +134,7 @@ function App() {
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {[
-                    <Box key={'selectedFacetLabel'}>
-                        <Typography key={'fs-selected-facets'} variant={"subtitle1"}>{wikiContext.msg('fs-selected-facets')}</Typography>
-                        {anyFacetSelected ? '' :
-                            <Span color={"secondary"} id={'fs-no-facet-selected'}>{"(" + wikiContext.msg('fs-no-facets-selected') + ")"}</Span> }
-                    </Box>,
+                    <SelectedFacetsHeader searchFacetState={searchFacetState}/>,
 
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
@@ -172,9 +163,10 @@ function App() {
                                eventHandler={eventHandler}
                                textFilters={textFilters}
                     />,
-                    <Typography key={'fs-available-categories'} variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}</Typography>,
+                    <Typography key={'fs-available-categories'}
+                                variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}</Typography>,
                     <CategoryDropdown key={'categoryDropDown'}
-                                      documentQuery={currentDocumentsQueryBuilder.build()}
+                                      documentQuery={currentDocumentQuery}
                                       eventHandler={eventHandler}
                     />,
                     <CategoryView key={'categoryView'}
@@ -190,9 +182,9 @@ function App() {
                 ].reorder(facetControlsOrder)}
             </div>
             <div id={'fs-results'}>
-                <ResultView results={searchStateDocument ? searchStateDocument.documentResponse.docs : []}
-                            numResults={searchStateDocument ? searchStateDocument.documentResponse.numResults : 0}
-                            pageOffset={currentDocumentsQueryBuilder.build().offset}
+                <ResultView results={searchStateDocument?.documentResponse.docs ?? []}
+                            numResults={searchStateDocument?.documentResponse.numResults ?? 0}
+                            pageOffset={currentDocumentQuery.offset}
                             eventHandler={eventHandler}
                             client={client}/>
             </div>
@@ -230,7 +222,6 @@ function applyQueryConstraints() {
 
 function startApp() {
     applyQueryConstraints();
-    LOCALE = wikiContext.config['wgUserLanguage'] ?? (wikiContext.config['wgContentLanguage'] ?? 'en');
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
     root.render(<App/>);

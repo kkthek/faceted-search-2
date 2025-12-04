@@ -344,6 +344,10 @@ export class BaseQuery {
         return (this.propertyFacets || []).length > 0;
     }
 
+    isAnyFacetSelected() {
+        return this.isAnyPropertySelected() || this.isAnyCategorySelected();
+    }
+
     getRangeProperties(): Property[] {
         return this.propertyFacets
             .map((e) => e.property)

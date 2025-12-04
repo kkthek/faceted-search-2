@@ -1,9 +1,11 @@
 import {Datatype, Property, Range, ValueCount} from "../common/datatypes";
-import {LOCALE} from "../index";
+import {WikiContext} from "../index";
+import {useContext} from "react";
 
 class DisplayTools {
 
     static displayDate(d: Date) {
+        const wikiContext = useContext(WikiContext);
         let options: Intl.DateTimeFormatOptions;
         if (DisplayTools.isBeginOfDay(d)) {
             options = {
@@ -21,11 +23,12 @@ class DisplayTools {
                 second: "numeric"
             };
         }
-        const dateTimeFormat = new Intl.DateTimeFormat(LOCALE, options);
+        const dateTimeFormat = new Intl.DateTimeFormat(wikiContext.getLocale(), options);
         return dateTimeFormat.format(d);
     }
 
     private static displayDateRange(from: Date, to: Date) {
+        const wikiContext = useContext(WikiContext);
         let options: Intl.DateTimeFormatOptions;
 
         if (this.isBeginOfYear(from) && this.isEndOfYear(to)) {
@@ -38,7 +41,7 @@ class DisplayTools {
             options = {year: "numeric", month: "long", day: "numeric", hour: "numeric"};
         }
 
-        const dateTimeFormat = new Intl.DateTimeFormat(LOCALE, options);
+        const dateTimeFormat = new Intl.DateTimeFormat(wikiContext.getLocale(), options);
         const fromStr = dateTimeFormat.format(from);
         const toStr = dateTimeFormat.format(to);
         return this.showRangeIfNecessary(fromStr, toStr);
