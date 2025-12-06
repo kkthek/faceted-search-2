@@ -48,10 +48,12 @@ function NamespaceView(prop: {
     const documentsResponse = prop.searchStateDocument.documentResponse;
     const namespaceFacetCounts = documentsResponse.namespaceFacetCounts;
 
-    for (let ns in namespacesFromWiki) {
-        const nsAsNumber = parseInt(ns);
-        if (!documentsResponse.containsNamespace(nsAsNumber)) {
-            namespaceFacetCounts.push(new NamespaceFacetCount(nsAsNumber, namespacesFromWiki[ns], 0))
+    if (wikiContext.config['fs2gShowEmptyNamespaces']) {
+        for (let ns in namespacesFromWiki) {
+            const nsAsNumber = parseInt(ns);
+            if (!documentsResponse.containsNamespace(nsAsNumber)) {
+                namespaceFacetCounts.push(new NamespaceFacetCount(nsAsNumber, namespacesFromWiki[ns], 0))
+            }
         }
     }
 

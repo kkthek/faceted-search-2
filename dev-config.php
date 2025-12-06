@@ -139,6 +139,10 @@ function setConfigForDevContext() {
 
     global $fs2gShowCategoryTree;
     $fs2gShowCategoryTree = false;
+
+    global $fs2gShowEmptyNamespaces;
+    $fs2gShowEmptyNamespaces = false;
+
 // -------------------------------------------------------
 }
 
