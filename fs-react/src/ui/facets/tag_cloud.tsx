@@ -1,13 +1,14 @@
 import React, {useContext} from "react";
 import {Tag, TagCloud} from 'react-tagcloud';
 import EventHandler, {SearchStateFacet} from "../../common/event_handler";
-import {Datatype, FacetValue, Property, PropertyFacet, ValueCount} from "../../common/datatypes";
+import {Datatype, FacetValue, TextFilters, Property, PropertyFacet, ValueCount} from "../../common/datatypes";
 import {WikiContext} from "../../index";
 import FacetFilter from "./facet_filter";
 
 function TagCloudFacet(prop: {
     searchStateFacets: SearchStateFacet,
     eventHandler: EventHandler
+    textFilters: TextFilters
 }) {
 
     if (!prop.searchStateFacets) return;
@@ -32,6 +33,7 @@ function TagCloudFacet(prop: {
         const facetValue = FacetValue.fromValueCount(props.value);
         const propertyFacet = new PropertyFacet(tagProperty, [facetValue]);
         prop.eventHandler.onValueClick(propertyFacet);
+
     };
 
     return <div id={'fs-tagcloud'}>
@@ -39,8 +41,8 @@ function TagCloudFacet(prop: {
             <FacetFilter eventHandler={prop.eventHandler}
                          numberOfValues={tags.length}
                          property={tagProperty}
-                         inputFilterRef={null}
                          width={'100%'}
+                         textFilters={prop.textFilters}
             />
         </div>
         <div id={'fs-tagcloud-container'} style={{width: '100%'}}>

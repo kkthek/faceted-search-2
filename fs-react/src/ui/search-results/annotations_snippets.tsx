@@ -23,12 +23,13 @@ function Annotations(prop: {doc: Document}) {
             const pfvCell1 = prop.doc.getPropertyFacetValues(tuples[0]);
             const pfvCell2 = tuples[1] ? prop.doc.getPropertyFacetValues(tuples[1]) : null;
 
-            return  <TableRow key={'annotation-'+prop.doc.id+"_"+index++}>
+                let key = 'annotation-'+prop.doc.id+"_"+index++;
+                return  <TableRow key={key}>
                         <TableCell>
-                            <WikiLink page={pfvCell1.property}/>: {ValueSerializer.getValues(pfvCell1)}
+                            <WikiLink page={pfvCell1.property}/>: {ValueSerializer.getValues(pfvCell1, key)}
                         </TableCell>
                         <TableCell>
-                            <WikiLink page={pfvCell2?.property}/>{pfvCell2 ? ': ':' '}{ValueSerializer.getValues(pfvCell2)}
+                            <WikiLink page={pfvCell2?.property}/>{pfvCell2 ? ': ':' '}{ValueSerializer.getValues(pfvCell2, key)}
                         </TableCell>
             </TableRow>
         });

@@ -1,21 +1,24 @@
-import React, {KeyboardEvent, MutableRefObject, useContext, useEffect, useState} from "react";
-import {Property} from "../../common/datatypes";
+import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
+import {TextFilters, Property} from "../../common/datatypes";
 import {WikiContext} from "../../index";
 import {useDebounce} from "../../util/custom_hooks";
 import EventHandler from "../../common/event_handler";
+import ObjectTools from "../../util/object_tools";
+import {TextField} from "@mui/material";
 
 function FacetFilter(prop : {
     property: Property
     numberOfValues: number
     eventHandler: EventHandler,
-    inputFilterRef: MutableRefObject<any>
     width?: string
+    textFilters: TextFilters
 }) {
 
     const wikiContext = useContext(WikiContext);
-    const [text, setText] = useState((): string => '');
+
     const [unchanged, setUnchanged] = useState((): boolean => true);
 
+    let text = prop.textFilters[prop.property?.title] ?? '';
     const debouncedSearchValue = useDebounce(text, 500);
     useEffect(() => {
         if (!prop.property) return;
@@ -31,21 +34,31 @@ function FacetFilter(prop : {
     }
 
     const onChange = function(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
-        setText(e.target.value);
+        setFilter(e.target.value);
         setUnchanged(false);
     }
 
     const onKeyDown = function(e: KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Enter") {
             prop.eventHandler.onFacetValueContains(text, prop.property);
+        } else if (e.key === "Escape") {
+            setFilter('');
         }
         e.stopPropagation();
     }
-    return <input type={'text'}
-                  ref={prop.inputFilterRef}
+
+    const setFilter = function(text: string): void {
+        const f = ObjectTools.deepClone(prop.textFilters);
+        f[prop.property.title] = text;
+        prop.eventHandler.setTextFilters(f);
+    }
+
+    return <TextField
                   id={prop.property.title+"-filter-input"}
                   style={{width: prop.width ?? '50%'}}
-                  placeholder={'Filter...'}
+                  placeholder={wikiContext.msg('fs-filter-property', prop.property.title)}
+                  size={'small'}
+                  variant="standard"
                   value={text}
                   onChange={onChange}
                   onKeyDown={onKeyDown}

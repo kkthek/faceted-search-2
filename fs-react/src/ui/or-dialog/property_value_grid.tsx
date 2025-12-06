@@ -3,7 +3,9 @@ import Tools from "../../util/tools";
 import DisplayTools from "../../util/display_tools";
 import {Checkbox, FormControlLabel, Grid} from "@mui/material";
 import * as React from "react";
-import {SyntheticEvent} from "react";
+import {SyntheticEvent, useContext} from "react";
+import ConfigUtils from "../../util/config_utils";
+import {WikiContext} from "../../index";
 
 function PropertyValueGrid(prop: {
     property: Property,
@@ -11,10 +13,14 @@ function PropertyValueGrid(prop: {
     valueCounts: ValueCount[],
     onChange: (e: SyntheticEvent, checked: boolean, v: ValueCount) => void,
 }) {
+
+    const wikiContext = useContext(WikiContext);
+    const sortOption = wikiContext.options['fs2-sort-order-preferences'];
+
     const values: any = [];
 
     prop.valueCounts
-        .sort((a, b) => a.compare(b))
+        .sort(ConfigUtils.getSortFunction(sortOption))
         .splitArray2NTuples(3)
         .forEach((row: ValueCount[]) => {
             values.push(row.map((value: ValueCount) => {

@@ -5,6 +5,7 @@ import EventHandler from "../../common/event_handler";
 import {useDebounce} from "../../util/custom_hooks";
 import CreateArticleLink from "./create_article";
 import {BaseQuery} from "../../common/datatypes";
+import ObjectTools from "../../util/object_tools";
 
 function SearchBar(prop: {
     searchText: string
@@ -24,7 +25,8 @@ function SearchBar(prop: {
         if (restoreFromQuery.current) {
             // required because facet query is not stored in the URL for length optimization reasons
             // in case that the q-param is used, facet values/ranges must be re-created once
-            prop.eventHandler.onValuesClick(prop.query.propertyFacets);
+            const query = ObjectTools.deepClone(prop.query);
+            prop.eventHandler.onValuesClick(query.propertyFacets);
             restoreFromQuery.current = false;
             return;
         }
@@ -34,6 +36,8 @@ function SearchBar(prop: {
     const onKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
             prop.eventHandler.onSearchClick(searchText);
+        } else if (e.key === 'Escape') {
+            setSearchText('');
         }
     };
 

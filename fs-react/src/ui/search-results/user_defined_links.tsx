@@ -2,7 +2,7 @@ import {Document} from "../../common/datatypes";
 import React, {useContext} from "react";
 import {WikiContext} from "../../index";
 import ValueSerializer from "../../util/value_serializer";
-import {Box} from "@mui/material";
+import {Link} from "@mui/material";
 import UserDefinedLinksExtensionPoint from "../../extensions/user_defined_links_ep";
 import ConfigUtils from "../../util/config_utils";
 
@@ -32,7 +32,7 @@ function UserDefinedLinks(prop: { doc: Document }) {
         let fullUrl = wgServer + wgScriptPath + "/" + url;
         fullUrl = ConfigUtils.replaceSMWVariables(prop.doc, fullUrl);
         fullUrl = ConfigUtils.replaceMagicWords(prop.doc, fullUrl, wikiContext);
-        items.push(<a key={prop.doc.id+label} href={fullUrl}>{`[${label}]`}</a>);
+        items.push(<Link key={prop.doc.id+label} href={fullUrl}>{`[${label}]`}</Link>);
     }
     return <React.Fragment>
         {ValueSerializer.join(items, ' ')}

@@ -12,6 +12,7 @@ import {
 import {useTreeItem, UseTreeItemParameters} from '@mui/x-tree-view/useTreeItem';
 import {TreeItemProvider} from '@mui/x-tree-view/TreeItemProvider';
 import {TreeItemIcon} from '@mui/x-tree-view/TreeItemIcon';
+import Span from "./span";
 
 declare module 'react' {
     interface CSSProperties {
@@ -135,15 +136,14 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
                         }}
                     >
                         {LabelIcon ? <Box component={LabelIcon} color="inherit" sx={{ mr: 2 }} /> : ''}
-                        <Typography onClick={itemAction}
+                        <Span onClick={itemAction}
                             {...getLabelProps({
-                                variant: 'body2',
                                 sx: { display: 'flex', fontWeight: 'inherit', flexGrow: 1 },
                             })}
                         />
-                        <span onClick={action}>
+                        <Span onClick={action}>
                         {ActionIcon ? <Box component={ActionIcon} color="inherit" sx={{ mr: 1 }} /> : ''}
-                            </span>
+                            </Span>
                     </Box>
                 </CustomTreeItemContent>
                 {children && <TreeItemGroupTransition {...getGroupTransitionProps()} />}

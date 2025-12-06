@@ -2,9 +2,10 @@ import React, {useContext, useState} from "react";
 import {Document} from "../../common/datatypes";
 import {WikiContext} from "../../index";
 import Client from "../../common/client";
-import {Divider, Pagination, Stack, Typography} from "@mui/material";
+import {Box, Divider, Pagination, Stack, Typography} from "@mui/material";
 import SearchResult from "./search_result";
 import EventHandler from "../../common/event_handler";
+import Span from "../../custom_ui/span";
 
 
 function ResultView(prop: {
@@ -38,8 +39,8 @@ function ResultView(prop: {
         window.scrollTo(0, 0);
     }
 
-    return <div id={'fs-resultview'}>
-        <Typography id={'fs-result-view-number'}>{wikiContext.msg('fs-results-from-to', from, to, prop.numResults)}</Typography>
+    return <Box id={'fs-resultview'}>
+        <Span color={"secondary"}>{wikiContext.msg('fs-results-from-to', from, to, prop.numResults)}</Span>
         <Divider/>
         <Stack>
             {listItems}
@@ -49,7 +50,7 @@ function ResultView(prop: {
                     page={pageIndex}
                     siblingCount={2}
                     onChange={onPageIndexChange}/>
-    </div>;
+    </Box>;
 }
 
 export default ResultView;

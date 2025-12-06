@@ -277,6 +277,10 @@
         "CategoryTreeRoot": {
           "value": "",
           "description": "Defines the root category of the tree"
+        },
+        "ShowEmptyNamespaces": {
+          "value": false,
+          "description": "Shows empty namespaces (with 0 results)"
         }
 	},
 	"manifest_version": 2

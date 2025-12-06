@@ -30,7 +30,7 @@ function SelectedFacetValues(prop: {
     }
 
     return <CustomTreeItem key={property.title + displayValue + prop.propertyValueCount.count}
-        itemId={Tools.secureUUIDV4()}
+        itemId={"selected-"+Tools.createItemIdForFacet(property, facetValue)}
         actionIcon={removable ? DeleteIcon : null}
         action={onRemovePropertyFacet}
         label={<FacetWithCount
