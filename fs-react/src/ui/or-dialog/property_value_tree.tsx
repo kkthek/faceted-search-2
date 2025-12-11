@@ -60,7 +60,7 @@ function PropertyValueTree(prop: {
                            onSelectedItemsChange={onSelectedItemsChange}
     >{createItemsFromGroups(content)}
     </SimpleTreeView>
-};
+}
 
 function createItemsFromGroups(groups: Groups) {
     const groupTreeItems = [];

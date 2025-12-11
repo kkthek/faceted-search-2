@@ -26,6 +26,6 @@ function FacetValues(prop: {
                            label={<FacetWithCount displayTitle={displayLabel} count={prop.propertyValueCount.count} />}
                            itemAction={() => prop.eventHandler.onValueClick(propertyFacet)} />
 
-};
+}
 
 export default FacetValues;

@@ -42,6 +42,6 @@ function SelectedFacetValues(prop: {
     </CustomTreeItem>
 
 
-};
+}
 
 export default SelectedFacetValues;

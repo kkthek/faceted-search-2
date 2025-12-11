@@ -15,7 +15,7 @@ class ValueSerializer {
     static getValues(pfv: PropertyFacetValues, itemPrefix = ''): ReactElement {
 
         if (!pfv) return;
-        let items: ReactElement[] = [];
+        let items: ReactElement[];
 
         switch(pfv.property.type) {
             case Datatype.boolean:

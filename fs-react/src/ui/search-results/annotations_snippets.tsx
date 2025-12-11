@@ -40,6 +40,6 @@ function Annotations(prop: {doc: Document}) {
 
     }
 
-};
+}
 
 export default Annotations;

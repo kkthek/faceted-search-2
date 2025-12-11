@@ -1,5 +1,5 @@
-import React, {useContext, useRef} from "react";
-import {FacetResponse, TextFilters, Property, PropertyFacetCount} from "../../common/datatypes";
+import React, {useContext} from "react";
+import {FacetResponse, Property, PropertyFacetCount, TextFilters} from "../../common/datatypes";
 import IdTools from "../../util/id_tools";
 import FacetValues from "./facet_values_view";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
