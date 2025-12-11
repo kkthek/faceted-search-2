@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SelectedFacetValues from "./selected_facet_values_view";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import {WikiContext} from "../../index";
-import Tools from "../../util/tools";
+import IdTools from "../../util/id_tools";
 import FacetWithCount from "../common/facet_with_count";
 import DisplayTools from "../../util/display_tools";
 import FacetFilter from "./facet_filter";
@@ -61,7 +61,7 @@ function SelectedFacet(prop: {
         if (lastConstraint && !lastConstraint.isEmpty()) {
             const r = lastConstraint.range as Range;
             lastRangeTreeItem = <CustomTreeItem key={property.title+'_lastRange'}
-                                                itemId={Tools.createItemIdForProperty(property)+'_lastRange'}
+                                                itemId={IdTools.createItemIdForProperty(property)+'_lastRange'}
                                                 label={<Span color={"secondary"}>{DisplayTools.displayRange(propertyFacet.property, r)}</Span>}
                                                 action={()=>prop.eventHandler.onRemovePropertyFacet(propertyFacet, lastConstraint)}
                                                 actionIcon={DeleteIcon}
@@ -91,7 +91,7 @@ function SelectedFacet(prop: {
     />;
 
     return <CustomTreeItem key={property.title}
-                           itemId={Tools.createItemIdForProperty(property)}
+                           itemId={IdTools.createItemIdForProperty(property)}
                            label={<FacetWithCount displayTitle={property.displayTitle} count={prop.facetCount?.count ?? 0} />}
                            action={onPropertyActionClick}
                            actionIcon={propertyActionIcon}>

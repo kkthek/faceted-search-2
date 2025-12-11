@@ -1,19 +1,19 @@
 import {FacetValue, Property} from "../common/datatypes";
 
-class Tools {
+class IdTools {
 
 
     static createItemIdForProperty(property: Property) {
         const rawId = property.title + "_" + property.type
-        return Tools.removeNonIdChars(rawId);
+        return IdTools.removeNonIdChars(rawId);
     }
 
     static createItemIdForFacet(property: Property, facetValue: FacetValue) {
-        return Tools.createItemIdForValue(property, facetValue.toString());
+        return IdTools.createItemIdForValue(property, facetValue.toString());
     }
 
     static createItemIdForValue(property: Property, facetValue: string) {
-        return Tools.createItemIdForProperty(property) + "_" + Tools.removeNonIdChars(facetValue);
+        return IdTools.createItemIdForProperty(property) + "_" + IdTools.removeNonIdChars(facetValue);
     }
 
     private static removeNonIdChars(rawId: string) {
@@ -23,4 +23,4 @@ class Tools {
 }
 
 
-export default Tools;
+export default IdTools;

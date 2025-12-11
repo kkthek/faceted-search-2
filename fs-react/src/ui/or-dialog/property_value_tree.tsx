@@ -1,5 +1,4 @@
 import {Property, ValueCount} from "../../common/datatypes";
-import Tools from "../../util/tools";
 import * as React from "react";
 import {SyntheticEvent, useContext, useEffect, useState} from "react";
 import {WikiContext} from "../../index";

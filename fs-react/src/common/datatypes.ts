@@ -5,7 +5,7 @@
  *
  */
 
-import Tools from "../util/tools";
+import IdTools from "../util/id_tools";
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 import ValueDeserializer from "../util/value_deserializer";
 import ObjectTools from "../util/object_tools";
@@ -45,7 +45,7 @@ export class Property {
     }
 
     getItemId() {
-        return Tools.createItemIdForProperty(this);
+        return IdTools.createItemIdForProperty(this);
     }
 
     equals(that: Property) {
@@ -697,13 +697,13 @@ export class CategoryNode {
         return node;
     }
 
-    contains(text: string) {
+    private contains(text: string) {
         const parts = text.split(/\s+/);
         return parts.every(part => this.category.toLowerCase().includes(part.toLowerCase())
         || (this.displayTitle && this.displayTitle.toLowerCase().includes(part.toLowerCase())));
     }
 
-    filterForText(text: string) {
+    filterForText(text: string): CategoryNode {
         if (text.trim() === '') return this;
         const allMatchingNodes = this.filterNodes_((c)=> c.contains(text), this);
         if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);

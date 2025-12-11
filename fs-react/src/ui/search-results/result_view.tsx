@@ -40,7 +40,8 @@ function ResultView(prop: {
     }
 
     return <Box id={'fs-resultview'}>
-        <Span color={"secondary"}>{wikiContext.msg('fs-results-from-to', from, to, prop.numResults)}</Span>
+        <Span color={"secondary"}>{wikiContext.msg('fs-results-from-to',
+            from.toString(), to.toString(), prop.numResults.toString())}</Span>
         <Divider/>
         <Stack>
             {listItems}

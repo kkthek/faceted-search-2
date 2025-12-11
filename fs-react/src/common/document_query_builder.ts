@@ -1,5 +1,4 @@
 import {DocumentQuery, FacetValue, Property, PropertyFacet, Sort} from "./datatypes";
-import Tools from "../util/tools";
 import ConfigUtils from "../util/config_utils";
 import {TypedJSON} from "typedjson";
 

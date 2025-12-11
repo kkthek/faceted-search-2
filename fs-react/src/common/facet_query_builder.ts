@@ -1,5 +1,4 @@
 import {BaseQuery, FacetsQuery, Property, PropertyFacet, PropertyValueQuery} from "./datatypes";
-import Tools from "../util/tools";
 import {TypedJSON} from "typedjson";
 
 class FacetQueryBuilder {

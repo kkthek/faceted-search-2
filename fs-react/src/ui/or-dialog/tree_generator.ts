@@ -1,7 +1,5 @@
 import {Property, ValueCount} from "../../common/datatypes";
 import DisplayTools from "../../util/display_tools";
-import * as React from "react";
-import Tools from "../../util/tools";
 import ObjectTools from "../../util/object_tools";
 
 export class GroupItem {

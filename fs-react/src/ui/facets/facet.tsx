@@ -1,6 +1,6 @@
 import React, {useContext, useRef} from "react";
 import {FacetResponse, TextFilters, Property, PropertyFacetCount} from "../../common/datatypes";
-import Tools from "../../util/tools";
+import IdTools from "../../util/id_tools";
 import FacetValues from "./facet_values_view";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import {WikiContext} from "../../index";
@@ -57,7 +57,7 @@ function FacetViewProperty(prop: {
                                          />}
     />;
 
-    return <CustomTreeItem itemId={Tools.createItemIdForProperty(property)}
+    return <CustomTreeItem itemId={IdTools.createItemIdForProperty(property)}
                            label={<FacetWithCount displayTitle={property.displayTitle} count={prop.propertyFacetCount?.count}/>}
                            itemAction={() => prop.eventHandler.onPropertyClick(property)}
                            actionIcon={facetsWithOr ? ChecklistIcon : null}

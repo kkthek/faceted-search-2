@@ -1,5 +1,4 @@
 import {FacetResponse, FacetValue, Property, ValueCount} from "../../common/datatypes";
-import Tools from "../../util/tools";
 import DisplayTools from "../../util/display_tools";
 import {Grid, Typography} from "@mui/material";
 import * as React from "react";
