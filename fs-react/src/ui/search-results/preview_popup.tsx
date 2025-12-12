@@ -1,5 +1,4 @@
 import React, {useContext, useState} from "react";
-import {Document} from "../../common/datatypes";
 import {WikiContext} from "../../index";
 import ConfigUtils from "../../util/config_utils";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -8,6 +7,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import PreviewIcon from '@mui/icons-material/Preview';
+import {Document} from "../../common/response/document";
 
 function PopupComponent(prop: {
     doc: Document,

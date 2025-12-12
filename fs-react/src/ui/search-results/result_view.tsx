@@ -1,11 +1,11 @@
 import React, {useContext, useState} from "react";
-import {Document} from "../../common/datatypes";
 import {WikiContext} from "../../index";
 import Client from "../../common/client";
 import {Box, Divider, Pagination, Stack} from "@mui/material";
 import SearchResult from "./search_result";
 import EventHandler from "../../common/event_handler";
 import Span from "../../custom_ui/span";
+import {Document} from "../../common/response/document";
 
 
 function ResultView(prop: {

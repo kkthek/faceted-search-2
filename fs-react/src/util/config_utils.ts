@@ -1,5 +1,9 @@
-import {Datatype, Document, MWTitle, Order, Property, Sort, Sortable, ValueType} from "../common/datatypes";
+import {Datatype, Order, Sortable, ValueType} from "../common/datatypes";
 import {WikiContextInterface} from "../common/wiki_context";
+import {Property} from "../common/property";
+import {MWTitle} from "../common/mw_title";
+import {Sort} from "../common/request/sort";
+import {Document} from "../common/response/document";
 
 class ConfigUtils {
 

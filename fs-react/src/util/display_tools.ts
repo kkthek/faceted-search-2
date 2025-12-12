@@ -1,6 +1,9 @@
-import {Datatype, Property, Range, ValueCount} from "../common/datatypes";
+import {Datatype} from "../common/datatypes";
 import {WikiContext} from "../index";
 import {useContext} from "react";
+import {Property} from "../common/property";
+import {Range} from "../common/range";
+import {ValueCount} from "../common/response/value_count";
 
 class DisplayTools {
 

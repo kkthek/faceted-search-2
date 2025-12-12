@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from "react";
 import {WikiContext} from "../../index";
 import {Box, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
-import {DocumentQuery} from "../../common/datatypes";
 import EventHandler from "../../common/event_handler";
+import {DocumentQuery} from "../../common/request/document_query";
 
 const NO_CATEGORY_FILTER = '-no-category-filter-';
 

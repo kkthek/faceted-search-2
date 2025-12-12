@@ -1,10 +1,12 @@
 import React, {ReactElement, useContext} from "react";
-import {Datatype, MWTitleWithURL, PropertyFacetValues} from "../common/datatypes";
+import {Datatype} from "../common/datatypes";
 import WikiLink from "../ui/common/wiki_link";
 import DisplayTools from "./display_tools";
 import IdTools from "./id_tools";
 import Span from "../custom_ui/span";
 import {WikiContext} from "../index";
+import {MWTitleWithURL} from "../common/response/mw_title_with_URL";
+import {PropertyFacetValues} from "../common/response/property_facet_values";
 
 class ValueSerializer {
 

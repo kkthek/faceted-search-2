@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {FacetResponse, Property, PropertyFacetCount, TextFilters} from "../../common/datatypes";
+import {TextFilters} from "../../common/datatypes";
 import IdTools from "../../util/id_tools";
 import FacetValues from "./facet_values_view";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
@@ -9,6 +9,9 @@ import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
 import FacetWithCount from "../common/facet_with_count";
 import Span from "../../custom_ui/span";
+import {Property} from "../../common/property";
+import {FacetResponse} from "../../common/response/facet_response";
+import {PropertyFacetCount} from "../../common/response/property_facet_count";
 
 
 function FacetViewProperty(prop: {

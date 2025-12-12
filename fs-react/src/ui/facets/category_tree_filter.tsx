@@ -1,10 +1,11 @@
 import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useState} from "react";
-import {CategoryNode, TextFilters} from "../../common/datatypes";
+import {TextFilters} from "../../common/datatypes";
 import {useDebounce} from "../../util/custom_hooks";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
 import {TextField} from "@mui/material";
 import {WikiContext} from "../../index";
+import {CategoryNode} from "../../common/response/category_node";
 
 function CategoryTreeFilter(prop: {
     setCategoryTree: Dispatch<SetStateAction<[CategoryNode, CategoryNode]>>,

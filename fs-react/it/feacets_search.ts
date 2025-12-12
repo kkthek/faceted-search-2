@@ -1,6 +1,8 @@
 import Client from "../src/common/client";
-import {Datatype, Property, Range} from "../src/common/datatypes";
-import FacetsQueryBuilder from "../src/common/facet_query_builder";
+import {Datatype} from "../src/common/datatypes";
+import FacetsQueryBuilder from "../src/common/query_builders/facet_query_builder";
+import {Property} from "../src/common/property";
+import {Range} from "../src/common/range";
 
 /**
  * Faceted search 2

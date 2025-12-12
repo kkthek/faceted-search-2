@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {Property, PropertyFacetCount, PropertyValueCount, Range, TextFilters,} from "../../common/datatypes";
+import {TextFilters,} from "../../common/datatypes";
 import EventHandler, {SearchStateFacet} from "../../common/event_handler";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -11,6 +11,10 @@ import FacetWithCount from "../common/facet_with_count";
 import DisplayTools from "../../util/display_tools";
 import FacetFilter from "./facet_filter";
 import Span from "../../custom_ui/span";
+import {Property} from "../../common/property";
+import {Range} from "../../common/range";
+import {PropertyValueCount} from "../../common/response/property_value_count";
+import {PropertyFacetCount} from "../../common/response/property_facet_count";
 
 function SelectedFacet(prop: {
     propertyValueCount: PropertyValueCount

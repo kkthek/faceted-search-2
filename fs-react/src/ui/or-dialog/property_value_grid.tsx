@@ -1,10 +1,11 @@
-import {Property, ValueCount} from "../../common/datatypes";
 import DisplayTools from "../../util/display_tools";
 import {Checkbox, FormControlLabel, Grid} from "@mui/material";
 import * as React from "react";
 import {SyntheticEvent, useContext} from "react";
 import ConfigUtils from "../../util/config_utils";
 import {WikiContext} from "../../index";
+import {Property} from "../../common/property";
+import {ValueCount} from "../../common/response/value_count";
 
 function PropertyValueGrid(prop: {
     property: Property,

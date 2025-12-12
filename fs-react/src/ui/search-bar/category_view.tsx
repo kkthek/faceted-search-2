@@ -1,4 +1,3 @@
-import {CategoryFacetCount} from "../../common/datatypes";
 import React, {useContext} from "react";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import {WikiContext} from "../../index";
@@ -7,6 +6,7 @@ import {SimpleTreeView} from "@mui/x-tree-view";
 import {Box, Typography} from "@mui/material";
 import ConfigUtils from "../../util/config_utils";
 import FacetWithCount from "../common/facet_with_count";
+import {CategoryFacetCount} from "../../common/response/category_facet_count";
 
 function FacetViewCategory( prop: {
     categoryTitle: string,

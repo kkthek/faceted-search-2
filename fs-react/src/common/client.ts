@@ -4,8 +4,13 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import {CategoryNode, Document, DocumentQuery, DocumentsResponse, FacetResponse, FacetsQuery} from "./datatypes";
 import {TypedJSON} from "typedjson";
+import {DocumentQuery} from "./request/document_query";
+import {FacetsQuery} from "./request/facets_query";
+import {FacetResponse} from "./response/facet_response";
+import {Document} from "./response/document";
+import {DocumentsResponse} from "./response/documents_response";
+import {CategoryNode} from "./response/category_node";
 
 const HTTP_REQUEST_OPTIONS: any = {
     method: "POST",

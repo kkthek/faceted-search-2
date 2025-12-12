@@ -1,10 +1,11 @@
 import React, {ReactElement, useContext, useRef, useState} from "react";
 import {WikiContext} from "../../index";
-import {Document, PropertyFacetValues} from "../../common/datatypes";
 import WikiLink from "../common/wiki_link";
 import ValueSerializer from "../../util/value_serializer";
 import Client from "../../common/client";
 import {Box, Button, Table, TableBody, TableCell, TableRow} from "@mui/material";
+import {PropertyFacetValues} from "../../common/response/property_facet_values";
+import {Document} from "../../common/response/document";
 
 const ArticleProperties = function ArticleProperties(prop: {
     doc: Document,

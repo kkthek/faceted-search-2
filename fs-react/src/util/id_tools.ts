@@ -1,4 +1,5 @@
-import {FacetValue, Property} from "../common/datatypes";
+import {Property} from "../common/property";
+import {FacetValue} from "../common/request/facet_value";
 
 class IdTools {
 

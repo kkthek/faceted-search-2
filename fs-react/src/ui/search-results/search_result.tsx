@@ -1,4 +1,3 @@
-import {Document} from "../../common/datatypes";
 import Client from "../../common/client";
 import React, {useContext} from "react";
 import {WikiContext} from "../../index";
@@ -10,6 +9,7 @@ import ArticleProperties from "./article_properties";
 import {Box, Typography} from "@mui/material";
 import UserDefinedLinks from "./user_defined_links";
 import Span from "../../custom_ui/span";
+import {Document} from "../../common/response/document";
 
 function SearchResult(prop: { doc: Document, client: Client}) {
     const wikiContext = useContext(WikiContext);
