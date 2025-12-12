@@ -47,6 +47,6 @@ function SearchResult(prop: { doc: Document, client: Client}) {
 
 
     </Box>
-};
+}
 
 export default SearchResult;

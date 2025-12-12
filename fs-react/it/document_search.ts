@@ -15,7 +15,6 @@ import {PropertyFacet} from "../src/common/request/property_facet";
  *
  */
 const assert = require('assert');
-const util = require('util');
 
 let client;
 function initSolr() {

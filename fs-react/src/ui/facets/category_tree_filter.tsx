@@ -1,4 +1,4 @@
-import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useState} from "react";
+import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect} from "react";
 import {TextFilters} from "../../common/datatypes";
 import {useDebounce} from "../../util/custom_hooks";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
@@ -16,7 +16,7 @@ function CategoryTreeFilter(prop: {
 }) {
 
     const wikiContext = useContext(WikiContext);
-    const [filteredTree, fullTree] = prop.treeState;
+    const [, fullTree] = prop.treeState;
     const categories = prop.searchStateDocument?.documentResponse
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
     const text = prop.textFilters['category_tree'] ?? '';

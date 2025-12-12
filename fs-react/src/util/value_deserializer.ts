@@ -14,8 +14,7 @@ class ValueDeserializer {
     }
 
     static arrayDeserializer(
-        json: Array<{prop: string; shouldDeserialize: boolean}>,
-        params: CustomDeserializerParams,
+        json: Array<{prop: string; shouldDeserialize: boolean}>
     ) {
         if (!json.map) {
             return [];

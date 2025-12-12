@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {WikiContext} from "../../index";
-import {Box, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import {Box, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import EventHandler from "../../common/event_handler";
 import {DocumentQuery} from "../../common/request/document_query";
 

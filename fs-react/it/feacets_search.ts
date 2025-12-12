@@ -13,7 +13,6 @@ import {Range} from "../src/common/range";
  *
  */
 const assert = require('assert');
-const util = require('util');
 
 let client;
 
@@ -42,7 +41,7 @@ let logErrors = (e) => {
 describe('fecets-search', function () {
     it('request facets for datetime property', function () {
         globalResult = null;
-        let range = new Range(new Date(Date.parse("1969-01-01T00:00:00Z")), new Date(Date.parse("1970-01-01T00:00:00Z")));
+
         let query = new FacetsQueryBuilder()
             .withRangeQuery(new Property('Was born at',Datatype.datetime))
             .build();

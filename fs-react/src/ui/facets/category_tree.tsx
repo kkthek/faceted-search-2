@@ -42,7 +42,7 @@ function CategoryTree(prop: {
         }
     }, [prop.searchStateDocument]);
 
-    const [filteredTree, fullTree] = categoryTree;
+    const [filteredTree] = categoryTree;
     if (!filteredTree) return;
 
 

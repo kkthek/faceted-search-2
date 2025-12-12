@@ -60,7 +60,7 @@ function NamespaceView(prop: {
         .sort((a: NamespaceFacetCount, b: NamespaceFacetCount) =>
             namespacesToShow.indexOf(a.namespace)
             - namespacesToShow.indexOf(b.namespace))
-        .map((facetCount, i) => {
+        .map((facetCount) => {
             return <NamespaceFacet key={facetCount.namespace} namespaceFacetCount={facetCount} />
     });
     return <div id={'fs-namespaces'} className={'fs-boxes'}>

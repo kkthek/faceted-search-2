@@ -47,7 +47,7 @@ class ConfigUtils {
 
     static replaceSMWVariables(doc: Document, url: string) {
 
-        const smwVariables = url.matchAll(/\{SMW:([^}]+)\}/gi);
+        const smwVariables = url.matchAll(/\{SMW:([^}]+)}/gi);
 
         // @ts-ignore
         for (let smwVariable of smwVariables) {
