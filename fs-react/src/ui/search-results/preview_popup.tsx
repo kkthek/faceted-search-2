@@ -1,4 +1,4 @@
-import React, {Suspense, useContext, useState} from "react";
+import React, {useContext, useState} from "react";
 import {WikiContext} from "../../index";
 import ConfigUtils from "../../util/config_utils";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -40,7 +40,7 @@ function PopupComponent(prop: {
 
     return <React.Fragment>
             <span
-                onClick={() => setOpenDialog(true) }
+                onClick={() => setOpenDialog(true)}
             ><PreviewIcon/></span>
         <PreviewPopup open={openDialog}
                       handleClose={() => setOpenDialog(false)}
@@ -70,9 +70,7 @@ function PreviewPopup(prop: {
                 {wikiContext.msg('fs-preview')}
             </DialogTitle>
             <DialogContent>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <embed src={prop.url} width="800" height="600" type={mimeType} />
-                </Suspense>
+                <embed src={prop.url} width="800" height="600" type={mimeType}/>
             </DialogContent>
             <DialogActions>
                 <Button onClick={prop.handleClose} autoFocus>Ok</Button>
