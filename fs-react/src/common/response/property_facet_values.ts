@@ -10,4 +10,8 @@ export class PropertyFacetValues {
 
     @jsonArrayMember(String, {deserializer: ValueDeserializer.arrayDeserializer})
     values: string[] | number[] | boolean[] | Date[] | MWTitleWithURL[]
+
+    static compareByProperty() {
+        return (a: PropertyFacetValues, b: PropertyFacetValues) => a.property.title.localeCompare(b.property.title);
+    }
 }
