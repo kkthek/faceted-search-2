@@ -1,4 +1,4 @@
-import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect} from "react";
+import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useMemo} from "react";
 import {TextFilters} from "../../common/datatypes";
 import {useDebounce} from "../../util/custom_hooks";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
@@ -21,11 +21,14 @@ function CategoryTreeFilter(prop: {
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
     const text = prop.textFilters['category_tree'] ?? '';
     const debouncedSearchValue = useDebounce(text, 500);
-    useEffect(() => {
-        if (!prop.treeState) return;
-        const filteredTree = fullTree
+    const filteredTree = useMemo(() => {
+        return fullTree
             .filterForCategories(categories)
             .filterForText(text);
+    }, [categories, text]);
+
+    useEffect(() => {
+        if (!prop.treeState) return;
         prop.setCategoryTree([filteredTree, fullTree]);
     }, [debouncedSearchValue]);
 

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {Suspense, useContext, useState} from "react";
 import {WikiContext} from "../../index";
 import ConfigUtils from "../../util/config_utils";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -70,7 +70,9 @@ function PreviewPopup(prop: {
                 {wikiContext.msg('fs-preview')}
             </DialogTitle>
             <DialogContent>
-                <embed src={prop.url} width="800" height="600" type={mimeType} />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <embed src={prop.url} width="800" height="600" type={mimeType} />
+                </Suspense>
             </DialogContent>
             <DialogActions>
                 <Button onClick={prop.handleClose} autoFocus>Ok</Button>

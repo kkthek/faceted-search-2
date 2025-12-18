@@ -1,4 +1,3 @@
-import {CustomDeserializerParams} from "typedjson/lib/types/metadata";
 import {MWTitleWithURL} from "../common/response/mw_title_with_URL";
 
 class ValueDeserializer {
