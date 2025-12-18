@@ -45,7 +45,7 @@ function FacetView(prop: {
         .filter((facetCount) => shownProperties.containsOrEmpty(facetCount.property.title))
         .filter((facetCount) => facetCount.property.title !== wikiContext.config['fs2gTagCloudProperty'])
         .sort(ConfigUtils.getSortFunction(wikiContext.options['fs2-sort-order-preferences']))
-        .map((facetCount,i) => {
+        .map((facetCount) => {
 
         return <FacetViewProperty key={facetCount.property.title+facetCount.property.type}
                            searchStateDocument={prop.searchStateDocument}

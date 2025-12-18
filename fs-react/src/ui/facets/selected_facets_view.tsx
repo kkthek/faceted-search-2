@@ -26,7 +26,7 @@ function SelectedFacetsView(prop: {
     const documentResponse = prop.searchStateDocument?.documentResponse
     const valueCounts = prop.searchStateFacet.facetsResponse.valueCounts;
     const query = prop.searchStateFacet.query;
-    const facets = valueCounts.map((v, i) => {
+    const facets = valueCounts.map((v) => {
 
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (!isSelectedFacet) return;
