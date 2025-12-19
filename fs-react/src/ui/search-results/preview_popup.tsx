@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {Suspense, useContext, useState} from "react";
 import {WikiContext} from "../../index";
 import ConfigUtils from "../../util/config_utils";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import PreviewIcon from '@mui/icons-material/Preview';
 import {Document} from "../../common/response/document";
+import EmbedWithLoading from "./embed_with_loading";
+import {BarLoader} from "react-spinners";
 
 function PopupComponent(prop: {
     doc: Document,
@@ -57,6 +59,12 @@ function PreviewPopup(prop: {
     const ext = ConfigUtils.getFileExtension(prop.url);
     const mimeType = ConfigUtils.getFileType(ext);
 
+    const [isShownPromise, setIsShownPromise] = useState<Promise<boolean>>(new Promise<boolean>((resolve) => resolve(false)));
+
+    function onLoadedData() {
+        setIsShownPromise(new Promise<boolean>((resolve) => resolve(true)));
+    }
+
     return (
 
         <Dialog
@@ -70,7 +78,13 @@ function PreviewPopup(prop: {
                 {wikiContext.msg('fs-preview')}
             </DialogTitle>
             <DialogContent>
-                <embed src={prop.url} width="800" height="600" type={mimeType}/>
+                <Suspense fallback={<BarLoader />}>
+                    <EmbedWithLoading isShownPromise={isShownPromise}
+                                      url={prop.url}
+                                      mimeType={mimeType}
+                                      onLoad={onLoadedData}
+                    />
+                </Suspense>
             </DialogContent>
             <DialogActions>
                 <Button onClick={prop.handleClose} autoFocus>Ok</Button>
