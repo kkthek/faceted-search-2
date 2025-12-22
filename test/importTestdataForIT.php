@@ -60,5 +60,5 @@ $data1 = TestData::generateData();
 
 $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
 $documentUpdater->clearAllDocuments();
-$documentUpdater->updateDocument($data1);
+$documentUpdater->updateDocuments([$data1]);
 

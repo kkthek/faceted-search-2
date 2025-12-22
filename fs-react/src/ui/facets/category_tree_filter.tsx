@@ -1,10 +1,11 @@
-import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useState} from "react";
-import {CategoryNode, TextFilters} from "../../common/datatypes";
+import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useMemo} from "react";
+import {TextFilters} from "../../common/datatypes";
 import {useDebounce} from "../../util/custom_hooks";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
 import {TextField} from "@mui/material";
 import {WikiContext} from "../../index";
+import {CategoryNode} from "../../common/response/category_node";
 
 function CategoryTreeFilter(prop: {
     setCategoryTree: Dispatch<SetStateAction<[CategoryNode, CategoryNode]>>,
@@ -15,16 +16,19 @@ function CategoryTreeFilter(prop: {
 }) {
 
     const wikiContext = useContext(WikiContext);
-    const [filteredTree, fullTree] = prop.treeState;
+    const [, fullTree] = prop.treeState;
     const categories = prop.searchStateDocument?.documentResponse
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
     const text = prop.textFilters['category_tree'] ?? '';
     const debouncedSearchValue = useDebounce(text, 500);
-    useEffect(() => {
-        if (!prop.treeState) return;
-        const filteredTree = fullTree
+    const filteredTree = useMemo(() => {
+        return fullTree
             .filterForCategories(categories)
             .filterForText(text);
+    }, [categories, text]);
+
+    useEffect(() => {
+        if (!prop.treeState) return;
         prop.setCategoryTree([filteredTree, fullTree]);
     }, [debouncedSearchValue]);
 

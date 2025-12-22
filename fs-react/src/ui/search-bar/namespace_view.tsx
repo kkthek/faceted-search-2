@@ -1,10 +1,9 @@
-import {NamespaceFacetCount} from "../../common/datatypes";
 import React, {useContext, useState} from "react";
 import {WikiContext} from "../../index";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import {ToggleButton, ToggleButtonGroup} from "@mui/material";
 import FacetWithCount from "../common/facet_with_count";
-import ConfigUtils from "../../util/config_utils";
+import {NamespaceFacetCount} from "../../common/response/namespace_facet_count";
 
 function NamespaceFacet(prop: {
     namespaceFacetCount: NamespaceFacetCount | null,
@@ -61,7 +60,7 @@ function NamespaceView(prop: {
         .sort((a: NamespaceFacetCount, b: NamespaceFacetCount) =>
             namespacesToShow.indexOf(a.namespace)
             - namespacesToShow.indexOf(b.namespace))
-        .map((facetCount, i) => {
+        .map((facetCount) => {
             return <NamespaceFacet key={facetCount.namespace} namespaceFacetCount={facetCount} />
     });
     return <div id={'fs-namespaces'} className={'fs-boxes'}>

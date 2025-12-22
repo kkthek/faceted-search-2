@@ -9,16 +9,16 @@ import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search-bar/search_bar_view";
 import ResultView from "./ui/search-results/result_view";
 import Client from "./common/client";
-import DocumentQueryBuilder from "./common/document_query_builder";
+import DocumentQueryBuilder from "./common/query_builders/document_query_builder";
 import FacetView from "./ui/facets/facet_view";
 import SelectedFacetsView from "./ui/facets/selected_facets_view";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "./common/event_handler";
 import CategoryView from "./ui/search-bar/category_view";
 import SelectedCategoriesView from "./ui/facets/selected_categories_view";
 import NamespaceView from "./ui/search-bar/namespace_view";
-import FacetQueryBuilder from "./common/facet_query_builder";
+import FacetQueryBuilder from "./common/query_builders/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
-import {Datatype, Property, PropertyValueQuery, TextFilters} from "./common/datatypes";
+import {Datatype, TextFilters} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Divider, ThemeProvider, Typography} from "@mui/material";
 import ErrorView from "./ui/common/error_view";
@@ -30,34 +30,14 @@ import TagCloudFacet from "./ui/facets/tag_cloud";
 import CategoryTree from "./ui/facets/category_tree";
 import DEFAULT_THEME from "./custom_ui/theme";
 import SelectedFacetsHeader from "./ui/facets/selected_facets_header";
+import {Property} from "./common/property";
+import {PropertyValueQuery} from "./common/request/property_value_query";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
-let wikiContext: WikiContextInterface = null;
+let wikiContext = isInWikiContext ? WikiContextInterface.fromMWConfig(browserWindow.mw) : null;
+let client: Client = null;
 
-let solrProxyUrl: string;
-let globals: any = {};
-
-if (isInWikiContext) {
-    const wgServer = browserWindow.mw.config.get("wgServer");
-    const wgScriptPath = browserWindow.mw.config.get("wgScriptPath");
-    globals.mwApiUrl = wgServer + wgScriptPath + "/api.php";
-    globals.mwRestUrl = wgServer + wgScriptPath + "/rest.php";
-    solrProxyUrl = globals.mwRestUrl + "/FacetedSearch2/v1/proxy";
-    wikiContext = new WikiContextInterface(
-        browserWindow.mw.config.values,
-        browserWindow.mw.user.options.values,
-        browserWindow.mw.user.getName(),
-        browserWindow.mw.msg,
-        globals
-    );
-} else {
-    solrProxyUrl = "http://localhost:9000";
-    globals.mwRestUrl = solrProxyUrl;
-    globals.mwApiUrl = solrProxyUrl + '/api.php';
-}
-
-const client: Client = new Client(solrProxyUrl);
 export const WikiContext = createContext<WikiContextInterface>(null);
 
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
@@ -134,7 +114,7 @@ function App() {
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {[
-                    <SelectedFacetsHeader searchFacetState={searchFacetState}/>,
+                    <SelectedFacetsHeader key={'selectedFacetHeader'} searchFacetState={searchFacetState}/>,
 
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}
@@ -199,7 +179,7 @@ function App() {
 function applyQueryConstraints() {
     currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
     if (wikiContext.isObjectConfigured('fs2gCategoryFilter')) {
-        let firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');
+        const firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');
         currentDocumentsQueryBuilder.withCategoryFacet(firstCategory);
     }
     if (searchText !== null) {
@@ -212,11 +192,12 @@ function applyQueryConstraints() {
     wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: any) => {
         currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
-    if (wikiContext.config.fs2gTagCloudProperty) {
-        currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(
-            new Property(wikiContext.config.fs2gTagCloudProperty, Datatype.string),
-            wikiContext.config.fs2gFacetValueLimit
-        ));
+
+    const fs2gTagCloudProperty = wikiContext.config.fs2gTagCloudProperty;
+    if (fs2gTagCloudProperty) {
+        let tagCloudProperty = new Property(fs2gTagCloudProperty, Datatype.string);
+        let limit = wikiContext.config.fs2gFacetValueLimit;
+        currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(tagCloudProperty, limit));
     }
 }
 
@@ -227,11 +208,17 @@ function startApp() {
     root.render(<App/>);
 }
 
+async function initializeDevContext()
+{
+    const url = "http://localhost:9000";
+    client = new Client(url);
+    const config = await client.getSettingsForDevContext();
+    wikiContext = WikiContextInterfaceMock.fromDevConfig(config, url);
+}
+
 if (isInWikiContext) {
+    client = new Client(wikiContext.getSolrProxyUrl());
     startApp();
 } else {
-    client.getSettingsForDevContext().then(result => {
-        wikiContext = new WikiContextInterfaceMock(result, globals);
-        startApp();
-    });
+    initializeDevContext().then(startApp);
 }

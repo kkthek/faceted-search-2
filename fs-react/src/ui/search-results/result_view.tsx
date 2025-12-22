@@ -1,11 +1,11 @@
 import React, {useContext, useState} from "react";
-import {Document} from "../../common/datatypes";
 import {WikiContext} from "../../index";
 import Client from "../../common/client";
-import {Box, Divider, Pagination, Stack, Typography} from "@mui/material";
+import {Box, Divider, Pagination, Stack} from "@mui/material";
 import SearchResult from "./search_result";
 import EventHandler from "../../common/event_handler";
 import Span from "../../custom_ui/span";
+import {Document} from "../../common/response/document";
 
 
 function ResultView(prop: {
@@ -26,7 +26,7 @@ function ResultView(prop: {
         setPageIndex(currentPageIndex);
     }
 
-    const listItems = prop.results.map((doc, i) =>
+    const listItems = prop.results.map((doc) =>
         <SearchResult key={doc.id} doc={doc} client={prop.client}/>
     );
 
@@ -40,7 +40,8 @@ function ResultView(prop: {
     }
 
     return <Box id={'fs-resultview'}>
-        <Span color={"secondary"}>{wikiContext.msg('fs-results-from-to', from, to, prop.numResults)}</Span>
+        <Span color={"secondary"}>{wikiContext.msg('fs-results-from-to',
+            from.toString(), to.toString(), prop.numResults.toString())}</Span>
         <Divider/>
         <Stack>
             {listItems}

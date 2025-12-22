@@ -5,6 +5,7 @@ import Client from "../../common/client";
 import FacetOrDialog, {ORDialogInput} from "../or-dialog/facet_or_dialog";
 import SelectedFacet from "./selected_facet";
 import {TextFilters} from "../../common/datatypes";
+import {createPortal} from "react-dom";
 
 
 function SelectedFacetsView(prop: {
@@ -25,7 +26,7 @@ function SelectedFacetsView(prop: {
     const documentResponse = prop.searchStateDocument?.documentResponse
     const valueCounts = prop.searchStateFacet.facetsResponse.valueCounts;
     const query = prop.searchStateFacet.query;
-    const facets = valueCounts.map((v, i) => {
+    const facets = valueCounts.map((v) => {
 
             let isSelectedFacet = query.isPropertyFacetSelected(v.property);
             if (!isSelectedFacet) return;
@@ -69,14 +70,14 @@ function SelectedFacetsView(prop: {
             {facets}
         </SimpleTreeView>
 
-        <FacetOrDialog open={openOrDialog.open}
+        {createPortal(<FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
                        searchStateFacets={openOrDialog.facetResponse}
                        baseQuery={prop.searchStateFacet.query}
                        property={openOrDialog.property}
                        eventHandler={prop.eventHandler}
                        client={prop.client}
-        />
+        />, document.body)}
     </div>;
 }
 

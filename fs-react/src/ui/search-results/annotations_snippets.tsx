@@ -1,10 +1,9 @@
-import {Document} from "../../common/datatypes";
 import React, {useContext} from "react";
 import {WikiContext} from "../../index";
 import WikiLink from "../common/wiki_link";
 import ValueSerializer from "../../util/value_serializer";
 import {Box, Table, TableBody, TableCell, TableRow} from "@mui/material";
-import Tools from "../../util/tools";
+import {Document} from "../../common/response/document";
 
 
 function Annotations(prop: {doc: Document}) {
@@ -41,6 +40,6 @@ function Annotations(prop: {doc: Document}) {
 
     }
 
-};
+}
 
 export default Annotations;

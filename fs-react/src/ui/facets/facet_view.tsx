@@ -11,6 +11,7 @@ import FacetExtensionPoint from "../../extensions/facet_ep";
 import FacetWithCount from "../common/facet_with_count";
 import FacetViewProperty from "./facet";
 import {TextFilters} from "../../common/datatypes";
+import {createPortal} from "react-dom";
 
 
 function FacetView(prop: {
@@ -44,7 +45,7 @@ function FacetView(prop: {
         .filter((facetCount) => shownProperties.containsOrEmpty(facetCount.property.title))
         .filter((facetCount) => facetCount.property.title !== wikiContext.config['fs2gTagCloudProperty'])
         .sort(ConfigUtils.getSortFunction(wikiContext.options['fs2-sort-order-preferences']))
-        .map((facetCount,i) => {
+        .map((facetCount) => {
 
         return <FacetViewProperty key={facetCount.property.title+facetCount.property.type}
                            searchStateDocument={prop.searchStateDocument}
@@ -95,14 +96,15 @@ function FacetView(prop: {
                                  eventHandler={prop.eventHandler}
             />
         </SimpleTreeView>
-        <FacetOrDialog open={openOrDialog.open}
-                       client={prop.client}
-                       handleClose={handleCloseFacetOrDialog}
-                       searchStateFacets={openOrDialog.facetResponse}
-                       baseQuery={prop.searchStateDocument.query}
-                       property={openOrDialog.property}
-                       eventHandler={prop.eventHandler}
-        />
+        {createPortal(<FacetOrDialog open={openOrDialog.open}
+                                     client={prop.client}
+                                     handleClose={handleCloseFacetOrDialog}
+                                     searchStateFacets={openOrDialog.facetResponse}
+                                     baseQuery={prop.searchStateDocument.query}
+                                     property={openOrDialog.property}
+                                     eventHandler={prop.eventHandler}
+        />, document.body)}
+
     </div>;
 }
 

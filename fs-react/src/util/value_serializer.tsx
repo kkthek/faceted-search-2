@@ -1,10 +1,12 @@
 import React, {ReactElement, useContext} from "react";
-import {Datatype, MWTitleWithURL, PropertyFacetValues} from "../common/datatypes";
+import {Datatype} from "../common/datatypes";
 import WikiLink from "../ui/common/wiki_link";
 import DisplayTools from "./display_tools";
-import Tools from "./tools";
+import IdTools from "./id_tools";
 import Span from "../custom_ui/span";
 import {WikiContext} from "../index";
+import {MWTitleWithURL} from "../common/response/mw_title_with_URL";
+import {PropertyFacetValues} from "../common/response/property_facet_values";
 
 class ValueSerializer {
 
@@ -13,38 +15,65 @@ class ValueSerializer {
     }
 
     static getValues(pfv: PropertyFacetValues, itemPrefix = ''): ReactElement {
-        const wikiContext = useContext(WikiContext);
-        if (!pfv) return <span/>
-        let items: ReactElement[] = [];
 
-        if (pfv.property.type === Datatype.wikipage) {
-            const mwTitles = pfv.values as MWTitleWithURL[];
-            items = mwTitles.map((title: MWTitleWithURL) => <WikiLink key={title.title} page={title}/>);
-        } else if (pfv.property.type === Datatype.datetime) {
-            const values = pfv.values as Date[];
-            items = values.map((date: Date) => {
-                const displayDate = DisplayTools.displayDate(date);
-                const key = itemPrefix + Tools.createItemIdForValue(pfv.property, displayDate.toString());
-                return <Span color={"secondary"} key={key}>{displayDate}</Span>;
-            });
-        } else if (pfv.property.type === Datatype.boolean) {
-            const values = pfv.values as boolean[];
-            items = values.map((b: boolean) => {
-                const localeBool = wikiContext.msg("fs-bool-value-" + b.toString());
-                const key = itemPrefix + Tools.createItemIdForValue(pfv.property, localeBool);
-                return <Span color={"secondary"} key={key}>{localeBool}</Span>;
-            });
-        } else {
-            const values = pfv.values as any[];
-            items = values.map((value: any) => {
-                const key = itemPrefix + Tools.createItemIdForValue(pfv.property, value.toString());
-                return <Span color={"secondary"}
-                             dangerouslySetInnerHTML={{__html: value}}
-                             key={key}/>;
-            });
+        if (!pfv) return;
+        let items: ReactElement[];
+
+        switch(pfv.property.type) {
+            case Datatype.boolean:
+                items = this.serializeBoolean(pfv, itemPrefix);
+                break;
+            case Datatype.datetime:
+                items = this.serializeDatetime(pfv, itemPrefix);
+                break;
+            case Datatype.wikipage:
+                items = this.serializeWikiPage(pfv, itemPrefix);
+                break;
+            case Datatype.string:
+            case Datatype.number:
+            default:
+                items = this.serializeAny(pfv, itemPrefix);
         }
+
         return <React.Fragment>{ValueSerializer.join(items)}</React.Fragment>;
 
+    }
+
+    private static serializeAny(pfv: PropertyFacetValues, itemPrefix: string) {
+        const values = pfv.values as any[];
+        return values.map((value: any) => {
+            const key = itemPrefix + IdTools.createItemIdForValue(pfv.property, value.toString());
+            return <Span color={"secondary"}
+                         dangerouslySetInnerHTML={{__html: value}}
+                         key={key}/>;
+        });
+    }
+
+    private static serializeBoolean(pfv: PropertyFacetValues, itemPrefix: string) {
+        const wikiContext = useContext(WikiContext);
+        const values = pfv.values as boolean[];
+        return values.map((b: boolean) => {
+            const localeBool = wikiContext.msg("fs-bool-value-" + b.toString());
+            const key = itemPrefix + IdTools.createItemIdForValue(pfv.property, localeBool);
+            return <Span color={"secondary"} key={key}>{localeBool}</Span>;
+        });
+    }
+
+    private static serializeDatetime(pfv: PropertyFacetValues, itemPrefix: string) {
+        const values = pfv.values as Date[];
+        return values.map((date: Date) => {
+            const displayDate = DisplayTools.displayDate(date);
+            const key = itemPrefix + IdTools.createItemIdForValue(pfv.property, displayDate.toString());
+            return <Span color={"secondary"} key={key}>{displayDate}</Span>;
+        });
+    }
+
+    private static serializeWikiPage(pfv: PropertyFacetValues, itemPrefix: string) {
+        const mwTitles = pfv.values as MWTitleWithURL[];
+
+        return mwTitles.map((title: MWTitleWithURL) => {
+            const key = itemPrefix + IdTools.createItemIdForValue(pfv.property, title.title);
+            return <WikiLink key={key} page={title}/> });
     }
 }
 

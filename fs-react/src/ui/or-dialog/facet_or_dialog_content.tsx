@@ -1,5 +1,3 @@
-import {FacetResponse, FacetValue, Property, ValueCount} from "../../common/datatypes";
-import Tools from "../../util/tools";
 import DisplayTools from "../../util/display_tools";
 import {Grid, Typography} from "@mui/material";
 import * as React from "react";
@@ -8,6 +6,10 @@ import {WikiContext} from "../../index";
 import Client from "../../common/client";
 import PropertyValueGrid from "./property_value_grid";
 import PropertyValueTree from "./property_value_tree";
+import {Property} from "../../common/property";
+import {FacetValue} from "../../common/request/facet_value";
+import {ValueCount} from "../../common/response/value_count";
+import {FacetResponse} from "../../common/response/facet_response";
 
 function FacetOrDialogContent(prop: {
     client: Client,

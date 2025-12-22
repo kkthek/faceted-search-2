@@ -1,5 +1,8 @@
-import {BaseQuery, FacetsQuery, Property, PropertyValueQuery} from "../common/datatypes";
-import FacetQueryBuilder from "../common/facet_query_builder";
+import FacetQueryBuilder from "../common/query_builders/facet_query_builder";
+import {Property} from "../common/property";
+import {PropertyValueQuery} from "../common/request/property_value_query";
+import {BaseQuery} from "../common/request/base_query";
+import {FacetsQuery} from "../common/request/facets_query";
 
 class QueryUtils {
 

@@ -1,6 +1,10 @@
-import DocumentQueryBuilder from "../src/common/document_query_builder";
+import DocumentQueryBuilder from "../src/common/query_builders/document_query_builder";
 import Client from "../src/common/client";
-import {Datatype, FacetValue, MWTitle, Property, PropertyFacet} from "../src/common/datatypes";
+import {Datatype} from "../src/common/datatypes";
+import {Property} from "../src/common/property";
+import {MWTitle} from "../src/common/mw_title";
+import {FacetValue} from "../src/common/request/facet_value";
+import {PropertyFacet} from "../src/common/request/property_facet";
 
 /**
  * Faceted search 2
@@ -11,7 +15,6 @@ import {Datatype, FacetValue, MWTitle, Property, PropertyFacet} from "../src/com
  *
  */
 const assert = require('assert');
-const util = require('util');
 
 let client;
 function initSolr() {

@@ -85,7 +85,7 @@ function setConfigForDevContext() {
 
     $fs2gCreateNewPageLink = false;//'?action=edit';
 
-    $fs2gShowFileInOverlay =  ['pdf'];
+    $fs2gShowFileInOverlay =  ['pdf', 'png'];
     if ($fs2gShowFileInOverlay) {
         $fs2gExtraPropertiesToRequest[] = new Property("Diqa import fullpath", Datatype::STRING);
     }

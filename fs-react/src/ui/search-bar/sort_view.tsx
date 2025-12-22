@@ -3,7 +3,8 @@ import {WikiContext} from "../../index";
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import ConfigUtils from "../../util/config_utils";
 import EventHandler from "../../common/event_handler";
-import {Sort} from "../../common/datatypes";
+
+import {Sort} from "../../common/request/sort";
 
 interface SortConfig {
     [key: string]: Sort;

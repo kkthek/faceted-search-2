@@ -1,6 +1,6 @@
-import React, {useContext, useRef} from "react";
-import {FacetResponse, TextFilters, Property, PropertyFacetCount} from "../../common/datatypes";
-import Tools from "../../util/tools";
+import React, {useContext} from "react";
+import {TextFilters} from "../../common/datatypes";
+import IdTools from "../../util/id_tools";
 import FacetValues from "./facet_values_view";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import {WikiContext} from "../../index";
@@ -9,6 +9,9 @@ import ChecklistIcon from '@mui/icons-material/Checklist';
 import FacetFilter from "./facet_filter";
 import FacetWithCount from "../common/facet_with_count";
 import Span from "../../custom_ui/span";
+import {Property} from "../../common/property";
+import {FacetResponse} from "../../common/response/facet_response";
+import {PropertyFacetCount} from "../../common/response/property_facet_count";
 
 
 function FacetViewProperty(prop: {
@@ -57,7 +60,7 @@ function FacetViewProperty(prop: {
                                          />}
     />;
 
-    return <CustomTreeItem itemId={Tools.createItemIdForProperty(property)}
+    return <CustomTreeItem itemId={IdTools.createItemIdForProperty(property)}
                            label={<FacetWithCount displayTitle={property.displayTitle} count={prop.propertyFacetCount?.count}/>}
                            itemAction={() => prop.eventHandler.onPropertyClick(property)}
                            actionIcon={facetsWithOr ? ChecklistIcon : null}

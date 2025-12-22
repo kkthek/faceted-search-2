@@ -1,5 +1,6 @@
 import React from "react";
-import {Document} from "../common/datatypes";
+
+import {Document} from "../common/response/document";
 
 function UserDefinedLinksExtensionPoint(prop: {
     doc: Document

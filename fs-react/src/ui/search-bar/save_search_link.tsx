@@ -1,8 +1,8 @@
 import React, {useContext} from "react";
 import {Box, Link} from "@mui/material";
-import {DocumentQuery} from "../../common/datatypes";
 import {WikiContext} from "../../index";
 import ObjectTools from "../../util/object_tools";
+import {DocumentQuery} from "../../common/request/document_query";
 
 function SaveSearchLink(prop: {
     documentQuery: DocumentQuery

@@ -1,5 +1,9 @@
-import {Datatype, Document, MWTitle, Order, Property, Sort, Sortable, ValueType} from "../common/datatypes";
+import {Datatype, Order, Sortable, ValueType} from "../common/datatypes";
 import {WikiContextInterface} from "../common/wiki_context";
+import {Property} from "../common/property";
+import {MWTitle} from "../common/mw_title";
+import {Sort} from "../common/request/sort";
+import {Document} from "../common/response/document";
 
 class ConfigUtils {
 
@@ -41,9 +45,18 @@ class ConfigUtils {
         }
     }
 
+    static getFileResourceURL(doc: Document) {
+        let previewUrlPropertyValues = doc.getPropertyFacetValues("Diqa import fullpath")
+        if (previewUrlPropertyValues.values.length === 0) {
+            const oldPreviewUrlPropertyValues = doc.getPropertyFacetValues("diqa_import_fullpath"); // fallback
+            previewUrlPropertyValues = oldPreviewUrlPropertyValues ?? previewUrlPropertyValues;
+        }
+        return previewUrlPropertyValues?.values[0] as string;
+    }
+
     static replaceSMWVariables(doc: Document, url: string) {
 
-        const smwVariables = url.matchAll(/\{SMW:([^}]+)\}/gi);
+        const smwVariables = url.matchAll(/\{SMW:([^}]+)}/gi);
 
         // @ts-ignore
         for (let smwVariable of smwVariables) {

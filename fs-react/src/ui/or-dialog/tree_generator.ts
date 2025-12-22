@@ -1,8 +1,7 @@
-import {Property, ValueCount} from "../../common/datatypes";
 import DisplayTools from "../../util/display_tools";
-import * as React from "react";
-import Tools from "../../util/tools";
 import ObjectTools from "../../util/object_tools";
+import {Property} from "../../common/property";
+import {ValueCount} from "../../common/response/value_count";
 
 export class GroupItem {
     id: string
@@ -36,7 +35,7 @@ export interface Groups {
 
 class TreeCreator {
 
-    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property,  separator: string): Groups {
+    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property, separator: string): Groups {
 
         const groups: Groups = {};
         valueCounts.forEach((v) => {

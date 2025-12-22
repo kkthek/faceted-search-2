@@ -1,7 +1,10 @@
-import {DocumentQuery, FacetValue, Property, PropertyFacet, Sort} from "./datatypes";
-import Tools from "../util/tools";
-import ConfigUtils from "../util/config_utils";
+import ConfigUtils from "../../util/config_utils";
 import {TypedJSON} from "typedjson";
+import {Property} from "../property";
+import {FacetValue} from "../request/facet_value";
+import {PropertyFacet} from "../request/property_facet";
+import {Sort} from "../request/sort";
+import {DocumentQuery} from "../request/document_query";
 
 class DocumentQueryBuilder {
 

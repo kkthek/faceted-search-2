@@ -1,5 +1,3 @@
-import {Property, ValueCount} from "../../common/datatypes";
-import Tools from "../../util/tools";
 import * as React from "react";
 import {SyntheticEvent, useContext, useEffect, useState} from "react";
 import {WikiContext} from "../../index";
@@ -7,6 +5,8 @@ import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
 import TreeCreator, {GroupItem, Groups} from "./tree_generator";
 import Client from "../../common/client";
 import ObjectTools from "../../util/object_tools";
+import {Property} from "../../common/property";
+import {ValueCount} from "../../common/response/value_count";
 
 function PropertyValueTree(prop: {
     client: Client,
@@ -61,7 +61,7 @@ function PropertyValueTree(prop: {
                            onSelectedItemsChange={onSelectedItemsChange}
     >{createItemsFromGroups(content)}
     </SimpleTreeView>
-};
+}
 
 function createItemsFromGroups(groups: Groups) {
     const groupTreeItems = [];

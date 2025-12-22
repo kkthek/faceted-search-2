@@ -1,18 +1,20 @@
-import DocumentQueryBuilder from "./document_query_builder";
-import FacetQueryBuilder from "./facet_query_builder";
+import DocumentQueryBuilder from "./query_builders/document_query_builder";
+import FacetQueryBuilder from "./query_builders/facet_query_builder";
 import {
-    BaseQuery, Datatype,
-    DocumentsResponse,
-    FacetResponse,
-    FacetValue, TextFilters,
-    Property,
-    PropertyFacet,
-    PropertyValueQuery,
-    Sort
+    Datatype,
+    TextFilters
 } from "./datatypes";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
 import {WikiContextInterface} from "./wiki_context";
+import {Property} from "./property";
+import {PropertyValueQuery} from "./request/property_value_query";
+import {FacetValue} from "./request/facet_value";
+import {PropertyFacet} from "./request/property_facet";
+import {Sort} from "./request/sort";
+import {BaseQuery} from "./request/base_query";
+import {FacetResponse} from "./response/facet_response";
+import {DocumentsResponse} from "./response/documents_response";
 
 export interface SearchStateDocument {
     documentResponse: DocumentsResponse;

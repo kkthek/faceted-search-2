@@ -1,10 +1,10 @@
-import React, {ReactElement, useContext, useRef, useState} from "react";
+import React, {Suspense, useContext, useRef, useState} from "react";
 import {WikiContext} from "../../index";
-import {Document, PropertyFacetValues} from "../../common/datatypes";
-import WikiLink from "../common/wiki_link";
-import ValueSerializer from "../../util/value_serializer";
 import Client from "../../common/client";
-import {Box, Button, Table, TableBody, TableCell, TableRow} from "@mui/material";
+import {Box, Button} from "@mui/material";
+import {Document} from "../../common/response/document";
+import {BarLoader} from "react-spinners";
+import LoadProperties from "./load_properties";
 
 const ArticleProperties = function ArticleProperties(prop: {
     doc: Document,
@@ -12,43 +12,27 @@ const ArticleProperties = function ArticleProperties(prop: {
 }) {
     const wikiContext = useContext(WikiContext);
     const showArticleProperties = wikiContext.config['fs2gShowArticleProperties'];
-    if (!showArticleProperties) return;
     const articlePropertiesDiv = useRef<HTMLDivElement>(null);
-    const [document, setDocument] = useState<Document>(null);
+    const [documentPromise, setDocumentPromise] = useState<Promise<Document>>(null);
+    if (!showArticleProperties) return;
 
-    async function handleExpandClick() {
+    function handleExpandClick() {
         const div = articlePropertiesDiv.current;
         const visible = div.checkVisibility();
         div.style.display = visible ? 'none' : 'block';
-        if (visible || document !== null) return;
-        const doc = await prop.client.getDocumentById(prop.doc.id);
-        setDocument(doc);
-    }
-
-    let rows: ReactElement[] = [];
-    if (document !== null) {
-        rows = document.propertyFacets
-            .sort((a, b) => a.property.title.localeCompare(b.property.title))
-            .map((pfv) => {
-            return <Row key={'article-properties-'+prop.doc.id+pfv.property.title} pfv={pfv}/>
-        });
+        if (visible || documentPromise) return;
+        const documentByIdPromise = prop.client.getDocumentById(prop.doc.id);
+        setDocumentPromise(documentByIdPromise);
     }
 
     return <Box>
         <Button onClick={handleExpandClick} variant="text" color={"secondary"}>{wikiContext.msg('fs-show-properties')}</Button>
         <Box ref={articlePropertiesDiv} style={{'display':'none'}}>
-            <Table size="small" aria-label="simple table">
-                <TableBody>{rows}</TableBody>
-            </Table>
+            <Suspense fallback={<BarLoader/>}>
+                <LoadProperties documentPromise={documentPromise} />
+            </Suspense>
         </Box>
     </Box>;
 };
-
-function Row(prop: {pfv: PropertyFacetValues, key: string}) {
-    return <TableRow>
-        <TableCell><WikiLink page={prop.pfv.property}/></TableCell>
-        <TableCell>{ValueSerializer.getValues(prop.pfv, prop.key)}</TableCell>
-    </TableRow>
-}
 
 export default ArticleProperties;

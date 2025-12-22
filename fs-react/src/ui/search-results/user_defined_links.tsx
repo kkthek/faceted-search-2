@@ -1,10 +1,10 @@
-import {Document} from "../../common/datatypes";
 import React, {useContext} from "react";
 import {WikiContext} from "../../index";
 import ValueSerializer from "../../util/value_serializer";
 import {Link} from "@mui/material";
 import UserDefinedLinksExtensionPoint from "../../extensions/user_defined_links_ep";
 import ConfigUtils from "../../util/config_utils";
+import {Document} from "../../common/response/document";
 
 interface LinkConfig {
     [key: string]: string;
