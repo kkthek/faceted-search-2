@@ -74,7 +74,7 @@ class Document {
     }
 
     /**
-     * @param PropertyValues[] $categories
+     * @param string[] $categories
      * @return Document
      */
     public function setCategories(array $categories): Document

@@ -45,6 +45,15 @@ class ConfigUtils {
         }
     }
 
+    static getFileResourceURL(doc: Document) {
+        let previewUrlPropertyValues = doc.getPropertyFacetValues("Diqa import fullpath")
+        if (previewUrlPropertyValues.values.length === 0) {
+            const oldPreviewUrlPropertyValues = doc.getPropertyFacetValues("diqa_import_fullpath"); // fallback
+            previewUrlPropertyValues = oldPreviewUrlPropertyValues ?? previewUrlPropertyValues;
+        }
+        return previewUrlPropertyValues?.values[0] as string;
+    }
+
     static replaceSMWVariables(doc: Document, url: string) {
 
         const smwVariables = url.matchAll(/\{SMW:([^}]+)}/gi);

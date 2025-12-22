@@ -1,6 +1,6 @@
 import React, {use} from "react";
 
-const EmbedWithLoading = function EmbedWithLoading(prop: {
+const EmbedWithNotification = function(prop: {
     isShownPromise: Promise<boolean>
     url: string,
     mimeType: string
@@ -20,4 +20,4 @@ const EmbedWithLoading = function EmbedWithLoading(prop: {
 
 }
 
-export default EmbedWithLoading;
+export default EmbedWithNotification;

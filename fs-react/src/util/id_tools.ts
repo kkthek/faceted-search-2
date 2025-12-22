@@ -3,7 +3,6 @@ import {FacetValue} from "../common/request/facet_value";
 
 class IdTools {
 
-
     static createItemIdForProperty(property: Property) {
         const rawId = property.title + "_" + property.type
         return IdTools.removeNonIdChars(rawId);
@@ -18,7 +17,7 @@ class IdTools {
     }
 
     private static removeNonIdChars(rawId: string) {
-        return rawId.replace(/[\W]/g, '')
+        return rawId.replace(/\W/g, '')
     }
 
 }

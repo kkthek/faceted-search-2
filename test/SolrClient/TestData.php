@@ -60,7 +60,10 @@ class TestData {
         $p = new Property('Has spouse', Datatype::WIKIPAGE);
         $pvSpouse = new PropertyValues($p, [new MWTitle('Maier, Maria', 'Maria')]);
 
-        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse])
+        $p = new Property('Diqa import fullpath', Datatype::STRING);
+        $pvDiqa_import_fullpath = new PropertyValues($p, ['http://localhost/mediawiki/test/resources/sample.png']);
+
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse, $pvDiqa_import_fullpath])
             ->setFulltext("Peter Maier arbeitet bei Mercedes.")
             ->setCategories(["Employee"])
             ->setDirectCategories(["Employee"])
