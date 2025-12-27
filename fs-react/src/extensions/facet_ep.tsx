@@ -9,9 +9,9 @@ function FacetExtensionPoint(prop: {
     expandedFacets: string[],
     eventHandler: EventHandler
 }) {
-    return <React.Fragment>
+    return <>
         {/* Put your extension components here */}
-    </React.Fragment>;
+    </>;
 }
 
 export default FacetExtensionPoint;

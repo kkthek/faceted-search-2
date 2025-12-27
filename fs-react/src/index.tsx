@@ -32,6 +32,8 @@ import DEFAULT_THEME from "./custom_ui/theme";
 import SelectedFacetsHeader from "./ui/facets/selected_facets_header";
 import {Property} from "./common/property";
 import {PropertyValueQuery} from "./common/request/property_value_query";
+import {ErrorBoundary} from "react-error-boundary";
+import ErrorComponent from "./ui/common/error_component";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -130,7 +132,7 @@ function App() {
                                             eventHandler={eventHandler}
                     />,
                     <RemoveAllFacetsButton key={'removeAllFacets'}
-                                           searchStateFacet={searchFacetState}
+                                           query={currentDocumentQuery}
                                            eventHandler={eventHandler}
                     />,
                     <Divider key={'divider'}/>,
@@ -144,7 +146,8 @@ function App() {
                                textFilters={textFilters}
                     />,
                     <Typography key={'fs-available-categories'}
-                                variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}</Typography>,
+                                variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}
+                    </Typography>,
                     <CategoryDropdown key={'categoryDropDown'}
                                       documentQuery={currentDocumentQuery}
                                       eventHandler={eventHandler}
@@ -168,7 +171,6 @@ function App() {
                             eventHandler={eventHandler}
                             client={client}/>
             </div>
-
             <ErrorView error={error} setError={setError}/>
         </div>
         </ThemeProvider>
@@ -201,11 +203,17 @@ function applyQueryConstraints() {
     }
 }
 
-function startApp() {
-    applyQueryConstraints();
+function render(children: React.ReactNode) {
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
-    root.render(<App/>);
+    root.render(children);
+}
+
+function startApp() {
+    applyQueryConstraints();
+    render(<ErrorBoundary FallbackComponent={ErrorComponent}>
+        <App/>
+    </ErrorBoundary>);
 }
 
 async function initializeDevContext()
@@ -220,5 +228,7 @@ if (isInWikiContext) {
     client = new Client(wikiContext.getSolrProxyUrl());
     startApp();
 } else {
-    initializeDevContext().then(startApp);
+    initializeDevContext()
+        .then(startApp)
+        .catch((e) => render(<ErrorComponent error={e}/>));
 }

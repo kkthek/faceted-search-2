@@ -1,5 +1,7 @@
 import React, {useContext} from "react";
 import {WikiContext} from "../../index";
+import {Link} from "@mui/material";
+import Box from "@mui/material/Box";
 
 function CreateArticleLink(prop: {
     searchText: string
@@ -14,9 +16,9 @@ function CreateArticleLink(prop: {
 
     let articleUrl = wgServer+wgArticlePath;
     articleUrl = articleUrl.replace(/\$1/g, encodeURIComponent(prop.searchText)) + createNewPageLink;
-    return <div className={'fs-create-article'}>
-        <span>{wikiContext.msg('fs-create-article')}: <a target="_blank" href={articleUrl}>{prop.searchText}</a></span>
-    </div>
+    return <Box className={'fs-create-article'}>
+            <Link target="_blank" href={articleUrl}>{wikiContext.msg('fs-create-article')}: {prop.searchText}</Link>
+    </Box>
 
 }
 

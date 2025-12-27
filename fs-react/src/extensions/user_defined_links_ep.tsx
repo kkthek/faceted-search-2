@@ -5,9 +5,9 @@ import {Document} from "../common/response/document";
 function UserDefinedLinksExtensionPoint(prop: {
     doc: Document
 }) {
-    return <React.Fragment>
+    return <>
         {/* Put your extension components here */}
-    </React.Fragment>;
+    </>;
 }
 
 export default UserDefinedLinksExtensionPoint;

@@ -35,7 +35,7 @@ class ValueSerializer {
                 items = this.serializeAny(pfv, itemPrefix);
         }
 
-        return <React.Fragment>{ValueSerializer.join(items)}</React.Fragment>;
+        return <>{ValueSerializer.join(items)}</>;
 
     }
 

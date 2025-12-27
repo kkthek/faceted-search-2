@@ -64,7 +64,7 @@ function FacetOrDialog(prop: {
     }
 
     return (
-        <React.Fragment>
+        <>
             <Dialog
                 open={prop.open}
                 onClose={prop.handleClose}
@@ -114,7 +114,7 @@ function FacetOrDialog(prop: {
                     <Button onClick={onOK} autoFocus>Ok</Button>
                 </DialogActions>
             </Dialog>
-        </React.Fragment>
+        </>
     );
 }
 
