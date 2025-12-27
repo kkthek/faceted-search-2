@@ -1,6 +1,6 @@
 import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useMemo} from "react";
 import {TextFilters} from "../../common/datatypes";
-import {useDebounce} from "../../util/custom_hooks";
+import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
 import {TextField} from "@mui/material";

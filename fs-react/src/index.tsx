@@ -116,7 +116,7 @@ function App() {
 
             <div id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {[
-                    <SelectedFacetsHeader key={'selectedFacetHeader'} searchFacetState={searchFacetState}/>,
+                    <SelectedFacetsHeader key={'selectedFacetHeader'} query={currentDocumentQuery}/>,
 
                     <SelectedFacetsView key={'selectedFacetView'}
                                         client={client}

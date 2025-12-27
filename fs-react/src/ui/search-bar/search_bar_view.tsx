@@ -2,7 +2,7 @@ import React, {KeyboardEvent, useContext, useEffect, useRef, useState} from "rea
 import {WikiContext} from "../../index";
 import {Box, Button, TextField} from "@mui/material";
 import EventHandler from "../../common/event_handler";
-import {useDebounce} from "../../util/custom_hooks";
+import {useDebounce} from "../../custom_ui/custom_hooks";
 import CreateArticleLink from "./create_article";
 import ObjectTools from "../../util/object_tools";
 import {BaseQuery} from "../../common/request/base_query";

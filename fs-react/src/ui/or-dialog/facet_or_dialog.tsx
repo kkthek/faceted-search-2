@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
 import {WikiContext} from "../../index";
-import {useDebounce} from "../../util/custom_hooks";
+import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler from "../../common/event_handler";
 import Client from "../../common/client";
 import QueryUtils from "../../util/query_utils";
