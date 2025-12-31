@@ -28,10 +28,10 @@ function PropertyValueGrid(prop: {
                 const selectedId = value.serialize();
                 const isSelected = prop.selectedItemIds.includes(selectedId)
 
-                return <Grid size={4}>
+                return <Grid size={4} key={"grid-"+selectedValue}>
                     <FormControlLabel
                         key={selectedValue}
-                        control={<Checkbox defaultChecked={isSelected}/>}
+                        control={<Checkbox key={"checkbox-"+selectedValue} defaultChecked={isSelected}/>}
                         onChange={(event, checked) => {
                             prop.onChange(event, checked, value);
                         }}
