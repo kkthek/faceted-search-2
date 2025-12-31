@@ -1,10 +1,10 @@
-import React, {MutableRefObject} from "react";
+import {RefObject} from "react";
 
 class GisBrowserApi {
 
-    private iframe: MutableRefObject<any>;
+    private iframe: RefObject<any>;
 
-    constructor(iframe: React.MutableRefObject<any>) {
+    constructor(iframe: RefObject<any>) {
         this.iframe = iframe;
     }
 

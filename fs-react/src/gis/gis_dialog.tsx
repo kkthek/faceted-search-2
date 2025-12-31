@@ -6,11 +6,17 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {BaseQuery, Datatype, FacetValue, Property, PropertyFacet, Range} from "../common/datatypes";
+
 import {Box} from "@mui/material";
 import {WikiContext} from "../index";
 import EventHandler from "../common/event_handler";
 import GisBrowserApi from "./gis_browser_api";
+import {Property} from "../common/property";
+import {Datatype} from "../common/datatypes";
+import {BaseQuery} from "../common/request/base_query";
+import {PropertyFacet} from "../common/request/property_facet";
+import {FacetValue} from "../common/request/facet_value";
+import {Range} from "../common/range";
 
 function GisDialog(prop: {
     open: boolean,
@@ -68,7 +74,7 @@ function GisDialog(prop: {
     }
 
     return (
-        <React.Fragment>
+        <>
             <Dialog
                 open={prop.open}
                 onClose={prop.handleClose}
@@ -98,7 +104,7 @@ function GisDialog(prop: {
                     <Button onClick={onOkClick} autoFocus>Ok</Button>
                 </DialogActions>
             </Dialog>
-        </React.Fragment>
+        </>
     );
 }
 
