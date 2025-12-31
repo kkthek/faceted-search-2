@@ -28,7 +28,7 @@
 	"fs-preview":	 			"Vorschau",
 	"fs-facet-ored-values": 	"Selektieren Sie alle Werte die im Ergebnis auftauchen sollen",
 	"fs-create-article": 		"Erzeuge neue Seite",
-	"fs-remove-all-facets": 	"Entferne all selektierten Facetten",
+	"fs-remove-all-facets": 	"Entferne alle selektierten Facetten",
 	"sort-by-count": 			"Sortiere nach Häufigkeit",
 	"sort-alphabetically": 		"Sortiere alphabetisch",
 	"prefs-Standard-Sortierung-Facetten": "Standard-Sortierung",
@@ -37,5 +37,11 @@
     "fs-filter-property": 		"Filtere nach '$1' Werten...",
     "fs-filter-category-tree":  "Filtere Kategoriebaum...",
     "fs-bool-value-true":       "Wahr",
-    "fs-bool-value-false":      "Falsch"
+    "fs-bool-value-false":      "Falsch",
+    "fs-date-range":            "Zeitintervall",
+    "fs-facet-date-range-dialog-title": "Bitte setzen Sie ein Zeitintervall",
+    "fs-from":                  "Von",
+    "fs-to":                    "Bis",
+    "fs-ok":                    "OK",
+    "fs-cancel":                "Abbrechen"
 }

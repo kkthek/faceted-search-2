@@ -141,7 +141,7 @@ export class ORDialogInput {
 
         const onOrDialogClick = async function(p: Property): Promise<void> {
 
-            const query = QueryUtils.prepareQueryWithoutFacet(baseQuery, p);
+            const query = QueryUtils.prepareValueQueryWithoutFacet(baseQuery, p);
             const facetResponse = await client.searchFacets(query);
             setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
 

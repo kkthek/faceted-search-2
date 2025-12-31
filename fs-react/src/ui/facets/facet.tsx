@@ -6,6 +6,7 @@ import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import ChecklistIcon from '@mui/icons-material/Checklist';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 import FacetFilter from "./facet_filter";
 import FacetWithCount from "../common/facet_with_count";
 import Span from "../../custom_ui/span";
@@ -20,6 +21,7 @@ function FacetViewProperty(prop: {
     propertyFacetCount: PropertyFacetCount,
     eventHandler: EventHandler
     onOrDialogClick: (property: Property) => void
+    onDateRangeDialog: (property: Property) => void,
     textFilters: TextFilters
 }) {
 
@@ -60,12 +62,27 @@ function FacetViewProperty(prop: {
                                          />}
     />;
 
+    let getActionIcon = () => {
+        if (facetsWithOr) {
+            return ChecklistIcon;
+        } else if(property.isDateTimeProperty()) {
+            return DateRangeIcon;
+        }
+        return null;
+    }
+    let action = () => {
+        if (facetsWithOr) {
+            prop.onOrDialogClick(property);
+        } else if (property.isDateTimeProperty()) {
+            prop.onDateRangeDialog(property);
+        }
+    }
     return <CustomTreeItem itemId={IdTools.createItemIdForProperty(property)}
-                           label={<FacetWithCount displayTitle={property.displayTitle} count={prop.propertyFacetCount?.count}/>}
-                           itemAction={() => prop.eventHandler.onPropertyClick(property)}
-                           actionIcon={facetsWithOr ? ChecklistIcon : null}
-                           action={() => prop.onOrDialogClick(property)}
-                           className={'fs-facets'}>
+                                                                             label={<FacetWithCount displayTitle={property.displayTitle} count={prop.propertyFacetCount?.count}/>}
+                                                                             itemAction={() => prop.eventHandler.onPropertyClick(property)}
+                                                                             actionIcon={getActionIcon()}
+                                                                             action={action}
+                                                                             className={'fs-facets'}>
         {filterTreeItem}
         {facetTreeItems}
         {showAllTreeItem}

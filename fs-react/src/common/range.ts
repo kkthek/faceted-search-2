@@ -15,7 +15,12 @@ export class Range {
 
     equals(that: Range | void) {
         if (!that) return false;
-        return this.from === (that as Range).from && this.to === (that as Range).to;
+        if (this.from as number && this.to as number) {
+            return this.from === (that as Range).from && this.to === (that as Range).to;
+        } else {
+            return (this.from as Date).getTime() === (that.from as Date).getTime()
+                && (this.to as Date).getTime() === (that.to as Date).getTime();
+        }
     }
 
     withinRange(that: Range | void) {
@@ -30,5 +35,10 @@ export class Range {
 
     toString(): string {
         return `${this.from}-${this.to}`;
+    }
+
+    static collapsedDateTimeRange(): Range {
+        const date = new Date();
+        return new Range(date, date);
     }
 }
