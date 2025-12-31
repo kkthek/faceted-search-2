@@ -1,6 +1,6 @@
 import {Button} from "@mui/material";
 import React, {useContext} from "react";
-import EventHandler, {SearchStateFacet} from "../../common/event_handler";
+import EventHandler from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import {BaseQuery} from "../../common/request/base_query";
 

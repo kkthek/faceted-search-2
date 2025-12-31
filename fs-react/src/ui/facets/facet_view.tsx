@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext} from "react";
 import EventHandler, {SearchStateDocument, SearchStateFacet} from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import ConfigUtils from "../../util/config_utils";
