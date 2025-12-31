@@ -11,19 +11,9 @@ import Span from "../../custom_ui/span";
 import {Document} from "../../common/response/document";
 import TitleWithPreview from "./title_with_preview";
 
-
 function SearchResult(prop: { doc: Document, client: Client}) {
-    const wikiContext = useContext(WikiContext);
-    const promotionProperty = wikiContext.config['fs2gPromotionProperty'];
-    const demotionProperty = wikiContext.config['fs2gDemotionProperty'];
 
-    const classNames = [];
-    if (promotionProperty !== false && prop.doc.containsTrueFacetValue(promotionProperty)) {
-        classNames.push('promoted');
-    }
-    if (demotionProperty !== false&& prop.doc.containsTrueFacetValue(demotionProperty)) {
-        classNames.push('demoted');
-    }
+    const classNames = getCssClasses(prop.doc);
 
     let snippet = prop.doc.highlighting;
     if (snippet.length > 500) {
@@ -45,6 +35,21 @@ function SearchResult(prop: { doc: Document, client: Client}) {
         </Box>
 
     </Box>
+}
+
+function getCssClasses(doc: Document) {
+    const wikiContext = useContext(WikiContext);
+    const promotionProperty = wikiContext.config['fs2gPromotionProperty'];
+    const demotionProperty = wikiContext.config['fs2gDemotionProperty'];
+
+    const classNames = [];
+    if (promotionProperty !== false && doc.containsTrueFacetValue(promotionProperty)) {
+        classNames.push('promoted');
+    }
+    if (demotionProperty !== false && doc.containsTrueFacetValue(demotionProperty)) {
+        classNames.push('demoted');
+    }
+    return classNames;
 }
 
 export default SearchResult;

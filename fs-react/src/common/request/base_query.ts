@@ -4,7 +4,7 @@ import {Property} from "../property";
 import ObjectTools from "../../util/object_tools";
 
 @jsonObject
-export class BaseQuery {
+export abstract class BaseQuery {
     @jsonMember(String)
     searchText: string;
     @jsonArrayMember(String)
@@ -14,10 +14,10 @@ export class BaseQuery {
     @jsonArrayMember(PropertyFacet)
     propertyFacets: PropertyFacet[];
 
-    constructor(searchText: string,
-                propertyFacets: PropertyFacet[],
-                categoryFacets: string[],
-                namespaceFacets: number[]) {
+    protected constructor(searchText: string,
+                          propertyFacets: PropertyFacet[],
+                          categoryFacets: string[],
+                          namespaceFacets: number[]) {
         this.searchText = searchText;
         this.propertyFacets = propertyFacets;
         this.categoryFacets = categoryFacets;

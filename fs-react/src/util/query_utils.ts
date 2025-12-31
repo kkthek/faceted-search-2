@@ -6,12 +6,22 @@ import {FacetsQuery} from "../common/request/facets_query";
 
 class QueryUtils {
 
-    static prepareQueryWithoutFacet(query: BaseQuery, property: Property): FacetsQuery {
+    static prepareValueQueryWithoutFacet(query: BaseQuery, property: Property): FacetsQuery {
 
         return new FacetQueryBuilder()
             .updateBaseQuery(query)
             .withoutPropertyFacet(property)
             .withPropertyValueQuery(new PropertyValueQuery(property))
+            .build();
+
+    }
+
+    static prepareRangeQueryWithoutFacet(query: BaseQuery, property: Property): FacetsQuery {
+
+        return new FacetQueryBuilder()
+            .updateBaseQuery(query)
+            .withoutPropertyFacet(property)
+            .withRangeQuery(property)
             .build();
 
     }

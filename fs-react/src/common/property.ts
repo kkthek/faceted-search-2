@@ -23,6 +23,10 @@ export class Property {
         return this.type === Datatype.boolean;
     }
 
+    isDateTimeProperty() {
+        return this.type === Datatype.datetime;
+    }
+
     isFilterProperty() {
         return !this.isRangeProperty() && !this.isBooleanProperty();
     }

@@ -27,17 +27,17 @@ function UserDefinedLinks(prop: { doc: Document }) {
     });
 
     const items = [];
-    for(let label in allLinks) {
+    for(const label in allLinks) {
         const url: string = allLinks[label];
         let fullUrl = wgServer + wgScriptPath + "/" + url;
         fullUrl = ConfigUtils.replaceSMWVariables(prop.doc, fullUrl);
         fullUrl = ConfigUtils.replaceMagicWords(prop.doc, fullUrl, wikiContext);
         items.push(<Link key={prop.doc.id+label} href={fullUrl}>{`[${label}]`}</Link>);
     }
-    return <React.Fragment>
+    return <>
         {ValueSerializer.join(items, ' ')}
         <UserDefinedLinksExtensionPoint doc={prop.doc}/>
-    </React.Fragment>
+    </>
 }
 
 export default UserDefinedLinks;

@@ -42,5 +42,11 @@
 	"fs-filter-property": 		"Filter '$1' values...",
     "fs-filter-category-tree":  "Filter category tree...",
     "fs-bool-value-true":       "True",
-    "fs-bool-value-false":      "False"
+    "fs-bool-value-false":      "False",
+    "fs-date-range":            "Date range",
+    "fs-facet-date-range-dialog-title": "Please select a date range",
+    "fs-from":                  "From",
+    "fs-to":                    "To",
+    "fs-ok":                    "OK",
+    "fs-cancel":                "Cancel"
 }

@@ -149,12 +149,14 @@ function setConfigForDevContext() {
 function getConfigForDevContext(): array
 {
     global $userOptions;
+    global $wgUserLanguage;
     $settings = [];
     foreach($GLOBALS as $var => $value) {
         if (strpos($var, 'fs2g') === 0 || strpos($var, 'wg') === 0) {
             $settings[$var] = $value;
         }
     }
-    $lang = json_decode(file_get_contents('i18n/en.json'));
+    $langCode = $wgUserLanguage ?? 'en';
+    $lang = json_decode(file_get_contents("i18n/$langCode.json"));
     return [ 'settings' => $settings, 'options' => $userOptions, 'lang' => $lang ];
 }

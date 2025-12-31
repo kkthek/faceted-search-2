@@ -12,6 +12,8 @@ import FacetWithCount from "../common/facet_with_count";
 import FacetViewProperty from "./facet";
 import {TextFilters} from "../../common/datatypes";
 import {createPortal} from "react-dom";
+import DateRangeDialog from "../date-dialog/date_range_dialog";
+import {DateRangeDialogInput} from "../date-dialog/date_range_dialog_input";
 
 
 function FacetView(prop: {
@@ -41,6 +43,12 @@ function FacetView(prop: {
         prop.client
     );
 
+    const [openDateRangeDialog, handleCloseFacetDateRangeDialog, onDateRangeDialogClick] = DateRangeDialogInput.createDateRangeDialogState(
+        prop.searchStateDocument.query,
+        prop.client
+    );
+
+
     const listItems = propertyFacetCounts
         .filter((facetCount) => shownProperties.containsOrEmpty(facetCount.property.title))
         .filter((facetCount) => facetCount.property.title !== wikiContext.config['fs2gTagCloudProperty'])
@@ -53,6 +61,7 @@ function FacetView(prop: {
                            propertyFacetCount={facetCount}
                            eventHandler={prop.eventHandler}
                            onOrDialogClick={onOrDialogClick}
+                           onDateRangeDialog={onDateRangeDialogClick}
                            textFilters={prop.textFilters}
         />
     }
@@ -102,6 +111,12 @@ function FacetView(prop: {
                                      searchStateFacets={openOrDialog.facetResponse}
                                      baseQuery={prop.searchStateDocument.query}
                                      property={openOrDialog.property}
+                                     eventHandler={prop.eventHandler}
+        />, document.body)}
+        {createPortal(<DateRangeDialog open={openDateRangeDialog.open}
+                                     handleClose={handleCloseFacetDateRangeDialog}
+                                     searchStateFacets={openDateRangeDialog.facetResponse}
+                                     property={openDateRangeDialog.property}
                                      eventHandler={prop.eventHandler}
         />, document.body)}
 

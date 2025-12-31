@@ -10,11 +10,10 @@ function FacetExtensionPoint(prop: {
     expandedFacets: string[],
     eventHandler: EventHandler
 }) {
-    return <React.Fragment>
+    return <>
         {/* Put your extension components here */}
         <GisFacet searchStateDocument={prop.searchStateDocument} eventHandler={prop.eventHandler} />
-    </React.Fragment>;
-
+    </>;
 }
 
 export default FacetExtensionPoint;

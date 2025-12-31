@@ -1,7 +1,7 @@
 import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
 import {TextFilters} from "../../common/datatypes";
 import {WikiContext} from "../../index";
-import {useDebounce} from "../../util/custom_hooks";
+import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
 import {TextField} from "@mui/material";

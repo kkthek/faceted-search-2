@@ -9,7 +9,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
 import {WikiContext} from "../../index";
-import {useDebounce} from "../../util/custom_hooks";
+import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler from "../../common/event_handler";
 import Client from "../../common/client";
 import QueryUtils from "../../util/query_utils";
@@ -64,7 +64,7 @@ function FacetOrDialog(prop: {
     }
 
     return (
-        <React.Fragment>
+        <>
             <Dialog
                 open={prop.open}
                 onClose={prop.handleClose}
@@ -114,7 +114,7 @@ function FacetOrDialog(prop: {
                     <Button onClick={onOK} autoFocus>Ok</Button>
                 </DialogActions>
             </Dialog>
-        </React.Fragment>
+        </>
     );
 }
 
@@ -141,7 +141,7 @@ export class ORDialogInput {
 
         const onOrDialogClick = async function(p: Property): Promise<void> {
 
-            const query = QueryUtils.prepareQueryWithoutFacet(baseQuery, p);
+            const query = QueryUtils.prepareValueQueryWithoutFacet(baseQuery, p);
             const facetResponse = await client.searchFacets(query);
             setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
 
