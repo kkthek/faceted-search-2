@@ -11,7 +11,9 @@ class ValueDeserializer {
             return new Date(Date.parse(value))
         } else if (this.isNumeric(value)) {
             return parseFloat(value);
-        }else return value;
+        } else if (value === 'true' || value === 'false') {
+            return Boolean(value === 'true');
+        } else return value;
     }
 
     private static isNumeric(str: any) {

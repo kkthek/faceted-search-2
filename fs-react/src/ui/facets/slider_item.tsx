@@ -15,15 +15,16 @@ function SliderItem(prop: {
     searchStateFacets: FacetResponse,
     eventHandler: EventHandler,
 }) {
+    const propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(prop.property);
+    if (!propertyValueCount) return;
+
     const [range, setRange] = useState<Range>(Range.collapsedNumberRange());
 
-    const propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(prop.property);
-
-    const values = ObjectTools.deepClone(propertyValueCount?.values);
-    const first = values?.shift();
-    const last = values?.pop();
-    const min = first ? parseFloat(String(first.range.from)) : undefined;
-    const max = last ? parseFloat(String(last.range.to)) : undefined;
+    const values = ObjectTools.deepClone(propertyValueCount.values);
+    const first = values.shift();
+    const last = values.pop();
+    const min = first?.range.from as number;
+    const max = last?.range.to as number;
 
     useEffect(() => {
         setRange(new Range(min, max));
