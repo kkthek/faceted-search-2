@@ -13,6 +13,7 @@ import Span from "../../custom_ui/span";
 import {Property} from "../../common/property";
 import {FacetResponse} from "../../common/response/facet_response";
 import {PropertyFacetCount} from "../../common/response/property_facet_count";
+import SliderItem from "./slider_item";
 
 
 function FacetViewProperty(prop: {
@@ -54,13 +55,22 @@ function FacetViewProperty(prop: {
         />;
     }
 
-    let filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
+    const filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
                                          label={<FacetFilter eventHandler={prop.eventHandler}
                                                              numberOfValues={propertyValueCount?.values.length}
                                                              property={propertyValueCount?.property}
                                                              textFilters={prop.textFilters}
                                          />}
     />;
+
+    let sliderItem;
+    if (property.isNumericProperty()) {
+        sliderItem = <CustomTreeItem itemId={property.title+"-slider"}
+                                     label={<SliderItem eventHandler={prop.eventHandler}
+                                                        searchStateFacets={prop.searchStateFacets}
+                                                         property={property}/>}
+        />
+    }
 
     let getActionIcon = () => {
         if (facetsWithOr) {
@@ -84,6 +94,7 @@ function FacetViewProperty(prop: {
                                                                              action={action}
                                                                              className={'fs-facets'}>
         {filterTreeItem}
+        {sliderItem}
         {facetTreeItems}
         {showAllTreeItem}
 

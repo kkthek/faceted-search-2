@@ -3,6 +3,7 @@ import ValueDeserializer from "../util/value_deserializer";
 
 @jsonObject
 export class Range {
+    //FIXME: deserialize does not work for numbers
     @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     from: Date | number
     @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
@@ -15,7 +16,7 @@ export class Range {
 
     equals(that: Range | void) {
         if (!that) return false;
-        if (this.from as number && this.to as number) {
+        if (isFinite(this.from as number) && isFinite(this.to as number)) {
             return this.from === (that as Range).from && this.to === (that as Range).to;
         } else {
             return (this.from as Date).getTime() === (that.from as Date).getTime()
@@ -25,7 +26,7 @@ export class Range {
 
     withinRange(that: Range | void) {
         if (!that) return false;
-        if (this.from as number && this.to as number) {
+        if (isFinite(this.from as number) && isFinite(this.to as number)) {
             return this.from <= (that as Range).from && this.to >= (that as Range).to;
         } else {
             return (this.from as Date).getTime() <= (that.from as Date).getTime()
@@ -40,5 +41,9 @@ export class Range {
     static collapsedDateTimeRange(): Range {
         const date = new Date();
         return new Range(date, date);
+    }
+
+    static collapsedNumberRange(): Range {
+        return new Range(0, 0);
     }
 }
