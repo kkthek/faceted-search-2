@@ -21,8 +21,8 @@ function SliderItem(prop: {
     const [range, setRange] = useState<Range>(Range.collapsedNumberRange());
 
     const values = ObjectTools.deepClone(propertyValueCount.values);
-    const first = values.shift();
-    const last = values.pop();
+    const first = values.length === 1 ? values[0] : values.shift();
+    const last = values.length === 1 ?  values[0] : values.pop();
     const min = first?.range.from as number;
     const max = last?.range.to as number;
 
