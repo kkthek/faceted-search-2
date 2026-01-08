@@ -55,9 +55,12 @@ class DisplayTools {
     }
 
     static serializeFacetValue(p: Property, v: ValueCount): string {
-        if (v.value) {
+        if (v.value !== undefined) {
             if (p.type === Datatype.datetime) {
                 return this.displayDate(v.value as Date);
+            } else if (p.type === Datatype.boolean) {
+                const wikiContext = useContext(WikiContext);
+                return wikiContext.msg('fs-bool-value-'+v.value.toString());
             }
             return v.value.toString();
         } else if (v.mwTitle) {

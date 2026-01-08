@@ -27,6 +27,10 @@ export class Property {
         return this.type === Datatype.datetime;
     }
 
+    isNumericProperty() {
+        return this.type === Datatype.number;
+    }
+
     isFilterProperty() {
         return !this.isRangeProperty() && !this.isBooleanProperty();
     }

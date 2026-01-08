@@ -61,7 +61,7 @@ function SelectedFacet(prop: {
 
     let lastRangeTreeItem;
     if (propertyFacet.property.isRangeProperty()) {
-        const lastConstraint = propertyFacet.values.at(propertyFacet.values.length - 1);
+        const lastConstraint = propertyFacet.values[propertyFacet.values.length - 1];
         if (lastConstraint && !lastConstraint.isEmpty()) {
             const r = lastConstraint.range as Range;
             lastRangeTreeItem = <CustomTreeItem key={property.title+'_lastRange'}

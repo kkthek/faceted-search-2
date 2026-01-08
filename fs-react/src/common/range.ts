@@ -3,6 +3,7 @@ import ValueDeserializer from "../util/value_deserializer";
 
 @jsonObject
 export class Range {
+
     @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
     from: Date | number
     @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
@@ -40,5 +41,9 @@ export class Range {
     static collapsedDateTimeRange(): Range {
         const date = new Date();
         return new Range(date, date);
+    }
+
+    static collapsedNumberRange(): Range {
+        return new Range(0, 0);
     }
 }
