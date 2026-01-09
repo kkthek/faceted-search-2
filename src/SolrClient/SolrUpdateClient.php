@@ -11,7 +11,7 @@ use Exception;
 class SolrUpdateClient implements FacetedSearchUpdateClient
 {
 
-    public function updateDocuments(array $docs) {
+    public function updateDocuments(... $docs) {
 
         $xml = join("\n", array_map(fn($d) => $this->serializeAsXml($d), $docs));
         $this->updateSOLR("<add>$xml</add>");

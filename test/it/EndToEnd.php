@@ -12,7 +12,7 @@ final class EndToEnd extends TestCase {
     {
         $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
         $documentUpdater->clearAllDocuments();
-        $documentUpdater->updateDocument(TestData::generateData());
+        $documentUpdater->updateDocuments(TestData::generateData());
     }
 
     public function testDocumentQuery(): void

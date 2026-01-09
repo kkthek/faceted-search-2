@@ -5,6 +5,7 @@ import {Property} from "../src/common/property";
 import {MWTitle} from "../src/common/mw_title";
 import {FacetValue} from "../src/common/request/facet_value";
 import {PropertyFacet} from "../src/common/request/property_facet";
+import "../src/util/array_ext";
 
 /**
  * Faceted search 2

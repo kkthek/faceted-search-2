@@ -2,6 +2,7 @@ import Client from "../src/common/client";
 import {Datatype} from "../src/common/datatypes";
 import FacetsQueryBuilder from "../src/common/query_builders/facet_query_builder";
 import {Property} from "../src/common/property";
+import "../src/util/array_ext";
 
 /**
  * Faceted search 2
@@ -37,7 +38,7 @@ let logErrors = (e) => {
     //console.log("details: %o", e);
 }
 
-describe('fecets-search', function () {
+describe('facets-search', function () {
     it('request facets for datetime property', function () {
         globalResult = null;
 

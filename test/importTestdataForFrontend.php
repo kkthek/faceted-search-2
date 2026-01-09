@@ -58,6 +58,6 @@ setConfigForDevContext();
 
 $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
 $documentUpdater->clearAllDocuments();
-$documentUpdater->updateDocuments([TestData::generateData(),TestData::generateData2(),TestData::generateData3(),
-    TestData::generateData4(),TestData::generateData5()]);
+$documentUpdater->updateDocuments(TestData::generateData(),TestData::generateData2(),TestData::generateData3(),
+    TestData::generateData4(),TestData::generateData5());
 

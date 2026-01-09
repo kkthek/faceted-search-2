@@ -23,7 +23,7 @@ final class DocumentQueryTest extends BaseTest {
        $this->client = ConfigTools::getFacetedSearchClient();
        $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
        $documentUpdater->clearAllDocuments();
-       $documentUpdater->updateDocument(TestData::generateData());
+       $documentUpdater->updateDocuments(TestData::generateData());
     }
 
     public function testStringPropertyConstraint(): void
