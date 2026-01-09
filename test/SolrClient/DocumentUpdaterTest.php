@@ -20,7 +20,7 @@ final class DocumentUpdaterTest extends BaseTest {
 
         $updater = ConfigTools::getFacetedSearchUpdateClient();
         $updater->clearAllDocuments();
-        $xml = $updater->updateDocument($document);
+        $xml = $updater->updateDocuments($document);
 
         $this->assertNotEmpty($xml);
     }

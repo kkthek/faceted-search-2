@@ -19,7 +19,7 @@ final class StatsQueryTest extends BaseTest {
         $this->client = ConfigTools::getFacetedSearchClient();
         $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
         $documentUpdater->clearAllDocuments();
-        $documentUpdater->updateDocument(TestData::generateData());
+        $documentUpdater->updateDocuments(TestData::generateData());
     }
 
     public function testStatsQuery(): void
