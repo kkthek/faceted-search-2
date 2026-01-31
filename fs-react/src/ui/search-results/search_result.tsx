@@ -43,10 +43,10 @@ function getCssClasses(doc: Document) {
     const demotionProperty = wikiContext.config['fs2gDemotionProperty'];
 
     const classNames = [];
-    if (promotionProperty !== false && doc.containsTrueFacetValue(promotionProperty)) {
+    if (promotionProperty !== false && doc.containsFacetValue(promotionProperty, true)) {
         classNames.push('promoted');
     }
-    if (demotionProperty !== false && doc.containsTrueFacetValue(demotionProperty)) {
+    if (demotionProperty !== false && doc.containsFacetValue(demotionProperty, true)) {
         classNames.push('demoted');
     }
     return classNames;
