@@ -26,6 +26,10 @@ function GisDialog(prop: {
 
 }) {
 
+    if (!prop.open) {
+        return;
+    }
+
     const PROPERTY_COORDINATE_X = new Property('KoordinateX', Datatype.number);
     const PROPERTY_COORDINATE_Y = new Property('KoordinateY', Datatype.number);
 
@@ -67,10 +71,10 @@ function GisDialog(prop: {
         const koordXRange = koordX.values[0].range;
         const koordYRange = koordY.values[0].range;
         const minx = Math.floor((koordXRange as Range).from as number);
-        const miny = Math.floor((koordYRange as Range).from as number);
         const maxx = Math.floor((koordXRange as Range).to as number);
+        const miny = Math.floor((koordYRange as Range).from as number);
         const maxy = Math.floor((koordYRange as Range).to as number);
-        return [miny, maxy, minx, maxx];
+        return [minx, maxx, miny, maxy];
     }
 
     return (

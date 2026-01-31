@@ -18,7 +18,7 @@ class GisBrowserApi {
         const minx = Math.floor(extent.bottom);
         const maxx = Math.floor(extent.top);
 
-        return [miny, maxy, minx, maxx];
+        return [minx, maxx, miny, maxy];
     }
 
 }
