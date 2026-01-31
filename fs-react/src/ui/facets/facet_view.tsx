@@ -96,7 +96,7 @@ function FacetView(prop: {
                         }}
         >
             {listItems}
-            {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={<FacetWithCount displayTitle={'none'} />} />: ''}
+            {listItems.length === 0 ? <CustomTreeItem itemId={'none'} label={<FacetWithCount displayTitle={wikiContext.msg('fs-none')} />} />: ''}
             <FacetExtensionPoint key={'facetExtensionPoint'}
                                  client={prop.client}
                                  searchStateDocument={prop.searchStateDocument}
