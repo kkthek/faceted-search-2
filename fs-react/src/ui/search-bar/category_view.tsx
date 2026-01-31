@@ -59,7 +59,7 @@ function CategoryView( prop: {
 
     let noCategoriesItem;
     if (listItems.length === 0) {
-        noCategoriesItem =  <CustomTreeItem itemId={'none'} label={<FacetWithCount displayTitle={'none'}/>}></CustomTreeItem>;
+        noCategoriesItem =  <CustomTreeItem itemId={'none'} label={<FacetWithCount displayTitle={wikiContext.msg('fs-none')}/>}></CustomTreeItem>;
     }
 
     return <Box id={'fs-category-view'}>

@@ -48,5 +48,6 @@
     "fs-from":                  "Von",
     "fs-to":                    "Bis",
     "fs-ok":                    "OK",
-    "fs-cancel":                "Abbrechen"
+    "fs-cancel":                "Abbrechen",
+    "fs-none":                  "keine"
 }

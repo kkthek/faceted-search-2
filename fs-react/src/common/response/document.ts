@@ -2,7 +2,7 @@ import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 import {PropertyFacetValues} from "./property_facet_values";
 import {CategoryFacetValue} from "./category_facet_value";
 import {NamespaceFacetValue} from "./namespace_facet_value";
-import {ElementWithURL} from "../datatypes";
+import {ElementWithURL, ValueType} from "../datatypes";
 
 @jsonObject
 export class Document implements ElementWithURL {
@@ -35,10 +35,15 @@ export class Document implements ElementWithURL {
         return this.categoryFacets.findFirst((c: CategoryFacetValue) => c.category === category);
     }
 
-    containsTrueFacetValue(property: string) {
+    containsFacetValue(property: string, value: ValueType): boolean {
         let propertyFacetValues = this.getPropertyFacetValues(property);
         if (propertyFacetValues === null) return false;
-        let values = propertyFacetValues.values as boolean[];
-        return values.includes(true);
+        if ((value as Date).toUTCString) {
+            let values = propertyFacetValues.values as Date[];
+            return values.findFirst((d: Date) => d.getTime() === (value as Date).getTime()) !== null;
+        } else {
+            let values = propertyFacetValues.values as ValueType[];
+            return values.includes(value);
+        }
     }
 }
