@@ -191,7 +191,9 @@ class SolrResponseParser {
         }
 
         foreach ($this->body->facet_counts->facet_fields as $p => $values) {
-            if ($p === 'smwh_categories' || $p === 'smwh_attributes' || $p === 'smwh_properties' || $p === 'smwh_namespace_id') continue;
+            if ($p === 'smwh_categories' || $p === 'smwh_attributes' || $p === 'smwh_properties' || $p === 'smwh_namespace_id') {
+                continue;
+            }
             $property = $this->parseProperty($p);
             if ($property->getType() === Datatype::DATETIME || $property->getType() === Datatype::NUMBER) {
                 continue;

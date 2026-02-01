@@ -10,7 +10,7 @@ use DIQA\FacetedSearch2\Utils\ArrayTools;
 use DIQA\FacetedSearch2\Utils\WikiTools;
 use SMW\DataTypeRegistry;
 use SMWDataItem;
-use SMWDIProperty;
+use SMW\DIProperty as SMWDIProperty;
 
 class ConfigTools {
 

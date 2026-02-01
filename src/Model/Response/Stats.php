@@ -42,7 +42,7 @@ class Stats
     }
 
     /**
-     * @return int|null
+     * @return float|null
      */
     public function getMin(): ?float
     {
@@ -50,7 +50,7 @@ class Stats
     }
 
     /**
-     * @return int|null
+     * @return float|null
      */
     public function getMax(): ?float
     {
@@ -58,7 +58,7 @@ class Stats
     }
 
     /**
-     * @return int|null
+     * @return float|null
      */
     public function getCount(): ?float
     {
@@ -66,7 +66,7 @@ class Stats
     }
 
     /**
-     * @return int|null
+     * @return float|null
      */
     public function getSum(): ?float
     {

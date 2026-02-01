@@ -4,8 +4,8 @@ namespace DIQA\FacetedSearch2\Utils;
 
 use DIQA\FacetedSearch2\Update\FacetedSearchUtil;
 use MediaWiki\MediaWikiServices;
-use Title;
 use RequestContext;
+use MediaWiki\Title\Title;
 
 class WikiTools {
 

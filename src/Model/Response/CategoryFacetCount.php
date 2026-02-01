@@ -13,6 +13,7 @@ class CategoryFacetCount
     /**
      * CategoryFacetCount constructor.
      * @param string $category
+     * @param string $displayTitle
      * @param int $count
      */
     public function __construct(string $category, string $displayTitle, int $count)
