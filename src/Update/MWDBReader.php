@@ -39,8 +39,7 @@ class MWDBReader
      *      User readable messages (out)
      * @throws Exception
      */
-    public function fromWikiPage(WikiPage $wikiPage, string $rawText = null, array &$messages = []
-    ): Document
+    public function fromWikiPage(WikiPage $wikiPage, string $rawText = null, array &$messages = []): Document
     {
 
         $doc = [];
@@ -115,12 +114,12 @@ class MWDBReader
             }
             $content = $revision->getContent(SlotRecord::MAIN, RevisionRecord::RAW);
 
-            // supress warning due to old impl. of SMW\MediaWiki\Content\SchemaContent
+            // suppress warning due to old impl. of SMW\MediaWiki\Content\SchemaContent
             @$parserOut = MediaWikiServices::getInstance()->getContentRenderer()->getParserOutput($content, $wikiPage, $revision->getId());
         } else {
             // index latest revision
             $content = $wikiPage->getContent();
-            // supress warning due to old impl. of SMW\MediaWiki\Content\SchemaContent
+            // suppress warning due to old impl. of SMW\MediaWiki\Content\SchemaContent
             @$parserOut = MediaWikiServices::getInstance()->getContentRenderer()->getParserOutput($content, $wikiPage);
         }
 

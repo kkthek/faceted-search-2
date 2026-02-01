@@ -2,7 +2,6 @@
 
 namespace DIQA\FacetedSearch2\Model\Request;
 
-use DIQA\FacetedSearch2\Model\Common\Property;
 
 class StatsQuery extends BaseQuery {
 

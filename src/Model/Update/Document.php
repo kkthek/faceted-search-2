@@ -19,7 +19,7 @@ class Document {
      * @param string $id
      * @param string $title
      * @param string $displayTitle
-     * @param number $namespace
+     * @param int $namespace
      */
     public function __construct(string $id, string $title, string $displayTitle, $namespace)
     {
@@ -102,7 +102,7 @@ class Document {
     }
 
     /**
-     * @return number
+     * @return float|null
      */
     public function getBoost(): ?float
     {
