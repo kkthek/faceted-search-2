@@ -1,7 +1,7 @@
 {
 	"name": "FacetedSearch2",
 	"author": [
-		"[http://www.diqa-pm.com DIQA]"
+		"[https://www.diqa.de DIQA]"
 	],
 	"url": "https://github.com/kkthek/faceted-search2",
 	"descriptionmsg": "facetedsearch2-desc",
@@ -9,9 +9,9 @@
 	"type": "other",
 	"version": "2.3",
 	"requires": {
-		"MediaWiki": ">= 1.35",
+		"MediaWiki": ">= 1.43",
 		"platform": {
-			"php": ">= 7.3"
+			"php": ">= 8.3"
 		}
 	},
 	"callback" : "DIQA\\FacetedSearch2\\Setup::initModules",

@@ -6,7 +6,6 @@ use MediaWiki\MediaWikiServices;
 use OutputPage;
 use RequestContext;
 use Skin;
-use SMWDIProperty;
 
 class Setup
 {

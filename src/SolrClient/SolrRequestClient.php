@@ -21,7 +21,7 @@ use DIQA\FacetedSearch2\Model\Response\StatsResponse;
 use DIQA\FacetedSearch2\Utils\WikiTools;
 use Exception;
 use MediaWiki\MediaWikiServices;
-use Title;
+use MediaWiki\Title\Title;
 
 class SolrRequestClient implements FacetedSearchClient
 {
