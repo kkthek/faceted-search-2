@@ -27,23 +27,19 @@ export function initCallFinishedDialog() {
     };
 }
 
-export function initConfirmDialog(label: string, fullUrl: string, openNewTab: boolean, callEndpoint: (fullUrl: string) => void) {
+export function initConfirmDialog(message: string, callback: () => void) {
     const confirm = useConfirm();
     const wikiContext = useContext(WikiContext);
     return async () => {
         const ok = await confirm({
             title: wikiContext.msg('fs-please-confirm'),
-            message: label + '?',
+            message: message,
             confirmText: wikiContext.msg('fs-ok'),
             cancelText: wikiContext.msg('fs-cancel'),
         });
 
         if (ok) {
-            if (openNewTab) {
-                window.open(fullUrl, '_blank');
-            } else {
-                callEndpoint(fullUrl);
-            }
+            callback();
         }
     };
 }

@@ -45,8 +45,8 @@ class LinkConfigAccessor {
 function UserDefinedLinks(prop: { doc: Document, client: Client }) {
 
     const showCallFinishedDialog = initCallFinishedDialog();
-    const callEndpoint = (fullUrl: string) => {
-        prop.client.getCustomEndpoint(fullUrl).then(
+    const callPostEndpoint = (fullUrl: string) => {
+        prop.client.postCustomEndpoint(fullUrl).then(
             (response) => showCallFinishedDialog('success', response),
             (error) => showCallFinishedDialog('error', error)
         )
@@ -79,15 +79,34 @@ function UserDefinedLinks(prop: { doc: Document, client: Client }) {
         const openNewTab = linkConfigUtil.shouldOpenNewTab(label);
         if (linkConfigUtil.shouldConfirm(label)) {
 
-            const showConfirmDialog = initConfirmDialog(label, fullUrl, openNewTab, callEndpoint);
-            items.push(<Link sx={{cursor: 'pointer'}} onClick={showConfirmDialog} key={prop.doc.id + label}>{`[${label}]`}</Link>);
+            const message = label + '?';
+            const showConfirmDialog = initConfirmDialog(message, () => {
+                if (openNewTab) {
+                    window.open(fullUrl, '_blank');
+                } else {
+                    callPostEndpoint(fullUrl);
+                }
+            });
+            items.push(<Link sx={{cursor: 'pointer'}}
+                             onClick={showConfirmDialog}
+                             key={prop.doc.id + label}>
+                {`[${label}]`}
+            </Link>);
 
         } else {
 
             if (openNewTab) {
-                items.push(<Link key={prop.doc.id + label} target={'_blank'} href={fullUrl}>{`[${label}]`}</Link>);
+                items.push(<Link key={prop.doc.id + label}
+                                 target={'_blank'}
+                                 href={fullUrl}>
+                    {`[${label}]`
+                    }</Link>);
             } else {
-                items.push(<Link sx={{cursor: 'pointer'}} key={prop.doc.id + label} onClick={() => callEndpoint(fullUrl)}>{`[${label}]`}</Link>);
+                items.push(<Link sx={{cursor: 'pointer'}}
+                                 key={prop.doc.id + label}
+                                 onClick={() => callPostEndpoint(fullUrl)}>
+                    {`[${label}]`}
+                </Link>);
             }
         }
     }
