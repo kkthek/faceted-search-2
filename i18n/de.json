@@ -44,5 +44,6 @@
     "fs-to":                    "Bis",
     "fs-ok":                    "OK",
     "fs-cancel":                "Abbrechen",
-    "fs-none":                  "keine"
+    "fs-none":                  "keine",
+    "fs-main-namespace":        "Haupt"
 }

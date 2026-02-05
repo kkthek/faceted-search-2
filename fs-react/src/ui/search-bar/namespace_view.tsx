@@ -4,6 +4,7 @@ import EventHandler, {SearchStateDocument} from "../../common/event_handler";
 import {ToggleButton, ToggleButtonGroup} from "@mui/material";
 import FacetWithCount from "../common/facet_with_count";
 import {NamespaceFacetCount} from "../../common/response/namespace_facet_count";
+import ConfigUtils from "../../util/config_utils";
 
 function NamespaceFacet(prop: {
     namespaceFacetCount: NamespaceFacetCount | null,
@@ -13,13 +14,14 @@ function NamespaceFacet(prop: {
     const namespaces = wikiContext.config['wgFormattedNamespaces'];
 
 
-    let namespaceText = namespaces[prop.namespaceFacetCount.namespace] ?? 'unknown namespace';
-    namespaceText = namespaceText === '' ? 'Main' : namespaceText;
+    const namespaceIndex = prop.namespaceFacetCount.namespace;
+    let namespaceText = namespaces[namespaceIndex] ?? 'unknown namespace: ' + namespaceIndex;
+    namespaceText = namespaceText === '' ? wikiContext.msg('fs-main-namespace') : namespaceText;
     const countText = prop.namespaceFacetCount.count > 0 ? prop.namespaceFacetCount.count : undefined;
 
     return <ToggleButton sx={{marginTop: '3px'}}
                          size={'small'}
-                         value={prop.namespaceFacetCount.namespace}>
+                         value={namespaceIndex}>
         <FacetWithCount displayTitle={namespaceText} count={countText}/>
     </ToggleButton>
 }
@@ -57,9 +59,7 @@ function NamespaceView(prop: {
     const namespacesToShow = wikiContext.config['fs2gNamespacesToShow'];
     const listItems = namespaceFacetCounts
         .filter(facetCount => namespacesToShow.containsOrEmpty(facetCount.namespace))
-        .sort((a: NamespaceFacetCount, b: NamespaceFacetCount) =>
-            namespacesToShow.indexOf(a.namespace)
-            - namespacesToShow.indexOf(b.namespace))
+        .sort(ConfigUtils.getSortFunction(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount) => {
             return <NamespaceFacet key={facetCount.namespace} namespaceFacetCount={facetCount} />
     });
