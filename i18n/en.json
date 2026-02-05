@@ -45,5 +45,9 @@
     "fs-ok":                    "OK",
     "fs-cancel":                "Cancel",
     "fs-none":                  "none",
-    "fs-main-namespace":        "Main"
+    "fs-main-namespace":        "Main",
+    "fs-please-confirm":        "Please confirm",
+    "fs-operation-successful": "Operation successful.",
+    "fs-generic-error-message": "Some error appeared. See console for details.",
+    "fs-error-message":         "Error"
 }

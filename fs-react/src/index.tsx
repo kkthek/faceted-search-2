@@ -34,6 +34,7 @@ import {Property} from "./common/property";
 import {PropertyValueQuery} from "./common/request/property_value_query";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorComponent from "./ui/common/error_component";
+import {ConfirmProvider} from "react-use-confirming-dialog";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -212,7 +213,9 @@ function render(children: React.ReactNode) {
 function startApp() {
     applyQueryConstraints();
     render(<ErrorBoundary FallbackComponent={ErrorComponent}>
-        <App/>
+        <ConfirmProvider>
+            <App/>
+        </ConfirmProvider>
     </ErrorBoundary>);
 }
 

@@ -29,7 +29,7 @@ function SearchResult(prop: { doc: Document, client: Client}) {
                 <Span dangerouslySetInnerHTML={{ __html: snippet }}></Span>
             </Typography>
             <CategoriesInTitle doc={prop.doc}/>
-            <UserDefinedLinks doc={prop.doc}/>
+            <UserDefinedLinks doc={prop.doc} client={prop.client}/>
             <Annotations doc={prop.doc}/>
             <ArticleProperties doc={prop.doc} client={prop.client}/>
         </Box>
