@@ -14,24 +14,56 @@ export class Range {
         this.to = to;
     }
 
-    equals(that: Range | void) {
+    equals(that?: Range): boolean {
         if (!that) return false;
-        if (this.from as number && this.to as number) {
-            return this.from === (that as Range).from && this.to === (that as Range).to;
-        } else {
+
+        const thisFromIsNumber = typeof this.from === "number";
+        const thisToIsNumber = typeof this.to === "number";
+        const thatFromIsNumber = typeof that.from === "number";
+        const thatToIsNumber = typeof that.to === "number";
+
+        if (thisFromIsNumber && thisToIsNumber && thatFromIsNumber && thatToIsNumber) {
+            return this.from === that.from && this.to === that.to;
+        }
+
+        const thisFromIsDate = this.from instanceof Date;
+        const thisToIsDate = this.to instanceof Date;
+        const thatFromIsDate = that.from instanceof Date;
+        const thatToIsDate = that.to instanceof Date;
+
+        if (thisFromIsDate && thisToIsDate && thatFromIsDate && thatToIsDate) {
             return (this.from as Date).getTime() === (that.from as Date).getTime()
                 && (this.to as Date).getTime() === (that.to as Date).getTime();
         }
+
+        // mixed types (number/date) can't be equal
+        return false;
     }
 
-    withinRange(that: Range | void) {
+    withinRange(that?: Range): boolean {
         if (!that) return false;
-        if (this.from as number && this.to as number) {
-            return this.from <= (that as Range).from && this.to >= (that as Range).to;
-        } else {
+
+        const thisFromIsNumber = typeof this.from === "number";
+        const thisToIsNumber = typeof this.to === "number";
+        const thatFromIsNumber = typeof that.from === "number";
+        const thatToIsNumber = typeof that.to === "number";
+
+        if (thisFromIsNumber && thisToIsNumber && thatFromIsNumber && thatToIsNumber) {
+            return this.from <= that.from && this.to >= that.to;
+        }
+
+        const thisFromIsDate = this.from instanceof Date;
+        const thisToIsDate = this.to instanceof Date;
+        const thatFromIsDate = that.from instanceof Date;
+        const thatToIsDate = that.to instanceof Date;
+
+        if (thisFromIsDate && thisToIsDate && thatFromIsDate && thatToIsDate) {
             return (this.from as Date).getTime() <= (that.from as Date).getTime()
                 && (this.to as Date).getTime() >= (that.to as Date).getTime();
         }
+
+        // mixed types (number/date) can't be compared meaningfully here
+        return false;
     }
 
     toString(): string {
