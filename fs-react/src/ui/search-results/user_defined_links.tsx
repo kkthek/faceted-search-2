@@ -1,12 +1,11 @@
 import React, {useContext} from "react";
 import {WikiContext} from "../../index";
 import ValueSerializer from "../../util/value_serializer";
-import {Link} from "@mui/material";
 import UserDefinedLinksExtensionPoint from "../../extensions/user_defined_links_ep";
 import ConfigUtils from "../../util/config_utils";
 import {Document} from "../../common/response/document";
 import Client from "../../common/client";
-import {initCallFinishedDialog, initConfirmDialog} from "../../util/confirm_dialogs";
+import RequestLoader from "./request_loader";
 
 interface LinkConfig {
     [key: string]: string | ActionLink;
@@ -44,14 +43,6 @@ class LinkConfigAccessor {
 
 function UserDefinedLinks(prop: { doc: Document, client: Client }) {
 
-    const showCallFinishedDialog = initCallFinishedDialog();
-    const callPostEndpoint = (fullUrl: string) => {
-        prop.client.postCustomEndpoint(fullUrl).then(
-            (response) => showCallFinishedDialog('success', response),
-            (error) => showCallFinishedDialog('error', error)
-        )
-    }
-
     const wikiContext = useContext(WikiContext);
     const wgServer = wikiContext.config["wgServer"];
     const wgScriptPath = wikiContext.config["wgScriptPath"];
@@ -77,38 +68,15 @@ function UserDefinedLinks(prop: { doc: Document, client: Client }) {
         fullUrl = ConfigUtils.replaceMagicWords(prop.doc, fullUrl, wikiContext);
 
         const openNewTab = linkConfigUtil.shouldOpenNewTab(label);
-        if (linkConfigUtil.shouldConfirm(label)) {
-
-            const message = label + '?';
-            const showConfirmDialog = initConfirmDialog(message, () => {
-                if (openNewTab) {
-                    window.open(fullUrl, '_blank');
-                } else {
-                    callPostEndpoint(fullUrl);
-                }
-            });
-            items.push(<Link sx={{cursor: 'pointer'}}
-                             onClick={showConfirmDialog}
-                             key={prop.doc.id + label}>
-                {`[${label}]`}
-            </Link>);
-
-        } else {
-
-            if (openNewTab) {
-                items.push(<Link key={prop.doc.id + label}
-                                 target={'_blank'}
-                                 href={fullUrl}>
-                    {`[${label}]`
-                    }</Link>);
-            } else {
-                items.push(<Link sx={{cursor: 'pointer'}}
-                                 key={prop.doc.id + label}
-                                 onClick={() => callPostEndpoint(fullUrl)}>
-                    {`[${label}]`}
-                </Link>);
-            }
-        }
+        let shouldConfirm = linkConfigUtil.shouldConfirm(label);
+        items.push(<RequestLoader label={label}
+                                  key={label}
+                                  client={prop.client}
+                                  doc={prop.doc}
+                                  fullUrl={fullUrl}
+                                  showConfirm={shouldConfirm}
+                                  openNewTab={openNewTab}
+        />);
     }
     return <>
         {ValueSerializer.join(items, ' ')}

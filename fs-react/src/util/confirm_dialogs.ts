@@ -13,6 +13,9 @@ export function initCallFinishedDialog() {
                 message: '',
                 confirmText: wikiContext.msg('fs-ok'),
                 cancelText: wikiContext.msg('fs-cancel'),
+                dialogTextFont: '"Roboto","Helvetica","Arial",sans-serif',
+                cancelTextFont: '"Roboto","Helvetica","Arial",sans-serif',
+                confirmTextFont: '"Roboto","Helvetica","Arial",sans-serif'
             });
 
         } else {
@@ -36,6 +39,9 @@ export function initConfirmDialog(message: string, callback: () => void) {
             message: message,
             confirmText: wikiContext.msg('fs-ok'),
             cancelText: wikiContext.msg('fs-cancel'),
+            dialogTextFont: '"Roboto","Helvetica","Arial",sans-serif',
+            cancelTextFont: '"Roboto","Helvetica","Arial",sans-serif',
+            confirmTextFont: '"Roboto","Helvetica","Arial",sans-serif'
         });
 
         if (ok) {
