@@ -109,8 +109,13 @@ function setConfigForDevContext() {
     global $fs2gAdditionalLinks;
     $fs2gAdditionalLinks = [
         "Employee" => [
-            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{CurrentUser}&Objekt={SMW:Has spouse}",
-            "Objektjournal öffnen" => "{SMW:ODB-ID.replace('Objekt','Journal'}"
+            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{CurrentUser}&Objekt={SMW:Has spouse}&Title={Title}&Namespace={NamespaceIndex}",
+            "Objektjournal öffnen" => "{SMW:ODB-ID.replace('Objekt','Journal'}",
+            "Test confirm" => [
+                "url" => 'test/confirm',
+                "confirm" => true,
+                "openNewTab" => false
+            ]
         ],
         "Pensionist" => [
             "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{CurrentUser}&Objekt={SMW:Has spouse}",

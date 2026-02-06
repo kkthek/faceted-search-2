@@ -100,6 +100,15 @@ class Client {
         return await response.json();
     }
 
+    async postCustomEndpoint(url: string): Promise<any> {
+        const response = await fetch(url, {
+            ...HTTP_REQUEST_OPTIONS,
+            method: "POST"
+        });
+        await this.handleErrorIfAny(response);
+        return await response.json();
+    }
+
     async getSettingsForDevContext(): Promise<any> {
         const response = await fetch(this.baseUrl + "/settings", {
             ...HTTP_REQUEST_OPTIONS

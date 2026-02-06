@@ -1,7 +1,8 @@
 import {jsonMember, jsonObject} from "typedjson";
+import {Sortable} from "../datatypes";
 
 @jsonObject
-export class NamespaceFacetCount {
+export class NamespaceFacetCount implements Sortable<NamespaceFacetCount>  {
     @jsonMember(Number)
     namespace: number;
     @jsonMember(String)
@@ -14,5 +15,13 @@ export class NamespaceFacetCount {
         this.namespace = namespace;
         this.displayTitle = displayTitle;
         this.count = count;
+    }
+
+    compareAlphabetically(that: NamespaceFacetCount): number {
+        return this.displayTitle.toLowerCase().localeCompare(that.displayTitle.toLowerCase());
+    }
+
+    compareByCount(that: NamespaceFacetCount): number {
+        return that.count - this.count;
     }
 }

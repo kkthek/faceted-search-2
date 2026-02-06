@@ -75,7 +75,11 @@ class ConfigUtils {
     }
 
     static replaceMagicWords(doc: Document, url: string, wikiContext: WikiContextInterface) {
-        return url.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
+        let s = url;
+        s = s.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
+        s = s.replace('{Title}', encodeURIComponent(doc.title));
+        s = s.replace('{NamespaceIndex}', encodeURIComponent(doc.namespaceFacet.namespace.toString()));
+        return s;
     }
 
 }
