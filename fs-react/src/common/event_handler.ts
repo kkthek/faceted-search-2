@@ -37,8 +37,7 @@ class EventHandler {
     private readonly setExpandedFacets: Dispatch<SetStateAction<string[]>>;
     private readonly setError: Dispatch<SetStateAction<string>>;
     private readonly setTextFiltersState: Dispatch<SetStateAction<TextFilters>>;
-    private readonly facetValueLimit: number;
-    private readonly tagCloudProperty: string;
+    private readonly wikiContext: WikiContextInterface;
     private expandedFacets: string[];
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
@@ -57,8 +56,7 @@ class EventHandler {
         this.setFacetState = setFacetState;
         this.setError = setError;
         this.setTextFiltersState = setTextFilters;
-        this.facetValueLimit = wikiContext.config.fs2gFacetValueLimit;
-        this.tagCloudProperty = wikiContext.config.fs2gTagCloudProperty;
+        this.wikiContext = wikiContext;
 
         this.expandedFacets = [];
         this.setExpandedFacets = setExpandedFacets;
@@ -70,7 +68,7 @@ class EventHandler {
         this.setTextFiltersState(filter);
     }
 
-    resetTextFilters(): void {
+    private resetTextFilters(): void {
         this.setTextFiltersState({});
     }
 
@@ -90,9 +88,8 @@ class EventHandler {
             .withSearchText(text)
             .withOffset(0);
 
-        this.updateDocuments();
-        this.updateFacets();
         this.resetTextFilters();
+        return Promise.all([this.updateDocuments(), this.updateFacets()]);
     }
 
     onSortChange(sort: Sort) {
@@ -101,7 +98,7 @@ class EventHandler {
             .withSort(sort)
             .withOffset(0);
 
-        this.updateDocuments();
+        return this.updateDocuments();
     }
 
     onPropertyClick(p: Property) {
@@ -110,14 +107,13 @@ class EventHandler {
             .withOffset(0);
 
         this.expandFacet(p.getItemId());
-        this.updateDocuments();
-        this.updateFacetValuesForProperty(p, this.facetValueLimit);
         this.resetTextFilters();
+        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperty(p, this.wikiContext.config.fs2gFacetValueLimit)]);
     }
 
     onExpandFacetClick(p: Property) {
         this.expandFacet(p.getItemId());
-        this.updateFacetValuesForProperty(p, this.facetValueLimit);
+        return this.updateFacetValuesForProperty(p, this.wikiContext.config.fs2gFacetValueLimit);
     }
 
     onExpandSelectedFacetClick(itemId: string) {
@@ -142,9 +138,8 @@ class EventHandler {
             .withPropertyFacet(propertyFacet);
 
         this.expandFacet(property.getItemId());
-        this.updateDocuments();
-        this.updateFacetValuesForProperty(property, this.facetValueLimit);
         this.resetTextFilters();
+        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)]);
     }
 
     onValuesClick(propertyFacets: PropertyFacet[], removeOld: boolean = true) {
@@ -158,14 +153,13 @@ class EventHandler {
                 .withPropertyFacet(pf);
         });
 
-        this.updateDocuments();
 
         let properties = propertyFacets.map(pf => pf.getProperty());
         properties.forEach(property => {
             this.expandFacet(property.getItemId());
         });
-        this.updateFacetValuesForProperties(properties, this.facetValueLimit);
         this.resetTextFilters();
+        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperties(properties, this.wikiContext.config.fs2gFacetValueLimit)]);
     }
 
     onRemoveAllFacetsForProperty(property: Property) {
@@ -177,10 +171,9 @@ class EventHandler {
             .clearRangeQueriesForProperty(property)
             .clearPropertyValueQueryForProperty(property);
 
-        this.updateDocuments();
         this.expandFacet(property.getItemId());
-        this.updateFacetValuesForProperty(property, this.facetValueLimit);
         this.resetTextFilters();
+        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)]);
 
     }
 
@@ -198,9 +191,8 @@ class EventHandler {
                 .clearPropertyValueQueryForProperty(property);
         }
 
-        this.updateDocuments();
-        this.updateFacetValuesForProperty(property, this.facetValueLimit);
         this.resetTextFilters();
+        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)]);
     }
 
     onFacetValueContains(text: string, property: Property) {
@@ -211,7 +203,7 @@ class EventHandler {
 
         let propertyValueConstraint = new PropertyValueQuery(
             property,
-            this.facetValueLimit,
+            this.wikiContext.config.fs2gFacetValueLimit,
             null,
             text === '' ? null : text);
         if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueConstraint)) {
@@ -219,7 +211,7 @@ class EventHandler {
         }
 
         this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueConstraint);
-        this.updateFacets();
+        return this.updateFacets();
     }
 
     onShowAllValues(property: Property, filterText: string) {
@@ -233,7 +225,7 @@ class EventHandler {
         }
 
         this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueQuery);
-        this.updateFacets();
+        return this.updateFacets();
     }
 
     onNamespaceClick(namespaces: number[]) {
@@ -241,9 +233,8 @@ class EventHandler {
             .withNamespaceFacets(namespaces)
             .withOffset(0);
 
-        this.updateDocuments();
-        this.updateFacets();
         this.resetTextFilters();
+        return Promise.all([this.updateDocuments(), this.updateFacets()]);
     }
 
     onCategoryClick(category: string) {
@@ -251,15 +242,14 @@ class EventHandler {
             .withOffset(0)
             .withCategoryFacet(category);
 
-        this.updateDocuments();
-        this.updateFacets();
         this.resetTextFilters();
+        return Promise.all([this.updateDocuments(), this.updateFacets()]);
     }
 
     onCategoryDropDownClick(category: string) {
         this.currentDocumentsQueryBuilder
             .clearCategoryFacets();
-        this.onCategoryClick(category);
+        return this.onCategoryClick(category);
     }
 
     onCategoryRemoveClick(category: string) {
@@ -267,15 +257,14 @@ class EventHandler {
             .withOffset(0)
             .withoutCategoryFacet(category);
 
-        this.updateDocuments();
-        this.updateFacets();
+        return Promise.all([this.updateDocuments(), this.updateFacets()]);
     }
 
     onPageIndexClick(pageIndex: number, limit: number) {
         this.currentDocumentsQueryBuilder
             .withOffset((pageIndex - 1) * limit);
 
-        this.updateDocuments();
+        return this.updateDocuments();
     }
 
     onRemoveAllFacetsClick() {
@@ -286,17 +275,16 @@ class EventHandler {
         this.setTagCloudValueQuery();
 
         this.setExpandedFacets([]);
-        this.updateDocuments();
-        this.updateFacets();
+        return Promise.all([this.updateDocuments(), this.updateFacets()]);
     }
 
     private setTagCloudValueQuery() {
-        if (this.tagCloudProperty === '') {
+        if (this.wikiContext.config.fs2gTagCloudProperty === '') {
             return;
         }
         this.currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(
-            new Property(this.tagCloudProperty, Datatype.string),
-            this.facetValueLimit
+            new Property(this.wikiContext.config.fs2gTagCloudProperty, Datatype.string),
+            this.wikiContext.config.fs2gFacetValueLimit
         ));
     }
 
@@ -323,16 +311,16 @@ class EventHandler {
                 this.currentFacetsQueryBuilder.withRangeQuery(p);
             });
 
-        this.updateFacets();
+        return this.updateFacets();
 
     }
 
     private updateFacetValuesForProperty(property: Property, facetValueLimit: number = null) {
-        this.updateFacetValuesForProperties([property], facetValueLimit);
+        return this.updateFacetValuesForProperties([property], facetValueLimit);
     }
 
     private updateDocuments() {
-        this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
+        return this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
                 query: this.currentDocumentsQueryBuilder.build()
@@ -347,7 +335,7 @@ class EventHandler {
 
     private updateFacets() {
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
-        this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
+        return this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
             this.setFacetState({
                 facetsResponse: response,
                 query: this.currentFacetsQueryBuilder.build()
