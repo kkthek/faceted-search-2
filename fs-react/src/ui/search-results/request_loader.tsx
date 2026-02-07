@@ -4,6 +4,7 @@ import {initCallFinishedDialog, initConfirmDialog} from "../../util/confirm_dial
 import Client from "../../common/client";
 import {Link} from "@mui/material";
 import {Document} from "../../common/response/document";
+import Loader from "../../util/loader";
 
 const RequestLoader = (prop: {
     client: Client,
@@ -49,11 +50,6 @@ const RequestLoader = (prop: {
             loadPromise={loadPromise}></Loader></Suspense> : undefined}
     </>
 
-}
-
-function Loader(prop: { loadPromise: Promise<any> }) {
-    use(prop.loadPromise);
-    return <></>;
 }
 
 export default RequestLoader

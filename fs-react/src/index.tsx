@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React, {createContext, useState} from 'react';
+import React, {createContext, Suspense, use, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search-bar/search_bar_view";
 import ResultView from "./ui/search-results/result_view";
@@ -35,6 +35,9 @@ import {PropertyValueQuery} from "./common/request/property_value_query";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorComponent from "./ui/common/error_component";
 import {ConfirmProvider} from "react-use-confirming-dialog";
+import {BarLoader} from "react-spinners";
+import Box from "@mui/material/Box";
+import Loader from "./util/loader";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -57,6 +60,7 @@ function App() {
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
     const [textFilters, setTextFilters] = useState<TextFilters>({});
     const [error, setError] = useState('');
+    const [loadPromise, setLoadPromise] = useState<Promise<any>>(null);
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
@@ -66,6 +70,7 @@ function App() {
         setExpandedFacets,
         setError,
         setTextFilters,
+        setLoadPromise,
         wikiContext,
         client
     );
@@ -80,8 +85,11 @@ function App() {
     const currentDocumentQuery = currentDocumentsQueryBuilder.build();
     return <WikiContext.Provider value={wikiContext}>
         <ThemeProvider theme={DEFAULT_THEME}>
-        <div id={'fs-content'}>
-            <div id={'fs-header'} className={'fs-boxes'}>
+        <Box id={'fs-content'}>
+            <Box height={'5px'} width={'100%'}>
+                <Suspense fallback={<BarLoader width={'100%'}/>}><Loader loadPromise={loadPromise} /></Suspense>
+            </Box>
+            <Box id={'fs-header'} className={'fs-boxes'}>
                 {[
                     <SortView key={'sortView'}
                               eventHandler={eventHandler}
@@ -102,7 +110,7 @@ function App() {
                     />
                 ].reorder(headerControlsOrder)}
 
-            </div>
+            </Box>
 
             <NamespaceView key={'namespaceView'}
                            searchStateDocument={searchStateDocument}
@@ -115,7 +123,7 @@ function App() {
                            textFilters={textFilters}
             />
 
-            <div id={'fs-facets'} className={'fs-boxes fs-body'}>
+            <Box id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {[
                     <SelectedFacetsHeader key={'selectedFacetHeader'} query={currentDocumentQuery}/>,
 
@@ -164,16 +172,16 @@ function App() {
                                   eventHandler={eventHandler}
                     />
                 ].reorder(facetControlsOrder)}
-            </div>
-            <div id={'fs-results'}>
+            </Box>
+            <Box id={'fs-results'}>
                 <ResultView results={searchStateDocument?.documentResponse.docs ?? []}
                             numResults={searchStateDocument?.documentResponse.numResults ?? 0}
                             pageOffset={currentDocumentQuery.offset}
                             eventHandler={eventHandler}
                             client={client}/>
-            </div>
+            </Box>
             <ErrorView error={error} setError={setError}/>
-        </div>
+        </Box>
         </ThemeProvider>
     </WikiContext.Provider>;
 }

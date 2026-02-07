@@ -37,6 +37,7 @@ class EventHandler {
     private readonly setExpandedFacets: Dispatch<SetStateAction<string[]>>;
     private readonly setError: Dispatch<SetStateAction<string>>;
     private readonly setTextFiltersState: Dispatch<SetStateAction<TextFilters>>;
+    private readonly setLoadPromise: Dispatch<SetStateAction<Promise<any>>>;
     private readonly wikiContext: WikiContextInterface;
     private expandedFacets: string[];
 
@@ -47,6 +48,7 @@ class EventHandler {
                 setExpandedFacets: Dispatch<SetStateAction<string[]>>,
                 setError: Dispatch<SetStateAction<string>>,
                 setTextFilters: Dispatch<SetStateAction<TextFilters>>,
+                setLoadPromise: Dispatch<SetStateAction<Promise<any>>>,
                 wikiContext: WikiContextInterface,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
@@ -56,6 +58,7 @@ class EventHandler {
         this.setFacetState = setFacetState;
         this.setError = setError;
         this.setTextFiltersState = setTextFilters;
+        this.setLoadPromise = setLoadPromise;
         this.wikiContext = wikiContext;
 
         this.expandedFacets = [];
@@ -89,7 +92,10 @@ class EventHandler {
             .withOffset(0);
 
         this.resetTextFilters();
-        return Promise.all([this.updateDocuments(), this.updateFacets()]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacets()
+        ]));
     }
 
     onSortChange(sort: Sort) {
@@ -98,7 +104,7 @@ class EventHandler {
             .withSort(sort)
             .withOffset(0);
 
-        return this.updateDocuments();
+        this.setLoadPromise(this.updateDocuments());
     }
 
     onPropertyClick(p: Property) {
@@ -108,12 +114,15 @@ class EventHandler {
 
         this.expandFacet(p.getItemId());
         this.resetTextFilters();
-        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperty(p, this.wikiContext.config.fs2gFacetValueLimit)]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacetValuesForProperty(p, this.wikiContext.config.fs2gFacetValueLimit)
+        ]));
     }
 
     onExpandFacetClick(p: Property) {
         this.expandFacet(p.getItemId());
-        return this.updateFacetValuesForProperty(p, this.wikiContext.config.fs2gFacetValueLimit);
+        this.setLoadPromise(this.updateFacetValuesForProperty(p, this.wikiContext.config.fs2gFacetValueLimit));
     }
 
     onExpandSelectedFacetClick(itemId: string) {
@@ -139,7 +148,10 @@ class EventHandler {
 
         this.expandFacet(property.getItemId());
         this.resetTextFilters();
-        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)
+        ]));
     }
 
     onValuesClick(propertyFacets: PropertyFacet[], removeOld: boolean = true) {
@@ -159,7 +171,10 @@ class EventHandler {
             this.expandFacet(property.getItemId());
         });
         this.resetTextFilters();
-        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperties(properties, this.wikiContext.config.fs2gFacetValueLimit)]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacetValuesForProperties(properties, this.wikiContext.config.fs2gFacetValueLimit)
+        ]));
     }
 
     onRemoveAllFacetsForProperty(property: Property) {
@@ -173,7 +188,10 @@ class EventHandler {
 
         this.expandFacet(property.getItemId());
         this.resetTextFilters();
-        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)
+        ]));
 
     }
 
@@ -192,7 +210,10 @@ class EventHandler {
         }
 
         this.resetTextFilters();
-        return Promise.all([this.updateDocuments(), this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)
+        ]));
     }
 
     onFacetValueContains(text: string, property: Property) {
@@ -211,7 +232,7 @@ class EventHandler {
         }
 
         this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueConstraint);
-        return this.updateFacets();
+        this.setLoadPromise(this.updateFacets());
     }
 
     onShowAllValues(property: Property, filterText: string) {
@@ -225,7 +246,7 @@ class EventHandler {
         }
 
         this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueQuery);
-        return this.updateFacets();
+        this.setLoadPromise(this.updateFacets());
     }
 
     onNamespaceClick(namespaces: number[]) {
@@ -234,7 +255,10 @@ class EventHandler {
             .withOffset(0);
 
         this.resetTextFilters();
-        return Promise.all([this.updateDocuments(), this.updateFacets()]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacets()
+        ]));
     }
 
     onCategoryClick(category: string) {
@@ -243,7 +267,10 @@ class EventHandler {
             .withCategoryFacet(category);
 
         this.resetTextFilters();
-        return Promise.all([this.updateDocuments(), this.updateFacets()]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacets()
+        ]));
     }
 
     onCategoryDropDownClick(category: string) {
@@ -257,14 +284,17 @@ class EventHandler {
             .withOffset(0)
             .withoutCategoryFacet(category);
 
-        return Promise.all([this.updateDocuments(), this.updateFacets()]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacets()
+        ]));
     }
 
     onPageIndexClick(pageIndex: number, limit: number) {
         this.currentDocumentsQueryBuilder
             .withOffset((pageIndex - 1) * limit);
 
-        return this.updateDocuments();
+        this.setLoadPromise(this.updateDocuments());
     }
 
     onRemoveAllFacetsClick() {
@@ -275,7 +305,10 @@ class EventHandler {
         this.setTagCloudValueQuery();
 
         this.setExpandedFacets([]);
-        return Promise.all([this.updateDocuments(), this.updateFacets()]);
+        this.setLoadPromise(Promise.all([
+            this.updateDocuments(),
+            this.updateFacets()
+        ]));
     }
 
     private setTagCloudValueQuery() {
