@@ -109,8 +109,11 @@ class Helper
 
     public static function quoteValue($v, $type)
     {
-        if ($type === Datatype::NUMBER || $type === Datatype::BOOLEAN) {
+        if ($type === Datatype::NUMBER) {
             return $v;
+        }
+        if ($type === Datatype::BOOLEAN) {
+            return $v ? 'true' : 'false';
         }
         return '"' . preg_replace('/"/', '\"', $v) . '"';
     }

@@ -18,7 +18,7 @@ import SelectedCategoriesView from "./ui/facets/selected_categories_view";
 import NamespaceView from "./ui/search-bar/namespace_view";
 import FacetQueryBuilder from "./common/query_builders/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
-import {Datatype, TextFilters} from "./common/datatypes";
+import {TextFilters} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Divider, ThemeProvider, Typography} from "@mui/material";
 import ErrorView from "./ui/common/error_view";
@@ -31,10 +31,13 @@ import CategoryTree from "./ui/facets/category_tree";
 import DEFAULT_THEME from "./custom_ui/theme";
 import SelectedFacetsHeader from "./ui/facets/selected_facets_header";
 import {Property} from "./common/property";
-import {PropertyValueQuery} from "./common/request/property_value_query";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorComponent from "./ui/common/error_component";
 import {ConfirmProvider} from "react-use-confirming-dialog";
+import {BarLoader} from "react-spinners";
+import Box from "@mui/material/Box";
+import Loader from "./util/loader";
+import QueryUtils from "./util/query_utils";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -57,6 +60,7 @@ function App() {
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
     const [textFilters, setTextFilters] = useState<TextFilters>({});
     const [error, setError] = useState('');
+    const [loadPromise, setLoadPromise] = useState<Promise<any>>(null);
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
@@ -66,6 +70,7 @@ function App() {
         setExpandedFacets,
         setError,
         setTextFilters,
+        setLoadPromise,
         wikiContext,
         client
     );
@@ -80,8 +85,11 @@ function App() {
     const currentDocumentQuery = currentDocumentsQueryBuilder.build();
     return <WikiContext.Provider value={wikiContext}>
         <ThemeProvider theme={DEFAULT_THEME}>
-        <div id={'fs-content'}>
-            <div id={'fs-header'} className={'fs-boxes'}>
+        <Box id={'fs-content'}>
+            <Box height={'5px'} width={'100%'}>
+                <Loader loadPromise={loadPromise} loaderComponent={<BarLoader width={'100%'} />}/>
+            </Box>
+            <Box id={'fs-header'} className={'fs-boxes'}>
                 {[
                     <SortView key={'sortView'}
                               eventHandler={eventHandler}
@@ -102,7 +110,7 @@ function App() {
                     />
                 ].reorder(headerControlsOrder)}
 
-            </div>
+            </Box>
 
             <NamespaceView key={'namespaceView'}
                            searchStateDocument={searchStateDocument}
@@ -115,7 +123,7 @@ function App() {
                            textFilters={textFilters}
             />
 
-            <div id={'fs-facets'} className={'fs-boxes fs-body'}>
+            <Box id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {[
                     <SelectedFacetsHeader key={'selectedFacetHeader'} query={currentDocumentQuery}/>,
 
@@ -164,16 +172,16 @@ function App() {
                                   eventHandler={eventHandler}
                     />
                 ].reorder(facetControlsOrder)}
-            </div>
-            <div id={'fs-results'}>
+            </Box>
+            <Box id={'fs-results'}>
                 <ResultView results={searchStateDocument?.documentResponse.docs ?? []}
                             numResults={searchStateDocument?.documentResponse.numResults ?? 0}
                             pageOffset={currentDocumentQuery.offset}
                             eventHandler={eventHandler}
                             client={client}/>
-            </div>
+            </Box>
             <ErrorView error={error} setError={setError}/>
-        </div>
+        </Box>
         </ThemeProvider>
     </WikiContext.Provider>;
 }
@@ -196,12 +204,7 @@ function applyQueryConstraints() {
         currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
 
-    const fs2gTagCloudProperty = wikiContext.config.fs2gTagCloudProperty;
-    if (fs2gTagCloudProperty) {
-        let tagCloudProperty = new Property(fs2gTagCloudProperty, Datatype.string);
-        let limit = wikiContext.config.fs2gFacetValueLimit;
-        currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(tagCloudProperty, limit));
-    }
+    QueryUtils.setTagCloudValueQuery(wikiContext, currentFacetsQueryBuilder);
 }
 
 function render(children: React.ReactNode) {
