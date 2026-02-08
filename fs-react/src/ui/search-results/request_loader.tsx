@@ -46,8 +46,7 @@ const RequestLoader = (prop: {
               href={href}
         >{`[${prop.label}]`}
         </Link>
-        {loadPromise ? <Suspense fallback={<BarLoader/>}><Loader
-            loadPromise={loadPromise}></Loader></Suspense> : undefined}
+        {loadPromise ? <Loader loadPromise={loadPromise} loaderComponent={<BarLoader />}/> : undefined}
     </>
 
 }

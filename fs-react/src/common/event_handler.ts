@@ -1,9 +1,6 @@
 import DocumentQueryBuilder from "./query_builders/document_query_builder";
 import FacetQueryBuilder from "./query_builders/facet_query_builder";
-import {
-    Datatype,
-    TextFilters
-} from "./datatypes";
+import {TextFilters} from "./datatypes";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
 import {WikiContextInterface} from "./wiki_context";
@@ -15,6 +12,7 @@ import {Sort} from "./request/sort";
 import {BaseQuery} from "./request/base_query";
 import {FacetResponse} from "./response/facet_response";
 import {DocumentsResponse} from "./response/documents_response";
+import QueryUtils from "../util/query_utils";
 
 export interface SearchStateDocument {
     documentResponse: DocumentsResponse;
@@ -302,23 +300,13 @@ class EventHandler {
         this.currentFacetsQueryBuilder
             .clearAllRangeQueries()
             .clearAllPropertyValueQueries();
-        this.setTagCloudValueQuery();
+        QueryUtils.setTagCloudValueQuery(this.wikiContext, this.currentFacetsQueryBuilder);
 
         this.setExpandedFacets([]);
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacets()
         ]));
-    }
-
-    private setTagCloudValueQuery() {
-        if (this.wikiContext.config.fs2gTagCloudProperty === '') {
-            return;
-        }
-        this.currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(
-            new Property(this.wikiContext.config.fs2gTagCloudProperty, Datatype.string),
-            this.wikiContext.config.fs2gFacetValueLimit
-        ));
     }
 
     private updateFacetValuesForProperties(properties: Property[], facetValueLimit: number = null) {

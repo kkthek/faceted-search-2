@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React, {createContext, Suspense, use, useState} from 'react';
+import React, {createContext, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search-bar/search_bar_view";
 import ResultView from "./ui/search-results/result_view";
@@ -18,7 +18,7 @@ import SelectedCategoriesView from "./ui/facets/selected_categories_view";
 import NamespaceView from "./ui/search-bar/namespace_view";
 import FacetQueryBuilder from "./common/query_builders/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
-import {Datatype, TextFilters} from "./common/datatypes";
+import {TextFilters} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Divider, ThemeProvider, Typography} from "@mui/material";
 import ErrorView from "./ui/common/error_view";
@@ -31,13 +31,13 @@ import CategoryTree from "./ui/facets/category_tree";
 import DEFAULT_THEME from "./custom_ui/theme";
 import SelectedFacetsHeader from "./ui/facets/selected_facets_header";
 import {Property} from "./common/property";
-import {PropertyValueQuery} from "./common/request/property_value_query";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorComponent from "./ui/common/error_component";
 import {ConfirmProvider} from "react-use-confirming-dialog";
 import {BarLoader} from "react-spinners";
 import Box from "@mui/material/Box";
 import Loader from "./util/loader";
+import QueryUtils from "./util/query_utils";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -87,7 +87,7 @@ function App() {
         <ThemeProvider theme={DEFAULT_THEME}>
         <Box id={'fs-content'}>
             <Box height={'5px'} width={'100%'}>
-                <Suspense fallback={<BarLoader width={'100%'}/>}><Loader loadPromise={loadPromise} /></Suspense>
+                <Loader loadPromise={loadPromise} loaderComponent={<BarLoader width={'100%'} />}/>
             </Box>
             <Box id={'fs-header'} className={'fs-boxes'}>
                 {[
@@ -204,12 +204,7 @@ function applyQueryConstraints() {
         currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
 
-    const fs2gTagCloudProperty = wikiContext.config.fs2gTagCloudProperty;
-    if (fs2gTagCloudProperty) {
-        let tagCloudProperty = new Property(fs2gTagCloudProperty, Datatype.string);
-        let limit = wikiContext.config.fs2gFacetValueLimit;
-        currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(tagCloudProperty, limit));
-    }
+    QueryUtils.setTagCloudValueQuery(wikiContext, currentFacetsQueryBuilder);
 }
 
 function render(children: React.ReactNode) {
