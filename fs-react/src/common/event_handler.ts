@@ -299,8 +299,8 @@ class EventHandler {
         this.currentDocumentsQueryBuilder.clearAllFacets();
         this.currentFacetsQueryBuilder
             .clearAllRangeQueries()
-            .clearAllPropertyValueQueries();
-        QueryUtils.setTagCloudValueQuery(this.wikiContext, this.currentFacetsQueryBuilder);
+            .clearAllPropertyValueQueries()
+            .withPropertyValueQuery(QueryUtils.prepareTagCloudValueQuery(this.wikiContext));
 
         this.setExpandedFacets([]);
         this.setLoadPromise(Promise.all([

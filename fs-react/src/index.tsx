@@ -205,7 +205,7 @@ function applyQueryConstraints() {
         currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
 
-    QueryUtils.setTagCloudValueQuery(wikiContext, currentFacetsQueryBuilder);
+    currentFacetsQueryBuilder.withPropertyValueQuery(QueryUtils.prepareTagCloudValueQuery(wikiContext));
 }
 
 function render(children: React.ReactNode) {

@@ -28,14 +28,14 @@ class QueryUtils {
 
     }
 
-    static setTagCloudValueQuery(wikiContext: WikiContextAccessor, currentFacetsQueryBuilder: FacetQueryBuilder) {
+    static prepareTagCloudValueQuery(wikiContext: WikiContextAccessor): PropertyValueQuery {
         if (wikiContext.config.fs2gTagCloudProperty === '') {
             return;
         }
-        currentFacetsQueryBuilder.withPropertyValueQuery(PropertyValueQuery.forAllValues(
+        return PropertyValueQuery.forAllValues(
             new Property(wikiContext.config.fs2gTagCloudProperty, Datatype.string),
             wikiContext.config.fs2gFacetValueLimit
-        ));
+        );
     }
 }
 
