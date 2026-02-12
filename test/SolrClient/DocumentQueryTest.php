@@ -118,7 +118,7 @@ final class DocumentQueryTest extends BaseTest {
     {
         $q = new DocumentQuery();
         $p = new PropertyFacet(new Property('Is on pension', Datatype::BOOLEAN));
-        $p->setValues([FacetValue::fromValue('false')]);
+        $p->setValues([FacetValue::fromValue(false)]);
         $q->setSearchText('')
             ->setPropertyFacets([$p]);
         $response = $this->client->requestDocuments($q);
