@@ -30,17 +30,18 @@ const HTTP_REQUEST_JSON_OPTIONS: any = {
 class Client {
 
     private readonly baseUrl: string;
+    private readonly noAbort: boolean;
 
     private oldDocumentSearchAbort: AbortController;
     private oldFacetSearchAbort: AbortController;
 
-    constructor(url: string) {
+    constructor(url: string, noAbort = false) {
         this.baseUrl = url;
-
+        this.noAbort = noAbort;
     }
 
     async searchDocuments(query: DocumentQuery): Promise<DocumentsResponse> {
-        if (this.oldDocumentSearchAbort) {
+        if (this.oldDocumentSearchAbort && !this.noAbort) {
             this.oldDocumentSearchAbort.abort();
         }
         this.oldDocumentSearchAbort = new AbortController();
@@ -67,7 +68,7 @@ class Client {
     }
 
     async searchFacets(query: FacetsQuery): Promise<FacetResponse> {
-        if (this.oldFacetSearchAbort) {
+        if (this.oldFacetSearchAbort && !this.noAbort) {
             this.oldFacetSearchAbort.abort();
         }
         this.oldFacetSearchAbort = new AbortController();
