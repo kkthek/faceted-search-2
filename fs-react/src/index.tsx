@@ -33,7 +33,6 @@ import SelectedFacetsHeader from "./ui/facets/selected_facets_header";
 import {Property} from "./common/property";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorComponent from "./ui/common/error_component";
-import {ConfirmProvider} from "react-use-confirming-dialog";
 import {BarLoader} from "react-spinners";
 import Box from "@mui/material/Box";
 import Loader from "./util/loader";
@@ -222,9 +221,7 @@ function startApp(params: {
     wikiContext = params.wikiContext;
     applyQueryConstraints();
     render(<ErrorBoundary FallbackComponent={ErrorComponent}>
-        <ConfirmProvider>
             <App/>
-        </ConfirmProvider>
     </ErrorBoundary>);
 }
 
