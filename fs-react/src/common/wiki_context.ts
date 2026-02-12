@@ -1,5 +1,5 @@
 
-export class WikiContextInterface {
+export class WikiContextAccessor {
     config: any;
     options: any;
     username: string
@@ -34,13 +34,13 @@ export class WikiContextInterface {
         return this.globals.mwRestUrl + "/FacetedSearch2/v1/proxy"
     }
 
-    static fromMWConfig(mw: any): WikiContextInterface {
+    static fromMWConfig(mw: any): WikiContextAccessor {
         const globals: any = {};
         const wgServer = mw.config.get("wgServer");
         const wgScriptPath = mw.config.get("wgScriptPath");
         globals.mwApiUrl = wgServer + wgScriptPath + "/api.php";
         globals.mwRestUrl = wgServer + wgScriptPath + "/rest.php";
-        return new WikiContextInterface(
+        return new WikiContextAccessor(
             mw.config.values,
             mw.user.options.values,
             mw.user.getName(),
@@ -50,32 +50,3 @@ export class WikiContextInterface {
     }
 }
 
-export class WikiContextInterfaceMock extends WikiContextInterface {
-
-    private readonly langMap: any;
-
-    constructor(result: any = {}, solrProxUrl: string) {
-        const globals: any = {};
-        globals.mwRestUrl = solrProxUrl;
-        globals.mwApiUrl = solrProxUrl + '/api.php';
-        super(result.settings, result.options, "dummy user", null, globals);
-        this.langMap = result.lang;
-        this.msg = this.msgFunction;
-    }
-
-    msgFunction(id: string, ...params: string[]) {
-        let text = this.langMap[id] ? this.langMap[id] : "<" + id + ">";
-        for(let i = 0; i < params.length; i++) {
-            text = text.replace(new RegExp('\\$'+(i+1)), params[i]);
-        }
-        return text;
-    };
-
-    static fromDevConfig(config: any, solrProxyUrl: string): WikiContextInterfaceMock {
-        return new WikiContextInterfaceMock(config, solrProxyUrl);
-    }
-
-    getSolrProxyUrl(): string {
-        return this.globals.mwRestUrl;
-    }
-}

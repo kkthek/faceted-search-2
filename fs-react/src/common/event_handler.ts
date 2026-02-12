@@ -3,7 +3,7 @@ import FacetQueryBuilder from "./query_builders/facet_query_builder";
 import {TextFilters} from "./datatypes";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
-import {WikiContextInterface} from "./wiki_context";
+import {WikiContextAccessor} from "./wiki_context";
 import {Property} from "./property";
 import {PropertyValueQuery} from "./request/property_value_query";
 import {FacetValue} from "./request/facet_value";
@@ -36,7 +36,7 @@ class EventHandler {
     private readonly setError: Dispatch<SetStateAction<string>>;
     private readonly setTextFiltersState: Dispatch<SetStateAction<TextFilters>>;
     private readonly setLoadPromise: Dispatch<SetStateAction<Promise<any>>>;
-    private readonly wikiContext: WikiContextInterface;
+    private readonly wikiContext: WikiContextAccessor;
     private expandedFacets: string[];
 
     constructor(currentDocumentsQueryBuilder: DocumentQueryBuilder,
@@ -47,7 +47,7 @@ class EventHandler {
                 setError: Dispatch<SetStateAction<string>>,
                 setTextFilters: Dispatch<SetStateAction<TextFilters>>,
                 setLoadPromise: Dispatch<SetStateAction<Promise<any>>>,
-                wikiContext: WikiContextInterface,
+                wikiContext: WikiContextAccessor,
                 client: Client) {
         this.currentDocumentsQueryBuilder = currentDocumentsQueryBuilder;
         this.currentFacetsQueryBuilder = currentFacetsQueryBuilder;

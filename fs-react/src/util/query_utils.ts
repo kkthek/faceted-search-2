@@ -3,7 +3,7 @@ import {Property} from "../common/property";
 import {PropertyValueQuery} from "../common/request/property_value_query";
 import {BaseQuery} from "../common/request/base_query";
 import {FacetsQuery} from "../common/request/facets_query";
-import {WikiContextInterface} from "../common/wiki_context";
+import {WikiContextAccessor} from "../common/wiki_context";
 import {Datatype} from "../common/datatypes";
 
 class QueryUtils {
@@ -28,7 +28,7 @@ class QueryUtils {
 
     }
 
-    static setTagCloudValueQuery(wikiContext: WikiContextInterface, currentFacetsQueryBuilder: FacetQueryBuilder) {
+    static setTagCloudValueQuery(wikiContext: WikiContextAccessor, currentFacetsQueryBuilder: FacetQueryBuilder) {
         if (wikiContext.config.fs2gTagCloudProperty === '') {
             return;
         }

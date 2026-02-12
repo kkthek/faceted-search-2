@@ -1,5 +1,5 @@
 import {Datatype, Order, Sortable, ValueType} from "../common/datatypes";
-import {WikiContextInterface} from "../common/wiki_context";
+import {WikiContextAccessor} from "../common/wiki_context";
 import {Property} from "../common/property";
 import {MWTitle} from "../common/mw_title";
 import {Sort} from "../common/request/sort";
@@ -74,7 +74,7 @@ class ConfigUtils {
         return url;
     }
 
-    static replaceMagicWords(doc: Document, url: string, wikiContext: WikiContextInterface) {
+    static replaceMagicWords(doc: Document, url: string, wikiContext: WikiContextAccessor) {
         let s = url;
         s = s.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
         s = s.replace('{Title}', encodeURIComponent(doc.title));
