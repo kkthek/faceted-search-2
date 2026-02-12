@@ -1,4 +1,4 @@
-import React, {Suspense, use, useState} from "react";
+import React, {useState} from "react";
 import {BarLoader} from "react-spinners";
 import {initCallFinishedDialog, initConfirmDialog} from "../../util/confirm_dialogs";
 import Client from "../../common/client";

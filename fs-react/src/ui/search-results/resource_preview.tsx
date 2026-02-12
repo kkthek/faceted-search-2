@@ -10,13 +10,13 @@ function ResourcePreview(prop: { doc: Document }) {
     const wikiContext = useContext(WikiContext);
     const fileTypesToShowInOverlay = wikiContext.config['fs2gShowFileInOverlay'];
 
-    const [isShownPromise, setIsShownPromise] = useState<Promise<boolean>>(new Promise<boolean>((resolve) => resolve(false)));
-
+    const [isShownPromise, setIsShownPromise] = useState<Promise<boolean>>(Promise.resolve(false));
     const alreadyShown = useRef(false);
+
     function onLoadedData() {
         if (alreadyShown.current) return;
         alreadyShown.current = true;
-        setIsShownPromise(new Promise<boolean>((resolve) => resolve(true)));
+        setIsShownPromise(Promise.resolve(true));
     }
 
     const validConfig = (typeof fileTypesToShowInOverlay === 'boolean' || fileTypesToShowInOverlay.length);
