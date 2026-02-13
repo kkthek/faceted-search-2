@@ -86,10 +86,10 @@ export class FacetValue {
     }
 
     static sameRange(a: Range | void, b: Range | void) {
-        return (a === b || (a as Range).equals(b));
+        return (a === b || (a as Range).equals(b as Range));
     }
 
     static withinRange(a: Range | void, b: Range | void) {
-        return (a === b || (a as Range).withinRange(b));
+        return (a === b || (a as Range).withinRange(b as Range));
     }
 }

@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
 import {Tag, TagCloud} from 'react-tagcloud';
-import EventHandler, {SearchStateFacet} from "../../common/event_handler";
-import {Datatype, TextFilters} from "../../common/datatypes";
+import EventHandler from "../../common/event_handler";
+import {Datatype, SearchStateFacet, TextFilters} from "../../common/datatypes";
 import {WikiContext} from "../../index";
 import FacetFilter from "./facet_filter";
 import {Property} from "../../common/property";

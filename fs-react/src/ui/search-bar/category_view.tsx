@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import EventHandler, {SearchStateDocument} from "../../common/event_handler";
+import EventHandler from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {SimpleTreeView} from "@mui/x-tree-view";
@@ -7,6 +7,7 @@ import {Box} from "@mui/material";
 import ConfigUtils from "../../util/config_utils";
 import FacetWithCount from "../common/facet_with_count";
 import {CategoryFacetCount} from "../../common/response/category_facet_count";
+import {SearchStateDocument} from "../../common/datatypes";
 
 function FacetViewCategory( prop: {
     categoryTitle: string,

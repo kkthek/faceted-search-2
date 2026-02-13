@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import EventHandler, {SearchStateDocument, SearchStateFacet} from "../../common/event_handler";
+import EventHandler from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import ConfigUtils from "../../util/config_utils";
 import FacetOrDialog, {ORDialogInput} from "../or-dialog/facet_or_dialog";
@@ -10,7 +10,7 @@ import Client from "../../common/client";
 import FacetExtensionPoint from "../../extensions/facet_ep";
 import FacetWithCount from "../common/facet_with_count";
 import FacetViewProperty from "./facet";
-import {TextFilters} from "../../common/datatypes";
+import {SearchStateDocument, SearchStateFacet, TextFilters} from "../../common/datatypes";
 import {createPortal} from "react-dom";
 import DateRangeDialog from "../date-dialog/date_range_dialog";
 import {DateRangeDialogInput} from "../date-dialog/date_range_dialog_input";

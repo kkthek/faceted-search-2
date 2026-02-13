@@ -1,10 +1,10 @@
 import React from "react";
-import EventHandler, {SearchStateDocument, SearchStateFacet} from "../../common/event_handler";
+import EventHandler from "../../common/event_handler";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import Client from "../../common/client";
 import FacetOrDialog, {ORDialogInput} from "../or-dialog/facet_or_dialog";
 import SelectedFacet from "./selected_facet";
-import {TextFilters} from "../../common/datatypes";
+import {SearchStateDocument, SearchStateFacet, TextFilters} from "../../common/datatypes";
 import {createPortal} from "react-dom";
 
 

@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
-import {TextFilters,} from "../../common/datatypes";
-import EventHandler, {SearchStateFacet} from "../../common/event_handler";
+import {SearchStateFacet, TextFilters,} from "../../common/datatypes";
+import EventHandler from "../../common/event_handler";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SelectedFacetValues from "./selected_facet_values_view";

@@ -5,6 +5,9 @@
  *
  * interfaces, enums and types used in the request and response objects
  */
+import {DocumentsResponse} from "./response/documents_response";
+import {BaseQuery} from "./request/base_query";
+import {FacetResponse} from "./response/facet_response";
 
 export interface TextFilters {
     [title:string] : string;
@@ -40,3 +43,12 @@ export interface Sortable<T> {
 }
 
 
+export interface SearchStateDocument {
+    documentResponse: DocumentsResponse;
+    query: BaseQuery
+}
+
+export interface SearchStateFacet {
+    facetsResponse: FacetResponse;
+    query: BaseQuery
+}
