@@ -6,9 +6,9 @@ use DIQA\FacetedSearch2\Model\Common\Datatype;
 
 class Helper
 {
-    private const RELATION_REGEX = "/^smwh_(.*)_(t|s)$/";
-    private const ATTRIBUTE_REGEX = "/^smwh_(.*)_xsdvalue_(.*)$/";
-    private const ATTRIBUTE_REGEX_DATEVALUE = "/^smwh_(.*)_(datevalue_l)$/";
+    private const RELATION_REGEX = "/^smwh_(.+)_(t|s)$/";
+    private const ATTRIBUTE_REGEX = "/^smwh_(.+)_xsdvalue_(.+)$/";
+    private const ATTRIBUTE_REGEX_DATEVALUE = "/^smwh_(.+)_(datevalue_l)$/";
     /**
      * Helper functions to return implementation specific property/value suffixes.
      * dependant from backend
