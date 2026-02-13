@@ -49,7 +49,7 @@ export class Range {
         const thatToIsNumber = typeof that.to === "number";
 
         if (thisFromIsNumber && thisToIsNumber && thatFromIsNumber && thatToIsNumber) {
-            return this.from <= that.from && this.to >= that.to;
+            return this.from >= that.from && this.to <= that.to;
         }
 
         const thisFromIsDate = this.from instanceof Date;
@@ -58,8 +58,8 @@ export class Range {
         const thatToIsDate = that.to instanceof Date;
 
         if (thisFromIsDate && thisToIsDate && thatFromIsDate && thatToIsDate) {
-            return (this.from as Date).getTime() <= (that.from as Date).getTime()
-                && (this.to as Date).getTime() >= (that.to as Date).getTime();
+            return (this.from as Date).getTime() >= (that.from as Date).getTime()
+                && (this.to as Date).getTime() <= (that.to as Date).getTime();
         }
 
         // mixed types (number/date) can't be compared meaningfully here
