@@ -1,10 +1,12 @@
-import React, {Suspense, use, useState} from "react";
+import React, {useContext, useState} from "react";
 import {BarLoader} from "react-spinners";
-import {initCallFinishedDialog, initConfirmDialog} from "../../util/confirm_dialogs";
 import Client from "../../common/client";
 import {Link} from "@mui/material";
 import {Document} from "../../common/response/document";
 import Loader from "../../util/loader";
+import AlertDialogSlide, {AlertDialogState} from "../../util/alert_dialog";
+import ConfirmDialogSlide, {ConfirmDialogState} from "../../util/confirm_dialog";
+import {WikiContext} from "../../index";
 
 const RequestLoader = (prop: {
     client: Client,
@@ -15,29 +17,41 @@ const RequestLoader = (prop: {
     openNewTab: boolean
 }) => {
 
+    const wikiContext = useContext(WikiContext);
     const [loadPromise, setLoadPromise] = useState<Promise<any>>(null);
-    const showCallFinishedDialog = initCallFinishedDialog();
+    const [openConfirm, setOpenConfirm] = useState<ConfirmDialogState>({ open: false});
+    const [openAlert, setOpenAlert] = useState<AlertDialogState>({open: false});
 
-    const message = prop.label + '?';
-    const showConfirmDialog = initConfirmDialog(message, () => {
+    const openResponseDialog = (status: string, response: any) => {
+        if (status !== 'success') {
+            setOpenAlert({open: true, message: wikiContext.msg('fs-generic-error-message')});
+            console.error(response);
+        } else {
+            setOpenAlert({open: true, message: wikiContext.msg('fs-operation-successful')});
+        }
+    }
+    const openConfirmDialog = () => setOpenConfirm({open: true, message: prop.label + '?'});
+
+    const doRequest = () => setLoadPromise(prop.client.postCustomEndpoint(prop.fullUrl)
+        .then(response => openResponseDialog('success', response))
+        .catch(error => openResponseDialog('error', error)));
+
+    let onClick;
+    let href;
+    if (prop.showConfirm || !prop.openNewTab) {
+        onClick = prop.showConfirm ? openConfirmDialog : doRequest;
+    } else {
+        href = prop.fullUrl;
+    }
+
+    const callbackOnConfirmOk = () => {
+        setOpenConfirm({open: false});
         if (prop.openNewTab) {
             window.open(prop.fullUrl, '_blank');
         } else {
             doRequest();
         }
-    });
-
-    const doRequest = () => setLoadPromise(prop.client.postCustomEndpoint(prop.fullUrl)
-        .then(response => showCallFinishedDialog('success', response))
-        .catch(error => showCallFinishedDialog('error', error)));
-
-    let onClick;
-    let href;
-    if (prop.showConfirm || !prop.openNewTab) {
-        onClick = prop.showConfirm ? showConfirmDialog : doRequest;
-    } else {
-        href = prop.fullUrl;
-    }
+    };
 
     return <>
         <Link sx={{cursor: 'pointer'}}
@@ -46,7 +60,15 @@ const RequestLoader = (prop: {
               href={href}
         >{`[${prop.label}]`}
         </Link>
-        {loadPromise ? <Loader loadPromise={loadPromise} loaderComponent={<BarLoader />}/> : undefined}
+        {loadPromise ? <Loader loadPromise={loadPromise} loaderComponent={<BarLoader/>}/> : undefined}
+        <ConfirmDialogSlide state={openConfirm}
+                            callbackOnOk={callbackOnConfirmOk}
+                            callbackOnCancel={() => setOpenConfirm({open: false})}
+        />
+        <AlertDialogSlide state={openAlert}
+                          callbackOnOk={() => setOpenAlert({open: false})}
+
+        />
     </>
 
 }

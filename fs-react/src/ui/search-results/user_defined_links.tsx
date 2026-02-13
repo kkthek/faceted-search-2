@@ -50,25 +50,21 @@ function UserDefinedLinks(prop: { doc: Document, client: Client }) {
     const categories = Object.keys(additionalLinks);
 
     let allLinks: LinkConfig = {};
-    categories.forEach((c) => {
-        if (prop.doc.getCategoryFacetValue(c) === null) {
-            return;
-        }
-        const links = additionalLinks[c];
-        allLinks = {...allLinks, ...links};
-    });
+    categories
+        .filter(c => prop.doc.getCategoryFacetValue(c) !== null)
+        .forEach((c) => allLinks = {...allLinks, ...additionalLinks[c]});
 
     const items = [];
-    const linkConfigUtil = new LinkConfigAccessor(allLinks);
+    const linkConfigAccessor = new LinkConfigAccessor(allLinks);
 
     for (const label in allLinks) {
-        const url = linkConfigUtil.getUrl(label);
+        const url = linkConfigAccessor.getUrl(label);
         let fullUrl = wgServer + wgScriptPath + "/" + url;
         fullUrl = ConfigUtils.replaceSMWVariables(prop.doc, fullUrl);
         fullUrl = ConfigUtils.replaceMagicWords(prop.doc, fullUrl, wikiContext);
 
-        const openNewTab = linkConfigUtil.shouldOpenNewTab(label);
-        let shouldConfirm = linkConfigUtil.shouldConfirm(label);
+        const openNewTab = linkConfigAccessor.shouldOpenNewTab(label);
+        const shouldConfirm = linkConfigAccessor.shouldConfirm(label);
         items.push(<RequestLoader label={label}
                                   key={label}
                                   client={prop.client}

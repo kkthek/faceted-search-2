@@ -20,7 +20,7 @@ const assert = require('assert');
 let client;
 function initSolr() {
     let proxyUrl = 'http://localhost:9000';
-    client = new Client(proxyUrl);
+    client = new Client(proxyUrl, true);
 }
 initSolr();
 let globalResult = null;

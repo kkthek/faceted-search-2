@@ -47,7 +47,7 @@ class FacetQueryBuilder {
     }
 
     withPropertyValueQuery(propertyValueQuery: PropertyValueQuery): FacetQueryBuilder {
-
+        if (!propertyValueQuery) return this;
         let constraint = this.query.propertyValueQueries.replaceFirst(
             (e: PropertyValueQuery) => e.property.title === propertyValueQuery.property.title, propertyValueQuery);
         if (constraint === null) {

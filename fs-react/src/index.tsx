@@ -23,7 +23,7 @@ import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Divider, ThemeProvider, Typography} from "@mui/material";
 import ErrorView from "./ui/common/error_view";
 import SaveSearchLink from "./ui/search-bar/save_search_link";
-import {WikiContextInterface, WikiContextInterfaceMock} from "./common/wiki_context";
+import {WikiContextAccessor} from "./common/wiki_context";
 import RemoveAllFacetsButton from "./ui/facets/remove_all_facets_button";
 import "./util/array_ext";
 import TagCloudFacet from "./ui/facets/tag_cloud";
@@ -33,18 +33,18 @@ import SelectedFacetsHeader from "./ui/facets/selected_facets_header";
 import {Property} from "./common/property";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorComponent from "./ui/common/error_component";
-import {ConfirmProvider} from "react-use-confirming-dialog";
 import {BarLoader} from "react-spinners";
 import Box from "@mui/material/Box";
 import Loader from "./util/loader";
 import QueryUtils from "./util/query_utils";
+import {initializeDevContext} from "./util/dev_context";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
-let wikiContext = isInWikiContext ? WikiContextInterface.fromMWConfig(browserWindow.mw) : null;
+let wikiContext: WikiContextAccessor = null;
 let client: Client = null;
 
-export const WikiContext = createContext<WikiContextInterface>(null);
+export const WikiContext = createContext<WikiContextAccessor>(null);
 
 const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
@@ -204,7 +204,7 @@ function applyQueryConstraints() {
         currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
 
-    QueryUtils.setTagCloudValueQuery(wikiContext, currentFacetsQueryBuilder);
+    currentFacetsQueryBuilder.withPropertyValueQuery(QueryUtils.prepareTagCloudValueQuery(wikiContext));
 }
 
 function render(children: React.ReactNode) {
@@ -213,26 +213,26 @@ function render(children: React.ReactNode) {
     root.render(children);
 }
 
-function startApp() {
+function startApp(params: {
+    client: Client,
+    wikiContext: WikiContextAccessor
+}) {
+    client = params.client;
+    wikiContext = params.wikiContext;
     applyQueryConstraints();
     render(<ErrorBoundary FallbackComponent={ErrorComponent}>
-        <ConfirmProvider>
             <App/>
-        </ConfirmProvider>
     </ErrorBoundary>);
 }
 
-async function initializeDevContext()
-{
-    const url = "http://localhost:9000";
-    client = new Client(url);
-    const config = await client.getSettingsForDevContext();
-    wikiContext = WikiContextInterfaceMock.fromDevConfig(config, url);
-}
-
 if (isInWikiContext) {
-    client = new Client(wikiContext.getSolrProxyUrl());
-    startApp();
+    const accessor = WikiContextAccessor.fromMWConfig(browserWindow.mw);
+    const wikiClient = new Client(accessor.getSolrProxyUrl());
+
+    startApp({
+        wikiContext: accessor,
+        client: wikiClient,
+    });
 } else {
     initializeDevContext()
         .then(startApp)
