@@ -30,7 +30,7 @@ class SMWReader {
 
         foreach ($properties as $property) {
             // skip instance-of and subclass properties
-            if ($property->getKey() == "_INST" || $property->getKey() == "_SUBC") {
+            if ($property->getKey() == "_INST" || $property->getKey() == "_SUBC" || $property->getLabel() == "") {
                 continue;
             }
 
