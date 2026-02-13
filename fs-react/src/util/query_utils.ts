@@ -29,7 +29,7 @@ class QueryUtils {
     }
 
     static prepareTagCloudValueQuery(wikiContext: WikiContextAccessor): PropertyValueQuery {
-        if (wikiContext.config.fs2gTagCloudProperty === '') {
+        if (wikiContext.config.fs2gTagCloudProperty === false || wikiContext.config.fs2gTagCloudProperty === '') {
             return;
         }
         return PropertyValueQuery.forAllValues(
