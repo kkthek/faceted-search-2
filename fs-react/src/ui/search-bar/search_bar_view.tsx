@@ -5,13 +5,12 @@ import EventHandler from "../../common/event_handler";
 import {useDebounce} from "../../custom_ui/custom_hooks";
 import CreateArticleLink from "./create_article";
 import ObjectTools from "../../util/object_tools";
-import {BaseQuery} from "../../common/request/base_query";
+import {DocumentQuery} from "../../common/request/document_query";
 
 function SearchBar(prop: {
-    searchText: string
     eventHandler: EventHandler
     restoreFromQuery: boolean
-    query: BaseQuery
+    query: DocumentQuery
 
 }) {
     const wikiContext = useContext(WikiContext);
@@ -19,7 +18,7 @@ function SearchBar(prop: {
     const headerControlOrder = wikiContext.config['fs2gHeaderControlOrder'];
 
     const restoreFromQuery = useRef(prop.restoreFromQuery);
-    const [searchText, setSearchText] = useState(prop.searchText);
+    const [searchText, setSearchText] = useState(prop.query.searchText ?? '');
     const debouncedSearchValue = useDebounce(searchText, 500);
 
     useEffect(() => {

@@ -44,6 +44,11 @@ class ConfigUtils {
         ];
     }
 
+    static getSortByKeyOrDefault(key: string): Sort {
+        const allSorts = ConfigUtils.getAllSorts();
+        return allSorts.findFirst(sort => sort.getKey() === key) ?? allSorts[0];
+    }
+
 
     static getFileResourceURL(doc: Document) {
         let previewUrlPropertyValues = doc.getPropertyFacetValues("Diqa import fullpath")

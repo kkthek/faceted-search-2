@@ -98,11 +98,9 @@ function App() {
                               searchStateDocument={searchStateDocument}
                     />,
                     <SearchBar key={'searchBar'}
-                               searchText={currentDocumentQuery.searchText}
                                restoreFromQuery={q !== null}
                                eventHandler={eventHandler}
                                query={currentDocumentQuery}
-
                     />,
                     <SaveSearchLink key={'saveSearchLink'}
                                     documentQuery={currentDocumentQuery}
@@ -199,8 +197,7 @@ function App() {
 
 function applyQueryConstraints() {
     const defaultSortKey = wikiContext.config['fs2gDefaultSortOrder'];
-    const allSorts = ConfigUtils.getAllSorts();
-    const defaultSort = allSorts.findFirst((s: Sort) => s.getKey() === defaultSortKey) ?? allSorts[0];
+    const defaultSort = ConfigUtils.getSortByKeyOrDefault(defaultSortKey)
     currentDocumentsQueryBuilder.clearSorts().withSort(defaultSort);
 
     currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);

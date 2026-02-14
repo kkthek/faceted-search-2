@@ -20,7 +20,7 @@ function SortView(prop : {
     const allSorts: Sort[] = ConfigUtils.getAllSorts();
 
     const handleChange = (event: SelectChangeEvent) => {
-        const sort = allSorts.findFirst((s: Sort) => s.getKey() === event.target.value);
+        const sort = ConfigUtils.getSortByKeyOrDefault(event.target.value);
         prop.eventHandler.onSortChange(sort);
     };
 
