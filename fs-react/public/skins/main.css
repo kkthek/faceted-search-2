@@ -48,18 +48,6 @@ div.fs-boxes {
         width: 65%;
     }
 
-    #fs-searchbar {
-        width: 75%;
-        margin-left: 10px;
-    }
-
-    #fs-searchbar-button {
-        margin-left: 10px;
-    }
-
-    #fs-searchbar div.MuiTextField-root {
-        width: 45%
-    }
 }
 
 @media (max-width: 999px) {
@@ -108,6 +96,13 @@ div.fs-save-search-link {
     flex-direction: column;
 }
 
+#sort-order-select-control {
+    min-width: 250px;
+}
+
+#fs-category-dropdown {
+    min-width: 250px;
+}
 
 /**
  * Results

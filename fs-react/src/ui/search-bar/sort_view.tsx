@@ -16,6 +16,7 @@ function SortView(prop : {
     const wikiContext = useContext(WikiContext);
     const defaultSortOrder = wikiContext.config['fs2gDefaultSortOrder'];
     const showSortView = wikiContext.config['fs2gShowSortOrder'];
+    const headerControlOrder = wikiContext.config['fs2gHeaderControlOrder'];
     if (!showSortView) return;
 
     const sorts: SortConfig = {
@@ -37,14 +38,17 @@ function SortView(prop : {
         <MenuItem key={id} value={id}>{wikiContext.msg('fs-'+id)}</MenuItem>
     );
 
+    const marginLeft = headerControlOrder[0] === 'sortView' ? '0px' : '10px';
+
     return <FormControl id={'sort-order-select-control'}>
-        <InputLabel id="sort-order-select-label">{wikiContext.msg('fs-sort-order')}</InputLabel>
         <Select
             labelId="sort-order-select-label"
             id="sort-order-select"
             value={sort}
             label="Sort order"
             size={'small'}
+            autoWidth={true}
+            sx={{marginLeft: marginLeft}}
             onChange={handleChange}
         >
             {entries}
