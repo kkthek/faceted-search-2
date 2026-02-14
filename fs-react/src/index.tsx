@@ -38,6 +38,8 @@ import Box from "@mui/material/Box";
 import Loader from "./util/loader";
 import QueryUtils from "./util/query_utils";
 import {initializeDevContext} from "./util/dev_context";
+import ConfigUtils from "./util/config_utils";
+import {Sort} from "./common/request/sort";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -93,6 +95,7 @@ function App() {
                 {[
                     <SortView key={'sortView'}
                               eventHandler={eventHandler}
+                              searchStateDocument={searchStateDocument}
                     />,
                     <SearchBar key={'searchBar'}
                                searchText={currentDocumentQuery.searchText}
@@ -127,6 +130,7 @@ function App() {
                 {[
                     <SortView key={'sortView'}
                               eventHandler={eventHandler}
+                              searchStateDocument={searchStateDocument}
                     />,
                     <SelectedFacetsHeader key={'selectedFacetHeader'} query={currentDocumentQuery}/>,
 
@@ -194,6 +198,11 @@ function App() {
 
 
 function applyQueryConstraints() {
+    const defaultSortKey = wikiContext.config['fs2gDefaultSortOrder'];
+    const allSorts = ConfigUtils.getAllSorts();
+    const defaultSort = allSorts.findFirst((s: Sort) => s.getKey() === defaultSortKey) ?? allSorts[0];
+    currentDocumentsQueryBuilder.clearSorts().withSort(defaultSort);
+
     currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
     if (wikiContext.isObjectConfigured('fs2gCategoryFilter')) {
         const firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');

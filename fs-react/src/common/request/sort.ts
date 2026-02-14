@@ -5,7 +5,8 @@ import {Order} from "../datatypes";
 @jsonObject
 export class Sort {
 
-    constructor(property: Property, order: Order) {
+    constructor(key: string, property: Property, order: Order) {
+        this.key = key;
         this.property = property;
         this.order = order;
     }
@@ -14,4 +15,10 @@ export class Sort {
     property: Property;
     @jsonMember(Number)
     order: Order
+
+    key: string;
+
+    getKey() {
+        return this.key;
+    }
 }
