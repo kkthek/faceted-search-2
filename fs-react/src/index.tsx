@@ -79,8 +79,8 @@ function App() {
         ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']
     );
     const facetControlsOrder = wikiContext.config.fs2gFacetControlOrder.calculatePermutation(
-        ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree']);
+        ['sortView', 'selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
+            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree', 'saveSearchLink']);
 
     const currentDocumentQuery = currentDocumentsQueryBuilder.build();
     return <WikiContext.Provider value={wikiContext}>
@@ -125,6 +125,9 @@ function App() {
 
             <Box id={'fs-facets'} className={'fs-boxes fs-body'}>
                 {[
+                    <SortView key={'sortView'}
+                              eventHandler={eventHandler}
+                    />,
                     <SelectedFacetsHeader key={'selectedFacetHeader'} query={currentDocumentQuery}/>,
 
                     <SelectedFacetsView key={'selectedFacetView'}
@@ -170,6 +173,9 @@ function App() {
                                   searchStateDocument={searchStateDocument}
                                   textFilters={textFilters}
                                   eventHandler={eventHandler}
+                    />,
+                    <SaveSearchLink key={'saveSearchLink'}
+                                    documentQuery={currentDocumentQuery}
                     />
                 ].reorder(facetControlsOrder)}
             </Box>
