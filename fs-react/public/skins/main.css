@@ -71,6 +71,7 @@ div.fs-boxes {
 
     #fs-searchbar-button {
         margin-top: 10px;
+        width: 100%;
     }
 
     #fs-header > div {
