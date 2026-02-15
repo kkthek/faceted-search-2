@@ -72,26 +72,18 @@ export class FacetValue {
     }
 
     static sameValue(a: ValueType | void, b: ValueType | void) {
-        // Treat `null` and `undefined` (typed as `void` here) as "no value"
         const aNullish = a === null || a === undefined;
         const bNullish = b === null || b === undefined;
 
         if (aNullish || bNullish) {
             return aNullish && bNullish;
         }
-
-        // Fast path for primitives and identical references
-        if (a === b) {
-            return true;
-        }
-
-        // Date comparison (avoids property access on null/undefined and avoids false positives)
-        if (a instanceof Date && b instanceof Date) {
-            return a.getTime() === b.getTime();
-        }
-
-        // If ValueType ever contains other non-primitive objects, add comparisons here.
-        return false;
+        return (a === b)
+            || (a as string) === b as string
+            || (a as number) === b as number
+            || (a as boolean) === b as boolean
+            || ((a as Date).toUTCString && (b as Date).toUTCString
+                && (a as Date).toUTCString() === (b as Date).toUTCString());
     }
 
     static sameMWTitle(a: MWTitle | void, b: MWTitle | void) {
@@ -117,9 +109,10 @@ export class FacetValue {
     static withinRange(a: Range | void, b: Range | void) {
         const aNullish = a === null || a === undefined;
         const bNullish = b === null || b === undefined;
+
         if (aNullish || bNullish) {
-            return false;
+            return aNullish && bNullish;
         }
-        return ((a as Range).withinRange(b as Range));
+        return (a as Range).withinRange(b as Range);
     }
 }
