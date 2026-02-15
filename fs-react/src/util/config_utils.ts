@@ -8,7 +8,7 @@ import {Document} from "../common/response/document";
 class ConfigUtils {
 
     static getSortFunction<T extends Sortable<T>>(sortType: string): (a: T, b: T) => number {
-        switch(sortType) {
+        switch (sortType) {
             case 'sort-by-count':
                 return (a: T, b: T) => a.compareByCount(b);
             default:
@@ -34,16 +34,21 @@ class ConfigUtils {
         }
     }
 
-    static getSortByName(name: string): Sort {
-        switch(name) {
-            case 'newest': return new Sort(new Property('_MDAT', Datatype.datetime), Order.desc);
-            case 'oldest': return new Sort(new Property('_MDAT', Datatype.datetime), Order.asc);
-            case 'ascending': return new Sort(new Property('displaytitle', Datatype.internal), Order.asc);
-            case 'descending': return new Sort(new Property('displaytitle', Datatype.internal), Order.desc);
-            default:
-            case 'score': return new Sort(new Property('score', Datatype.internal), Order.desc);
-        }
+    static getAllSorts(): Sort[] {
+        return [
+            new Sort('score', new Property('score', Datatype.internal), Order.desc),
+            new Sort('newest', new Property('_MDAT', Datatype.datetime), Order.desc),
+            new Sort('oldest', new Property('_MDAT', Datatype.datetime), Order.asc),
+            new Sort('ascending', new Property('displaytitle', Datatype.internal), Order.asc),
+            new Sort('descending', new Property('displaytitle', Datatype.internal), Order.desc)
+        ];
     }
+
+    static getSortByKeyOrDefault(key: string): Sort {
+        const allSorts = ConfigUtils.getAllSorts();
+        return allSorts.findFirst(sort => sort.getKey() === key) ?? allSorts[0];
+    }
+
 
     static getFileResourceURL(doc: Document) {
         let previewUrlPropertyValues = doc.getPropertyFacetValues("Diqa import fullpath")

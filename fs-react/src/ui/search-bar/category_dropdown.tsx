@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import {WikiContext} from "../../index";
-import {Box, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import EventHandler from "../../common/event_handler";
 import {DocumentQuery} from "../../common/request/document_query";
 
@@ -40,6 +40,7 @@ function CategoryDropdown(prop: {
     const wikiContext = useContext(WikiContext);
     const categoryFilter = wikiContext.config['fs2gCategoryFilter'];
     const showCategories = wikiContext.config['fs2gShowCategories'];
+    const headerControlOrder = wikiContext.config['fs2gHeaderControlOrder'];
     const useCategoryDropdown = wikiContext.isObjectConfigured('fs2gCategoryFilter');
     if (!useCategoryDropdown || !showCategories) return;
 
@@ -61,16 +62,19 @@ function CategoryDropdown(prop: {
         <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>
     );
 
-    return <Box className={'fs-category-dropdown'}>
+    const marginLeft = headerControlOrder[0] === 'categoryDropDown' ? '0px' : '10px';
+
+    return <FormControl id={'fs-category-dropdown'}>
         <Select
-            labelId="sort-order-select-label"
-            id="sort-order-select"
+            labelId="category-dropdown-select-label"
+            id="category-dropdown-select"
             value={selectedCategory}
             size={'small'}
+            autoWidth={true}
+            sx={{marginLeft: marginLeft}}
             onChange={handleChange}
-
         >{categoryOptions}</Select>
-    </Box>
+    </FormControl>
 }
 
 export default CategoryDropdown;

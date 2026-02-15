@@ -29,13 +29,12 @@ class QueryUtils {
     }
 
     static prepareTagCloudValueQuery(wikiContext: WikiContextAccessor): PropertyValueQuery {
-        if (wikiContext.config.fs2gTagCloudProperty === '') {
+        const tagCloudProperty = wikiContext.config.fs2gTagCloudProperty;
+        const facetValueLimit = wikiContext.config.fs2gFacetValueLimit;
+        if (tagCloudProperty === false || tagCloudProperty === '') {
             return;
         }
-        return PropertyValueQuery.forAllValues(
-            new Property(wikiContext.config.fs2gTagCloudProperty, Datatype.string),
-            wikiContext.config.fs2gFacetValueLimit
-        );
+        return PropertyValueQuery.forAllValues(new Property(tagCloudProperty, Datatype.string), facetValueLimit);
     }
 }
 

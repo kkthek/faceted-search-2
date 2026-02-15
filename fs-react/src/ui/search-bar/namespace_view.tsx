@@ -1,10 +1,11 @@
 import React, {useContext, useState} from "react";
 import {WikiContext} from "../../index";
-import EventHandler, {SearchStateDocument} from "../../common/event_handler";
+import EventHandler from "../../common/event_handler";
 import {ToggleButton, ToggleButtonGroup} from "@mui/material";
 import FacetWithCount from "../common/facet_with_count";
 import {NamespaceFacetCount} from "../../common/response/namespace_facet_count";
 import ConfigUtils from "../../util/config_utils";
+import {SearchStateDocument} from "../../common/datatypes";
 
 function NamespaceFacet(prop: {
     namespaceFacetCount: NamespaceFacetCount | null,

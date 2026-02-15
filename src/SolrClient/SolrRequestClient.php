@@ -48,6 +48,7 @@ class SolrRequestClient implements FacetedSearchClient
             ->setDebugInfo(Util::buildQueryParams($queryParams));
 
         $this->fillEmptyCategoryFacetCounts($docResponse, $q);
+        $this->recalculateNamespaceCountsIfNecessary($docResponse, $q);
         return $docResponse;
     }
 
@@ -482,6 +483,21 @@ class SolrRequestClient implements FacetedSearchClient
                 $docResponse->categoryFacetCounts[] = new CategoryFacetCount($c, WikiTools::getDisplayTitleForCategory($c), 0);
             }
         }
+    }
+
+    private function recalculateNamespaceCountsIfNecessary(DocumentsResponse $docResponse, DocumentQuery $q): void
+    {
+        if (count($q->namespaceFacets) === 0) {
+            return;
+        }
+        $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
+            [], []);
+        $sortsAndLimits = $this->encodeSortsAndLimits([], 1, 0);
+        $queryParams = array_merge($queryParams, $sortsAndLimits);
+
+        $response = new SolrResponseParser($this->requestSOLR($queryParams));
+        $parsedResponse = $response->parse();
+        $docResponse->namespaceFacetCounts = $parsedResponse->namespaceFacetCounts;
     }
 
 }

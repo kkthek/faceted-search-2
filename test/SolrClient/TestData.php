@@ -156,4 +156,10 @@ class TestData {
             ->setNamespace(0);
         return $document;
     }
+
+    public static function generateData6()
+    {
+        $document = new Document('665544', "Employee", "Employee", 14);
+        return $document;
+    }
 }

@@ -22,7 +22,9 @@ export class FacetValue {
     }
 
     isEmpty() {
-        return this.value === null && this.mwTitle === null && this.range === null;
+        return (!this.value)
+            && (!this.mwTitle)
+            && (!this.range);
     }
 
     static fromValueCount(valueCount: ValueCount) {
@@ -70,26 +72,54 @@ export class FacetValue {
     }
 
     static sameValue(a: ValueType | void, b: ValueType | void) {
-        if ((a === null && b !== null) || (a !== null && b === null)) {
-            return false;
+        // Treat `null` and `undefined` (typed as `void` here) as "no value"
+        const aNullish = a === null || a === undefined;
+        const bNullish = b === null || b === undefined;
+
+        if (aNullish || bNullish) {
+            return aNullish && bNullish;
         }
-        return (a === b)
-            || (a as string) === b as string
-            || (a as number) === b as number
-            || (a as boolean) === b as boolean
-            || ((a as Date).toUTCString && (b as Date).toUTCString
-                && (a as Date).toUTCString() === (b as Date).toUTCString());
+
+        // Fast path for primitives and identical references
+        if (a === b) {
+            return true;
+        }
+
+        // Date comparison (avoids property access on null/undefined and avoids false positives)
+        if (a instanceof Date && b instanceof Date) {
+            return a.getTime() === b.getTime();
+        }
+
+        // If ValueType ever contains other non-primitive objects, add comparisons here.
+        return false;
     }
 
     static sameMWTitle(a: MWTitle | void, b: MWTitle | void) {
-        return (a === b || (a as MWTitle).equals(b));
+        const aNullish = a === null || a === undefined;
+        const bNullish = b === null || b === undefined;
+
+        if (aNullish || bNullish) {
+            return aNullish && bNullish;
+        }
+        return (a as MWTitle).equals(b);
     }
 
     static sameRange(a: Range | void, b: Range | void) {
-        return (a === b || (a as Range).equals(b));
+        const aNullish = a === null || a === undefined;
+        const bNullish = b === null || b === undefined;
+
+        if (aNullish || bNullish) {
+            return aNullish && bNullish;
+        }
+        return (a as Range).equals(b as Range);
     }
 
     static withinRange(a: Range | void, b: Range | void) {
-        return (a === b || (a as Range).withinRange(b));
+        const aNullish = a === null || a === undefined;
+        const bNullish = b === null || b === undefined;
+        if (aNullish || bNullish) {
+            return false;
+        }
+        return ((a as Range).withinRange(b as Range));
     }
 }

@@ -12,13 +12,13 @@ import Client from "./common/client";
 import DocumentQueryBuilder from "./common/query_builders/document_query_builder";
 import FacetView from "./ui/facets/facet_view";
 import SelectedFacetsView from "./ui/facets/selected_facets_view";
-import EventHandler, {SearchStateDocument, SearchStateFacet} from "./common/event_handler";
+import EventHandler from "./common/event_handler";
 import CategoryView from "./ui/search-bar/category_view";
 import SelectedCategoriesView from "./ui/facets/selected_categories_view";
 import NamespaceView from "./ui/search-bar/namespace_view";
 import FacetQueryBuilder from "./common/query_builders/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
-import {TextFilters} from "./common/datatypes";
+import {SearchStateDocument, SearchStateFacet, TextFilters} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Divider, ThemeProvider, Typography} from "@mui/material";
 import ErrorView from "./ui/common/error_view";
@@ -38,6 +38,8 @@ import Box from "@mui/material/Box";
 import Loader from "./util/loader";
 import QueryUtils from "./util/query_utils";
 import {initializeDevContext} from "./util/dev_context";
+import ConfigUtils from "./util/config_utils";
+import {Sort} from "./common/request/sort";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -50,8 +52,8 @@ const currentDocumentsQueryBuilder = new DocumentQueryBuilder();
 const currentFacetsQueryBuilder = new FacetQueryBuilder();
 
 const urlParams = new URLSearchParams(window.location.search);
-const q = urlParams.get('q');
-const searchText = urlParams.get('search');
+const storedQuery = urlParams.get('q');
+const presetSearchText = urlParams.get('search');
 
 
 function App() {
@@ -79,132 +81,148 @@ function App() {
         ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']
     );
     const facetControlsOrder = wikiContext.config.fs2gFacetControlOrder.calculatePermutation(
-        ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree']);
+        ['sortView', 'selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
+            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree', 'saveSearchLink']);
 
     const currentDocumentQuery = currentDocumentsQueryBuilder.build();
     return <WikiContext.Provider value={wikiContext}>
         <ThemeProvider theme={DEFAULT_THEME}>
-        <Box id={'fs-content'}>
-            <Box height={'5px'} width={'100%'}>
-                <Loader loadPromise={loadPromise} loaderComponent={<BarLoader width={'100%'} />}/>
-            </Box>
-            <Box id={'fs-header'} className={'fs-boxes'}>
-                {[
-                    <SortView key={'sortView'}
-                              eventHandler={eventHandler}
-                    />,
-                    <SearchBar key={'searchBar'}
-                               searchText={currentDocumentQuery.searchText}
-                               restoreFromQuery={q !== null}
-                               eventHandler={eventHandler}
-                               query={currentDocumentQuery}
+            <Box id={'fs-content'}>
+                <Box height={'5px'} width={'100%'}>
+                    <Loader loadPromise={loadPromise} loaderComponent={<BarLoader width={'100%'}/>}/>
+                </Box>
+                <Box id={'fs-header'} className={'fs-boxes'}>
+                    {[
+                        <SortView key={'sortView'}
+                                  eventHandler={eventHandler}
+                                  searchStateDocument={searchStateDocument}
+                        />,
+                        <SearchBar key={'searchBar'}
+                                   restoreFromQuery={storedQuery !== null}
+                                   eventHandler={eventHandler}
+                                   query={currentDocumentQuery}
+                        />,
+                        <SaveSearchLink key={'saveSearchLink'}
+                                        documentQuery={currentDocumentQuery}
+                        />,
+                        <CategoryDropdown key={'categoryView'}
+                                          documentQuery={currentDocumentQuery}
+                                          eventHandler={eventHandler}
+                        />
+                    ].reorder(headerControlsOrder)}
 
-                    />,
-                    <SaveSearchLink key={'saveSearchLink'}
-                                    documentQuery={currentDocumentQuery}
-                    />,
-                    <CategoryDropdown key={'categoryView'}
-                                      documentQuery={currentDocumentQuery}
-                                      eventHandler={eventHandler}
-                    />
-                ].reorder(headerControlsOrder)}
+                </Box>
 
-            </Box>
-
-            <NamespaceView key={'namespaceView'}
-                           searchStateDocument={searchStateDocument}
-                           eventHandler={eventHandler}
-            />
-
-            <TagCloudFacet key={'tagCloud'}
-                           searchStateFacets={searchFacetState}
-                           eventHandler={eventHandler}
-                           textFilters={textFilters}
-            />
-
-            <Box id={'fs-facets'} className={'fs-boxes fs-body'}>
-                {[
-                    <SelectedFacetsHeader key={'selectedFacetHeader'} query={currentDocumentQuery}/>,
-
-                    <SelectedFacetsView key={'selectedFacetView'}
-                                        client={client}
-                                        searchStateDocument={searchStateDocument}
-                                        searchStateFacet={searchFacetState}
-                                        expandedFacets={expandedFacets}
-                                        eventHandler={eventHandler}
-                                        textFilters={textFilters}
-
-                    />,
-                    <SelectedCategoriesView key={'selectedCategoryView'}
-                                            searchStateDocument={searchStateDocument}
-                                            eventHandler={eventHandler}
-                    />,
-                    <RemoveAllFacetsButton key={'removeAllFacets'}
-                                           query={currentDocumentQuery}
-                                           eventHandler={eventHandler}
-                    />,
-                    <Divider key={'divider'}/>,
-
-                    <FacetView key={'facetView'}
-                               client={client}
+                <NamespaceView key={'namespaceView'}
                                searchStateDocument={searchStateDocument}
+                               eventHandler={eventHandler}
+                />
+
+                <TagCloudFacet key={'tagCloud'}
                                searchStateFacets={searchFacetState}
-                               expandedFacets={expandedFacets}
                                eventHandler={eventHandler}
                                textFilters={textFilters}
-                    />,
-                    <Typography key={'fs-available-categories'}
-                                variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}
-                    </Typography>,
-                    <CategoryDropdown key={'categoryDropDown'}
-                                      documentQuery={currentDocumentQuery}
+                />
+
+                <Box id={'fs-facets'} className={'fs-boxes fs-body'}>
+                    {[
+                        <SortView key={'sortView'}
+                                  eventHandler={eventHandler}
+                                  searchStateDocument={searchStateDocument}
+                        />,
+                        <SelectedFacetsHeader key={'selectedFacetHeader'} query={currentDocumentQuery}/>,
+
+                        <SelectedFacetsView key={'selectedFacetView'}
+                                            client={client}
+                                            searchStateDocument={searchStateDocument}
+                                            searchStateFacet={searchFacetState}
+                                            expandedFacets={expandedFacets}
+                                            eventHandler={eventHandler}
+                                            textFilters={textFilters}
+
+                        />,
+                        <SelectedCategoriesView key={'selectedCategoryView'}
+                                                searchStateDocument={searchStateDocument}
+                                                eventHandler={eventHandler}
+                        />,
+                        <RemoveAllFacetsButton key={'removeAllFacets'}
+                                               query={currentDocumentQuery}
+                                               eventHandler={eventHandler}
+                        />,
+                        <Divider key={'divider'}/>,
+
+                        <FacetView key={'facetView'}
+                                   client={client}
+                                   searchStateDocument={searchStateDocument}
+                                   searchStateFacets={searchFacetState}
+                                   expandedFacets={expandedFacets}
+                                   eventHandler={eventHandler}
+                                   textFilters={textFilters}
+                        />,
+                        <Typography key={'fs-available-categories'}
+                                    variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}
+                        </Typography>,
+                        <CategoryDropdown key={'categoryDropDown'}
+                                          documentQuery={currentDocumentQuery}
+                                          eventHandler={eventHandler}
+                        />,
+                        <CategoryView key={'categoryView'}
+                                      searchStateDocument={searchStateDocument}
                                       eventHandler={eventHandler}
-                    />,
-                    <CategoryView key={'categoryView'}
-                                  searchStateDocument={searchStateDocument}
-                                  eventHandler={eventHandler}
-                    />,
-                    <CategoryTree key={'categoryTree'}
-                                  client={client}
-                                  searchStateDocument={searchStateDocument}
-                                  textFilters={textFilters}
-                                  eventHandler={eventHandler}
-                    />
-                ].reorder(facetControlsOrder)}
+                        />,
+                        <CategoryTree key={'categoryTree'}
+                                      client={client}
+                                      searchStateDocument={searchStateDocument}
+                                      textFilters={textFilters}
+                                      eventHandler={eventHandler}
+                        />,
+                        <SaveSearchLink key={'saveSearchLink'}
+                                        documentQuery={currentDocumentQuery}
+                        />
+                    ].reorder(facetControlsOrder)}
+                </Box>
+                <Box id={'fs-results'}>
+                    <ResultView results={searchStateDocument?.documentResponse.docs ?? []}
+                                numResults={searchStateDocument?.documentResponse.numResults ?? 0}
+                                pageOffset={currentDocumentQuery.offset}
+                                eventHandler={eventHandler}
+                                client={client}/>
+                </Box>
+                <ErrorView error={error} setError={setError}/>
             </Box>
-            <Box id={'fs-results'}>
-                <ResultView results={searchStateDocument?.documentResponse.docs ?? []}
-                            numResults={searchStateDocument?.documentResponse.numResults ?? 0}
-                            pageOffset={currentDocumentQuery.offset}
-                            eventHandler={eventHandler}
-                            client={client}/>
-            </Box>
-            <ErrorView error={error} setError={setError}/>
-        </Box>
         </ThemeProvider>
     </WikiContext.Provider>;
 }
 
 
 function applyQueryConstraints() {
-    currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
-    if (wikiContext.isObjectConfigured('fs2gCategoryFilter')) {
-        const firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');
-        currentDocumentsQueryBuilder.withCategoryFacet(firstCategory);
-    }
-    if (searchText !== null) {
-        currentDocumentsQueryBuilder.withSearchText(searchText);
-    }
-    if (q !== null) {
-        currentDocumentsQueryBuilder.withQueryFromJson(atob(q));
+    if (storedQuery !== null) {
+        currentDocumentsQueryBuilder.withQueryFromJson(atob(storedQuery));
         currentFacetsQueryBuilder.updateBaseQuery(currentDocumentsQueryBuilder.build());
+    } else {
+        const defaultSortKey = wikiContext.config['fs2gDefaultSortOrder'];
+        const defaultSort = ConfigUtils.getSortByKeyOrDefault(defaultSortKey)
+        currentDocumentsQueryBuilder.clearSorts().withSort(defaultSort);
+
+        currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
+        if (wikiContext.isObjectConfigured('fs2gCategoryFilter')) {
+            const firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');
+            currentDocumentsQueryBuilder.withCategoryFacet(firstCategory);
+        }
+        if (presetSearchText !== null) {
+            currentDocumentsQueryBuilder.withSearchText(presetSearchText);
+        }
     }
+
+    // extra properties need to be added always, even if the query
+    // comes from a URL-param, because they are never stored. (see save_search_link.tsx)
     wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: any) => {
         currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
     });
-
+    // facet values for tag cloud need to be restored always, even if the query comes from URL-param,
+    // because the facet query is not stored and needs to be rebuilt from the document query
     currentFacetsQueryBuilder.withPropertyValueQuery(QueryUtils.prepareTagCloudValueQuery(wikiContext));
+
 }
 
 function render(children: React.ReactNode) {
@@ -220,9 +238,7 @@ function startApp(params: {
     client = params.client;
     wikiContext = params.wikiContext;
     applyQueryConstraints();
-    render(<ErrorBoundary FallbackComponent={ErrorComponent}>
-            <App/>
-    </ErrorBoundary>);
+    render(<ErrorBoundary FallbackComponent={ErrorComponent}><App/></ErrorBoundary>);
 }
 
 if (isInWikiContext) {

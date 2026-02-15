@@ -1,6 +1,6 @@
 import DocumentQueryBuilder from "./query_builders/document_query_builder";
 import FacetQueryBuilder from "./query_builders/facet_query_builder";
-import {TextFilters} from "./datatypes";
+import {SearchStateDocument, SearchStateFacet, TextFilters} from "./datatypes";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
 import {WikiContextAccessor} from "./wiki_context";
@@ -9,20 +9,7 @@ import {PropertyValueQuery} from "./request/property_value_query";
 import {FacetValue} from "./request/facet_value";
 import {PropertyFacet} from "./request/property_facet";
 import {Sort} from "./request/sort";
-import {BaseQuery} from "./request/base_query";
-import {FacetResponse} from "./response/facet_response";
-import {DocumentsResponse} from "./response/documents_response";
 import QueryUtils from "../util/query_utils";
-
-export interface SearchStateDocument {
-    documentResponse: DocumentsResponse;
-    query: BaseQuery
-}
-
-export interface SearchStateFacet {
-    facetsResponse: FacetResponse;
-    query: BaseQuery
-}
 
 
 class EventHandler {
@@ -74,7 +61,7 @@ class EventHandler {
     }
 
     private createClosuresForEventHandlers() {
-        let objPrototype = Object.getPrototypeOf(this);
+        const objPrototype = Object.getPrototypeOf(this);
         Object.getOwnPropertyNames(objPrototype).forEach((p) => {
             if (typeof objPrototype[p] === 'function' && p.startsWith('on')) {
                 objPrototype[p] = objPrototype[p].bind(this);
@@ -114,13 +101,13 @@ class EventHandler {
         this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
-            this.updateFacetValuesForProperty(p, this.wikiContext.config.fs2gFacetValueLimit)
+            this.updateFacetValuesForProperties(p)
         ]));
     }
 
     onExpandFacetClick(p: Property) {
         this.expandFacet(p.getItemId());
-        this.setLoadPromise(this.updateFacetValuesForProperty(p, this.wikiContext.config.fs2gFacetValueLimit));
+        this.setLoadPromise(this.updateFacetValuesForProperties(p));
     }
 
     onExpandSelectedFacetClick(itemId: string) {
@@ -139,7 +126,7 @@ class EventHandler {
 
 
     onValueClick(propertyFacet: PropertyFacet) {
-        let property = propertyFacet.getProperty();
+        const property = propertyFacet.getProperty();
         this.currentDocumentsQueryBuilder
             .withOffset(0)
             .withPropertyFacet(propertyFacet);
@@ -148,7 +135,7 @@ class EventHandler {
         this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
-            this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)
+            this.updateFacetValuesForProperties(property)
         ]));
     }
 
@@ -164,14 +151,14 @@ class EventHandler {
         });
 
 
-        let properties = propertyFacets.map(pf => pf.getProperty());
+        const properties = propertyFacets.map(pf => pf.getProperty());
         properties.forEach(property => {
             this.expandFacet(property.getItemId());
         });
         this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
-            this.updateFacetValuesForProperties(properties, this.wikiContext.config.fs2gFacetValueLimit)
+            this.updateFacetValuesForProperties(...properties)
         ]));
     }
 
@@ -188,7 +175,7 @@ class EventHandler {
         this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
-            this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)
+            this.updateFacetValuesForProperties(property)
         ]));
 
     }
@@ -199,8 +186,8 @@ class EventHandler {
             .withOffset(0)
             .withoutPropertyFacet(propertyFacet, facetValue);
 
-        let property = propertyFacet.getProperty();
-        let existsFacets = this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property);
+        const property = propertyFacet.getProperty();
+        const existsFacets = this.currentDocumentsQueryBuilder.existsPropertyFacetForProperty(property);
         if (!existsFacets) {
             this.currentFacetsQueryBuilder
                 .clearRangeQueriesForProperty(property)
@@ -210,7 +197,7 @@ class EventHandler {
         this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
-            this.updateFacetValuesForProperty(property, this.wikiContext.config.fs2gFacetValueLimit)
+            this.updateFacetValuesForProperties(property)
         ]));
     }
 
@@ -220,7 +207,7 @@ class EventHandler {
             return;
         }
 
-        let propertyValueConstraint = new PropertyValueQuery(
+        const propertyValueConstraint = new PropertyValueQuery(
             property,
             this.wikiContext.config.fs2gFacetValueLimit,
             null,
@@ -238,7 +225,7 @@ class EventHandler {
             return;
         }
 
-        let propertyValueQuery = PropertyValueQuery.forValuesContainingText(property, filterText);
+        const propertyValueQuery = PropertyValueQuery.forValuesContainingText(property, filterText);
         if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueQuery)) {
             return;
         }
@@ -302,6 +289,7 @@ class EventHandler {
             .clearAllPropertyValueQueries()
             .withPropertyValueQuery(QueryUtils.prepareTagCloudValueQuery(this.wikiContext));
 
+        this.resetTextFilters();
         this.setExpandedFacets([]);
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
@@ -309,7 +297,7 @@ class EventHandler {
         ]));
     }
 
-    private updateFacetValuesForProperties(properties: Property[], facetValueLimit: number = null) {
+    private updateFacetValuesForProperties(...properties: Property[]) {
 
         properties
             .filter(p => !p.isRangeProperty())
@@ -318,12 +306,12 @@ class EventHandler {
                 this.currentFacetsQueryBuilder.withPropertyValueQuery(
                     new PropertyValueQuery(
                         property,
-                        facetValueLimit,
+                        this.wikiContext.config.fs2gFacetValueLimit,
                         null,
                         null));
 
 
-            })
+            });
 
         properties
             .filter(p => p.isRangeProperty())
@@ -336,11 +324,7 @@ class EventHandler {
 
     }
 
-    private updateFacetValuesForProperty(property: Property, facetValueLimit: number = null) {
-        return this.updateFacetValuesForProperties([property], facetValueLimit);
-    }
-
-    private updateDocuments() {
+    private async updateDocuments() {
         return this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
             this.setSearchState({
                 documentResponse: response,
@@ -354,7 +338,7 @@ class EventHandler {
         });
     }
 
-    private updateFacets() {
+    private async updateFacets() {
         this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
         return this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
             this.setFacetState({

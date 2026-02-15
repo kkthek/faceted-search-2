@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
-import EventHandler, {SearchStateDocument} from "../../common/event_handler";
+import EventHandler from "../../common/event_handler";
 import Client from "../../common/client";
-import {TextFilters} from "../../common/datatypes";
+import {SearchStateDocument, TextFilters} from "../../common/datatypes";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {Typography} from "@mui/material";

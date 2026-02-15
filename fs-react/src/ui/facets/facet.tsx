@@ -1,8 +1,8 @@
 import React, {useContext} from "react";
-import {TextFilters} from "../../common/datatypes";
+import {SearchStateDocument, TextFilters} from "../../common/datatypes";
 import IdTools from "../../util/id_tools";
 import FacetValues from "./facet_values_view";
-import EventHandler, {SearchStateDocument} from "../../common/event_handler";
+import EventHandler from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import ChecklistIcon from '@mui/icons-material/Checklist';

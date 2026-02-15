@@ -17,10 +17,7 @@ class DocumentQueryBuilder {
             [],
             [],
             [],
-            [
-                ConfigUtils.getSortByName('score'),
-                ConfigUtils.getSortByName('ascending')
-            ],
+            [],
 
             10,
             0
