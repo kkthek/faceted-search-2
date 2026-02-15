@@ -15,7 +15,6 @@ function SearchBar(prop: {
 }) {
     const wikiContext = useContext(WikiContext);
     const placeholderText = wikiContext.config['fs2gPlaceholderText'] ?? wikiContext.msg('fs-search-placeholder');
-    const headerControlOrder = wikiContext.config['fs2gHeaderControlOrder'];
 
     const restoreFromQuery = useRef(prop.restoreFromQuery);
     const [searchText, setSearchText] = useState(prop.query.searchText ?? '');
@@ -46,9 +45,7 @@ function SearchBar(prop: {
         }
     };
 
-    const marginLeft = headerControlOrder[0] === 'searchView' ? '0px' : '10px';
-
-    return <Box id={'fs-searchbar'} sx={{'display': 'flex'}} width={'100%'}>
+    return <Box id={'fs-searchbar'}>
         <TextField id="fs-searchbar-button-text"
                    placeholder={placeholderText}
                    size={'small'}
@@ -56,14 +53,12 @@ function SearchBar(prop: {
                    value={searchText}
                    onKeyDown={onKeyDown}
                    fullWidth={true}
-                   sx={{marginLeft: marginLeft}}
                    onChange={(e) => setSearchText(e.target.value)}
         />
 
         <Button id={'fs-searchbar-button'}
                 size={'medium'}
                 variant="outlined"
-                sx={{marginLeft: '5px'}}
                 onClick={() => prop.eventHandler.onSearchClick(searchText)}>
             {wikiContext.msg('fs-search-button')}
         </Button>
