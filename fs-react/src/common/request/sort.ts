@@ -16,6 +16,7 @@ export class Sort {
     @jsonMember(Number)
     order: Order
 
+    @jsonMember(String)
     key: string;
 
     getKey() {

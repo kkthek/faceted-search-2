@@ -22,16 +22,21 @@ function SearchBar(prop: {
     const debouncedSearchValue = useDebounce(searchText, 500);
 
     useEffect(() => {
-        if (restoreFromQuery.current) {
-            // required because facet query is not stored in the URL for length optimization reasons
-            // in case that the q-param is used, facet values/ranges must be re-created once
-            const query = ObjectTools.deepClone(prop.query);
-            prop.eventHandler.onValuesClick(query.propertyFacets);
-            restoreFromQuery.current = false;
-            return;
-        }
+        if (restoreFromQueryAndTriggerUpdate()) return;
         prop.eventHandler.onSearchClick(debouncedSearchValue);
     }, [debouncedSearchValue, restoreFromQuery]);
+
+    const restoreFromQueryAndTriggerUpdate = function () {
+        if (!restoreFromQuery.current) {
+            return false;
+        }
+        // Required because the facet query is not stored in the URL for length optimization reasons.
+        // In case that the q-param is used, facet values/ranges must be re-created once
+        const propertyFacets = ObjectTools.deepClone(prop.query.propertyFacets);
+        prop.eventHandler.onValuesClick(propertyFacets);
+        restoreFromQuery.current = false;
+        return true;
+    }
 
     const onKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
@@ -45,26 +50,26 @@ function SearchBar(prop: {
 
     return <Box id={'fs-searchbar'} sx={{'display': 'flex'}} width={'100%'}>
         <TextField id="fs-searchbar-button-text"
-                   label={placeholderText}
+                   placeholder={placeholderText}
                    size={'small'}
                    variant="outlined"
                    value={searchText}
                    onKeyDown={onKeyDown}
                    fullWidth={true}
                    sx={{marginLeft: marginLeft}}
-                   onChange={(e)=> setSearchText(e.target.value)}
+                   onChange={(e) => setSearchText(e.target.value)}
         />
 
         <Button id={'fs-searchbar-button'}
                 size={'medium'}
                 variant="outlined"
+                sx={{marginLeft: '5px'}}
                 onClick={() => prop.eventHandler.onSearchClick(searchText)}>
             {wikiContext.msg('fs-search-button')}
         </Button>
         <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>
-        </Box>;
+    </Box>;
 }
-
 
 
 export default SearchBar;
