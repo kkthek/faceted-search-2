@@ -68,6 +68,14 @@ div.fs-boxes {
     .fs-save-search-link {
         min-width: 200px;
     }
+
+    .fs-open-in-full {
+        display: flex;
+        align-self: center;
+
+        flex-direction: row-reverse;
+        flex-grow: 10;
+    }
 }
 
 @media (max-width: 999px) {
@@ -98,6 +106,10 @@ div.fs-boxes {
     #fs-searchbar {
         width: 100%;
         flex-direction: column;
+    }
+
+    .fs-open-in-full {
+        display: none;
     }
 }
 
