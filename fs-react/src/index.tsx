@@ -39,7 +39,7 @@ import Loader from "./util/loader";
 import QueryUtils from "./util/query_utils";
 import {initializeDevContext} from "./util/dev_context";
 import ConfigUtils from "./util/config_utils";
-import {Sort} from "./common/request/sort";
+import MaximizeButton from "./ui/search-bar/maximize-button";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -110,7 +110,7 @@ function App() {
                                           eventHandler={eventHandler}
                         />
                     ].reorder(headerControlsOrder)}
-
+                    <MaximizeButton key={'maximizeButton'}/>
                 </Box>
 
                 <NamespaceView key={'namespaceView'}

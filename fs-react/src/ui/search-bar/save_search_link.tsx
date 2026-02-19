@@ -8,7 +8,6 @@ function SaveSearchLink(prop: {
     documentQuery: DocumentQuery
 }) {
     const wikiContext = useContext(WikiContext);
-    const headerControlOrder = wikiContext.config['fs2gHeaderControlOrder'];
     const q = ObjectTools.deepClone(prop.documentQuery);
     delete q['extraProperties']; // optimization
 
@@ -24,10 +23,7 @@ function SaveSearchLink(prop: {
         event.preventDefault();
     }
 
-    const marginLeft = headerControlOrder[0] === 'saveSearchLink' ? '0px' : '10px';
-
     return <Box className={'fs-save-search-link'}
-                sx={{marginLeft: marginLeft}}
         >
         <Link href={url.toString()}
               onClick={copyLinkToClipboard}

@@ -132,7 +132,8 @@ class TestData {
         $pvName = new PropertyValues($p, ['Markus']);
 
         $p = new Property('Description', Datatype::STRING);
-        $pvDescription = new PropertyValues($p, ['Loves <b>Football</b> a lot']);
+        $pvDescription = new PropertyValues($p, ['Loves <b>Football</b> a lot',
+            'superlong_string_which_is_so_long_that_it_needs_to_be_shortened_by_the_browser_to_a_visually_suitable_length']);
 
         $p = new Property('Has age', Datatype::NUMBER);
         $pvAge = new PropertyValues($p, [54]);

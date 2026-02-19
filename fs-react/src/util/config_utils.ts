@@ -81,9 +81,14 @@ class ConfigUtils {
 
     static replaceMagicWords(doc: Document, url: string, wikiContext: WikiContextAccessor) {
         let s = url;
-        s = s.replace('{CurrentUser}', encodeURIComponent(wikiContext.username));
-        s = s.replace('{Title}', encodeURIComponent(doc.title));
-        s = s.replace('{NamespaceIndex}', encodeURIComponent(doc.namespaceFacet.namespace.toString()));
+        s = s.replace('{CURRENTUSER}', encodeURIComponent(wikiContext.username));
+        s = s.replace('{PAGENAME}', encodeURIComponent(doc.title));
+        s = s.replace('{NAMESPACEINDEX}', encodeURIComponent(doc.namespaceFacet.namespace.toString()));
+
+        const namespaces = wikiContext.config['wgFormattedNamespaces'];
+        const namespaceAsText = namespaces[doc.namespaceFacet.namespace];
+        const fullTitle = doc.namespaceFacet.namespace !== 0 ? namespaceAsText+':'+doc.title : doc.title;
+        s = s.replace('{FULLPAGENAME}', encodeURIComponent(fullTitle));
         return s;
     }
 

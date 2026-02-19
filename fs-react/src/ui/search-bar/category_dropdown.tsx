@@ -40,7 +40,6 @@ function CategoryDropdown(prop: {
     const wikiContext = useContext(WikiContext);
     const categoryFilter = wikiContext.config['fs2gCategoryFilter'];
     const showCategories = wikiContext.config['fs2gShowCategories'];
-    const headerControlOrder = wikiContext.config['fs2gHeaderControlOrder'];
     const useCategoryDropdown = wikiContext.isObjectConfigured('fs2gCategoryFilter');
     if (!useCategoryDropdown || !showCategories) return;
 
@@ -62,8 +61,6 @@ function CategoryDropdown(prop: {
         <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>
     );
 
-    const marginLeft = headerControlOrder[0] === 'categoryDropDown' ? '0px' : '10px';
-
     return <FormControl id={'fs-category-dropdown'}>
         <Select
             labelId="category-dropdown-select-label"
@@ -71,7 +68,6 @@ function CategoryDropdown(prop: {
             value={selectedCategory}
             size={'small'}
             autoWidth={true}
-            sx={{marginLeft: marginLeft}}
             onChange={handleChange}
         >{categoryOptions}</Select>
     </FormControl>

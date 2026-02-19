@@ -12,12 +12,18 @@
     width: 100%;
 }
 
+#fs-facets {
+    overflow: hidden;
+}
+
 #fs-facets > div {
     margin: 5px;
 }
 div.fs-boxes {
     margin-top: 3px;
     display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 #fs-tagcloud {
@@ -48,6 +54,28 @@ div.fs-boxes {
         width: 65%;
     }
 
+    #fs-searchbar-button {
+        margin-left: 5px;
+    }
+
+    #fs-searchbar {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        max-width: 800px;
+    }
+
+    .fs-save-search-link {
+        min-width: 200px;
+    }
+
+    .fs-open-in-full {
+        display: flex;
+        align-self: center;
+
+        flex-direction: row-reverse;
+        flex-grow: 10;
+    }
 }
 
 @media (max-width: 999px) {
@@ -57,6 +85,7 @@ div.fs-boxes {
 
     #fs-searchbar-button {
         margin-top: 10px;
+        width: 100%;
     }
 
     #fs-header > div {
@@ -77,6 +106,10 @@ div.fs-boxes {
     #fs-searchbar {
         width: 100%;
         flex-direction: column;
+    }
+
+    .fs-open-in-full {
+        display: none;
     }
 }
 
@@ -142,6 +175,12 @@ div.demoted {
 #fs-facets {
     display: flex;
     flex-direction: column;
+}
+
+#fs-facetview {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
