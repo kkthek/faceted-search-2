@@ -12,6 +12,10 @@
     width: 100%;
 }
 
+#fs-facets {
+    overflow: hidden;
+}
+
 #fs-facets > div {
     margin: 5px;
 }
@@ -19,6 +23,7 @@ div.fs-boxes {
     margin-top: 3px;
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 #fs-tagcloud {
@@ -57,6 +62,7 @@ div.fs-boxes {
         display: flex;
         width: 100%;
         flex-direction: row;
+        max-width: 800px;
     }
 
     .fs-save-search-link {
@@ -157,6 +163,12 @@ div.demoted {
 #fs-facets {
     display: flex;
     flex-direction: column;
+}
+
+#fs-facetview {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
