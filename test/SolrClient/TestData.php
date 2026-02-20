@@ -22,6 +22,9 @@ class TestData {
         $p = new Property('Was born at', Datatype::DATETIME);
         $pvWasBornAt = new PropertyValues($p, ['1969-06-10T00:00:00Z']);
 
+        $p = new Property('_MDAT', Datatype::DATETIME);
+        $pv_MDAT = new PropertyValues($p, ['2026-02-13T12:00:32Z']);
+
         $p = new Property('Is on pension', Datatype::BOOLEAN);
         $pvIsOnPension = new PropertyValues($p, ['false']);
 
@@ -31,7 +34,7 @@ class TestData {
         $p = new Property('Diqa import fullpath', Datatype::STRING);
         $pvDiqa_import_fullpath = new PropertyValues($p, ['https://pdfobject.com/pdf/sample.pdf']);
 
-        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvDiqa_import_fullpath])
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvDiqa_import_fullpath, $pv_MDAT])
         ->setFulltext("Markus Schumacher arbeitet bei DIQA-GmbH")
         ->setCategories(["Employee"])
         ->setDirectCategories(["Employee"])
@@ -51,6 +54,9 @@ class TestData {
         $p = new Property('Was born at', Datatype::DATETIME);
         $pvWasBornAt = new PropertyValues($p, ['1993-06-10T00:00:00Z']);
 
+        $p = new Property('_MDAT', Datatype::DATETIME);
+        $pv_MDAT = new PropertyValues($p, ['2026-01-15T12:00:32Z']);
+
         $p = new Property('Is on pension', Datatype::BOOLEAN);
         $pvIsOnPension = new PropertyValues($p, ['false']);
 
@@ -63,7 +69,7 @@ class TestData {
         $p = new Property('Diqa import fullpath', Datatype::STRING);
         $pvDiqa_import_fullpath = new PropertyValues($p, ['http://localhost/mediawiki/test/resources/sample.png']);
 
-        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse, $pvDiqa_import_fullpath])
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse, $pvDiqa_import_fullpath, $pv_MDAT])
             ->setFulltext("Peter Maier arbeitet bei Mercedes.")
             ->setCategories(["Employee"])
             ->setDirectCategories(["Employee"])
@@ -83,13 +89,16 @@ class TestData {
         $p = new Property('Was born at', Datatype::DATETIME);
         $pvWasBornAt = new PropertyValues($p, ['1973-02-11T00:00:00Z']);
 
+        $p = new Property('_MDAT', Datatype::DATETIME);
+        $pv_MDAT = new PropertyValues($p, ['2025-02-07T12:00:32Z']);
+
         $p = new Property('Is on pension', Datatype::BOOLEAN);
         $pvIsOnPension = new PropertyValues($p, ['true']);
 
         $p = new Property('Has spouse', Datatype::WIKIPAGE);
         $pvSpouse = new PropertyValues($p, [new MWTitle('Günther, Brigitte', 'Brigitte')]);
 
-        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvSpouse])
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvSpouse, $pv_MDAT])
             ->setFulltext("Horst Günther ist im Ruhestand.")
             ->setCategories(["Pensionist"])
             ->setNamespace(0);
@@ -108,6 +117,9 @@ class TestData {
         $p = new Property('Was born at', Datatype::DATETIME);
         $pvWasBornAt = new PropertyValues($p, ['1992-03-08T00:00:00Z']);
 
+        $p = new Property('_MDAT', Datatype::DATETIME);
+        $pv_MDAT = new PropertyValues($p, ['2023-01-01T12:00:32Z']);
+
         $p = new Property('Is on pension', Datatype::BOOLEAN);
         $pvIsOnPension = new PropertyValues($p, ['false']);
 
@@ -118,7 +130,7 @@ class TestData {
         $p = new Property('Has spouse', Datatype::WIKIPAGE);
         $pvSpouse = new PropertyValues($p, [new MWTitle('Müller, Marina', 'Marina')]);
 
-        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvWorksAt2, $pvSpouse])
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvWorksAt2, $pvSpouse, $pv_MDAT])
             ->setFulltext("Timo Müller arbeitet bei der Audi AG.")
             ->setCategories(["Employee"])
             ->setDirectCategories(["Employee"])
@@ -141,6 +153,9 @@ class TestData {
         $p = new Property('Was born at', Datatype::DATETIME);
         $pvWasBornAt = new PropertyValues($p, ['1976-02-18T00:00:00Z']);
 
+        $p = new Property('_MDAT', Datatype::DATETIME);
+        $pv_MDAT = new PropertyValues($p, ['2022-04-12T12:00:32Z']);
+
         $p = new Property('Is on pension', Datatype::BOOLEAN);
         $pvIsOnPension = new PropertyValues($p, ['false']);
 
@@ -150,7 +165,7 @@ class TestData {
         $p = new Property('Has spouse', Datatype::WIKIPAGE);
         $pvSpouse = new PropertyValues($p, [new MWTitle('Schmidt, Johanna', 'Johanna')]);
 
-        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse, $pvDescription])
+        $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse, $pvDescription, $pv_MDAT])
             ->setFulltext("Markus Schmidt arbeitet bei Firma XY:12/3.")
             ->setCategories(["Employee"])
             ->setDirectCategories(["Employee"])
