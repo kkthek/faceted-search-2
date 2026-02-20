@@ -61,7 +61,9 @@ class SolrResponseParser {
                             WikiTools::createURLForCategory($category)
                         ), $value);
 
-                    } else if (self::endsWith($property, "_s") || self::endsWith($property, "_datevalue_l")) {
+                    } else if (self::endsWith($property, "_s")       // search fields
+                        || self::endsWith($property, "_datevalue_l") // redundant date value as (sortable) number
+                        || $this->isPredefinedProperty($property)) {        // predefined properties (such as _MDAT)
                         continue;
                     } else if (self::startsWith($property, "smwh_")) {
                         $item = $this->parsePropertyWithValues($property, $value);
@@ -103,6 +105,7 @@ class SolrResponseParser {
         $smwh_properties = $this->body->facet_counts->facet_fields->smwh_properties ?? [];
         $propertyFacetCounts = []; /* @var PropertyFacetCount[] */
         foreach ($smwh_properties as $property => $count) {
+            if ($this->isPredefinedProperty($property)) continue;
             $propertyFacetCount = new PropertyFacetCount($this->parseProperty($property), $count);
             if (!is_null($propertyFacetCount)) {
                 $propertyFacetCounts[] = $propertyFacetCount;
@@ -110,6 +113,7 @@ class SolrResponseParser {
         }
         $smwh_attributes = $this->body->facet_counts->facet_fields->smwh_attributes ?? [];
         foreach ($smwh_attributes as $property => $count) {
+            if ($this->isPredefinedProperty($property)) continue;
             $propertyFacetCount = new PropertyFacetCount($this->parseProperty($property), $count);
             if (!is_null($propertyFacetCount)) {
                 $propertyFacetCounts[] = $propertyFacetCount;
@@ -301,5 +305,10 @@ class SolrResponseParser {
             }
         }
         return $propertyFacetValues;
+    }
+
+    public function isPredefinedProperty(string $property): bool
+    {
+        return self::startsWith($property, "smwh__");
     }
 }
