@@ -256,7 +256,7 @@
 		},
 		"PropertyGroupingByUrl": {
 			"value": [],
-			"description": "Groups property values in OR-Dialog by a request to the wiki. ['Property name' => 'https://host/path/to/endpoint', ...]"
+			"description": "Groups property values in OR-Dialog by a request to a rest endpoint of the wiki. ['Property name' => '/path/to/endpoint', ...]"
 		},
 		"AdditionalLinks": {
 			"value": [],
