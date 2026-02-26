@@ -18,6 +18,7 @@ use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\FacetResponse;
 use DIQA\FacetedSearch2\Model\Response\StatsResponse;
+use DIQA\FacetedSearch2\Utils\Logger;
 use DIQA\FacetedSearch2\Utils\WikiTools;
 use Exception;
 use MediaWiki\MediaWikiServices;
@@ -119,7 +120,7 @@ class SolrRequestClient implements FacetedSearchClient
 
         }
 
-        return $result->setDebugInfo(Util::buildQueryParams($queryParams));;
+        return $result->setDebugInfo(Util::buildQueryParams($queryParams));
     }
 
     /**
@@ -399,6 +400,10 @@ class SolrRequestClient implements FacetedSearchClient
             $ch = curl_init();
             $queryString = Util::buildQueryParams($queryParams);
             $url = Helper::getSOLRBaseUrl() . "/select";
+            global $fs2gDebugMode;
+            if ($fs2gDebugMode ?? false) {
+                Logger::log("Request: $url?$queryString");
+            }
 
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);
@@ -417,6 +422,9 @@ class SolrRequestClient implements FacetedSearchClient
             $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
             list($header, $body) = Util::splitResponse($response);
+            if ($fs2gDebugMode ?? false) {
+                Logger::log("Response: $body");
+            }
             if ($httpcode >= 200 && $httpcode <= 299) {
 
                 return json_decode($body);

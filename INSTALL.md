@@ -82,9 +82,11 @@ All options are set in `LocalSettings.php` using the prefix `$fs2g`, e.g. `$fs2g
 - **Default:** `""`
 - The password for the SOLR user. See [`SolrUser`](#solruser).
 
-### `SolrProxyDebug`
+### `DebugMode`
 - **Default:** `false`
-- Activates maximum PHP error reporting. **Must not be used in production** — for debugging purposes only.
+- Activates debug mode. **Must not be used in production** — for debugging purposes only. 
+If activated, SOLR queries and responses are logged to a file in the "logs"-folder.
+Additionally, the SOLR request is echoed in the frontend's POST-requests.
 
 ---
 
@@ -277,7 +279,7 @@ $fs2gShownFacets['Company'] = ['CEO', 'City', 'BusinessArea'];
 
 ### `TagCloudProperty`
 - **Default:** `false`
-- If set to a property name (of datatype `string`), a tag cloud for that property is displayed in the left-hand panel.
+- If set to a property name (of datatype `string`), a tag cloud for that property is displayed under the search bar.
 
 ---
 
