@@ -205,18 +205,24 @@ $fs2gDateTimePropertyClusters['Released on'] = [
 - Available options: 
   - `confirm` true/false. opens a confirmation dialog with OK and Cancel buttons.
   - `openNewTab` opens the URL in a new tab (true) or sends only a POST-request in background (false)
+  - If you specify only a URL (1), the defaults for `confirm` is `false` and for `openNewTab` is `true`.
 - **Example:**
 ```php
 $fs2gAdditionalLinks['Document'] = [
-    '/index.php/{{PAGENAME}}?showItems=true',     (1)
-    [
-        'url' => '/rest.php/some/endpoint',       (2)
+    'Show items' => '/index.php/{{PAGENAME}}?showItems=true',     (1)
+    'Add to cart' => [
+        'url' => '/rest.php/some/endpoint',                       (2)
         'confirm' => true, 
         'openNewTab' => false
     ]
 ];
 ```
-If you specify only a URL (1), the defaults for `confirm` is `false` and for `openNewTab` is `true`. 
+That means: All results belonging to the category `Document` will have a link 
+to `/index.php/{{PAGENAME}}?showItems=true` named `[Show items]` that opens a new tab 
+and a link to `/rest.php/some/endpoint` named `[Add to cart]` that sends a POST request 
+after showing a confirmation dialog.
+
+ 
 
 You can use the following magic words in the URL which are automatically expanded and URL-encoded.
 - `{{PAGENAME}}`: The wiki page name of the current result
@@ -231,7 +237,7 @@ comma-separated
 - **Example:** Usage of Property `Topic`
 ```php
 $fs2gAdditionalLinks['Document'] = [
-    '/index.php/{{PAGENAME}}?topic={SMW:Topic}&openInOverlay=true',
+    'Show items' => '/index.php/{{PAGENAME}}?topic={SMW:Topic}&openInOverlay=true',
 ];
 ```
 
