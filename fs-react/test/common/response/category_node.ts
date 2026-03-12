@@ -1,4 +1,4 @@
-import {CategoryNode} from "../../src/common/response/category_node";
+import {CategoryNode} from "../../../src/common/response/category_node";
 
 const assert = require('assert');
 const util = require('util')

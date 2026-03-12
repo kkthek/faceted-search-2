@@ -38,7 +38,7 @@ export class Document implements ElementWithURL {
     containsFacetValue(property: string, value: ValueType): boolean {
         let propertyFacetValues = this.getPropertyFacetValues(property);
         if (propertyFacetValues === null) return false;
-        if ((value as Date).toUTCString) {
+        if (value instanceof Date) {
             let values = propertyFacetValues.values as Date[];
             return values.findFirst((d: Date) => d.getTime() === (value as Date).getTime()) !== null;
         } else {
