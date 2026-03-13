@@ -92,7 +92,7 @@ function setConfigForDevContext() {
 
     $fs2gHeaderControlOrder = [  'searchView', 'sortView','categoryDropDown', 'saveSearchLink' ];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-        'facetView', 'categoryView', 'categoryTree', 'sortView'];
+        'facetView', 'categoryLabel', 'categoryView', 'categoryTree', 'sortView'];
 
     $fs2gPropertyGrouping = [
        /* 'Has name' =>
