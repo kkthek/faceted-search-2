@@ -1,6 +1,6 @@
 <?php
 
-namespace DIQA\FacetedSearch2;
+namespace DIQA\FacetedSearch2\Model\Response;
 
 class CategoryNode
 {

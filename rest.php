@@ -54,7 +54,7 @@ use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\DocumentByIdQuery;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
-use DIQA\FacetedSearch2\CategoryNode;
+use DIQA\FacetedSearch2\Model\Response\CategoryNode;
 
 require_once 'dev-config.php';
 setConfigForDevContext();
