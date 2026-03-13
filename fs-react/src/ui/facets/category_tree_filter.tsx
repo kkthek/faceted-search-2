@@ -4,7 +4,7 @@ import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
 import {TextField} from "@mui/material";
-import {WikiContext} from "../../index";
+import {TYPING_DELAY, WikiContext} from "../../index";
 import {CategoryNode} from "../../common/response/category_node";
 
 function CategoryTreeFilter(prop: {
@@ -20,7 +20,7 @@ function CategoryTreeFilter(prop: {
     const categories = prop.searchStateDocument?.documentResponse
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
     const text = prop.textFilters['category_tree'] ?? '';
-    const debouncedSearchValue = useDebounce(text, 500);
+    const debouncedSearchValue = useDebounce(text, TYPING_DELAY);
     const filteredTree = useMemo(() => {
         return fullTree
             .filterForCategories(categories)

@@ -55,6 +55,9 @@ const urlParams = new URLSearchParams(window.location.search);
 const storedQuery = urlParams.get('q');
 const presetSearchText = urlParams.get('search');
 
+// delay for typing in the text fields before a request is sent, in ms
+export const TYPING_DELAY = 400;
+
 
 function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);

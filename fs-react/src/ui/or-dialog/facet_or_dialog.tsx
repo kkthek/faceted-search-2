@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Box, FormGroup, TextField} from "@mui/material";
 import FacetOrDialogContent from "./facet_or_dialog_content";
-import {WikiContext} from "../../index";
+import {TYPING_DELAY, WikiContext} from "../../index";
 import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler from "../../common/event_handler";
 import Client from "../../common/client";
@@ -32,7 +32,7 @@ function FacetOrDialog(prop: {
 }) {
     const wikiContext = useContext(WikiContext);
     const [searchText, setSearchText] = useState((): string => '');
-    const debouncedSearchText = useDebounce(searchText, 300);
+    const debouncedSearchText = useDebounce(searchText, TYPING_DELAY);
 
     if (!prop.property) return;
     const pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
