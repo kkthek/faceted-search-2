@@ -61,7 +61,7 @@ class ConfigUtils {
 
     static replaceSMWVariables(doc: Document, url: string) {
 
-        const smwVariables = url.matchAll(/\{SMW:([^}]+)}/gi);
+        const smwVariables = url.matchAll(/\{SMW:([^}]+)}/g);
 
         // @ts-ignore
         for (let smwVariable of smwVariables) {
@@ -71,7 +71,7 @@ class ConfigUtils {
 
             const value = pfv.values.map((value: ValueType | MWTitle) => {
                 const mwTitle = value as MWTitle;
-                return mwTitle ? mwTitle.title : value.toString();
+                return mwTitle.title ? mwTitle.title : value.toString();
             }).join(',');
             url = url.replace(`{SMW:${propertyName}}`, encodeURIComponent(value));
         }

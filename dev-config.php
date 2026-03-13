@@ -90,9 +90,9 @@ function setConfigForDevContext() {
         $fs2gExtraPropertiesToRequest[] = new Property("Diqa import fullpath", Datatype::STRING);
     }
 
-    $fs2gHeaderControlOrder = [ 'sortView', 'searchView', 'saveSearchLink' ];
+    $fs2gHeaderControlOrder = [  'searchView', 'sortView','categoryDropDown', 'saveSearchLink' ];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-        'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree'];
+        'facetView', 'categoryLabel', 'categoryView', 'categoryTree', 'sortView'];
 
     $fs2gPropertyGrouping = [
        /* 'Has name' =>
@@ -109,8 +109,7 @@ function setConfigForDevContext() {
     global $fs2gAdditionalLinks;
     $fs2gAdditionalLinks = [
         "Employee" => [
-            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{CurrentUser}&Objekt={SMW:Has spouse}&Title={Title}&Namespace={NamespaceIndex}",
-            "Objektjournal öffnen" => "{SMW:ODB-ID.replace('Objekt','Journal'}",
+            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{{CURRENTUSER}}&Objekt={SMW:Has spouse}&Title={{FULLPAGENAME}}&Namespace={{NAMESPACENUMBER}}",
             "Test confirm" => [
                 "url" => 'test/confirm',
                 "confirm" => true,
@@ -118,8 +117,8 @@ function setConfigForDevContext() {
             ]
         ],
         "Pensionist" => [
-            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{CurrentUser}&Objekt={SMW:Has spouse}",
-            "Objektjournal öffnen" => "{SMW:ODB-ID.replace('Objekt','Journal'}"
+            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{{CURRENTUSER}}&Objekt={SMW:Has spouse}",
+
         ]
     ];
     global $fs2gDateTimeZone;
@@ -161,6 +160,7 @@ function getConfigForDevContext(): array
             $settings[$var] = $value;
         }
     }
+    $settings['skin'] = 'chameleon';
     $langCode = $wgUserLanguage ?? 'en';
     $lang = json_decode(file_get_contents("i18n/$langCode.json"));
     return [ 'settings' => $settings, 'options' => $userOptions, 'lang' => $lang ];

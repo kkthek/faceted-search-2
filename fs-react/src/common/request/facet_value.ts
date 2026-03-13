@@ -61,8 +61,8 @@ export class FacetValue {
 
     containsValueOrMWTitle(value: ValueType | void, mwTitle: MWTitle | void): boolean {
 
-        return (this.value && FacetValue.sameValue(this.value, value))
-            || (this.mwTitle && FacetValue.sameMWTitle(this.mwTitle, mwTitle));
+        return (this.value !== undefined && this.value !== null && FacetValue.sameValue(this.value, value))
+            || (this.mwTitle !== undefined && this.mwTitle !== null && this.mwTitle && FacetValue.sameMWTitle(this.mwTitle, mwTitle));
 
     }
 
@@ -82,7 +82,7 @@ export class FacetValue {
             || (a as string) === b as string
             || (a as number) === b as number
             || (a as boolean) === b as boolean
-            || ((a as Date).toUTCString && (b as Date).toUTCString
+            || ((a instanceof Date) && (b instanceof Date)
                 && (a as Date).toUTCString() === (b as Date).toUTCString());
     }
 

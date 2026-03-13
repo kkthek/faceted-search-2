@@ -1,6 +1,6 @@
 import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
 import {TextFilters} from "../../common/datatypes";
-import {WikiContext} from "../../index";
+import {TYPING_DELAY, WikiContext} from "../../index";
 import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
@@ -20,7 +20,7 @@ function FacetFilter(prop : {
     const [unchanged, setUnchanged] = useState((): boolean => true);
 
     let text = prop.textFilters[prop.property?.title] ?? '';
-    const debouncedSearchValue = useDebounce(text, 500);
+    const debouncedSearchValue = useDebounce(text, TYPING_DELAY);
     useEffect(() => {
         if (!prop.property) return;
         if (unchanged && debouncedSearchValue === '') return;
