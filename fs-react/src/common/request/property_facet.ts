@@ -19,7 +19,8 @@ export class PropertyFacet {
     }
 
     containsFacet(value: FacetValue): boolean {
-        return this.values.some(e => value !== null && e.equalsOrWithinRange(value));
+        if (!value) return false;
+        return this.values.some(e => e.equals(value) || e.withinRange(value));
     }
 
     hasValueOrMWTitle(): boolean {
@@ -50,15 +51,18 @@ export class PropertyFacet {
         return this.property.equals(that.property) && valueSetIsEqual;
     }
 
-    equalsOrWithinRange(that: PropertyFacet) {
+    withinRange(that: PropertyFacet) {
 
         if (this.values.length !== that.values.length) {
             return false;
         }
 
-        let valueSetIsEqual = this.values.every((e) => that.values.find((f) => f.equalsOrWithinRange(e)))
-            && that.values.every((e) => this.values.find((f) => f.equalsOrWithinRange(e)));
+        // THIS is a subset of THAT
+        const thisEqualsThat = this.values.every((e) => that.values.find((f) => e.withinRange(f)));
 
-        return this.property.equals(that.property) && valueSetIsEqual;
+        // THAT is a superset THIS
+        const thatEqualsThis = that.values.every((e) => this.values.find((f) => f.withinRange(e)));
+
+        return this.property.equals(that.property) && thisEqualsThat && thatEqualsThis;
     }
 }

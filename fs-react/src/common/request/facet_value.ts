@@ -51,12 +51,9 @@ export class FacetValue {
             ;
     }
 
-    equalsOrWithinRange(that: FacetValue) {
-
-        return FacetValue.sameValue(this.value, that.value)
-            && FacetValue.sameMWTitle(this.mwTitle, that.mwTitle)
-            && FacetValue.withinRange(this.range, that.range)
-            ;
+    withinRange(that: FacetValue) {
+        if (!this.range || !that.range) return false;
+        return FacetValue.withinRange(this.range, that.range);
     }
 
     containsValueOrMWTitle(value: ValueType | void, mwTitle: MWTitle | void): boolean {

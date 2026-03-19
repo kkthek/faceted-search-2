@@ -195,7 +195,7 @@ describe('FacetValue', () => {
         it('should return false for different Ranges', () => {
             const a = FacetValue.fromRange(new Range(1, 10));
             const b = FacetValue.fromRange(new Range(5, 20));
-            expect(a.equals(b)).to.be.false;
+            expect(a.withinRange(b)).to.be.false;
         });
 
         it('should return false when one has value and other has mwTitle', () => {
@@ -211,31 +211,6 @@ describe('FacetValue', () => {
         });
     });
 
-    describe('equalsOrWithinRange', () => {
-        it('should return true when ranges are identical', () => {
-            const a = FacetValue.fromRange(new Range(1, 10));
-            const b = FacetValue.fromRange(new Range(1, 10));
-            expect(a.equalsOrWithinRange(b)).to.be.true;
-        });
-
-        it('should return true when this range is within that range', () => {
-            const a = FacetValue.fromRange(new Range(3, 7));
-            const b = FacetValue.fromRange(new Range(1, 10));
-            expect(a.equalsOrWithinRange(b)).to.be.true;
-        });
-
-        it('should still compare values correctly', () => {
-            const a = FacetValue.fromValue('hello');
-            const b = FacetValue.fromValue('hello');
-            expect(a.equalsOrWithinRange(b)).to.be.true;
-        });
-
-        it('should return true when both ranges are null', () => {
-            const a = FacetValue.fromValue('val');
-            const b = FacetValue.fromValue('val');
-            expect(a.equalsOrWithinRange(b)).to.be.true;
-        });
-    });
 
     describe('containsValueOrMWTitle', () => {
         it('should return true when value matches', () => {
