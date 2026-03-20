@@ -51,16 +51,20 @@ export class FacetValue {
             ;
     }
 
-    withinRange(that: FacetValue) {
-        if (!this.range || !that.range) return false;
-        return FacetValue.withinRange(this.range, that.range);
+    withinRange(value: FacetValue) {
+        if (this.isNullish(value.range)) return false;
+        return FacetValue.withinRange(this.range, value.range);
     }
 
     containsValueOrMWTitle(value: ValueType | void, mwTitle: MWTitle | void): boolean {
 
-        return (this.value !== undefined && this.value !== null && FacetValue.sameValue(this.value, value))
-            || (this.mwTitle !== undefined && this.mwTitle !== null && this.mwTitle && FacetValue.sameMWTitle(this.mwTitle, mwTitle));
+        return (!this.isNullish(this.value) && FacetValue.sameValue(this.value, value))
+            || (!this.isNullish(this.mwTitle) && this.mwTitle && FacetValue.sameMWTitle(this.mwTitle, mwTitle));
 
+    }
+
+    isNullish(value: any): boolean {
+        return value === null || value === undefined;
     }
 
     toString(): string {
