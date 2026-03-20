@@ -37,14 +37,11 @@ function NamespaceView(prop: {
     if (!showNamespaces) return;
     const namespacesFromWiki = wikiContext.config['wgFormattedNamespaces'];
 
-    const [namespaces, setNamespaces] = useState([] as number[]);
-
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
         namespaces: number[],
     ) => {
         prop.eventHandler.onNamespaceClick(namespaces)
-        setNamespaces(namespaces);
     };
 
     const documentsResponse = prop.searchStateDocument.documentResponse;
@@ -58,19 +55,19 @@ function NamespaceView(prop: {
     }
 
     const namespacesToShow = wikiContext.config['fs2gNamespacesToShow'];
-    const listItems = namespaceFacetCounts
+    const namespaceFacetItems = namespaceFacetCounts
         .filter(facetCount => namespacesToShow.containsOrEmpty(facetCount.namespace))
         .sort(ConfigUtils.getSortFunction(wikiContext.options['fs2-sort-order-preferences']))
         .map((facetCount) => {
             return <NamespaceFacet key={facetCount.namespace} namespaceFacetCount={facetCount} />
     });
     return <div id={'fs-namespaces'} className={'fs-boxes'}>
-        <ToggleButtonGroup value={namespaces}
+        <ToggleButtonGroup value={prop.searchStateDocument.query.namespaceFacets}
                            onChange={handleChange}
                            size="small"
                            sx={{'display': 'block'}}
         >
-            {listItems}
+            {namespaceFacetItems}
         </ToggleButtonGroup>
     </div>;
 }
