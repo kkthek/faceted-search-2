@@ -4,16 +4,16 @@ import {MWTitleWithURL} from "./mw_title_with_URL";
 import {Range} from "../range";
 import {PropertyFacet} from "../request/property_facet";
 import {FacetValue} from "../request/facet_value";
-import {Sortable} from "../datatypes";
+import {Sortable, ValueType} from "../datatypes";
 
 @jsonObject
 export class ValueCount implements Sortable<ValueCount> {
     @jsonMember({deserializer: value => ValueDeserializer.deserializeValue(value)})
-    value: string | number | Date | null;
+    value: ValueType | void;
     @jsonMember(MWTitleWithURL)
-    mwTitle: MWTitleWithURL | null;
+    mwTitle: MWTitleWithURL | void;
     @jsonMember(Range)
-    range: Range | null;
+    range: Range | void;
     @jsonMember(Number)
     count: number;
 
@@ -40,6 +40,13 @@ export class ValueCount implements Sortable<ValueCount> {
     }
 
     serialize(): string {
-        return this.mwTitle ? this.mwTitle.title : this.value.toString();
+        if (this.range) {
+            return this.range.toString()
+        } else if (this.mwTitle) {
+            return this.mwTitle.title
+        } else if (this.value) {
+            return this.value.toString();
+        }
+        return null;
     }
 }
