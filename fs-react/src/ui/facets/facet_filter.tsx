@@ -16,16 +16,27 @@ function FacetFilter(prop : {
 }) {
 
     const wikiContext = useContext(WikiContext);
-
     const [unchanged, setUnchanged] = useState((): boolean => true);
 
-    let text = prop.textFilters[prop.property?.title] ?? '';
-    const debouncedSearchValue = useDebounce(text, TYPING_DELAY);
+    const globalFilterText = prop.textFilters[prop.property?.title] ?? '';
+    const [localFilterText, setLocalFilterText] = useState(globalFilterText);
+    const debouncedSearchValue = useDebounce(localFilterText, TYPING_DELAY);
+
+    const setGlobalFilter = function(text: string): void {
+        const f = ObjectTools.deepClone(prop.textFilters);
+        f[prop.property.title] = text;
+        prop.eventHandler.setTextFilters(f);
+    }
+    
     useEffect(() => {
         if (!prop.property) return;
-        if (unchanged && debouncedSearchValue === '') return;
-        prop.eventHandler.onFacetValueContains(debouncedSearchValue, prop.property)
+        prop.eventHandler.onFacetValueContains(debouncedSearchValue, prop.property);
+        setGlobalFilter(debouncedSearchValue);
     }, [debouncedSearchValue]);
+
+    useEffect(() => {
+        setLocalFilterText(globalFilterText);
+    }, [globalFilterText]);
 
     if (!prop.property) return;
     const unsuitableProperty = prop.property.isRangeProperty() || prop.property.isBooleanProperty();
@@ -35,23 +46,17 @@ function FacetFilter(prop : {
     }
 
     const onChange = function(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
-        setFilter(e.target.value);
+        setLocalFilterText(e.target.value);
         setUnchanged(false);
     }
 
     const onKeyDown = function(e: KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Enter") {
-            prop.eventHandler.onFacetValueContains(text, prop.property);
+            prop.eventHandler.onFacetValueContains(globalFilterText, prop.property);
         } else if (e.key === "Escape") {
-            setFilter('');
+            setLocalFilterText('');
         }
         e.stopPropagation();
-    }
-
-    const setFilter = function(text: string): void {
-        const f = ObjectTools.deepClone(prop.textFilters);
-        f[prop.property.title] = text;
-        prop.eventHandler.setTextFilters(f);
     }
 
     return <TextField
@@ -60,7 +65,7 @@ function FacetFilter(prop : {
                   placeholder={wikiContext.msg('fs-filter-property', prop.property.title)}
                   size={'small'}
                   variant="standard"
-                  value={text}
+                  value={localFilterText}
                   onChange={onChange}
                   onKeyDown={onKeyDown}
     />;
