@@ -1,5 +1,4 @@
 import React from "react";
-import DisplayTools from "../../util/display_tools";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IdTools from "../../util/id_tools";

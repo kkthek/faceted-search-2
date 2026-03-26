@@ -1,16 +1,12 @@
-import {Datatype, ValueType} from "../common/datatypes";
 import {WikiContext} from "../index";
 import {useContext} from "react";
-import {Property} from "../common/property";
-import {Range} from "../common/range";
-import {ValueCount} from "../common/response/value_count";
 
-class DisplayTools {
+class DateTools {
 
-    static displayDate(d: Date) {
+    public static displayDate(d: Date) {
         const wikiContext = useContext(WikiContext);
         let options: Intl.DateTimeFormatOptions;
-        if (DisplayTools.isBeginOfDay(d)) {
+        if (DateTools.isBeginOfDay(d)) {
             options = {
                 year: "numeric",
                 month: "long",
@@ -47,18 +43,7 @@ class DisplayTools {
         const dateTimeFormat = new Intl.DateTimeFormat(wikiContext.getLocale(), options);
         const fromStr = dateTimeFormat.format(from);
         const toStr = dateTimeFormat.format(to);
-        return this.showRangeIfNecessary(fromStr, toStr);
-    }
-
-    public static showRangeIfNecessary(from: string, to: string) {
-        return (from === to ? from : from + " - " + to);
-    }
-
-    static displayRange(p: Property, range: Range) {
-        if (p.type === Datatype.datetime) {
-            return this.displayDateRange(range.from as Date, range.to as Date);
-        }
-        return this.showRangeIfNecessary(range.from.toString(), range.to.toString());
+        return (fromStr === toStr ? fromStr : fromStr + " - " + toStr);
     }
 
     private static isBeginOfDay(d: Date) {
@@ -74,7 +59,7 @@ class DisplayTools {
     }
 
     private static isBeginOfMonth(d: Date) {
-        return d.getUTCDate() === 1 && DisplayTools.isBeginOfDay(d);
+        return d.getUTCDate() === 1 && DateTools.isBeginOfDay(d);
     }
 
     private static isEndOfMonth(d: Date) {
@@ -83,13 +68,13 @@ class DisplayTools {
     }
 
     private static isBeginOfYear(d: Date) {
-        return d.getUTCMonth() === 0 && DisplayTools.isBeginOfMonth(d);
+        return d.getUTCMonth() === 0 && DateTools.isBeginOfMonth(d);
     }
 
     private static isEndOfYear(d: Date) {
-        return d.getUTCMonth() === 11 && DisplayTools.isEndOfMonth(d);
+        return d.getUTCMonth() === 11 && DateTools.isEndOfMonth(d);
     }
 
 }
 
-export default DisplayTools;
+export default DateTools;

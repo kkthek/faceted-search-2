@@ -1,4 +1,3 @@
-import DisplayTools from "../../util/display_tools";
 import {Grid, Typography} from "@mui/material";
 import * as React from "react";
 import {SyntheticEvent, useContext} from "react";

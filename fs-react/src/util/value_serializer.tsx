@@ -1,7 +1,7 @@
 import React, {ReactElement, useContext} from "react";
 import {Datatype} from "../common/datatypes";
 import WikiLink from "../ui/common/wiki_link";
-import DisplayTools from "./display_tools";
+import DateTools from "./date_tools";
 import IdTools from "./id_tools";
 import Span from "../custom_ui/span";
 import {WikiContext} from "../index";
@@ -62,7 +62,7 @@ class ValueSerializer {
     private static serializeDatetime(pfv: PropertyFacetValues, itemPrefix: string) {
         const values = pfv.values as Date[];
         return values.map((date: Date) => {
-            const displayDate = DisplayTools.displayDate(date);
+            const displayDate = DateTools.displayDate(date);
             const key = itemPrefix + IdTools.createItemIdForValue(pfv.property, displayDate.toString());
             return <Span color={"secondary"} key={key}>{displayDate}</Span>;
         });

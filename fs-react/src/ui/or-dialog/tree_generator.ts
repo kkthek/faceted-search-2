@@ -1,4 +1,3 @@
-import DisplayTools from "../../util/display_tools";
 import ObjectTools from "../../util/object_tools";
 import {Property} from "../../common/property";
 import {ValueCount} from "../../common/response/value_count";
