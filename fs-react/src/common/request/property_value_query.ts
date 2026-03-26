@@ -17,7 +17,7 @@ export class PropertyValueQuery {
         this.property = property;
         this.valueLimit = limit;
         this.valueOffset = offset;
-        this.valueContains = contains;
+        this.valueContains = contains === '' ? null : contains;
     }
 
     equals(that: PropertyValueQuery) {
@@ -29,7 +29,8 @@ export class PropertyValueQuery {
         return new PropertyValueQuery(property, limit, offset, null);
     }
 
-    static forValuesContainingText(property: Property, text: string = null) {
-        return new PropertyValueQuery(property, null, null, text);
+    static forValuesContainingText(property: Property, text: string = null, limit: number = null, offset: number = null) {
+        return new PropertyValueQuery(property, limit, offset, text);
     }
+
 }

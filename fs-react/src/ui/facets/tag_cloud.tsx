@@ -26,7 +26,7 @@ function TagCloudFacet(prop: {
 
     const tags = tagPropertyValues.values.map((v) => (
         {
-            value: v.value.toString(),
+            value: v.value ? v.value.toString() : null,
             count: v.count,
             props: {value: v}
         }

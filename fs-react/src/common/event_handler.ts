@@ -207,16 +207,10 @@ class EventHandler {
             return;
         }
 
-        const propertyValueConstraint = new PropertyValueQuery(
-            property,
-            this.wikiContext.config.fs2gFacetValueLimit,
-            null,
-            text === '' ? null : text);
-        if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueConstraint)) {
-            return;
-        }
-
-        this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueConstraint);
+        let facetValueLimit = this.wikiContext.config.fs2gFacetValueLimit;
+        this.currentFacetsQueryBuilder.withPropertyValueQuery(
+            PropertyValueQuery.forValuesContainingText(property, text, facetValueLimit)
+        );
         this.setLoadPromise(this.updateFacets());
     }
 
@@ -225,12 +219,9 @@ class EventHandler {
             return;
         }
 
-        const propertyValueQuery = PropertyValueQuery.forValuesContainingText(property, filterText);
-        if (this.currentFacetsQueryBuilder.existsPropertyValueQuery(propertyValueQuery)) {
-            return;
-        }
-
-        this.currentFacetsQueryBuilder.withPropertyValueQuery(propertyValueQuery);
+        this.currentFacetsQueryBuilder.withPropertyValueQuery(
+            PropertyValueQuery.forValuesContainingText(property, filterText)
+        );
         this.setLoadPromise(this.updateFacets());
     }
 
@@ -303,13 +294,10 @@ class EventHandler {
             .filter(p => !p.isRangeProperty())
             .forEach(property => {
 
+                const facetValueLimit = this.wikiContext.config.fs2gFacetValueLimit;
                 this.currentFacetsQueryBuilder.withPropertyValueQuery(
-                    new PropertyValueQuery(
-                        property,
-                        this.wikiContext.config.fs2gFacetValueLimit,
-                        null,
-                        null));
-
+                    PropertyValueQuery.forAllValues(property, facetValueLimit)
+                );
 
             });
 
