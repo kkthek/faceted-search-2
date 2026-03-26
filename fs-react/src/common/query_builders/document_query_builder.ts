@@ -1,4 +1,3 @@
-import ConfigUtils from "../../util/config_utils";
 import {TypedJSON} from "typedjson";
 import {Property} from "../property";
 import {FacetValue} from "../request/facet_value";

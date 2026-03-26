@@ -43,8 +43,8 @@ function DateRangeDialog(prop: {
     const values = ObjectTools.deepClone(propertyValueCount.values);
     const first = values.length === 1 ? values[0] : values.shift();
     const last = values.length === 1 ?  values[0] : values.pop();
-    const minDate = first?.range.from as Date;
-    const maxDate = last?.range.to as Date;
+    const minDate = first?.range ? first.range.from as Date : undefined;
+    const maxDate = last?.range ? last.range.to as Date : undefined;
 
     if (minDate && maxDate && !range.equals(new Range(minDate, maxDate))) {
         setRange(new Range(minDate, maxDate));

@@ -23,8 +23,8 @@ function SliderItem(prop: {
     const values = ObjectTools.deepClone(propertyValueCount.values);
     const first = values.length === 1 ? values[0] : values.shift();
     const last = values.length === 1 ?  values[0] : values.pop();
-    const min = first?.range.from as number;
-    const max = last?.range.to as number;
+    const min = first?.range ? first.range.from as number : undefined;
+    const max = last?.range ? last.range.to as number : undefined;
 
     useEffect(() => {
         setRange(new Range(min, max));

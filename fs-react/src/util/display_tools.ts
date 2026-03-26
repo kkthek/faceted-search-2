@@ -1,4 +1,4 @@
-import {Datatype} from "../common/datatypes";
+import {Datatype, ValueType} from "../common/datatypes";
 import {WikiContext} from "../index";
 import {useContext} from "react";
 import {Property} from "../common/property";
@@ -54,23 +54,25 @@ class DisplayTools {
         return (from === to ? from : from + " - " + to);
     }
 
-    static serializeFacetValue(p: Property, v: ValueCount): string {
+    static getTextRepresentation(p: Property, v: ValueCount): string {
         if (v.value !== undefined) {
+            const val = v.value as ValueType;
             if (p.type === Datatype.datetime) {
                 return this.displayDate(v.value as Date);
             } else if (p.type === Datatype.boolean) {
                 const wikiContext = useContext(WikiContext);
-                return wikiContext.msg('fs-bool-value-'+v.value.toString());
+                return wikiContext.msg('fs-bool-value-'+val.toString());
             }
-            return v.value.toString();
+            return val.toString();
         } else if (v.mwTitle) {
             return v.mwTitle.displayTitle;
         } else {
             // range
+            const r = v.range as Range;
             if (p.type === Datatype.datetime) {
-                return this.displayDateRange(v.range.from as Date, v.range.to as Date);
+                return this.displayDateRange(r.from as Date, r.to as Date);
             }
-            return this.showRangeIfNecessary(v.range.from.toString(), v.range.to.toString());
+            return this.showRangeIfNecessary(r.from.toString(), r.to.toString());
         }
     }
 

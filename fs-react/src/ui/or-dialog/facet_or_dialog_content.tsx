@@ -25,9 +25,9 @@ function FacetOrDialogContent(prop: {
     let filterTextsLowercase = prop.filterText.toLowerCase().split(/\s+/);
 
     valueCounts = valueCounts.filter((v) => {
-        let serializedFacetValue = DisplayTools.serializeFacetValue(prop.property, v);
+        let displayValue = DisplayTools.getTextRepresentation(prop.property, v);
         return filterTextsLowercase.length === 0 ||
-            filterTextsLowercase.every((s) => serializedFacetValue.toLowerCase().indexOf(s) > -1);
+            filterTextsLowercase.every((s) => displayValue.toLowerCase().indexOf(s) > -1);
 
     });
 
