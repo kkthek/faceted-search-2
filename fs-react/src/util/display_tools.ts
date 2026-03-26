@@ -30,7 +30,7 @@ class DisplayTools {
         return dateTimeFormat.format(d);
     }
 
-    private static displayDateRange(from: Date, to: Date) {
+    public static displayDateRange(from: Date, to: Date) {
         const wikiContext = useContext(WikiContext);
         let options: Intl.DateTimeFormatOptions;
 
@@ -50,30 +50,8 @@ class DisplayTools {
         return this.showRangeIfNecessary(fromStr, toStr);
     }
 
-    private static showRangeIfNecessary(from: string, to: string) {
+    public static showRangeIfNecessary(from: string, to: string) {
         return (from === to ? from : from + " - " + to);
-    }
-
-    static getTextRepresentation(p: Property, v: ValueCount): string {
-        if (v.value !== undefined) {
-            const val = v.value as ValueType;
-            if (p.type === Datatype.datetime) {
-                return this.displayDate(v.value as Date);
-            } else if (p.type === Datatype.boolean) {
-                const wikiContext = useContext(WikiContext);
-                return wikiContext.msg('fs-bool-value-'+val.toString());
-            }
-            return val.toString();
-        } else if (v.mwTitle) {
-            return v.mwTitle.displayTitle;
-        } else {
-            // range
-            const r = v.range as Range;
-            if (p.type === Datatype.datetime) {
-                return this.displayDateRange(r.from as Date, r.to as Date);
-            }
-            return this.showRangeIfNecessary(r.from.toString(), r.to.toString());
-        }
     }
 
     static displayRange(p: Property, range: Range) {

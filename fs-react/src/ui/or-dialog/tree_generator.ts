@@ -40,7 +40,7 @@ class TreeCreator {
         const groups: Groups = {};
         valueCounts.forEach((v) => {
 
-            const valueLabel = DisplayTools.getTextRepresentation(property, v);
+            const valueLabel = v.getDisplayText();
             const valueId = v.serialize();
             const parts = valueId.split(separator);
             if (parts.length === 1) {

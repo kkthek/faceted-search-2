@@ -21,7 +21,7 @@ function SelectedFacetValues(prop: {
     }
 
     const property = prop.selectedPropertyFacet.property;
-    const displayValue = DisplayTools.getTextRepresentation(property, prop.propertyValueCount);
+    const displayValue = prop.propertyValueCount.getDisplayText();
     const facetValue = FacetValue.fromValueCount(prop.propertyValueCount);
     const propertyFacet = new PropertyFacet(property, [facetValue]);
     const removable = property.isRangeProperty() ? false : prop.selectedPropertyFacet.containsFacet(facetValue);

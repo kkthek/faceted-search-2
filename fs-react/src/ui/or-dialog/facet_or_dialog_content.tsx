@@ -25,7 +25,7 @@ function FacetOrDialogContent(prop: {
     let filterTextsLowercase = prop.filterText.toLowerCase().split(/\s+/);
 
     valueCounts = valueCounts.filter((v) => {
-        let displayValue = DisplayTools.getTextRepresentation(prop.property, v);
+        let displayValue = v.getDisplayText();
         return filterTextsLowercase.length === 0 ||
             filterTextsLowercase.every((s) => displayValue.toLowerCase().indexOf(s) > -1);
 

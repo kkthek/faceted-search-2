@@ -24,7 +24,7 @@ function PropertyValueGrid(prop: {
         .splitArray2NTuples(3)
         .forEach((row: ValueCount[]) => {
             values.push(row.map((value: ValueCount) => {
-                const selectedValue = DisplayTools.getTextRepresentation(prop.property, value);
+                const selectedValue = value.getDisplayText();
                 const selectedId = value.serialize();
                 const isSelected = prop.selectedItemIds.includes(selectedId)
 

@@ -19,7 +19,7 @@ function FacetValues(prop: {
         return;
     }
 
-    const displayLabel = DisplayTools.getTextRepresentation(prop.property, prop.propertyValueCount);
+    const displayLabel = prop.propertyValueCount.getDisplayText();
 
     const property = prop.property;
     const facetValue = FacetValue.fromValueCount(prop.propertyValueCount);
