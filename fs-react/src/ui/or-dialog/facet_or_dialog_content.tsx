@@ -9,6 +9,7 @@ import {Property} from "../../common/property";
 import {FacetValue} from "../../common/request/facet_value";
 import {ValueCount} from "../../common/response/value_count";
 import {FacetResponse} from "../../common/response/facet_response";
+import ConfigUtils from "../../util/config_utils";
 
 function FacetOrDialogContent(prop: {
     client: Client,
@@ -24,7 +25,7 @@ function FacetOrDialogContent(prop: {
     let filterTextsLowercase = prop.filterText.toLowerCase().split(/\s+/);
 
     valueCounts = valueCounts.filter((v) => {
-        let displayValue = v.getDisplayText();
+        let displayValue = v.getDisplayText(ConfigUtils.context(wikiContext));
         return filterTextsLowercase.length === 0 ||
             filterTextsLowercase.every((s) => displayValue.toLowerCase().indexOf(s) > -1);
 

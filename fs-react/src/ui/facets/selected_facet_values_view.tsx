@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IdTools from "../../util/id_tools";
@@ -7,6 +7,8 @@ import FacetWithCount from "../common/facet_with_count";
 import {FacetValue} from "../../common/request/facet_value";
 import {PropertyFacet} from "../../common/request/property_facet";
 import {ValueCount} from "../../common/response/value_count";
+import ConfigUtils from "../../util/config_utils";
+import {WikiContext} from "../../index";
 
 function SelectedFacetValues(prop: {
     selectedPropertyFacet: PropertyFacet,
@@ -14,13 +16,13 @@ function SelectedFacetValues(prop: {
     eventHandler: EventHandler
 
 }) {
-
+    const wikiContext = useContext(WikiContext);
     if (prop.propertyValueCount === null || !prop.selectedPropertyFacet) {
         return;
     }
 
     const property = prop.selectedPropertyFacet.property;
-    const displayValue = prop.propertyValueCount.getDisplayText();
+    const displayValue = prop.propertyValueCount.getDisplayText(ConfigUtils.context(wikiContext));
     const facetValue = FacetValue.fromValueCount(prop.propertyValueCount);
     const propertyFacet = new PropertyFacet(property, [facetValue]);
     const removable = property.isRangeProperty() ? false : prop.selectedPropertyFacet.containsFacet(facetValue);

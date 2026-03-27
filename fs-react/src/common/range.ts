@@ -80,9 +80,9 @@ export class Range {
         return new Range(0, 0);
     }
 
-    displayRange(): string {
+    displayRange(context: any): string {
         if (this.from instanceof Date && this.to instanceof Date) {
-            return DateTools.displayDateRange(this.from as Date, this.to as Date);
+            return DateTools.displayDateRange(this.from as Date, this.to as Date, context['locale']);
         }
         const from = (this.from as number).toString();
         const to = (this.to as number).toString();

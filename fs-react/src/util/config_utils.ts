@@ -4,8 +4,16 @@ import {Property} from "../common/property";
 import {MWTitle} from "../common/mw_title";
 import {Sort} from "../common/request/sort";
 import {Document} from "../common/response/document";
-
 class ConfigUtils {
+
+    static context(wikiContext: WikiContextAccessor) {
+
+        return {
+            'locale': wikiContext.getLocale(),
+            'fs-bool-value-true' : wikiContext.msg('fs-bool-value-true'),
+            'fs-bool-value-false' : wikiContext.msg('fs-bool-value-false')
+        };
+    }
 
     static getSortFunction<T extends Sortable<T>>(sortType: string): (a: T, b: T) => number {
         switch (sortType) {

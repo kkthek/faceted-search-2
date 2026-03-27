@@ -14,6 +14,7 @@ import {Property} from "../../common/property";
 import {Range} from "../../common/range";
 import {PropertyValueCount} from "../../common/response/property_value_count";
 import {PropertyFacetCount} from "../../common/response/property_facet_count";
+import ConfigUtils from "../../util/config_utils";
 
 function SelectedFacet(prop: {
     propertyValueCount: PropertyValueCount
@@ -65,7 +66,7 @@ function SelectedFacet(prop: {
             const r = lastConstraint.range as Range;
             lastRangeTreeItem = <CustomTreeItem key={property.title+'_lastRange'}
                                                 itemId={IdTools.createItemIdForProperty(property)+'_lastRange'}
-                                                label={<Span color={"secondary"}>{r.displayRange()}</Span>}
+                                                label={<Span color={"secondary"}>{r.displayRange(ConfigUtils.context(wikiContext))}</Span>}
                                                 action={()=>prop.eventHandler.onRemovePropertyFacet(propertyFacet, lastConstraint)}
                                                 actionIcon={DeleteIcon}
             />;

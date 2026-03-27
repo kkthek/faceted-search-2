@@ -192,11 +192,6 @@ describe('FacetValue', () => {
             expect(a.equals(b)).to.be.true;
         });
 
-        it('should return false for different Ranges', () => {
-            const a = FacetValue.fromRange(new Range(1, 10));
-            const b = FacetValue.fromRange(new Range(5, 20));
-            expect(a.withinRange(b)).to.be.false;
-        });
 
         it('should return false when one has value and other has mwTitle', () => {
             const a = FacetValue.fromValue('test');

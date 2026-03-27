@@ -33,7 +33,7 @@ function PropertyValueTree(prop: {
                 setContent(groups);
             });
         } else if (groupConfigurationBySeparator) {
-            groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfigurationBySeparator);
+            groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfigurationBySeparator, wikiContext);
             setContent(groups);
         } else if (groupConfiguration) {
             groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, groupConfiguration);

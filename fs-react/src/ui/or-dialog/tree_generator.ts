@@ -1,6 +1,8 @@
 import ObjectTools from "../../util/object_tools";
 import {Property} from "../../common/property";
 import {ValueCount} from "../../common/response/value_count";
+import ConfigUtils from "../../util/config_utils";
+import {WikiContextAccessor} from "../../common/wiki_context";
 
 export class GroupItem {
     id: string
@@ -34,12 +36,12 @@ export interface Groups {
 
 class TreeCreator {
 
-    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property, separator: string): Groups {
+    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property, separator: string, wikiContext: WikiContextAccessor): Groups {
 
         const groups: Groups = {};
         valueCounts.forEach((v) => {
 
-            const valueLabel = v.getDisplayText();
+            const valueLabel = v.getDisplayText(ConfigUtils.context(wikiContext));
             const valueId = v.itemId();
             const parts = valueId.split(separator);
             if (parts.length === 1) {

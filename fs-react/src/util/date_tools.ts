@@ -1,10 +1,7 @@
-import {WikiContext} from "../index";
-import {useContext} from "react";
-
 class DateTools {
 
-    public static displayDate(d: Date) {
-        const wikiContext = useContext(WikiContext);
+    public static displayDate(d: Date, locale: string) {
+
         let options: Intl.DateTimeFormatOptions;
         if (DateTools.isBeginOfDay(d)) {
             options = {
@@ -22,12 +19,12 @@ class DateTools {
                 second: "numeric"
             };
         }
-        const dateTimeFormat = new Intl.DateTimeFormat(wikiContext.getLocale(), options);
+        const dateTimeFormat = new Intl.DateTimeFormat(locale, options);
         return dateTimeFormat.format(d);
     }
 
-    public static displayDateRange(from: Date, to: Date) {
-        const wikiContext = useContext(WikiContext);
+    public static displayDateRange(from: Date, to: Date, locale: string) {
+
         let options: Intl.DateTimeFormatOptions;
 
         if (this.isBeginOfYear(from) && this.isEndOfYear(to)) {
@@ -40,7 +37,7 @@ class DateTools {
             options = {year: "numeric", month: "long", day: "numeric", hour: "numeric"};
         }
 
-        const dateTimeFormat = new Intl.DateTimeFormat(wikiContext.getLocale(), options);
+        const dateTimeFormat = new Intl.DateTimeFormat(locale, options);
         const fromStr = dateTimeFormat.format(from);
         const toStr = dateTimeFormat.format(to);
         return (fromStr === toStr ? fromStr : fromStr + " - " + toStr);
