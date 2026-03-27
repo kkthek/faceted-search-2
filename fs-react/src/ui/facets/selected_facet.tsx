@@ -8,7 +8,6 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 import {WikiContext} from "../../index";
 import IdTools from "../../util/id_tools";
 import FacetWithCount from "../common/facet_with_count";
-import DisplayTools from "../../util/display_tools";
 import FacetFilter from "./facet_filter";
 import Span from "../../custom_ui/span";
 import {Property} from "../../common/property";
@@ -66,7 +65,7 @@ function SelectedFacet(prop: {
             const r = lastConstraint.range as Range;
             lastRangeTreeItem = <CustomTreeItem key={property.title+'_lastRange'}
                                                 itemId={IdTools.createItemIdForProperty(property)+'_lastRange'}
-                                                label={<Span color={"secondary"}>{DisplayTools.displayRange(propertyFacet.property, r)}</Span>}
+                                                label={<Span color={"secondary"}>{r.displayRange(wikiContext)}</Span>}
                                                 action={()=>prop.eventHandler.onRemovePropertyFacet(propertyFacet, lastConstraint)}
                                                 actionIcon={DeleteIcon}
             />;

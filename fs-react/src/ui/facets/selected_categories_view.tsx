@@ -18,7 +18,7 @@ function SelectedCategoriesView(prop: {
 
     const query = prop.searchStateDocument.query;
     const categoryFacetCounts = prop.searchStateDocument.documentResponse.categoryFacetCounts;
-    const categoryTreeItems = categoryFacetCounts.map((v, i) => {
+    const categoryTreeItems = categoryFacetCounts.map((v) => {
             const isSelectedFacet = query.isCategoryFacetSelected(v.category);
             if (!isSelectedFacet) return;
             return  <CustomTreeItem key={v.category}

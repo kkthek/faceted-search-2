@@ -18,7 +18,7 @@ import SliderItem from "./slider_item";
 
 function FacetViewProperty(prop: {
     searchStateDocument: SearchStateDocument,
-    searchStateFacets: FacetResponse,
+    facetResponse: FacetResponse,
     propertyFacetCount: PropertyFacetCount,
     eventHandler: EventHandler
     onOrDialogClick: (property: Property) => void
@@ -27,7 +27,7 @@ function FacetViewProperty(prop: {
 }) {
 
     const property =  prop.propertyFacetCount.property;
-    const propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(property);
+    const propertyValueCount = prop.facetResponse?.getPropertyValueCount(property);
     const isSelectedFacet = prop.searchStateDocument.query.findPropertyFacet(property) !== null;
     if (isSelectedFacet) return;
 
@@ -67,7 +67,7 @@ function FacetViewProperty(prop: {
     if (property.isNumericProperty()) {
         sliderItem = <CustomTreeItem itemId={property.title+"-slider"}
                                      label={<SliderItem eventHandler={prop.eventHandler}
-                                                        searchStateFacets={prop.searchStateFacets}
+                                                        facetResponse={prop.facetResponse}
                                                          property={property}/>}
         />
     }

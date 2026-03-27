@@ -1,4 +1,3 @@
-import DisplayTools from "../../util/display_tools";
 import {Checkbox, FormControlLabel, Grid} from "@mui/material";
 import * as React from "react";
 import {SyntheticEvent, useContext} from "react";
@@ -24,8 +23,8 @@ function PropertyValueGrid(prop: {
         .splitArray2NTuples(3)
         .forEach((row: ValueCount[]) => {
             values.push(row.map((value: ValueCount) => {
-                const selectedValue = DisplayTools.serializeFacetValue(prop.property, value);
-                const selectedId = value.serialize();
+                const selectedValue = value.getDisplayText(wikiContext);
+                const selectedId = value.itemId();
                 const isSelected = prop.selectedItemIds.includes(selectedId)
 
                 return <Grid size={4} key={"grid-"+selectedValue}>

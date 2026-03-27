@@ -72,7 +72,7 @@ function SelectedFacetsView(prop: {
 
         {createPortal(<FacetOrDialog open={openOrDialog.open}
                        handleClose={handleCloseFacetOrDialog}
-                       searchStateFacets={openOrDialog.facetResponse}
+                       facetResponse={openOrDialog.facetResponse}
                        baseQuery={prop.searchStateFacet.query}
                        property={openOrDialog.property}
                        eventHandler={prop.eventHandler}

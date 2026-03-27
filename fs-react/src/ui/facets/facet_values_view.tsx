@@ -1,5 +1,4 @@
-import React from "react";
-import DisplayTools from "../../util/display_tools";
+import React, {useContext} from "react";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import IdTools from "../../util/id_tools";
 import EventHandler from "../../common/event_handler";
@@ -8,6 +7,7 @@ import {Property} from "../../common/property";
 import {FacetValue} from "../../common/request/facet_value";
 import {PropertyFacet} from "../../common/request/property_facet";
 import {ValueCount} from "../../common/response/value_count";
+import {WikiContext} from "../../index";
 
 function FacetValues(prop: {
     property: Property,
@@ -15,11 +15,12 @@ function FacetValues(prop: {
     eventHandler: EventHandler
 }) {
 
+    const wikiContext = useContext(WikiContext);
     if (prop.propertyValueCount === null || !prop.property) {
         return;
     }
 
-    const displayLabel = DisplayTools.serializeFacetValue(prop.property, prop.propertyValueCount);
+    const displayLabel = prop.propertyValueCount.getDisplayText(wikiContext);
 
     const property = prop.property;
     const facetValue = FacetValue.fromValueCount(prop.propertyValueCount);

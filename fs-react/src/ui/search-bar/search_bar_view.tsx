@@ -4,7 +4,6 @@ import {Box, Button, TextField} from "@mui/material";
 import EventHandler from "../../common/event_handler";
 import {useDebounce} from "../../custom_ui/custom_hooks";
 import CreateArticleLink from "./create_article";
-import ObjectTools from "../../util/object_tools";
 import {DocumentQuery} from "../../common/request/document_query";
 
 function SearchBar(prop: {

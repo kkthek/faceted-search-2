@@ -1,7 +1,7 @@
-import DisplayTools from "../../util/display_tools";
 import ObjectTools from "../../util/object_tools";
 import {Property} from "../../common/property";
 import {ValueCount} from "../../common/response/value_count";
+import {WikiContextAccessor} from "../../common/wiki_context";
 
 export class GroupItem {
     id: string
@@ -35,13 +35,13 @@ export interface Groups {
 
 class TreeCreator {
 
-    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property, separator: string): Groups {
+    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property, separator: string, wikiContext: WikiContextAccessor): Groups {
 
         const groups: Groups = {};
         valueCounts.forEach((v) => {
 
-            const valueLabel = DisplayTools.serializeFacetValue(property, v);
-            const valueId = v.serialize();
+            const valueLabel = v.getDisplayText(wikiContext);
+            const valueId = v.itemId();
             const parts = valueId.split(separator);
             if (parts.length === 1) {
                 groups['__ungrouped__'] = groups['__ungrouped__'] ?? new Group('-');
@@ -64,12 +64,12 @@ class TreeCreator {
         const groupsCopy = ObjectTools.deepClone(specifiedValues);
         for (let groupId in groupsCopy) {
             const groupItems = valueCounts.intersect(
-                (v) => v.serialize(),
+                (v) => v.itemId(),
                 groupsCopy[groupId]
             );
             groups[groupId] = new Group(groupId);
             groupItems.map((v) => {
-                const value =  v.serialize()
+                const value =  v.itemId()
                 return new GroupItem(value, value, v.count)
             })
             .forEach(item => groups[groupId].addGroupItem(item));

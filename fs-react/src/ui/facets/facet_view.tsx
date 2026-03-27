@@ -57,7 +57,7 @@ function FacetView(prop: {
 
         return <FacetViewProperty key={facetCount.property.title+facetCount.property.type}
                            searchStateDocument={prop.searchStateDocument}
-                           searchStateFacets={prop.searchStateFacets?.facetsResponse}
+                           facetResponse={prop.searchStateFacets?.facetsResponse}
                            propertyFacetCount={facetCount}
                            eventHandler={prop.eventHandler}
                            onOrDialogClick={onOrDialogClick}
@@ -108,14 +108,14 @@ function FacetView(prop: {
         {createPortal(<FacetOrDialog open={openOrDialog.open}
                                      client={prop.client}
                                      handleClose={handleCloseFacetOrDialog}
-                                     searchStateFacets={openOrDialog.facetResponse}
+                                     facetResponse={openOrDialog.facetResponse}
                                      baseQuery={prop.searchStateDocument.query}
                                      property={openOrDialog.property}
                                      eventHandler={prop.eventHandler}
         />, document.body)}
         {createPortal(<DateRangeDialog open={openDateRangeDialog.open}
                                      handleClose={handleCloseFacetDateRangeDialog}
-                                     searchStateFacets={openDateRangeDialog.facetResponse}
+                                     facetResponse={openDateRangeDialog.facetResponse}
                                      property={openDateRangeDialog.property}
                                      eventHandler={prop.eventHandler}
         />, document.body)}

@@ -33,7 +33,7 @@ function PropertyValueTree(prop: {
                 setContent(groups);
             });
         } else if (groupConfigurationBySeparator) {
-            groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfigurationBySeparator);
+            groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfigurationBySeparator, wikiContext);
             setContent(groups);
         } else if (groupConfiguration) {
             groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, groupConfiguration);
@@ -46,7 +46,7 @@ function PropertyValueTree(prop: {
         itemIds = itemIds.map(i => decodeURIComponent(i));
 
         const selectedValueCounts = prop.valueCounts.filter(v => {
-            let id = v.serialize();
+            let id = v.itemId();
             return itemIds.includes(id);
         });
         setSelectedItems(itemIds);

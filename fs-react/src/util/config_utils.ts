@@ -4,7 +4,6 @@ import {Property} from "../common/property";
 import {MWTitle} from "../common/mw_title";
 import {Sort} from "../common/request/sort";
 import {Document} from "../common/response/document";
-
 class ConfigUtils {
 
     static getSortFunction<T extends Sortable<T>>(sortType: string): (a: T, b: T) => number {

@@ -1,5 +1,7 @@
 import {jsonMember, jsonObject} from "typedjson";
 import ValueDeserializer from "../util/value_deserializer";
+import DateTools from "../util/date_tools";
+import {WikiContextAccessor} from "./wiki_context";
 
 @jsonObject
 export class Range {
@@ -77,5 +79,15 @@ export class Range {
 
     static collapsedNumberRange(): Range {
         return new Range(0, 0);
+    }
+
+    displayRange(context: WikiContextAccessor): string {
+        if (this.from instanceof Date && this.to instanceof Date) {
+            return DateTools.displayDateRange(this.from as Date, this.to as Date, context.getLocale());
+        }
+        const from = (this.from as number).toString();
+        const to = (this.to as number).toString();
+        return (from === to ? from : from + " - " + to);
+
     }
 }

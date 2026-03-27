@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext} from "react";
 import {WikiContext} from "../../index";
 import EventHandler from "../../common/event_handler";
 import {ToggleButton, ToggleButtonGroup} from "@mui/material";
