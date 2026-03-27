@@ -12,7 +12,7 @@ import {FacetResponse} from "../../common/response/facet_response";
 
 function FacetOrDialogContent(prop: {
     client: Client,
-    searchStateFacets: FacetResponse,
+    facetResponse: FacetResponse,
     selectedValues: FacetValue[],
     property: Property,
     onChange: (e: SyntheticEvent, checked: boolean, v: ValueCount) => void,
@@ -20,7 +20,7 @@ function FacetOrDialogContent(prop: {
     filterText: string
 }) {
     const wikiContext = useContext(WikiContext);
-    let valueCounts = prop.searchStateFacets?.getPropertyValueCount(prop.property).values;
+    let valueCounts = prop.facetResponse?.getPropertyValueCount(prop.property).values;
     let filterTextsLowercase = prop.filterText.toLowerCase().split(/\s+/);
 
     valueCounts = valueCounts.filter((v) => {
@@ -39,7 +39,7 @@ function FacetOrDialogContent(prop: {
     const selectedItemIds = valueCounts
         .filter((value) => prop.selectedValues.findFirst(
             (e: FacetValue) => e.containsValueOrMWTitle(value.value, value.mwTitle)) != null)
-        .map(v => v.serialize());
+        .map(v => v.itemId());
 
     const groupConfiguration = wikiContext.config.fs2gPropertyGrouping[prop.property.title]
         || wikiContext.config.fs2gPropertyGroupingBySeparator[prop.property.title]

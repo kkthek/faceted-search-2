@@ -24,7 +24,7 @@ function PropertyValueGrid(prop: {
         .forEach((row: ValueCount[]) => {
             values.push(row.map((value: ValueCount) => {
                 const selectedValue = value.getDisplayText();
-                const selectedId = value.serialize();
+                const selectedId = value.itemId();
                 const isSelected = prop.selectedItemIds.includes(selectedId)
 
                 return <Grid size={4} key={"grid-"+selectedValue}>

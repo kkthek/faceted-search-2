@@ -12,10 +12,10 @@ import {FacetResponse} from "../../common/response/facet_response";
 
 function SliderItem(prop: {
     property: Property,
-    searchStateFacets: FacetResponse,
+    facetResponse: FacetResponse,
     eventHandler: EventHandler,
 }) {
-    const propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(prop.property);
+    const propertyValueCount = prop.facetResponse?.getPropertyValueCount(prop.property);
     if (!propertyValueCount) return;
 
     const [range, setRange] = useState<Range>(Range.collapsedNumberRange());

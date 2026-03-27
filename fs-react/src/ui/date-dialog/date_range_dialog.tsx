@@ -29,7 +29,7 @@ import ObjectTools from "../../util/object_tools";
 function DateRangeDialog(prop: {
     open: boolean,
     handleClose: () => void,
-    searchStateFacets: FacetResponse,
+    facetResponse: FacetResponse,
     property: Property,
     eventHandler: EventHandler
 
@@ -37,7 +37,7 @@ function DateRangeDialog(prop: {
     const wikiContext = useContext(WikiContext);
     const [range, setRange] = useState<Range>(Range.collapsedDateTimeRange());
 
-    const propertyValueCount = prop.searchStateFacets?.getPropertyValueCount(prop.property);
+    const propertyValueCount = prop.facetResponse?.getPropertyValueCount(prop.property);
     if (!propertyValueCount) return;
 
     const values = ObjectTools.deepClone(propertyValueCount.values);

@@ -46,7 +46,7 @@ function PropertyValueTree(prop: {
         itemIds = itemIds.map(i => decodeURIComponent(i));
 
         const selectedValueCounts = prop.valueCounts.filter(v => {
-            let id = v.serialize();
+            let id = v.itemId();
             return itemIds.includes(id);
         });
         setSelectedItems(itemIds);

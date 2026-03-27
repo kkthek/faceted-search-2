@@ -42,7 +42,7 @@ export class ValueCount implements Sortable<ValueCount> {
         return containsA && !containsB ? -1 : 1;
     }
 
-    serialize(): string {
+    itemId(): string {
         if (this.range) {
             return this.range.toString()
         } else if (this.mwTitle) {

@@ -24,7 +24,7 @@ function FacetOrDialog(prop: {
         open: boolean,
         client: Client,
         handleClose: () => void,
-        searchStateFacets: FacetResponse,
+        facetResponse: FacetResponse,
         baseQuery: BaseQuery,
         property: Property,
         eventHandler: EventHandler
@@ -35,13 +35,13 @@ function FacetOrDialog(prop: {
     const debouncedSearchText = useDebounce(searchText, TYPING_DELAY);
 
     if (!prop.property) return;
-    const pvc = prop.searchStateFacets?.getPropertyValueCount(prop.property);
+    const pvc = prop.facetResponse?.getPropertyValueCount(prop.property);
     if (!pvc) return;
 
     const facet = prop.baseQuery.findPropertyFacet(prop.property);
     let selectedValues: FacetValue[] = facet == null ? [] : facet.values;
     const onDialogContentChange = function(e: SyntheticEvent, checked: boolean, v: ValueCount) {
-        let facetValue = new FacetValue(v.value, v.mwTitle, v.range);
+        let facetValue = FacetValue.fromValueCount(v);
         if (checked) {
             selectedValues.push(facetValue);
         } else {
@@ -98,7 +98,7 @@ function FacetOrDialog(prop: {
                                variant="standard"/>
                     <FormGroup>
                         <Box className={'fs-or-content'}>
-                            <FacetOrDialogContent searchStateFacets={prop.searchStateFacets}
+                            <FacetOrDialogContent facetResponse={prop.facetResponse}
                                                   selectedValues={selectedValues}
                                                   property={prop.property}
                                                   onChange={onDialogContentChange}

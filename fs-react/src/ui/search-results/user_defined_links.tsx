@@ -76,7 +76,7 @@ function UserDefinedLinks(prop: { doc: Document, client: Client }) {
     }
     return <>
         {ValueSerializer.join(items, ' ')}
-        <UserDefinedLinksExtensionPoint doc={prop.doc}/>
+        <UserDefinedLinksExtensionPoint doc={prop.doc} client={prop.client}/>
     </>
 }
 
