@@ -61,8 +61,9 @@ class ValueSerializer {
 
     private static serializeDatetime(pfv: PropertyFacetValues, itemPrefix: string) {
         const values = pfv.values as Date[];
+        const wikiContext = useContext(WikiContext);
         return values.map((date: Date) => {
-            const displayDate = DateTools.displayDate(date);
+            const displayDate = DateTools.displayDate(date, wikiContext.getLocale());
             const key = itemPrefix + IdTools.createItemIdForValue(pfv.property, displayDate.toString());
             return <Span color={"secondary"} key={key}>{displayDate}</Span>;
         });

@@ -23,7 +23,7 @@ function PropertyValueGrid(prop: {
         .splitArray2NTuples(3)
         .forEach((row: ValueCount[]) => {
             values.push(row.map((value: ValueCount) => {
-                const selectedValue = value.getDisplayText(ConfigUtils.context(wikiContext));
+                const selectedValue = value.getDisplayText(wikiContext);
                 const selectedId = value.itemId();
                 const isSelected = prop.selectedItemIds.includes(selectedId)
 

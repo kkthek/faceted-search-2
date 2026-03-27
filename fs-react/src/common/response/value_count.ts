@@ -5,9 +5,8 @@ import {Range} from "../range";
 import {PropertyFacet} from "../request/property_facet";
 import {FacetValue} from "../request/facet_value";
 import {Sortable, ValueType} from "../datatypes";
-//import {useContext} from "react";
-//import {WikiContext} from "../../index";
 import DateTools from "../../util/date_tools";
+import {WikiContextAccessor} from "../wiki_context";
 
 @jsonObject
 export class ValueCount implements Sortable<ValueCount> {
@@ -53,14 +52,14 @@ export class ValueCount implements Sortable<ValueCount> {
         return null;
     }
 
-    getDisplayText(context: any): string {
+    getDisplayText(context: WikiContextAccessor): string {
         const v = this;
         if (v.value !== undefined) {
             const val = v.value as ValueType;
             if (val instanceof Date) {
-                return DateTools.displayDate(v.value as Date, context['locale']);
+                return DateTools.displayDate(v.value as Date, context.getLocale());
             } else if (typeof val === 'boolean') {
-                return context['fs-bool-value-'+val.toString()];
+                return context.msg('fs-bool-value-'+val.toString());
             }
             return val.toString();
         } else if (v.mwTitle) {

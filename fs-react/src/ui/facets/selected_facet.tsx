@@ -66,7 +66,7 @@ function SelectedFacet(prop: {
             const r = lastConstraint.range as Range;
             lastRangeTreeItem = <CustomTreeItem key={property.title+'_lastRange'}
                                                 itemId={IdTools.createItemIdForProperty(property)+'_lastRange'}
-                                                label={<Span color={"secondary"}>{r.displayRange(ConfigUtils.context(wikiContext))}</Span>}
+                                                label={<Span color={"secondary"}>{r.displayRange(wikiContext)}</Span>}
                                                 action={()=>prop.eventHandler.onRemovePropertyFacet(propertyFacet, lastConstraint)}
                                                 actionIcon={DeleteIcon}
             />;

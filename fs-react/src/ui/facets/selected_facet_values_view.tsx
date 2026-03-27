@@ -22,7 +22,7 @@ function SelectedFacetValues(prop: {
     }
 
     const property = prop.selectedPropertyFacet.property;
-    const displayValue = prop.propertyValueCount.getDisplayText(ConfigUtils.context(wikiContext));
+    const displayValue = prop.propertyValueCount.getDisplayText(wikiContext);
     const facetValue = FacetValue.fromValueCount(prop.propertyValueCount);
     const propertyFacet = new PropertyFacet(property, [facetValue]);
     const removable = property.isRangeProperty() ? false : prop.selectedPropertyFacet.containsFacet(facetValue);

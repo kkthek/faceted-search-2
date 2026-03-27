@@ -41,7 +41,7 @@ class TreeCreator {
         const groups: Groups = {};
         valueCounts.forEach((v) => {
 
-            const valueLabel = v.getDisplayText(ConfigUtils.context(wikiContext));
+            const valueLabel = v.getDisplayText(wikiContext);
             const valueId = v.itemId();
             const parts = valueId.split(separator);
             if (parts.length === 1) {

@@ -21,7 +21,7 @@ function FacetValues(prop: {
         return;
     }
 
-    const displayLabel = prop.propertyValueCount.getDisplayText(ConfigUtils.context(wikiContext));
+    const displayLabel = prop.propertyValueCount.getDisplayText(wikiContext);
 
     const property = prop.property;
     const facetValue = FacetValue.fromValueCount(prop.propertyValueCount);
