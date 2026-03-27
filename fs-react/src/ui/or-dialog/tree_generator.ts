@@ -1,7 +1,6 @@
 import ObjectTools from "../../util/object_tools";
 import {Property} from "../../common/property";
 import {ValueCount} from "../../common/response/value_count";
-import ConfigUtils from "../../util/config_utils";
 import {WikiContextAccessor} from "../../common/wiki_context";
 
 export class GroupItem {

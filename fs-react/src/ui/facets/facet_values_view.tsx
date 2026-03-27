@@ -7,7 +7,6 @@ import {Property} from "../../common/property";
 import {FacetValue} from "../../common/request/facet_value";
 import {PropertyFacet} from "../../common/request/property_facet";
 import {ValueCount} from "../../common/response/value_count";
-import ConfigUtils from "../../util/config_utils";
 import {WikiContext} from "../../index";
 
 function FacetValues(prop: {

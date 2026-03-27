@@ -9,7 +9,6 @@ import {Property} from "../../common/property";
 import {FacetValue} from "../../common/request/facet_value";
 import {ValueCount} from "../../common/response/value_count";
 import {FacetResponse} from "../../common/response/facet_response";
-import ConfigUtils from "../../util/config_utils";
 
 function FacetOrDialogContent(prop: {
     client: Client,
