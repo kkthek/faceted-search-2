@@ -157,7 +157,7 @@ class MWDBReader
     private function indexCategories(Title $title, array &$doc): void
     {
 
-        $directCategories = array_values($title->getParentCategories());
+        $directCategories = array_keys($title->getParentCategories());
         $directCategories = array_filter($directCategories, fn($category) => !$this->smwReader->shouldBeIgnored(Title::newFromText($category)));
         $doc['smwh_directcategories'] = array_map(fn($category) => Title::newFromText($category)->getDBkey(), $directCategories);
 
