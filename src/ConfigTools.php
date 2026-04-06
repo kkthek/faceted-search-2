@@ -68,7 +68,7 @@ class ConfigTools {
 
     public static function getPropertiesForAnnotations($fs2gAnnotationsInSnippet): array
     {
-        //FIXME: store in MW-object cache
+
         $result = [];
         $allExtraProperties = ArrayTools::flatten(array_values($fs2gAnnotationsInSnippet));
         foreach ($allExtraProperties as $property) {
@@ -100,19 +100,33 @@ class ConfigTools {
 
     public static function getFacetedSearchUpdateClient(): FacetedSearchUpdateClient
     {
-        global $fsgBackendUpdateClient;
-        if (!isset($fsgBackendUpdateClient)) {
-            $fsgBackendUpdateClient = SolrUpdateClient::class;
+        static $backendUpdateClient;
+        if (!isset($backendUpdateClient)) {
+            global $fs2gIndexBackend;
+            switch($fs2gIndexBackend) {
+                case 'solr':
+                default:
+                    $backendUpdateClientClass = SolrUpdateClient::class;
+                    break;
+            }
+            $backendUpdateClient = new $backendUpdateClientClass;
         }
-        return new $fsgBackendUpdateClient;
+        return $backendUpdateClient;
     }
 
     public static function getFacetedSearchClient(): FacetedSearchClient
     {
-        global $fsgBackendQueryClient;
-        if (!isset($fsgBackendQueryClient)) {
-            $fsgBackendQueryClient = SolrRequestClient::class;
+        static $backendQueryClient;
+        if (!isset($backendQueryClient)) {
+            global $fs2gIndexBackend;
+            switch($fs2gIndexBackend) {
+                case 'solr':
+                default:
+                    $backendQueryClientClass = SolrRequestClient::class;
+                    break;
+            }
+            $backendQueryClient = new $backendQueryClientClass;
         }
-        return new $fsgBackendQueryClient;
+        return $backendQueryClient;
     }
 }

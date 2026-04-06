@@ -48,11 +48,13 @@ class Helper
         return preg_replace('/__/', ' ', $s);
     }
 
-    private static function encodeSpecialChars($s) {
+    private static function encodeSpecialChars($s)
+    {
         return str_replace("%", "_0x", urlencode($s));
     }
 
-    private static function decodeSpecialChars($s) {
+    private static function decodeSpecialChars($s)
+    {
         return urldecode(str_replace("_0x", "%", $s));
     }
 
@@ -64,7 +66,8 @@ class Helper
         return self::encodeSpecialChars($s);
     }
 
-    public static function parseSOLRProperty(string $property) {
+    public static function parseSOLRProperty(string $property)
+    {
         $num = preg_match_all(self::ATTRIBUTE_REGEX, $property, $nameType);
         if ($num === 0) {
             // maybe a relation facet
@@ -124,14 +127,15 @@ class Helper
         return $datetime->format('YmdHis');
     }
 
-    public static function getSOLRBaseUrl() {
+    public static function getSOLRBaseUrl()
+    {
 
-        global $fs2gSolrHost;
-        global $fs2gSolrPort;
-        global $fs2gSolrCore;
+        global $fs2gIndexHost;
+        global $fs2gIndexPort;
+        global $fs2gIndexName;
 
         $protocol = "http";
-        return "$protocol://$fs2gSolrHost:$fs2gSolrPort/solr/$fs2gSolrCore";
+        return "$protocol://$fs2gIndexHost:$fs2gIndexPort/solr/$fs2gIndexName";
     }
 
 }

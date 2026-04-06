@@ -53,8 +53,8 @@ use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\DocumentByIdQuery;
-use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
 use DIQA\FacetedSearch2\Model\Response\CategoryNode;
+use DIQA\FacetedSearch2\ConfigTools;
 
 require_once 'dev-config.php';
 setConfigForDevContext();
@@ -63,7 +63,7 @@ $entityBody = file_get_contents('php://input');
 
 $url = $_SERVER['REQUEST_URI'];
 header('Content-Type: application/json');
-$client = new SolrRequestClient();
+$client = ConfigTools::getFacetedSearchClient();
 
 try {
     if (endsWith($url, '/FacetedSearch2/v1/proxy/documents')) {

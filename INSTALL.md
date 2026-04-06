@@ -19,15 +19,15 @@
  
 * Add to your LocalSettings.php (adjust the values if different from default):
 
-      global $fs2gSolrHost, $fs2gSolrPort; 
-      global $fs2gSolrUser, $fs2gSolrPass, $fs2gSolrCore;
+      global $fs2gIndexHost, $fs2gIndexPort; 
+      global $fs2gIndexUser, $fs2gIndexPass, $fs2gIndexName;
 
       # Default values:
-      $fs2gSolrHost = 'localhost';
-      $fs2gSolrPort = 8983;
-      $fs2gSolrUser = '';
-      $fs2gSolrPass = '';
-      $fs2gSolrCore = 'mw';
+      $fs2gIndexHost = 'localhost';
+      $fs2gIndexPort = 8983;
+      $fs2gIndexUser = '';
+      $fs2gIndexPass = '';
+      $fs2gIndexName = 'mw';
 
       wfLoadExtension('FacetedSearch2');
       $smwgEnabledDeferredUpdate = false; // only if SMW installed
@@ -56,31 +56,35 @@ That's it.
 ## Config options
 
 Here is the documentation for all configuration options in the `config` section of `extension.json`:
-All options are set in `LocalSettings.php` using the prefix `$fs2g`, e.g. `$fs2gSolrHost = 'my-solr-server';`.
+All options are set in `LocalSettings.php` using the prefix `$fs2g`, e.g. `$fs2gIndexHost = 'my-solr-server';`.
 
 ---
 
-### SOLR Connection
+### Index Connection
 
-### `SolrHost`
+### `IndexBackend`
+- **Default:** `"solr"`
+- The backend used for indexing. Currently, only `solr` is supported.
+
+### `IndexHost`
 - **Default:** `"localhost"`
-- The hostname of the SOLR server. It is recommended that SOLR listens only on localhost to avoid exposing it publicly.
+- The hostname of the Index server. It is recommended that the backend listens only on localhost to avoid exposing it publicly.
 
-### `SolrPort`
+### `IndexPort`
 - **Default:** `8983`
-- The port on which the SOLR server is listening to.
+- The port on which the Index server is listening to. Default is 8983 for Solr 8.30+.
 
-### `SolrCore`
+### `IndexName`
 - **Default:** `"mw"`
-- The name of the SOLR core that stores the index data of the wiki. Each wiki requires its own dedicated core.
+- The name of the Index that stores the index data of the wiki. Each wiki requires its own dedicated core.
 
-### `SolrUser`
+### `IndexUser`
 - **Default:** `""`
-- The username for authenticating with the SOLR server. Usually required in multi-tenant environments or when SOLR is accessible via the internet.
+- The username for authenticating with the Index server. Usually required in multi-tenant environments or when SOLR is accessible via the internet.
 
-### `SolrPass`
+### `IndexPass`
 - **Default:** `""`
-- The password for the SOLR user. See [`SolrUser`](#solruser).
+- The password for the Index user. For SOLR, See [`SolrUser`](#solruser).
 
 ### `DebugMode`
 - **Default:** `false`

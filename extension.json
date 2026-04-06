@@ -74,29 +74,33 @@
 	],
 	"config_prefix": "fs2g",
 	"config": {
-		"SolrCore": {
+        "IndexBackend": {
+          "value": "solr",
+          "description": "The name of the backend to use. Currently only 'solr' is supported."
+        },
+		"IndexName": {
 			"value": "mw",
-			"description": "The name of the SOLR core which stores the index data of the wiki. (1 per each wiki)"
+			"description": "The name of the Index which stores the data of the wiki. (1 per each wiki)"
 		},
-		"SolrHost": {
+		"IndexHost": {
 			"value": "localhost",
-			"description": "The hostname of the SOLR server. Default is localhost. It is recommended that SOLR listens only on localhost."
+			"description": "The hostname of the Index server. Default is localhost. It is recommended that the backend listens only on localhost."
 		},
-		"SolrPort": {
+		"IndexPort": {
 			"value": 8983,
-			"description": "The port of the SOLR server. Default is 8983"
+			"description": "The port of the Index server. Default for SOLR is 8983."
 		},
-		"SolrUser": {
+		"IndexUser": {
 			"value": "",
-			"description": "The user of the SOLR server (usually required in multi-tenant environments or if the SOLR server is accessible via internet"
+			"description": "The user of the Index server (usually required in multi-tenant environments or if the Index server is accessible via internet"
 		},
-		"SolrPass": {
+		"IndexPass": {
 			"value": "",
-			"description": "The password of the SOLR user (see SolrUser setting)"
+			"description": "The password of the Index user (for SOLR, see SolrUser setting)"
 		},
-		"SolrProxyDebug": {
+		"DebugMode": {
 			"value": false,
-			"description": "Activates maximum PHP error reporting. DO NOT use this for production but only for debugging purposes."
+			"description": "Activates debug mode. DO NOT use this for production but only for debugging purposes."
 		},
 		"AnnotationsInSnippet": {
 			"value": [],
