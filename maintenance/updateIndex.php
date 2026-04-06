@@ -7,9 +7,8 @@ use MediaWiki\MediaWikiServices;
 use Title;
 
 /**
- * Updates the solr index.
+ * Updates the index.
  *
- * @ingroup EnhancedRetrieval
  */
 if (!file_exists(__DIR__ . '/../../../maintenance/Maintenance.php')) {
     echo "No wiki context found!\n";
@@ -17,7 +16,7 @@ if (!file_exists(__DIR__ . '/../../../maintenance/Maintenance.php')) {
 }
 require_once __DIR__ . '/../../../maintenance/Maintenance.php';
 
-class UpdateSolr extends \Maintenance
+class UpdateIndex extends \Maintenance
 {
 
     private $linkCache;
@@ -27,7 +26,7 @@ class UpdateSolr extends \Maintenance
     public function __construct()
     {
         parent::__construct();
-        $this->addDescription( "Updates SOLR index" );
+        $this->addDescription( "Updates the backend index used for Faceted Search 2" );
         $this->addOption('v', 'Verbose mode', false, false);
         $this->addOption('g', 'Get the maximum ID of pages that would be updated (all other parameters are ignored if this is present)', false, false);
         $this->addOption('d', 'Delay every 100 pages (miliseconds)', false, true);
@@ -53,7 +52,7 @@ class UpdateSolr extends \Maintenance
             return;
         }
 
-        // when indexing everything, we dont create any updating job for SOLR
+        // when indexing everything, we dont create any updating job for the index
         global $fsCreateUpdateJob;
         $fsCreateUpdateJob = false;
 
@@ -77,7 +76,7 @@ class UpdateSolr extends \Maintenance
      * Print Documatation header
      */
     private function printDocHeader() {
-        print "Refreshing all semantic data in the SOLR server!\n---\n" .
+        print "Refreshing all semantic data in the index server!\n---\n" .
             " Some versions of PHP suffer from memory leaks in long-running scripts.\n" .
             " If your machine gets very slow after many pages (typically more than\n" .
             " 1000) were refreshed, please abort with CTRL-C and resume this script\n" .
@@ -153,7 +152,7 @@ class UpdateSolr extends \Maintenance
     }
 
     /**
-     * Update SOLR index of $title.
+     * Update index of $title.
      *
      * @param Title $title
      */
@@ -248,5 +247,5 @@ class UpdateSolr extends \Maintenance
 }
 
 global $maintClass;
-$maintClass = "DIQA\FacetedSearch2\Maintenance\UpdateSolr";
+$maintClass = "DIQA\FacetedSearch2\Maintenance\UpdateIndex";
 require_once RUN_MAINTENANCE_IF_MAIN;
