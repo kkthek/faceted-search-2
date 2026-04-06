@@ -36,7 +36,7 @@
 
 * Create the initial index: 
     
-      php {wiki-path}/extensions/FacetedSearch2/maintenance/updateSOLR.php -v
+      php {wiki-path}/extensions/FacetedSearch2/maintenance/updateIndex.php -v
 	    
       OR via composer:
 

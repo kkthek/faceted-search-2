@@ -42,7 +42,7 @@
 		}
 	},
 	"scripts": {
-		"update": "php maintenance/updateBackend.php -v"
+		"update": "php maintenance/updateIndex.php -v"
 	},
 	"autoload": {
 	"psr-4": {
