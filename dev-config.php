@@ -23,10 +23,10 @@ function setConfigForDevContext() {
     $wgArticlePath = '/main/mediawiki/$1';
 
     // set development settings ------------------------------
-    global $fs2gSolrHost, $fs2gSolrPort, $fs2gSolrCore;
-    $fs2gSolrHost = "localhost";
-    $fs2gSolrPort = "8983";
-    $fs2gSolrCore = "mw";
+    global $fs2gIndexHost, $fs2gIndexPort, $fs2gIndexName;
+    $fs2gIndexHost = "localhost";
+    $fs2gIndexPort = "8983";
+    $fs2gIndexName = "mw";
 
     global $fs2gExtraPropertiesToRequest;
     $fs2gExtraPropertiesToRequest = [];
