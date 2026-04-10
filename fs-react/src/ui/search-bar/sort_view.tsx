@@ -34,7 +34,6 @@ function SortView(prop : {
             labelId="sort-order-select-label"
             id="sort-order-select"
             value={documentQuery.sorts[0].getKey()}
-            label="Sort order"
             size={'small'}
             autoWidth={true}
             onChange={handleChange}

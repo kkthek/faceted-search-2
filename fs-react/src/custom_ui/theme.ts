@@ -14,11 +14,11 @@ const DEFAULT_THEME = createTheme({
                 root: {
                     backgroundColor: "#fff", // As an example color
                     "& .MuiOutlinedInput-notchedOutline": {
-                        border: "none"
+                        border: "1px black blueGrey"
                     },
                     "&.Mui-focused": {
                         "& .MuiOutlinedInput-notchedOutline": {
-                            border: "none"
+                            border: "1px black blueGrey"
                         }
                     }
                 }
