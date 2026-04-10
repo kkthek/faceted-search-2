@@ -40,6 +40,7 @@ import QueryUtils from "./util/query_utils";
 import {initializeDevContext} from "./util/dev_context";
 import ConfigUtils from "./util/config_utils";
 import MaximizeButton from "./ui/search-bar/maximize-button";
+import CreateArticleLink from "./ui/search-bar/create_article";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -81,7 +82,7 @@ function App() {
     );
 
     const headerControlsOrder = wikiContext.config.fs2gHeaderControlOrder.calculatePermutation(
-        ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']
+        ['sortView', 'searchView', 'saveSearchLink', 'createArticleLink', 'categoryDropDown']
     );
     const facetControlsOrder = wikiContext.config.fs2gFacetControlOrder.calculatePermutation(
         ['sortView', 'selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
@@ -108,6 +109,8 @@ function App() {
                         <SaveSearchLink key={'saveSearchLink'}
                                         documentQuery={currentDocumentQuery}
                         />,
+                        <CreateArticleLink key={'createArticleLink'}
+                                           searchStateDocument={searchStateDocument}/>,
                         <CategoryDropdown key={'categoryView'}
                                           documentQuery={currentDocumentQuery}
                                           eventHandler={eventHandler}

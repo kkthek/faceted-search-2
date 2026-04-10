@@ -44,7 +44,7 @@ class SolrRequestClient implements FacetedSearchClient
         $sortsAndLimits = $this->encodeSortsAndLimits($q->sorts, $q->limit, $q->offset);
         $queryParams = array_merge($queryParams, $sortsAndLimits);
 
-        $response = new SolrResponseParser($this->requestSOLR($queryParams));
+        $response = new SolrResponseParser($this->requestSOLR($queryParams), $q->searchText);
         $docResponse = $response->parse()
             ->setDebugInfo(Util::buildQueryParams($queryParams));
 

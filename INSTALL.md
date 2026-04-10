@@ -210,12 +210,12 @@ $fs2gDateTimePropertyClusters['Released on'] = [
 - If `true`, the raw SOLR relevance score is shown as a tooltip on the "Show Details" link of each search result. Useful for debugging relevance.
 
 ### `HeaderControlOrder`
-- **Default:** `["sortView", "searchView", "saveSearchLink"]`
+- **Default:** `["sortView", "searchView", "saveSearchLink", "createArticleLink"]`
 - Defines the display order of controls in the search header area.
 
 ### `FacetControlOrder`
 - **Default:** `["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "removeAllFacets", "divider",
-                "facetView", "categoryLabel", "categoryDropDown", "categoryView", "categoryTree"]`
+                "facetView", "categoryDropDown", "categoryView", "categoryTree"]`
 - Defines the display order of controls in the left-hand facet panel.
 
 ---

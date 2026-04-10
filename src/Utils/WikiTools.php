@@ -55,6 +55,14 @@ class WikiTools {
         return FacetedSearchUtil::findDisplayTitle(Title::newFromText($title, NS_CATEGORY));
     }
 
+    public static function titleExists($text) {
+        if (!defined('MEDIAWIKI')) {
+            return false;
+        }
+        $titleOfSearchText = Title::newFromTitle($text);
+        return !is_null($titleOfSearchText) ? $titleOfSearchText->exists() : null;
+    }
+
     public static function getUserGroups() {
         if (!defined('MEDIAWIKI')) {
             return ['sysop', 'user'];
