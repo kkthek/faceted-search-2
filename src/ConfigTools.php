@@ -88,6 +88,7 @@ class ConfigTools {
                     $result[] = new Property($property, Datatype::STRING);
                     break;
                 case SMWDataItem::TYPE_WIKIPAGE:
+                case SMWDataItem::TYPE_NOTYPE:
                     $result[] = new Property($property, Datatype::WIKIPAGE);
                     break;
                 case SMWDataItem::TYPE_TIME:

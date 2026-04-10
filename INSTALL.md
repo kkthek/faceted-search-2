@@ -251,7 +251,7 @@ $fs2gAdditionalLinks['Document'] = [
 - Maps category names to lists of property names whose values should be shown in the search result snippet for articles belonging to those categories.
 - **Example:**
 ```php
-$fs2gAnnotationsInSnippet['Document'] = ['Department', 'DocumentType'];
+$fs2gAnnotationsInSnippet = [ 'Document' => [ 'Department', 'DocumentType' ] ];
 ```
 
 ---
