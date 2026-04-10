@@ -23,10 +23,13 @@ function setConfigForDevContext() {
     $wgArticlePath = '/main/mediawiki/$1';
 
     // set development settings ------------------------------
-    global $fs2gIndexHost, $fs2gIndexPort, $fs2gIndexName;
-    $fs2gIndexHost = "localhost";
-    $fs2gIndexPort = "8983";
-    $fs2gIndexName = "mw";
+    global $fs2gBackend, $fs2gBackendConfig;
+    $fs2gBackend = 'solr';
+    $fs2gBackendConfig = [
+        'host' => "localhost",
+        'port' => "8983",
+        'indexName' => "mw"
+    ];
 
     global $fs2gExtraPropertiesToRequest;
     $fs2gExtraPropertiesToRequest = [];
@@ -90,9 +93,9 @@ function setConfigForDevContext() {
         $fs2gExtraPropertiesToRequest[] = new Property("Diqa import fullpath", Datatype::STRING);
     }
 
-    $fs2gHeaderControlOrder = [  'searchView', 'sortView','categoryDropDown', 'saveSearchLink' ];
+    $fs2gHeaderControlOrder = [  'searchView', 'sortView', 'categoryDropDown', 'saveSearchLink', 'createArticleLink' ];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-        'facetView', 'categoryLabel', 'categoryView', 'categoryTree', 'sortView'];
+        'facetView', 'categoryView', 'categoryDropDown', 'categoryTree', 'sortView'];
 
     $fs2gPropertyGrouping = [
        /* 'Has name' =>

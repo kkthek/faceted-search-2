@@ -40,6 +40,7 @@ import QueryUtils from "./util/query_utils";
 import {initializeDevContext} from "./util/dev_context";
 import ConfigUtils from "./util/config_utils";
 import MaximizeButton from "./ui/search-bar/maximize-button";
+import CreateArticleLink from "./ui/search-bar/create_article";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -81,11 +82,11 @@ function App() {
     );
 
     const headerControlsOrder = wikiContext.config.fs2gHeaderControlOrder.calculatePermutation(
-        ['sortView', 'searchView', 'saveSearchLink', 'categoryDropDown']
+        ['sortView', 'searchView', 'saveSearchLink', 'createArticleLink', 'categoryDropDown']
     );
     const facetControlsOrder = wikiContext.config.fs2gFacetControlOrder.calculatePermutation(
         ['sortView', 'selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree', 'saveSearchLink']);
+            'facetView', 'categoryDropDown', 'categoryView', 'categoryTree', 'saveSearchLink']);
 
     const currentDocumentQuery = currentDocumentsQueryBuilder.build();
     return <WikiContext.Provider value={wikiContext}>
@@ -108,9 +109,12 @@ function App() {
                         <SaveSearchLink key={'saveSearchLink'}
                                         documentQuery={currentDocumentQuery}
                         />,
+                        <CreateArticleLink key={'createArticleLink'}
+                                           searchStateDocument={searchStateDocument}/>,
                         <CategoryDropdown key={'categoryView'}
                                           documentQuery={currentDocumentQuery}
                                           eventHandler={eventHandler}
+                                          showLabel={false}
                         />
                     ].reorder(headerControlsOrder)}
                     <MaximizeButton key={'maximizeButton'}/>
@@ -162,16 +166,16 @@ function App() {
                                    eventHandler={eventHandler}
                                    textFilters={textFilters}
                         />,
-                        <Typography key={'fs-available-categories'}
-                                    variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}
-                        </Typography>,
+
                         <CategoryDropdown key={'categoryDropDown'}
                                           documentQuery={currentDocumentQuery}
                                           eventHandler={eventHandler}
+                                          showLabel={true}
                         />,
                         <CategoryView key={'categoryView'}
                                       searchStateDocument={searchStateDocument}
                                       eventHandler={eventHandler}
+                                      showLabel={true}
                         />,
                         <CategoryTree key={'categoryTree'}
                                       client={client}
@@ -207,7 +211,6 @@ function applyQueryConstraints() {
         const defaultSort = ConfigUtils.getSortByKeyOrDefault(defaultSortKey)
         currentDocumentsQueryBuilder.clearSorts().withSort(defaultSort);
 
-        currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
         if (wikiContext.isObjectConfigured('fs2gCategoryFilter')) {
             const firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');
             currentDocumentsQueryBuilder.withCategoryFacet(firstCategory);
@@ -216,6 +219,7 @@ function applyQueryConstraints() {
             currentDocumentsQueryBuilder.withSearchText(presetSearchText);
         }
     }
+    currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
 
     // extra properties need to be added always, even if the query
     // comes from a URL-param, because they are never stored. (see save_search_link.tsx)

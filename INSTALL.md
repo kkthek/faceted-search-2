@@ -16,19 +16,43 @@
 * Run in MW root folder:
 
       composer require diqa/faceted-search-2 --no-dev
+
+* OR add the extension to composer-local.json
+
+         {
+            "require": {
+                "diqa/faceted-search-2": "~1.0"
+            }
+         }
+ 
+  * and call
+
+        composer update --no-dev
+
+
+* Install SOLR core:
+  * We assume SOLR is installed
+  * extract solr-8-config.zip into a temp folder
+  * if you want to keep "mw", the default as the SOLR core name move the "mw" folder into /var/solr/data/
+  * otherwise
+  * rename the mw-folder into the preferred name of your index
+  * change "mw" into this name in core.properties
+  * then move the folder into /var/solr/data/
+
  
 * Add to your LocalSettings.php (adjust the values if different from default):
 
-      global $fs2gIndexHost, $fs2gIndexPort; 
-      global $fs2gIndexUser, $fs2gIndexPass, $fs2gIndexName;
-
       # Default values:
-      $fs2gIndexHost = 'localhost';
-      $fs2gIndexPort = 8983;
-      $fs2gIndexUser = '';
-      $fs2gIndexPass = '';
-      $fs2gIndexName = 'mw';
 
+      $fs2gBackend = 'solr';          
+      $fs2gBackendConfig = [
+        'host' => 'localhost',  
+        'port' => 8983,         
+        'indexName' => 'mw',          
+        'user' => '',           
+        'pass' => ''           
+      ];
+      
       wfLoadExtension('FacetedSearch2');
       $smwgEnabledDeferredUpdate = false; // only if SMW installed
 
@@ -38,7 +62,7 @@
     
       php {wiki-path}/extensions/FacetedSearch2/maintenance/updateIndex.php -v
 	    
-      OR via composer:
+* OR via composer:
 
 	    cd {wiki-path}/extensions/FacetedSearch2
 	    composer run-script update
@@ -56,35 +80,19 @@ That's it.
 ## Config options
 
 Here is the documentation for all configuration options in the `config` section of `extension.json`:
-All options are set in `LocalSettings.php` using the prefix `$fs2g`, e.g. `$fs2gIndexHost = 'my-solr-server';`.
+All options are set in `LocalSettings.php` using the prefix `$fs2g`, e.g. `$fs2gCreateUpdateJob = true;`.
 
 ---
 
 ### Index Connection
 
-### `IndexBackend`
+### `Backend`
 - **Default:** `"solr"`
 - The backend used for indexing. Currently, only `solr` is supported.
 
-### `IndexHost`
-- **Default:** `"localhost"`
-- The hostname of the Index server. It is recommended that the backend listens only on localhost to avoid exposing it publicly.
-
-### `IndexPort`
-- **Default:** `8983`
-- The port on which the Index server is listening to. Default is 8983 for Solr 8.30+.
-
-### `IndexName`
-- **Default:** `"mw"`
-- The name of the Index that stores the index data of the wiki. Each wiki requires its own dedicated core.
-
-### `IndexUser`
-- **Default:** `""`
-- The username for authenticating with the Index server. Usually required in multi-tenant environments or when SOLR is accessible via the internet.
-
-### `IndexPass`
-- **Default:** `""`
-- The password for the Index user. For SOLR, See [`SolrUser`](#solruser).
+### `BackendConfig`
+- **Default:** `[]`
+- The configuration of the backend. This is specific to the particular backend. Please check the installation instructions.
 
 ### `DebugMode`
 - **Default:** `false`
@@ -190,12 +198,12 @@ $fs2gDateTimePropertyClusters['Released on'] = [
 - If `true`, the raw SOLR relevance score is shown as a tooltip on the "Show Details" link of each search result. Useful for debugging relevance.
 
 ### `HeaderControlOrder`
-- **Default:** `["sortView", "searchView", "saveSearchLink"]`
+- **Default:** `["sortView", "searchView", "saveSearchLink", "createArticleLink"]`
 - Defines the display order of controls in the search header area.
 
 ### `FacetControlOrder`
 - **Default:** `["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "removeAllFacets", "divider",
-                "facetView", "categoryLabel", "categoryDropDown", "categoryView", "categoryTree"]`
+                "facetView", "categoryDropDown", "categoryView", "categoryTree"]`
 - Defines the display order of controls in the left-hand facet panel.
 
 ---
@@ -251,7 +259,7 @@ $fs2gAdditionalLinks['Document'] = [
 - Maps category names to lists of property names whose values should be shown in the search result snippet for articles belonging to those categories.
 - **Example:**
 ```php
-$fs2gAnnotationsInSnippet['Document'] = ['Department', 'DocumentType'];
+$fs2gAnnotationsInSnippet = [ 'Document' => [ 'Department', 'DocumentType' ] ];
 ```
 
 ---

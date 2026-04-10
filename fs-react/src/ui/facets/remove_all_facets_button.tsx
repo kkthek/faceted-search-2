@@ -3,6 +3,7 @@ import React, {useContext} from "react";
 import EventHandler from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import {BaseQuery} from "../../common/request/base_query";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function RemoveAllFacetsButton(prop: {
     query: BaseQuery,
@@ -15,7 +16,7 @@ function RemoveAllFacetsButton(prop: {
     }
     return <>
         <Button onClick={prop.eventHandler.onRemoveAllFacetsClick}>
-            {wikiContext.msg('fs-remove-all-facets')}
+            <DeleteIcon titleAccess={wikiContext.msg('fs-remove-all-facets')}/>
         </Button>
     </>
 }

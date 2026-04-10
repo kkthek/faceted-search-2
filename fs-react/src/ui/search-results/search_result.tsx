@@ -22,13 +22,12 @@ function SearchResult(prop: { doc: Document, client: Client}) {
 
     return <Box className={classNames.join(' ')}>
         <Box className={'fs-search-result'}>
-            <TitleWithPreview doc={prop.doc}/>
+            <TitleWithPreview doc={prop.doc}/> <CategoriesInTitle doc={prop.doc}/>
         </Box>
         <Box>
             <Typography>
                 <Span dangerouslySetInnerHTML={{ __html: snippet }}></Span>
             </Typography>
-            <CategoriesInTitle doc={prop.doc}/>
             <UserDefinedLinks doc={prop.doc} client={prop.client}/>
             <Annotations doc={prop.doc}/>
             <ArticleProperties doc={prop.doc} client={prop.client}/>

@@ -127,15 +127,29 @@ class Helper
         return $datetime->format('YmdHis');
     }
 
-    public static function getSOLRBaseUrl()
+    public static function getSOLRBaseUrl(): string
     {
 
-        global $fs2gIndexHost;
-        global $fs2gIndexPort;
-        global $fs2gIndexName;
+        global $fs2gBackendConfig;
+
+        $host = $fs2gBackendConfig['host'] ?? 'localhost';
+        $port = $fs2gBackendConfig['port'] ?? 8983;
+        $indexName = $fs2gBackendConfig['indexName'] ?? 'mw';
 
         $protocol = "http";
-        return "$protocol://$fs2gIndexHost:$fs2gIndexPort/solr/$fs2gIndexName";
+        return "$protocol://$host:$port/solr/$indexName";
     }
 
+    public static function getBasicAuthHeader(): array
+    {
+        global $fs2gBackendConfig;
+
+        $user = $fs2gBackendConfig['user'] ?? '';
+        $pass = $fs2gBackendConfig['pass'] ?? '';
+
+        if ($user !== '') {
+            return ["Authorization: Basic " . base64_encode("$user:$pass")];
+        }
+        return [];
+    }
 }

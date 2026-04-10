@@ -20,6 +20,10 @@ function Annotations(prop: {doc: Document}) {
             .map((tuples: string[]) => {
 
             const pfvCell1 = prop.doc.getPropertyFacetValues(tuples[0]);
+            if (pfvCell1 === null) {
+                console.warn('pfvCell1 should never be null for property facet: ' + tuples[0]);
+                return;
+            }
             const pfvCell2 = tuples[1] ? prop.doc.getPropertyFacetValues(tuples[1]) : null;
 
                 let key = 'annotation-'+prop.doc.id+"_"+index++;

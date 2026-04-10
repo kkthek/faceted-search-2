@@ -17,6 +17,8 @@ export class DocumentsResponse {
     propertyFacetCounts: PropertyFacetCount[];
     @jsonArrayMember(NamespaceFacetCount)
     namespaceFacetCounts: NamespaceFacetCount[];
+    @jsonMember(Boolean)
+    titleExists: boolean
 
     containsNamespace(ns: number): boolean {
         return this.namespaceFacetCounts.findFirst((e: NamespaceFacetCount) => e.namespace.toString() === ns.toString(),) != null;

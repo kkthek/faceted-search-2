@@ -3,7 +3,7 @@ import EventHandler from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {SimpleTreeView} from "@mui/x-tree-view";
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import ConfigUtils from "../../util/config_utils";
 import FacetWithCount from "../common/facet_with_count";
 import {CategoryFacetCount} from "../../common/response/category_facet_count";
@@ -31,7 +31,7 @@ function FacetViewCategory( prop: {
 function CategoryView( prop: {
     searchStateDocument: SearchStateDocument,
     eventHandler: EventHandler
-
+    showLabel: boolean
 }) {
     const wikiContext = useContext(WikiContext);
     const showCategories = wikiContext.config['fs2gShowCategories'];
@@ -64,6 +64,9 @@ function CategoryView( prop: {
     }
 
     return <Box id={'fs-category-view'}>
+        {prop.showLabel ? <Typography key={'fs-available-categories'}
+                    variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}
+        </Typography> : ''}
         <SimpleTreeView expansionTrigger={'iconContainer'}
                         disableSelection
                         disabledItemsFocusable

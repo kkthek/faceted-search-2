@@ -56,9 +56,11 @@ class FacetQueryBuilder {
         return this;
     }
 
-    existsPropertyValueQuery(propertyValueConstraint: PropertyValueQuery): boolean {
-        return this.query.propertyValueQueries.findFirst(
-            (e: PropertyValueQuery) => e.equals(propertyValueConstraint)) != null;
+    existsUnlimitedPropertyValueQuery(property: Property): boolean {
+        const valueQuery = this.query.propertyValueQueries.findFirst(
+            (e: PropertyValueQuery) => e.property.equals(property));
+        if (valueQuery === null) return false;
+        return valueQuery.valueLimit === null
     }
 
     clearPropertyValueQueryForProperty(p : Property) {

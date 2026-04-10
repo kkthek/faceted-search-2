@@ -38,11 +38,11 @@ class ConfigTools {
         global $fs2gFacetControlOrder;
         if (count($fs2gFacetControlOrder) === 0) {
             $fs2gFacetControlOrder = ["selectedFacetLabel", "selectedFacetView", "selectedCategoryView", "removeAllFacets", "divider",
-                "facetView", "categoryLabel", "categoryDropDown", "categoryView", "categoryTree"];
+                "facetView", "categoryDropDown", "categoryView", "categoryTree"];
         }
         global $fs2gHeaderControlOrder;
         if (count($fs2gHeaderControlOrder) === 0) {
-            $fs2gHeaderControlOrder = ["sortView", "searchView", "saveSearchLink"];
+            $fs2gHeaderControlOrder = ["sortView", "searchView", "saveSearchLink", "createArticleLink"];
         }
     }
 
@@ -88,6 +88,7 @@ class ConfigTools {
                     $result[] = new Property($property, Datatype::STRING);
                     break;
                 case SMWDataItem::TYPE_WIKIPAGE:
+                case SMWDataItem::TYPE_NOTYPE:
                     $result[] = new Property($property, Datatype::WIKIPAGE);
                     break;
                 case SMWDataItem::TYPE_TIME:
@@ -102,8 +103,8 @@ class ConfigTools {
     {
         static $backendUpdateClient;
         if (!isset($backendUpdateClient)) {
-            global $fs2gIndexBackend;
-            switch($fs2gIndexBackend) {
+            global $fs2gBackend;
+            switch($fs2gBackend) {
                 case 'solr':
                 default:
                     $backendUpdateClientClass = SolrUpdateClient::class;
@@ -118,8 +119,8 @@ class ConfigTools {
     {
         static $backendQueryClient;
         if (!isset($backendQueryClient)) {
-            global $fs2gIndexBackend;
-            switch($fs2gIndexBackend) {
+            global $fs2gBackend;
+            switch($fs2gBackend) {
                 case 'solr':
                 default:
                     $backendQueryClientClass = SolrRequestClient::class;

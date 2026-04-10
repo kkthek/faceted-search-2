@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "react";
 import {WikiContext} from "../../index";
-import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import {FormControl, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
 import EventHandler from "../../common/event_handler";
 import {DocumentQuery} from "../../common/request/document_query";
 
@@ -35,7 +35,8 @@ class DropdownEntry {
 
 function CategoryDropdown(prop: {
     documentQuery: DocumentQuery,
-    eventHandler: EventHandler
+    eventHandler: EventHandler,
+    showLabel: boolean
 }) {
     const wikiContext = useContext(WikiContext);
     const categoryFilter = wikiContext.config['fs2gCategoryFilter'];
@@ -61,16 +62,21 @@ function CategoryDropdown(prop: {
         <MenuItem key={entry.id} value={entry.id}>{entry.label}</MenuItem>
     );
 
-    return <FormControl id={'fs-category-dropdown'}>
-        <Select
-            labelId="category-dropdown-select-label"
-            id="category-dropdown-select"
-            value={selectedCategory}
-            size={'small'}
-            autoWidth={true}
-            onChange={handleChange}
-        >{categoryOptions}</Select>
-    </FormControl>
+    return <>
+        {prop.showLabel ? <Typography key={'fs-available-categories'}
+                                      variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}
+        </Typography> : ''}
+        <FormControl id={'fs-category-dropdown'}>
+            <Select
+                labelId="category-dropdown-select-label"
+                id="category-dropdown-select"
+                value={selectedCategory}
+                size={'small'}
+                autoWidth={true}
+                onChange={handleChange}
+            >{categoryOptions}</Select>
+        </FormControl>
+    </>
 }
 
 export default CategoryDropdown;

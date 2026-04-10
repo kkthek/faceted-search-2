@@ -27,7 +27,7 @@ const TitleWithPreview = (prop: {
     } else {
         titleWithTooltip = title;
     }
-    return <Typography>{titleWithTooltip}</Typography>;
+    return <Span>{titleWithTooltip}</Span>;
 }
 
 export default TitleWithPreview;

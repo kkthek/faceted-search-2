@@ -60,7 +60,6 @@ function SearchBar(prop: {
                 onClick={() => prop.eventHandler.onSearchClick(searchText)}>
             {wikiContext.msg('fs-search-button')}
         </Button>
-        <CreateArticleLink key={'createArticleLink'} searchText={searchText}/>
     </Box>;
 }
 

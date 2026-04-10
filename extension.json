@@ -74,29 +74,13 @@
 	],
 	"config_prefix": "fs2g",
 	"config": {
-        "IndexBackend": {
+        "Backend": {
           "value": "solr",
           "description": "The name of the backend to use. Currently only 'solr' is supported."
         },
-		"IndexName": {
-			"value": "mw",
-			"description": "The name of the Index which stores the data of the wiki. (1 per each wiki)"
-		},
-		"IndexHost": {
-			"value": "localhost",
-			"description": "The hostname of the Index server. Default is localhost. It is recommended that the backend listens only on localhost."
-		},
-		"IndexPort": {
-			"value": 8983,
-			"description": "The port of the Index server. Default for SOLR is 8983."
-		},
-		"IndexUser": {
-			"value": "",
-			"description": "The user of the Index server (usually required in multi-tenant environments or if the Index server is accessible via internet"
-		},
-		"IndexPass": {
-			"value": "",
-			"description": "The password of the Index user (for SOLR, see SolrUser setting)"
+		"BackendConfig": {
+			"value": [],
+			"description": "The configuration of the backend. This is individual for each backend"
 		},
 		"DebugMode": {
 			"value": false,

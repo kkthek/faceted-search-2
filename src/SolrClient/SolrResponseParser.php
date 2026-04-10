@@ -26,15 +26,15 @@ use DIQA\FacetedSearch2\Utils\WikiTools;
 class SolrResponseParser {
 
     private $body;
-
+    private $searchText;
     /**
      * SolrResponseParser constructor.
      * @param $body
      */
-    public function __construct($body)
+    public function __construct($body, $searchText = null)
     {
         $this->body = $body;
-
+        $this->searchText = $searchText;
     }
 
     public function parse($fillEmptyProperties = true): DocumentsResponse {
@@ -130,7 +130,8 @@ class SolrResponseParser {
             $docs,
             $categoryFacetCounts,
             $propertyFacetCounts,
-            $namespaceFacetCounts
+            $namespaceFacetCounts,
+            !is_null($this->searchText)  ? WikiTools::titleExists($this->searchText) : null
         );
 
     }
