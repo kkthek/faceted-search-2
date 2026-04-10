@@ -143,6 +143,7 @@ XML;
             $headerFields = [];
             $headerFields[] = "Content-Type: text/xml";
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
+            $headerFields = array_merge($headerFields, Helper::getBasicAuthHeader());
             $url = Helper::getSOLRBaseUrl() . "/update?commit=true&overwrite=true&wt=json";
 
             $ch = curl_init($url);

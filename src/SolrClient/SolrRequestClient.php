@@ -397,6 +397,7 @@ class SolrRequestClient implements FacetedSearchClient
             $headerFields = [];
             $headerFields[] = "Content-Type: application/x-www-form-urlencoded; charset=UTF-8";
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
+            $headerFields = array_merge($headerFields, Helper::getBasicAuthHeader());
             $ch = curl_init();
             $queryString = Util::buildQueryParams($queryParams);
             $url = Helper::getSOLRBaseUrl() . "/select";
@@ -443,6 +444,7 @@ class SolrRequestClient implements FacetedSearchClient
             $headerFields = [];
             $headerFields[] = "Content-Type: $contentType";
             $headerFields[] = "Expect:"; // disables 100 CONTINUE
+            $headerFields = array_merge($headerFields, Helper::getBasicAuthHeader());
             $ch = curl_init();
 
             $url = Helper::getSOLRBaseUrl() . "/update/extract?extractOnly=true&wt=json";

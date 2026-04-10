@@ -103,8 +103,8 @@ class ConfigTools {
     {
         static $backendUpdateClient;
         if (!isset($backendUpdateClient)) {
-            global $fs2gIndexBackend;
-            switch($fs2gIndexBackend) {
+            global $fs2gBackend;
+            switch($fs2gBackend) {
                 case 'solr':
                 default:
                     $backendUpdateClientClass = SolrUpdateClient::class;
@@ -119,8 +119,8 @@ class ConfigTools {
     {
         static $backendQueryClient;
         if (!isset($backendQueryClient)) {
-            global $fs2gIndexBackend;
-            switch($fs2gIndexBackend) {
+            global $fs2gBackend;
+            switch($fs2gBackend) {
                 case 'solr':
                 default:
                     $backendQueryClientClass = SolrRequestClient::class;
