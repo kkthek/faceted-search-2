@@ -208,6 +208,9 @@ class EventHandler {
         }
 
         let facetValueLimit = this.wikiContext.config.fs2gFacetValueLimit;
+        if (this.currentFacetsQueryBuilder.existsUnlimitedPropertyValueQuery(property)) {
+            facetValueLimit = null;
+        }
         this.currentFacetsQueryBuilder.withPropertyValueQuery(
             PropertyValueQuery.forValuesContainingText(property, text, facetValueLimit)
         );
