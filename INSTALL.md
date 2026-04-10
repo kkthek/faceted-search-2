@@ -16,11 +16,31 @@
 * Run in MW root folder:
 
       composer require diqa/faceted-search-2 --no-dev
+
+* OR add the extension to composer-local.json
+
+         {
+            "require": {
+                "diqa/faceted-search-2": "~1.0"
+            }
+         }
+ 
+  * and call
+
+        composer update --no-dev
+
+
+* Install SOLR core:
+  * assuming SOLR is installed
+  * extract solr-8-config.zip into a temp folder
+  * if you want to keep "mw", the default as the SOLR core name move the "mw" folder into /var/solr/data/
+  * otherwise
+  * rename the mw-folder into the preferred name of your $fs2gSolrCore
+  * change "mw" into this name in core.properties
+  * then move the folder into /var/solr/data/
+
  
 * Add to your LocalSettings.php (adjust the values if different from default):
-
-      global $fs2gIndexHost, $fs2gIndexPort; 
-      global $fs2gIndexUser, $fs2gIndexPass, $fs2gIndexName;
 
       # Default values:
       $fs2gIndexHost = 'localhost';
@@ -38,7 +58,7 @@
     
       php {wiki-path}/extensions/FacetedSearch2/maintenance/updateIndex.php -v
 	    
-      OR via composer:
+* OR via composer:
 
 	    cd {wiki-path}/extensions/FacetedSearch2
 	    composer run-script update
