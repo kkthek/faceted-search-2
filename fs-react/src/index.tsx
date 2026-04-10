@@ -85,7 +85,7 @@ function App() {
     );
     const facetControlsOrder = wikiContext.config.fs2gFacetControlOrder.calculatePermutation(
         ['sortView', 'selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
-            'facetView', 'categoryLabel', 'categoryDropDown', 'categoryView', 'categoryTree', 'saveSearchLink']);
+            'facetView', 'categoryDropDown', 'categoryView', 'categoryTree', 'saveSearchLink']);
 
     const currentDocumentQuery = currentDocumentsQueryBuilder.build();
     return <WikiContext.Provider value={wikiContext}>
@@ -111,6 +111,7 @@ function App() {
                         <CategoryDropdown key={'categoryView'}
                                           documentQuery={currentDocumentQuery}
                                           eventHandler={eventHandler}
+                                          showLabel={false}
                         />
                     ].reorder(headerControlsOrder)}
                     <MaximizeButton key={'maximizeButton'}/>
@@ -162,16 +163,16 @@ function App() {
                                    eventHandler={eventHandler}
                                    textFilters={textFilters}
                         />,
-                        <Typography key={'fs-available-categories'}
-                                    variant={"subtitle1"}>{wikiContext.msg('fs-available-categories')}
-                        </Typography>,
+
                         <CategoryDropdown key={'categoryDropDown'}
                                           documentQuery={currentDocumentQuery}
                                           eventHandler={eventHandler}
+                                          showLabel={true}
                         />,
                         <CategoryView key={'categoryView'}
                                       searchStateDocument={searchStateDocument}
                                       eventHandler={eventHandler}
+                                      showLabel={true}
                         />,
                         <CategoryTree key={'categoryTree'}
                                       client={client}
