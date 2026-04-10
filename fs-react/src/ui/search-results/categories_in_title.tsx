@@ -16,7 +16,10 @@ function CategoriesInTitle(prop: { doc: Document }) {
         .filter((c: string) => prop.doc.getCategoryFacetValue(c) != null)
         .map((c: string) => <Span><WikiLink page={prop.doc.getCategoryFacetValue(c)}/></Span>);
 
-    return <Typography>{wikiContext.msg('fs-is-in-category')}: {ValueSerializer.join(categoryElements)}</Typography>;
+    if (categoryElements.length === 0 ) {
+        return;
+    }
+    return <Span sx={{'margin-left': '10px;'}}>[{ValueSerializer.join(categoryElements)}]</Span>
 }
 
 export default CategoriesInTitle;

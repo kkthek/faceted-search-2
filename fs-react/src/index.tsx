@@ -208,7 +208,6 @@ function applyQueryConstraints() {
         const defaultSort = ConfigUtils.getSortByKeyOrDefault(defaultSortKey)
         currentDocumentsQueryBuilder.clearSorts().withSort(defaultSort);
 
-        currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
         if (wikiContext.isObjectConfigured('fs2gCategoryFilter')) {
             const firstCategory = wikiContext.getFirstInObject('fs2gCategoryFilter');
             currentDocumentsQueryBuilder.withCategoryFacet(firstCategory);
@@ -217,6 +216,7 @@ function applyQueryConstraints() {
             currentDocumentsQueryBuilder.withSearchText(presetSearchText);
         }
     }
+    currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
 
     // extra properties need to be added always, even if the query
     // comes from a URL-param, because they are never stored. (see save_search_link.tsx)
