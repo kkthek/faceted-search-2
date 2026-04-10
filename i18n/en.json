@@ -48,5 +48,6 @@
     "fs-please-confirm":        "Please confirm",
     "fs-operation-successful": "Operation successful.",
     "fs-generic-error-message": "Some error appeared. See console for details.",
-    "fs-error-message":         "Error"
+    "fs-error-message":         "Error",
+    "fs-category-tree":         "Category tree"
 }

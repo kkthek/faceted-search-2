@@ -62,7 +62,7 @@ function CategoryTree(prop: {
 
 
     return <div id={'fs-category-tree'}>
-        <Typography variant={"subtitle1"}>Category Tree</Typography>
+        <Typography variant={"subtitle1"}>{wikiContext.msg('fs-category-tree')}</Typography>
         <CategoryTreeFilter setCategoryTree={setCategoryTree}
                             treeState={categoryTree}
                             searchStateDocument={prop.searchStateDocument}

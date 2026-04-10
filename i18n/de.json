@@ -48,5 +48,6 @@
     "fs-please-confirm":        "Bitte bestätigen",
     "fs-operation-successful":  "Operation erfolgreich abgeschlossen",
     "fs-generic-error-message": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-    "fs-error-message":         "Fehler"
+    "fs-error-message":         "Fehler",
+    "fs-category-tree":         "Kategorie-Baum"
 }
