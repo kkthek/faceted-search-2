@@ -85,6 +85,7 @@ class ConfigTools {
                     $result[] = new Property($property, Datatype::NUMBER);
                     break;
                 case SMWDataItem::TYPE_BLOB:
+                default:
                     $result[] = new Property($property, Datatype::STRING);
                     break;
                 case SMWDataItem::TYPE_WIKIPAGE:
