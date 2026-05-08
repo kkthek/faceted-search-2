@@ -66,7 +66,7 @@ class Document {
     }
 
     /**
-     * @return PropertyValues[]
+     * @return string[]
      */
     public function getCategories(): array
     {

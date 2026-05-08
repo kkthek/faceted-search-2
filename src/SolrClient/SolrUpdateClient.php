@@ -179,4 +179,8 @@ XML;
     }
 
 
+    public function initIndex(): void
+    {
+        // no impl. for SOLR
+    }
 }

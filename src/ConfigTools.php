@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2;
 
+use DIQA\FacetedSearch2\ElasticSearch\ElasticSearchUpdateClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
@@ -110,6 +111,10 @@ class ConfigTools {
                 default:
                     $backendUpdateClientClass = SolrUpdateClient::class;
                     break;
+                case 'elastic':
+                    $backendUpdateClientClass = ElasticSearchUpdateClient::class;
+                    break;
+
             }
             $backendUpdateClient = new $backendUpdateClientClass;
         }

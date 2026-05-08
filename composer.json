@@ -27,7 +27,8 @@
 		"php": ">=7.4.0",
 		"composer/installers": "1.*,>=1.0.1|2.*",
 		"netresearch/jsonmapper": ">=v4.4.1",
-		"nesbot/carbon": "^2.72"
+		"nesbot/carbon": "^2.72",
+		"elasticsearch/elasticsearch": "^8.19"
 	},
 	"suggest": {
 
@@ -38,7 +39,8 @@
 	"config": {
 		"process-timeout": 0,
 		"allow-plugins": {
-			"composer/installers": true
+			"composer/installers": true,
+			"php-http/discovery": true
 		}
 	},
 	"scripts": {

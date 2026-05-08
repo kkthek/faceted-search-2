@@ -26,4 +26,9 @@ interface FacetedSearchUpdateClient
      */
     public function clearAllDocuments();
 
+    /**
+     * Initializes the index.
+     */
+    public function initIndex(): void;
+
 }
