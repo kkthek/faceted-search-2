@@ -14,10 +14,29 @@ Enter VM by running:
 
     vagrant ssh
 
+### SOLR
+
 and go to `/var/www/html/mediawiki/vm-ubuntu` and run:
 
     ./solr-installPowerSearch.sh
     ./solr-installCore.sh
+
+### ElasticSearch
+Install Docker - https://docs.docker.com/get-docker/
+and run:
+
+    docker run --name es01 --net elastic -p 9200:9200 -it docker.elastic.co/elasticsearch/elasticsearch:9.3.3
+
+Configure ElasticSearch in `LocalSettings.php`
+
+    global $fs2gBackendConfig, $fs2gBackend;
+    $fs2gBackend = 'elastic';
+    $fs2gBackendConfig = [
+        'host' => '192.168.56.1',
+        'user' => 'elastic',
+        'pass' => '....',
+        'ssl' => true,
+    ];
 
 # Build Frontend
 

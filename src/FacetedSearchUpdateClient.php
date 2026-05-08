@@ -31,4 +31,16 @@ interface FacetedSearchUpdateClient
      */
     public function initIndex(): void;
 
+    /**
+     * Deletes the index.
+     * @return void
+     */
+    public function deleteIndex(): void;
+
+    /**
+     * Checks if the index exists.
+     * @return bool
+     */
+    public function existsIndex(): bool;
+
 }

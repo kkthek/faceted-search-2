@@ -183,4 +183,15 @@ XML;
     {
         // no impl. for SOLR
     }
+
+    public function deleteIndex(): void
+    {
+        // no impl. for SOLR
+    }
+
+    public function existsIndex(): bool
+    {
+        // no impl. for SOLR
+        return false;
+    }
 }

@@ -4,8 +4,6 @@ namespace DIQA\FacetedSearch2\ElasticSearch;
 
 use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\FacetedSearchUpdateClient;
-use DIQA\FacetedSearch2\Model\Common\Datatype;
-use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Update\Document;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 use Elastic\Elasticsearch\Client;
@@ -19,7 +17,7 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
 {
 
     private Client $client;
-
+    private array $config;
     /**
      * @throws AuthenticationException
      */
@@ -36,14 +34,19 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
             'verify-ssl' => $fs2gBackendConfig['verify-ssl'] ?? false,
 
         ];
-        print_r($config);
+
         $protocol = $config['ssl'] ? 'https' : 'http';
         $this->client = ClientBuilder::create()
             ->setSSLVerification($config['verify-ssl'])
             ->setHosts(["$protocol://" . $config['host'] . ':' . $config['port']])
             ->setBasicAuthentication($config['user'], $config['pass'])
             ->build();
+        $this->config = $config;
+    }
 
+    public function getConfig(): array
+    {
+        return $this->config;
     }
 
     /**
@@ -89,7 +92,7 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
         }
     }
 
-    public function deleteIndex()
+    public function deleteIndex(): void
     {
         $params = $this->getParamForIndex();
         try {
@@ -117,7 +120,6 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
 
             $params['body'] = $this->getSchemaMappings();
 
-            print_r($params);
             $this->client->indices()->create($params);
 
         } catch (ClientResponseException
@@ -149,14 +151,19 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
         $body = [];
         $body['__categories'] = $doc->getCategories();
         $body['__directCategories'] = $doc->getDirectCategories();
-        $body['__properties'] = array_unique(array_map(fn(PropertyValues $pv) => $pv->getProperty(), $doc->getPropertyValues()));
+        $properties = array_map(fn(PropertyValues $pv) => $pv->getProperty()->getTitle(), $doc->getPropertyValues());
+        $body['__properties'] = array_values(array_unique($properties));
+        $body['__fulltext'] = $doc->getFulltext();
+        $body['__title'] = $doc->getTitle();
+        $body['__namespace'] = $doc->getNamespace();
+        $body['__display'] = $doc->getDisplayTitle();
         foreach ($propertyValues as $propertyValue) {
             $name = Helper::mapName($propertyValue->getProperty());
             $body[$name] = Helper::mapValues($propertyValue);
         }
         try {
+            $params['id'] = $doc->getId();
             $params['body'] = $body;
-
             $this->client->index($params);
         } catch (
         ClientResponseException
@@ -175,6 +182,10 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
         $schemaProperties['__categories'] = ['type' => 'keyword'];
         $schemaProperties['__directCategories'] = ['type' => 'keyword'];
         $schemaProperties['__properties'] = ['type' => 'keyword'];
+        $schemaProperties['__fulltext'] = ['type' => 'text'];
+        $schemaProperties['__title'] = ['type' => 'text'];
+        $schemaProperties['__namespace'] = ['type' => 'long'];
+        $schemaProperties['__display'] = ['type' => 'text'];
         return [
             'mappings' => [
                 'properties' => $schemaProperties,
@@ -231,5 +242,24 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
                 ]
             ],
         ];
+    }
+
+    /**
+     * Check if index exists
+     * @return bool
+     * @throws BackendException
+     */
+    public function existsIndex(): bool
+    {
+        try {
+            $params = $this->getParamForIndex();
+            $response = $this->client->indices()->exists($params);
+            return $response->asBool();
+        } catch (
+        ClientResponseException
+        |MissingParameterException
+        |ServerResponseException $e) {
+            throw BackendException::create($e);
+        }
     }
 }
