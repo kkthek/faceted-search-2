@@ -6,47 +6,15 @@ use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\FacetedSearchUpdateClient;
 use DIQA\FacetedSearch2\Model\Update\Document;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
-use Elastic\Elasticsearch\Client;
-use Elastic\Elasticsearch\ClientBuilder;
-use Elastic\Elasticsearch\Exception\AuthenticationException;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\MissingParameterException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
 
-class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
+class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements FacetedSearchUpdateClient
 {
-
-    private Client $client;
-    private array $config;
-    /**
-     * @throws AuthenticationException
-     */
-    public function __construct()
+    public function __construct($client = null)
     {
-        global $fs2gBackendConfig;
-        $config = [
-
-            'host' => $fs2gBackendConfig['host'] ?? 'localhost',
-            'port' => $fs2gBackendConfig['port'] ?? 9200,
-            'user' => $fs2gBackendConfig['user'] ?? 'elastic',
-            'pass' => $fs2gBackendConfig['pass'] ?? '',
-            'ssl' => $fs2gBackendConfig['ssl'] ?? false,
-            'verify-ssl' => $fs2gBackendConfig['verify-ssl'] ?? false,
-
-        ];
-
-        $protocol = $config['ssl'] ? 'https' : 'http';
-        $this->client = ClientBuilder::create()
-            ->setSSLVerification($config['verify-ssl'])
-            ->setHosts(["$protocol://" . $config['host'] . ':' . $config['port']])
-            ->setBasicAuthentication($config['user'], $config['pass'])
-            ->build();
-        $this->config = $config;
-    }
-
-    public function getConfig(): array
-    {
-        return $this->config;
+        parent::__construct($client);
     }
 
     /**
@@ -130,15 +98,6 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
 
     }
 
-    private function getParamForIndex(): array
-    {
-        global $fs2gBackendConfig;
-
-        return [
-            'index' => $fs2gBackendConfig['indexName'] ?? 'mw',
-        ];
-    }
-
     /**
      * @param mixed $doc
      * @return void
@@ -151,15 +110,15 @@ class ElasticSearchUpdateClient implements FacetedSearchUpdateClient
         $body = [];
         $body['__categories'] = $doc->getCategories();
         $body['__directCategories'] = $doc->getDirectCategories();
-        $properties = array_map(fn(PropertyValues $pv) => $pv->getProperty()->getTitle(), $doc->getPropertyValues());
+        $properties = array_map(fn(PropertyValues $pv) => Helper::toInternalName($pv->getProperty()), $doc->getPropertyValues());
         $body['__properties'] = array_values(array_unique($properties));
         $body['__fulltext'] = $doc->getFulltext();
         $body['__title'] = $doc->getTitle();
         $body['__namespace'] = $doc->getNamespace();
         $body['__display'] = $doc->getDisplayTitle();
         foreach ($propertyValues as $propertyValue) {
-            $name = Helper::mapName($propertyValue->getProperty());
-            $body[$name] = Helper::mapValues($propertyValue);
+            $name = Helper::toInternalName($propertyValue->getProperty());
+            $body[$name] = Helper::mapValuesToESModel($propertyValue);
         }
         try {
             $params['id'] = $doc->getId();

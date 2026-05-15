@@ -4,12 +4,13 @@ namespace DIQA\FacetedSearch2\ElasticSearch;
 
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
+use DIQA\FacetedSearch2\Model\Request\FacetValue;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 
 class Helper
 {
 
-    static function mapName(Property $property): string
+    static function toInternalName(Property $property): string
     {
         switch ($property->getType()) {
             case Datatype::NUMBER:
@@ -32,7 +33,30 @@ class Helper
 
     }
 
-    static function mapValues(PropertyValues $values): array
+    static function getDatatypeFromInternalName(string $internalName): int
+    {
+        $prefix = explode('__', $internalName, 2)[0];
+
+        switch ($prefix) {
+            case 'number':
+                return Datatype::NUMBER;
+            case 'datetime':
+                return Datatype::DATETIME;
+            case 'boolean':
+                return Datatype::BOOLEAN;
+            case 'wikipage':
+                return Datatype::WIKIPAGE;
+            case 'text':
+                return Datatype::STRING;
+            default:
+                throw new \InvalidArgumentException(
+                    sprintf('Unknown datatype prefix: "%s"', $prefix)
+                );
+        }
+    }
+
+
+    static function mapValuesToESModel(PropertyValues $values): array
     {
         $result = [];
         switch ($values->getProperty()->getType()) {
@@ -58,6 +82,27 @@ class Helper
                 break;
         }
         return $result;
+    }
+
+    static function mapFacetQueryToESModel(Property $property, FacetValue $value): array
+    {
+        if (!is_null($value->getValue())) {
+            $condition = [ 'match' => [ self::toInternalName($property) => $value->getValue() ] ];
+        } elseif (!is_null($value->getMwTitle())) {
+            $condition = [ 'nested' => [
+                'path' => self::toInternalName($property),
+                'query' => ['match' => [
+                    self::toInternalName($property).'.title' => $value->getMwTitle()->getTitle()]
+                ]
+                ]
+            ];
+
+        } else {
+            $condition = ['range' => [Helper::toInternalName($property) =>
+                ['gte' => $value->getRange()->getFrom(), 'lte' => $value->getRange()->getTo()]
+            ]];
+        }
+        return $condition;
     }
 
     /**
@@ -86,5 +131,13 @@ class Helper
         }
 
         return $dateTime->getTimestamp();
+    }
+
+    public static function fromUnixTimestamp(int $timestamp): string
+    {
+        $dateTime = (new \DateTimeImmutable('@' . $timestamp))
+            ->setTimezone(new \DateTimeZone('UTC'));
+
+        return $dateTime->format(\DateTimeInterface::ATOM);
     }
 }
