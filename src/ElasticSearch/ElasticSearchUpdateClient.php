@@ -142,9 +142,9 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         $schemaProperties['__directCategories'] = ['type' => 'keyword'];
         $schemaProperties['__properties'] = ['type' => 'keyword'];
         $schemaProperties['__fulltext'] = ['type' => 'text'];
-        $schemaProperties['__title'] = ['type' => 'text'];
+        $schemaProperties['__title'] = ['type' => 'wildcard'];
         $schemaProperties['__namespace'] = ['type' => 'long'];
-        $schemaProperties['__display'] = ['type' => 'text'];
+        $schemaProperties['__display'] = ['type' => 'wildcard'];
         return [
             'mappings' => [
                 'properties' => $schemaProperties,
@@ -163,7 +163,7 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
                         "fs2-text-template" => [
                             "match" => "text_*",
                             "mapping" => [
-                                "type" => "text"
+                                "type" => "wildcard"
                             ]
                         ],
                     ],
@@ -192,8 +192,8 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
                             "mapping" => [
                                 "type" => "nested",
                                 "properties" => [
-                                    "title" => ["type" => "text"],
-                                    "display" => ["type" => "text"]
+                                    "title" => ["type" => "wildcard"],
+                                    "display" => ["type" => "wildcard"]
                                 ]
                             ]
                         ],

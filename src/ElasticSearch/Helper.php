@@ -12,7 +12,12 @@ class Helper
 
     static function toInternalName(Property $property): string
     {
+
         switch ($property->getType()) {
+            case Datatype::INTERNAL:
+                if ($property->getTitle() === 'displaytitle') return '__display';
+                if ($property->getTitle() === 'score') return '_score';
+                break;
             case Datatype::NUMBER:
                 $prefix = "number";
                 break;
@@ -62,7 +67,7 @@ class Helper
         switch ($values->getProperty()->getType()) {
             case Datatype::DATETIME:
                 foreach ($values->getValues() as $value) {
-                    $value = self::toUnixTimestamp($value);
+                    $value = self::convertDateTimeToLong($value);
                     $result[] = $value;
                 }
                 break;
@@ -105,39 +110,15 @@ class Helper
         return $condition;
     }
 
-    /**
-     * Converts an ISO 8601 date string into a Unix timestamp.
-     *
-     * @param string $iso8601Date ISO 8601 formatted date (e.g. "2025-05-07T14:30:00+00:00")
-     * @return int Unix timestamp (seconds since epoch)
-     * @throws \InvalidArgumentException if the input string is not a valid ISO 8601 date
-     */
-    private static function toUnixTimestamp(string $iso8601Date): int
+    public static function fromLongToDateTime(int $longDate): string
     {
-        $dateTime = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $iso8601Date);
-
-        if ($dateTime === false) {
-            // Fallback: try a more lenient parser for ISO 8601 variants
-            // (e.g. with milliseconds or 'Z' instead of timezone offset)
-            try {
-                $dateTime = new \DateTimeImmutable($iso8601Date);
-            } catch (\Exception $e) {
-                throw new \InvalidArgumentException(
-                    sprintf('Invalid ISO 8601 date: "%s"', $iso8601Date),
-                    0,
-                    $e
-                );
-            }
-        }
-
-        return $dateTime->getTimestamp();
+        $datetime = \DateTime::createFromFormat('YmdHis', $longDate);
+        return $datetime->format('Y-m-d\TH:i:s\Z');
     }
 
-    public static function fromUnixTimestamp(int $timestamp): string
+    public static function convertDateTimeToLong($date): string
     {
-        $dateTime = (new \DateTimeImmutable('@' . $timestamp))
-            ->setTimezone(new \DateTimeZone('UTC'));
-
-        return $dateTime->format(\DateTimeInterface::ATOM);
+        $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $date);
+        return $datetime->format('YmdHis');
     }
 }
