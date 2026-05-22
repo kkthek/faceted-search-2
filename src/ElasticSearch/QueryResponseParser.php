@@ -127,13 +127,9 @@ class QueryResponseParser {
     {
         return new Document($doc['_id'],
             $this->parseProperties($doc['_source']),
-            array_map(fn($c) => new CategoryFacetValue($c,
-                WikiTools::getDisplayTitleForCategory($c),
-                WikiTools::createURLForCategory($c)), $doc['_source']['__categories']),
-            array_map(fn($c) => new CategoryFacetValue($c,
-                WikiTools::getDisplayTitleForCategory($c),
-                WikiTools::createURLForCategory($c)), $doc['_source']['__directCategories']),
-            new NamespaceFacetValue($doc['_source']['__namespace'], WikiTools::getNamespaceName($doc['_source']['__namespace'])),
+            array_map(fn($c) => CategoryFacetValue::fromCategory($c), $doc['_source']['__categories']),
+            array_map(fn($c) => CategoryFacetValue::fromCategory($c), $doc['_source']['__directCategories']),
+            NamespaceFacetValue::fromNamespace($doc['_source']['__namespace']),
             $doc['_source']['__title'],
             $doc['_source']['__display'],
             WikiTools::createURLForPage($doc['_source']['__title'], $doc['_source']['__namespace']),
@@ -147,12 +143,15 @@ class QueryResponseParser {
         foreach ($q->getPropertyValueQueries() as $pvq) {
             $toInternalName = Helper::toInternalName($pvq->getProperty());
             if ($pvq->getProperty()->getType() === Datatype::WIKIPAGE) {
-                $valueCounts = array_map(fn($b) => new ValueCount(null,
+                $valueCounts = array_map(fn($b) => ValueCount::fromTitle(
                     new MWTitleWithURL($b['key'][0], $b['key'][1], WikiTools::createURLForPage($b['key'][0])),
-                    null, $b['doc_count']),
+                    $b['doc_count']),
                     $aggregations[$toInternalName]['values']['buckets']);
+            } elseif($pvq->getProperty()->getType() === Datatype::BOOLEAN) {
+                $valueCounts = array_map(fn($b) => ValueCount::fromValue($b['key'] ? "true": "false", $b['doc_count']),
+                    $aggregations[$toInternalName]['buckets']);
             } else {
-                $valueCounts = array_map(fn($b) => new ValueCount($b['key'], null, null, $b['doc_count']),
+                $valueCounts = array_map(fn($b) => ValueCount::fromValue($b['key'], $b['doc_count']),
                     $aggregations[$toInternalName]['buckets']);
             }
             $propertyValueCounts[] = new PropertyFacetValues(PropertyWithURL::fromProperty(
@@ -170,8 +169,7 @@ class QueryResponseParser {
                     $from = Helper::fromLongToDateTime($from);
                     $to = Helper::fromLongToDateTime($to);
                 }
-                return new ValueCount(null, null,
-                    new Range($from, $to), $b['doc_count']);
+                return ValueCount::fromRange(new Range($from, $to), $b['doc_count']);
             }, $aggregations[$toInternalName]['buckets']);
             $valueCounts = array_values(array_filter($valueCounts, fn($vc) => $vc->count > 0));
             $propertyValueCounts[] = new PropertyFacetValues(PropertyWithURL::fromProperty(

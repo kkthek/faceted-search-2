@@ -96,7 +96,11 @@ class Helper
     static function mapFacetQueryToESModel(Property $property, FacetValue $value): array
     {
         if (!is_null($value->getValue())) {
-            $condition = [ 'match' => [ self::toInternalName($property) => $value->getValue() ] ];
+            if ($property->getType() === Datatype::BOOLEAN) {
+                $condition = [ 'match' => [ self::toInternalName($property) => $value->getValue() ? 'true' : 'false'] ];
+            } else {
+                $condition = ['match' => [self::toInternalName($property) => $value->getValue()]];
+            }
         } elseif (!is_null($value->getMwTitle())) {
             $condition = [ 'nested' => [
                 'path' => self::toInternalName($property),

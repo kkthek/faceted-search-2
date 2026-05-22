@@ -54,6 +54,7 @@ class InitIndex extends Maintenance
                     die();
                 }
                 $client->initIndex();
+                print "\nIndex created.\n";
             }
         } catch (BackendException $e) {
             echo("ERROR: Creating the index failed.\n" . $e->getMessage());
