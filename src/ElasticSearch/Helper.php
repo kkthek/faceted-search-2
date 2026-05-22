@@ -38,28 +38,32 @@ class Helper
 
     }
 
-    static function getDatatypeFromInternalName(string $internalName): int
+    static function fromInternalName(string $internalName): Property
     {
-        $prefix = explode('__', $internalName, 2)[0];
-
-        switch ($prefix) {
+        list($type, $name) = explode('__', $internalName);
+        switch ($type) {
             case 'number':
-                return Datatype::NUMBER;
+                $datatype = Datatype::NUMBER;
+                break;
             case 'datetime':
-                return Datatype::DATETIME;
+                $datatype = Datatype::DATETIME;
+                break;
             case 'boolean':
-                return Datatype::BOOLEAN;
+                $datatype = Datatype::BOOLEAN;
+                break;
             case 'wikipage':
-                return Datatype::WIKIPAGE;
+                $datatype = Datatype::WIKIPAGE;
+                break;
             case 'text':
-                return Datatype::STRING;
+                $datatype = Datatype::STRING;
+                break;
             default:
                 throw new \InvalidArgumentException(
-                    sprintf('Unknown datatype prefix: "%s"', $prefix)
+                    sprintf('Unknown datatype prefix: "%s"', $type)
                 );
         }
+        return new Property($name, $datatype);
     }
-
 
     static function mapValuesToESModel(PropertyValues $values): array
     {
@@ -67,7 +71,7 @@ class Helper
         switch ($values->getProperty()->getType()) {
             case Datatype::DATETIME:
                 foreach ($values->getValues() as $value) {
-                    $value = self::convertDateTimeToLong($value);
+                    $value = self::fromDateTimeToLong($value);
                     $result[] = $value;
                 }
                 break;
@@ -104,8 +108,8 @@ class Helper
 
         } else {
             if ($property->getType() === Datatype::DATETIME) {
-                $from = self::convertDateTimeToLong($value->getRange()->getFrom());
-                $to = self::convertDateTimeToLong($value->getRange()->getTo());
+                $from = self::fromDateTimeToLong($value->getRange()->getFrom());
+                $to = self::fromDateTimeToLong($value->getRange()->getTo());
             } else {
                 $from = $value->getRange()->getFrom();
                 $to = $value->getRange()->getTo();
@@ -123,7 +127,7 @@ class Helper
         return $datetime->format('Y-m-d\TH:i:s\Z');
     }
 
-    public static function convertDateTimeToLong($date): string
+    public static function fromDateTimeToLong($date): string
     {
         $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $date);
         return $datetime->format('YmdHis');

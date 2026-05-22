@@ -61,14 +61,14 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 'highlight' => ['fields' => ['__fulltext' => ['type' => 'plain']]],
                 'sort' => array_map(fn($s) => [Helper::toInternalName($s->property) => ['order' => $s->order === Order::ASC ? 'asc' : 'desc']], $q->getSorts())
             ];
-//echo print_r($params, true);
+
             $response = $this->client->search($params);
             $response = $response->asArray();
 
             $documents = array_map(fn($hit) => $this->readDocument($hit), $response['hits']['hits']);
-            $categoryCounts = array_map(fn($b) => new CategoryFacetCount($b['key'], '', $b['doc_count']),
+            $categoryCounts = array_map(fn($b) => new CategoryFacetCount($b['key'], WikiTools::getDisplayTitleForCategory($b['key']), $b['doc_count']),
                 $response['aggregations']['category_frequency']['buckets']);
-            $namespaceCounts = array_map(fn($b) => new NamespaceFacetCount($b['key'], '', $b['doc_count']),
+            $namespaceCounts = array_map(fn($b) => new NamespaceFacetCount($b['key'], WikiTools::getNamespaceName($b['key']), $b['doc_count']),
                 $response['aggregations']['namespace_frequency']['buckets']);
             $propertyFacetCounts = $this->readPropertyCounts($response['aggregations']['field_frequency']['buckets']);
 
@@ -154,8 +154,8 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                         $to = $r->getTo();
                         $from = $r->getFrom();
                         if ($stat->getProperty()->getType() === Datatype::DATETIME) {
-                            $from = Helper::convertDateTimeToLong($from);
-                            $to = Helper::convertDateTimeToLong($to);
+                            $from = Helper::fromDateTimeToLong($from);
+                            $to = Helper::fromDateTimeToLong($to);
                         }
                         return [
                             'from' => $from,
@@ -195,10 +195,9 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                     $valueCounts = array_map(fn($b) => new ValueCount($b['key'], null, null, $b['doc_count']),
                         $response['aggregations'][$toInternalName]['buckets']);
                 }
-                $propertyValueCounts[] = new PropertyFacetValues(new PropertyWithURL(
-                    $pvq->getProperty()->getTitle(),
+                $propertyValueCounts[] = new PropertyFacetValues(PropertyWithURL::fromProperty(
+                    $pvq->getProperty(),
                     WikiTools::getDisplayTitleForProperty($pvq->getProperty()->getTitle()),
-                    $pvq->getProperty()->getType(),
                 WikiTools::createURLForProperty($pvq->getProperty()->getTitle())), $valueCounts);
             }
 
@@ -215,10 +214,9 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                         new Range($from, $to), $b['doc_count']);
                 }, $response['aggregations'][$toInternalName]['buckets']);
                 $valueCounts = array_values(array_filter($valueCounts, fn($vc) => $vc->count > 0));
-                $propertyValueCounts[] = new PropertyFacetValues(new PropertyWithURL(
-                    $property->getTitle(),
+                $propertyValueCounts[] = new PropertyFacetValues(PropertyWithURL::fromProperty(
+                    $property,
                     WikiTools::getDisplayTitleForProperty($property->getTitle()),
-                    $property->getType(),
                     WikiTools::createURLForProperty($property->getTitle())), $valueCounts);
             }
             return new FacetResponse($propertyValueCounts);
@@ -260,9 +258,8 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 $sum = $response['aggregations']['sum' . $toInternalName]['value'] ?? 0;
                 $cardinality = $response['aggregations']['cardinality' . $toInternalName]['value'] ?? 0;
 
-                $propertyWithURL = new PropertyWithURL($property->title,
+                $propertyWithURL = PropertyWithURL::fromProperty($property,
                     WikiTools::getDisplayTitleForProperty($property->title),
-                    $property->type,
                     WikiTools::createURLForProperty($property->title));
                 $stat = new Stats($propertyWithURL,
                     $min,
@@ -316,32 +313,32 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 continue;
             }
 
-            list($type, $name) = explode('__', $propertyWithType);
-            switch ($type) {
-                case 'text':
-                case 'number':
+            $property = Helper::fromInternalName($propertyWithType);
+
+            switch ($property->getType()) {
+                case Datatype::STRING:
+                case Datatype::NUMBER:
                     $facetValues = $values;
                     break;
-                case 'datetime':
+                case Datatype::DATETIME:
                     $facetValues = array_map(fn($v) => Helper::fromLongToDateTime($v), $values);
                     break;
-                case 'boolean':
+                case Datatype::BOOLEAN:
                     $facetValues = array_map(fn($v) => $v === 'true', $values);
                     break;
-                case 'wikipage':
+                case Datatype::WIKIPAGE:
                     $facetValues = array_map(fn($v) => new MWTitleWithURL(
                         $v['title'],
                         $v['display'],
                         WikiTools::createURLForPage($v['title'])), $values);
                     break;
                 default:
-                    throw new BackendException("Unknown property type $type");
+                    throw new BackendException("Unknown property type {$property->getType()} for property {$property->getTitle()}");
             }
             $results[] = new PropertyFacetValues(
-                new PropertyWithURL($name,
-                    WikiTools::getDisplayTitleForProperty($name),
-                    Helper::getDatatypeFromInternalName($type),
-                    WikiTools::createURLForProperty($name)),
+                PropertyWithURL::fromProperty($property,
+                    WikiTools::getDisplayTitleForProperty($property->getTitle()),
+                    WikiTools::createURLForProperty($property->getTitle())),
                 $facetValues);
         }
         return $this->fillEmptyExtraProperties($results);
@@ -352,12 +349,11 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         $counts = [];
 
         foreach ($buckets as $bucket) {
-            list($type, $name) = explode('__', $bucket['key']);
+            $property = Helper::fromInternalName($bucket['key']);
             $counts[] = new PropertyFacetCount(
-                new PropertyWithURL($name,
-                    WikiTools::getDisplayTitleForProperty($name),
-                    Helper::getDatatypeFromInternalName($type),
-                    WikiTools::createURLForProperty($name)
+                PropertyWithURL::fromProperty($property,
+                    WikiTools::getDisplayTitleForProperty($property->getTitle()),
+                    WikiTools::createURLForProperty($property->getTitle())
                 ),
                 $bucket['doc_count']);
         }
@@ -366,7 +362,6 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
     private function getBaseQuery(BaseQuery $q): array
     {
-        $orConditions = [];
         $andConditions = [];
         foreach ($q->getPropertyFacets() as $facet) {
             if (count($facet->getValues()) === 1) {
@@ -385,7 +380,8 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 }
                 $andConditions[] = $must;
             } else {
-                $orConditions[] = array_map(fn($v) => Helper::mapFacetQueryToESModel($facet->getProperty(), $v), $facet->getValues());
+                $orConditions = array_map(fn($v) => Helper::mapFacetQueryToESModel($facet->getProperty(), $v), $facet->getValues());
+                $andConditions[] = ['bool' => ['should' => $orConditions]];
             }
 
         }
@@ -399,7 +395,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $namespaceConditions[] = ['term' => ['__namespace' => $namespaceFacet]];
         }
         if (count($namespaceConditions) > 0) {
-            $orConditions = array_merge($namespaceConditions, $orConditions);
+            $andConditions[] = ['bool' => ['should' => $namespaceConditions]];
         }
 
         if (!empty($q->getSearchText())) {
@@ -412,9 +408,6 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             ];
             $andConditions[] = $fullTextConditions;
         }
-
-        $andConditions[] = ['bool' => ['should' => $orConditions]];
-
 
         return ['bool' => ['must' => $andConditions]];
 
@@ -434,17 +427,16 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $doc['highlight']['__fulltext'][0] ?? '');
     }
 
-    private function fillEmptyExtraProperties(array $propertyFacetValues)
+    private function fillEmptyExtraProperties(array $propertyFacetValues): array
     {
         global $fs2gExtraPropertiesToRequest;
 
         foreach($fs2gExtraPropertiesToRequest as $extraProperty) {
             if (count(array_filter($propertyFacetValues, fn($p) => $p->property->title === $extraProperty->title)) === 0) {
                 $displayTitle = WikiTools::getDisplayTitleForProperty($extraProperty->title);
-                $propertyWithUrl = new PropertyWithURL(
-                    $extraProperty->title,
+                $propertyWithUrl = PropertyWithURL::fromProperty(
+                    $extraProperty,
                     $displayTitle,
-                    $extraProperty->type,
                     WikiTools::createURLForProperty($extraProperty->title)
                 );
                 $propertyFacetValues[] = new PropertyFacetValues($propertyWithUrl, []);
