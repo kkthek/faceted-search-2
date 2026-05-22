@@ -59,6 +59,9 @@ class WikiTools {
         if (!defined('MEDIAWIKI')) {
             return false;
         }
+        if (is_null($text) || trim($text) === '') {
+            return false;
+        }
         $titleOfSearchText = Title::newFromTitle($text);
         return !is_null($titleOfSearchText) ? $titleOfSearchText->exists() : null;
     }

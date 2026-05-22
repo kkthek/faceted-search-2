@@ -61,7 +61,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 'highlight' => ['fields' => ['__fulltext' => ['type' => 'plain']]],
                 'sort' => array_map(fn($s) => [Helper::toInternalName($s->property) => ['order' => $s->order === Order::ASC ? 'asc' : 'desc']], $q->getSorts())
             ];
-
+//echo print_r($params, true);
             $response = $this->client->search($params);
             $response = $response->asArray();
 
@@ -74,12 +74,15 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
             $numResults = $response['hits']['total']['value'] ?? 0;
 
-            return new DocumentsResponse($numResults,
+            $documentsResponse = new DocumentsResponse($numResults,
                 $documents,
                 $categoryCounts,
                 $propertyFacetCounts,
                 $namespaceCounts,
-                false);
+                WikiTools::titleExists($q->searchText));
+            $this->fillEmptyCategoryFacetCounts($documentsResponse, $q);
+            $this->recalculateNamespaceCountsIfNecessary($documentsResponse, $q);
+            return $documentsResponse;
         } catch (ClientResponseException|ServerResponseException $e) {
             throw BackendException::create($e);
         }
@@ -103,18 +106,13 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                         ],
                         'aggs' => [
                             'values' => [
-                                'terms' => [
-                                    'field' => $toInternalName . '.title',
+                                'multi_terms' => [
+                                    'terms' =>[
+                                        [ 'field' => $toInternalName . '.title'],
+                                        [ 'field' => $toInternalName . '.display']
+                                    ],
                                     'size' => $pvq->getValueLimit() ?? 1000,
                                 ],
-                                'aggs' => [
-                                    'valuesdisplay' => [
-                                        'terms' => [
-                                            'field' => $toInternalName . '.display',
-                                            'size' => $pvq->getValueLimit() ?? 1000,
-                                        ]
-                                    ]
-                                ]
                             ]
 
                         ]
@@ -123,7 +121,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                         $andConditions[] = ['nested' => [
                             'path' => $toInternalName,
                             'query' => ['wildcard' => [
-                                $toInternalName . '.title' => "*{$pvq->getValueContains()}*"]
+                                $toInternalName . '.display' => "*{$pvq->getValueContains()}*"]
                             ]
                         ]];
                     }
@@ -190,7 +188,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 $toInternalName = Helper::toInternalName($pvq->getProperty());
                 if ($pvq->getProperty()->getType() === Datatype::WIKIPAGE) {
                     $valueCounts = array_map(fn($b) => new ValueCount(null,
-                        new MWTitleWithURL($b['key'], $b['valuesdisplay']['buckets'][0]['key'], ''),
+                        new MWTitleWithURL($b['key'][0], $b['key'][1], WikiTools::createURLForPage($b['key'][0])),
                         null, $b['doc_count']),
                         $response['aggregations'][$toInternalName]['values']['buckets']);
                 } else {
@@ -216,6 +214,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                     return new ValueCount(null, null,
                         new Range($from, $to), $b['doc_count']);
                 }, $response['aggregations'][$toInternalName]['buckets']);
+                $valueCounts = array_values(array_filter($valueCounts, fn($vc) => $vc->count > 0));
                 $propertyValueCounts[] = new PropertyFacetValues(new PropertyWithURL(
                     $property->getTitle(),
                     WikiTools::getDisplayTitleForProperty($property->getTitle()),
@@ -345,7 +344,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                     WikiTools::createURLForProperty($name)),
                 $facetValues);
         }
-        return $results;
+        return $this->fillEmptyExtraProperties($results);
     }
 
     private function readPropertyCounts(array $buckets): array
@@ -373,7 +372,14 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             if (count($facet->getValues()) === 1) {
                 $value = $facet->getValues()[0];
                 if ($value->isAllValues()) {
-                    $must = ['exists' => Helper::toInternalName($facet->property)];
+                    if ($facet->property->getType() === Datatype::WIKIPAGE) {
+                        $must = ['nested' => [
+                            'path' => Helper::toInternalName($facet->property),
+                            'query' => ['match_all' => new \stdClass()]
+                        ]];
+                    } else {
+                        $must = ['exists' => ['field' => Helper::toInternalName($facet->property)]];
+                    }
                 } else {
                     $must = Helper::mapFacetQueryToESModel($facet->property, $value);
                 }
@@ -393,7 +399,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $namespaceConditions[] = ['term' => ['__namespace' => $namespaceFacet]];
         }
         if (count($namespaceConditions) > 0) {
-            $orConditions[] = $namespaceConditions;
+            $orConditions = array_merge($namespaceConditions, $orConditions);
         }
 
         if (!empty($q->getSearchText())) {
@@ -407,9 +413,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $andConditions[] = $fullTextConditions;
         }
 
-
-        $andConditions = array_merge($andConditions,
-            array_map(fn($cond) => ['bool' => ['should' => $cond]], $orConditions));
+        $andConditions[] = ['bool' => ['should' => $orConditions]];
 
 
         return ['bool' => ['must' => $andConditions]];
@@ -430,4 +434,44 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $doc['highlight']['__fulltext'][0] ?? '');
     }
 
+    private function fillEmptyExtraProperties(array $propertyFacetValues)
+    {
+        global $fs2gExtraPropertiesToRequest;
+
+        foreach($fs2gExtraPropertiesToRequest as $extraProperty) {
+            if (count(array_filter($propertyFacetValues, fn($p) => $p->property->title === $extraProperty->title)) === 0) {
+                $displayTitle = WikiTools::getDisplayTitleForProperty($extraProperty->title);
+                $propertyWithUrl = new PropertyWithURL(
+                    $extraProperty->title,
+                    $displayTitle,
+                    $extraProperty->type,
+                    WikiTools::createURLForProperty($extraProperty->title)
+                );
+                $propertyFacetValues[] = new PropertyFacetValues($propertyWithUrl, []);
+            }
+        }
+        return $propertyFacetValues;
+    }
+
+    private function fillEmptyCategoryFacetCounts(DocumentsResponse $docResponse, DocumentQuery $q): void
+    {
+        $categoriesInFacetCounts = array_map(fn($e) => $e->category, $docResponse->categoryFacetCounts);
+        foreach ($q->categoryFacets as $c) {
+            if (!in_array($c, $categoriesInFacetCounts)) {
+                $docResponse->categoryFacetCounts[] = new CategoryFacetCount($c, WikiTools::getDisplayTitleForCategory($c), 0);
+            }
+        }
+    }
+
+    private function recalculateNamespaceCountsIfNecessary(DocumentsResponse $docResponse, DocumentQuery $q): void
+    {
+        if (count($q->namespaceFacets) === 0) {
+            return;
+        }
+        $baseQuery = clone $q;
+        $baseQuery->setNamespaceFacets([]);
+        $baseQuery->setLimit(0);
+        $documentsResponse = $this->requestDocuments($baseQuery);
+        $docResponse->namespaceFacetCounts = $documentsResponse->namespaceFacetCounts;
+    }
 }

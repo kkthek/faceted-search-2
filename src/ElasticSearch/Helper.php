@@ -103,8 +103,15 @@ class Helper
             ];
 
         } else {
+            if ($property->getType() === Datatype::DATETIME) {
+                $from = self::convertDateTimeToLong($value->getRange()->getFrom());
+                $to = self::convertDateTimeToLong($value->getRange()->getTo());
+            } else {
+                $from = $value->getRange()->getFrom();
+                $to = $value->getRange()->getTo();
+            }
             $condition = ['range' => [Helper::toInternalName($property) =>
-                ['gte' => $value->getRange()->getFrom(), 'lte' => $value->getRange()->getTo()]
+                ['gte' => $from, 'lte' => $to]
             ]];
         }
         return $condition;
