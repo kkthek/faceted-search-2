@@ -12,19 +12,10 @@ use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
-use DIQA\FacetedSearch2\Model\Response\CategoryFacetValue;
 use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\FacetResponse;
-use DIQA\FacetedSearch2\Model\Response\MWTitleWithURL;
-use DIQA\FacetedSearch2\Model\Response\NamespaceFacetCount;
-use DIQA\FacetedSearch2\Model\Response\NamespaceFacetValue;
-use DIQA\FacetedSearch2\Model\Response\PropertyFacetCount;
-use DIQA\FacetedSearch2\Model\Response\PropertyFacetValues;
-use DIQA\FacetedSearch2\Model\Response\PropertyWithURL;
-use DIQA\FacetedSearch2\Model\Response\Stats;
 use DIQA\FacetedSearch2\Model\Response\StatsResponse;
-use DIQA\FacetedSearch2\Model\Response\ValueCount;
 use DIQA\FacetedSearch2\Utils\WikiTools;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
@@ -32,11 +23,16 @@ use Elastic\Elasticsearch\Exception\ServerResponseException;
 class ElasticSearchQueryClient extends AbstractElasticSearchClient implements FacetedSearchClient
 {
 
+    private QueryResponseParser $queryResponseParser;
     public function __construct($client = null)
     {
         parent::__construct($client);
+        $this->queryResponseParser = new QueryResponseParser();
     }
 
+    /**
+     * @throws BackendException
+     */
     public function requestDocuments(DocumentQuery $q): DocumentsResponse
     {
 
@@ -46,6 +42,10 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
             $includedProperties = ['__title', '__display', '__fulltext', '__categories', '__namespace', '__directCategories'];
             $includedProperties = array_merge($includedProperties, array_map(fn($p) => Helper::toInternalName($p), $q->getExtraProperties()));
+            $sorts = array_map(fn($s) => [
+                Helper::toInternalName($s->property) => ['order' => $s->order === Order::ASC ? 'asc' : 'desc']
+            ], $q->getSorts());
+
             $params['body'] = [
                 'query' => $query,
                 'aggs' =>
@@ -59,27 +59,13 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 'size' => $q->limit,
                 'from' => $q->offset,
                 'highlight' => ['fields' => ['__fulltext' => ['type' => 'plain']]],
-                'sort' => array_map(fn($s) => [Helper::toInternalName($s->property) => ['order' => $s->order === Order::ASC ? 'asc' : 'desc']], $q->getSorts())
+                'sort' => $sorts
             ];
 
             $response = $this->client->search($params);
             $response = $response->asArray();
 
-            $documents = array_map(fn($hit) => $this->readDocument($hit), $response['hits']['hits']);
-            $categoryCounts = array_map(fn($b) => new CategoryFacetCount($b['key'], WikiTools::getDisplayTitleForCategory($b['key']), $b['doc_count']),
-                $response['aggregations']['category_frequency']['buckets']);
-            $namespaceCounts = array_map(fn($b) => new NamespaceFacetCount($b['key'], WikiTools::getNamespaceName($b['key']), $b['doc_count']),
-                $response['aggregations']['namespace_frequency']['buckets']);
-            $propertyFacetCounts = $this->readPropertyCounts($response['aggregations']['field_frequency']['buckets']);
-
-            $numResults = $response['hits']['total']['value'] ?? 0;
-
-            $documentsResponse = new DocumentsResponse($numResults,
-                $documents,
-                $categoryCounts,
-                $propertyFacetCounts,
-                $namespaceCounts,
-                WikiTools::titleExists($q->searchText));
+            $documentsResponse = $this->queryResponseParser->parseDocumentsResponse($response, $q);
             $this->fillEmptyCategoryFacetCounts($documentsResponse, $q);
             $this->recalculateNamespaceCountsIfNecessary($documentsResponse, $q);
             return $documentsResponse;
@@ -88,88 +74,17 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         }
     }
 
+    /**
+     * @throws BackendException
+     */
     public function requestFacets(FacetQuery $q): FacetResponse
     {
         try {
             $params = $this->getParamForIndex();
             $query = $this->getBaseQuery($q);
-
             $aggs = [];
-            $andConditions = [];
-            foreach ($q->getPropertyValueQueries() as $pvq) {
-                $toInternalName = Helper::toInternalName($pvq->getProperty());
-                if ($pvq->getProperty()->getType() === Datatype::WIKIPAGE) {
-                    $aggs[$toInternalName] = [
-                        'nested' => [
-                            'path' => $toInternalName,
-
-                        ],
-                        'aggs' => [
-                            'values' => [
-                                'multi_terms' => [
-                                    'terms' =>[
-                                        [ 'field' => $toInternalName . '.title'],
-                                        [ 'field' => $toInternalName . '.display']
-                                    ],
-                                    'size' => $pvq->getValueLimit() ?? 1000,
-                                ],
-                            ]
-
-                        ]
-                    ];
-                    if (!is_null($pvq->getValueContains())) {
-                        $andConditions[] = ['nested' => [
-                            'path' => $toInternalName,
-                            'query' => ['wildcard' => [
-                                $toInternalName . '.display' => "*{$pvq->getValueContains()}*"]
-                            ]
-                        ]];
-                    }
-                } else {
-                    $aggs[$toInternalName] = [
-                        'terms' => [
-                            'field' => $toInternalName,
-                            'size' => $pvq->getValueLimit() ?? 1000,
-                        ],
-
-                    ];
-                    if (!is_null($pvq->getValueContains())) {
-                        $andConditions[] = ['wildcard' => [$toInternalName => "*{$pvq->getValueContains()}*"]];
-                    }
-                }
-            }
-
-
-            $query['bool']['must'] = array_merge($andConditions, $query['bool']['must']);
-
-
-            $statsQuery = new StatsQuery();
-            $statsQuery->updateQuery($q);
-            if (count($q->getRangeQueries()) > 0) {
-                $statsQuery->setStatsProperties($q->getRangeQueries());
-                $statsResponse = $this->requestStats($statsQuery);
-                foreach ($statsResponse->getStats() as $stat) {
-                    $toInternalName = Helper::toInternalName($stat->getProperty());
-                    $clusters = array_map(function (Range $r) use ($stat) {
-                        $to = $r->getTo();
-                        $from = $r->getFrom();
-                        if ($stat->getProperty()->getType() === Datatype::DATETIME) {
-                            $from = Helper::fromDateTimeToLong($from);
-                            $to = Helper::fromDateTimeToLong($to);
-                        }
-                        return [
-                            'from' => $from,
-                            'to' => $to
-                        ];
-                    }, $stat->clusters);
-
-                    $aggs[$toInternalName] = [
-                        'range' => ['field' => $toInternalName,
-                            'ranges' => $clusters]
-
-                    ];
-                }
-            }
+            $this->addPropertyValuesConstraints($q, $query, $aggs);
+            $this->addClusterRangeConstraints($q, $aggs);
 
             $params['body'] = [
                 'query' => $query,
@@ -183,50 +98,16 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $response = $this->client->search($params);
             $response = $response->asArray();
 
-            $propertyValueCounts = [];
-            foreach ($q->getPropertyValueQueries() as $pvq) {
-                $toInternalName = Helper::toInternalName($pvq->getProperty());
-                if ($pvq->getProperty()->getType() === Datatype::WIKIPAGE) {
-                    $valueCounts = array_map(fn($b) => new ValueCount(null,
-                        new MWTitleWithURL($b['key'][0], $b['key'][1], WikiTools::createURLForPage($b['key'][0])),
-                        null, $b['doc_count']),
-                        $response['aggregations'][$toInternalName]['values']['buckets']);
-                } else {
-                    $valueCounts = array_map(fn($b) => new ValueCount($b['key'], null, null, $b['doc_count']),
-                        $response['aggregations'][$toInternalName]['buckets']);
-                }
-                $propertyValueCounts[] = new PropertyFacetValues(PropertyWithURL::fromProperty(
-                    $pvq->getProperty(),
-                    WikiTools::getDisplayTitleForProperty($pvq->getProperty()->getTitle()),
-                WikiTools::createURLForProperty($pvq->getProperty()->getTitle())), $valueCounts);
-            }
-
-            foreach ($q->getRangeQueries() as $property) {
-                $toInternalName = Helper::toInternalName($property);
-                $valueCounts = array_map(function ($b) use ($property) {
-                    $from = $b['from'];
-                    $to = $b['to'];
-                    if ($property->getType() === Datatype::DATETIME) {
-                        $from = Helper::fromLongToDateTime($from);
-                        $to = Helper::fromLongToDateTime($to);
-                    }
-                    return new ValueCount(null, null,
-                        new Range($from, $to), $b['doc_count']);
-                }, $response['aggregations'][$toInternalName]['buckets']);
-                $valueCounts = array_values(array_filter($valueCounts, fn($vc) => $vc->count > 0));
-                $propertyValueCounts[] = new PropertyFacetValues(PropertyWithURL::fromProperty(
-                    $property,
-                    WikiTools::getDisplayTitleForProperty($property->getTitle()),
-                    WikiTools::createURLForProperty($property->getTitle())), $valueCounts);
-            }
+            $propertyValueCounts = $this->queryResponseParser->parsePropertyValueCounts($q, $response['aggregations']);
             return new FacetResponse($propertyValueCounts);
         } catch (ClientResponseException|ServerResponseException $e) {
             throw BackendException::create($e);
-        } catch (BackendException $e) {
-            throw $e;
         }
     }
 
+    /**
+     * @throws BackendException
+     */
     public function requestStats(StatsQuery $q): StatsResponse
     {
         try {
@@ -250,25 +131,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             ];
             $response = $this->client->search($params);
             $response = $response->asArray();
-            $stats = [];
-            foreach ($q->getStatsProperties() as $property) {
-                $toInternalName = Helper::toInternalName($property);
-                $min = $response['aggregations']['min' . $toInternalName]['value'] ?? 0;
-                $max = $response['aggregations']['max' . $toInternalName]['value'] ?? 0;
-                $sum = $response['aggregations']['sum' . $toInternalName]['value'] ?? 0;
-                $cardinality = $response['aggregations']['cardinality' . $toInternalName]['value'] ?? 0;
-
-                $propertyWithURL = PropertyWithURL::fromProperty($property,
-                    WikiTools::getDisplayTitleForProperty($property->title),
-                    WikiTools::createURLForProperty($property->title));
-                $stat = new Stats($propertyWithURL,
-                    $min,
-                    $max,
-                    $cardinality,
-                    $sum
-                );
-                $stats[] = $stat;
-            }
+            $stats = $this->queryResponseParser->parseStats($q, $response['aggregations']);
             return new StatsResponse($stats);
         } catch (ClientResponseException|ServerResponseException $e) {
             throw BackendException::create($e);
@@ -281,6 +144,9 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         return "";
     }
 
+    /**
+     * @throws BackendException
+     */
     public function requestDocument(string $id): Document
     {
         try {
@@ -297,67 +163,11 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 throw new BackendException("No document with ID $id found", 400, null);
             }
             $doc = $hits[0];
-            return $this->readDocument($doc);
+            return $this->queryResponseParser->parseDocument($doc);
 
         } catch (ClientResponseException|ServerResponseException $e) {
             throw BackendException::create($e);
         }
-    }
-
-    private function readProperties($properties): array
-    {
-        $results = [];
-
-        foreach ($properties as $propertyWithType => $values) {
-            if (strpos($propertyWithType, '__') === 0) {
-                continue;
-            }
-
-            $property = Helper::fromInternalName($propertyWithType);
-
-            switch ($property->getType()) {
-                case Datatype::STRING:
-                case Datatype::NUMBER:
-                    $facetValues = $values;
-                    break;
-                case Datatype::DATETIME:
-                    $facetValues = array_map(fn($v) => Helper::fromLongToDateTime($v), $values);
-                    break;
-                case Datatype::BOOLEAN:
-                    $facetValues = array_map(fn($v) => $v === 'true', $values);
-                    break;
-                case Datatype::WIKIPAGE:
-                    $facetValues = array_map(fn($v) => new MWTitleWithURL(
-                        $v['title'],
-                        $v['display'],
-                        WikiTools::createURLForPage($v['title'])), $values);
-                    break;
-                default:
-                    throw new BackendException("Unknown property type {$property->getType()} for property {$property->getTitle()}");
-            }
-            $results[] = new PropertyFacetValues(
-                PropertyWithURL::fromProperty($property,
-                    WikiTools::getDisplayTitleForProperty($property->getTitle()),
-                    WikiTools::createURLForProperty($property->getTitle())),
-                $facetValues);
-        }
-        return $this->fillEmptyExtraProperties($results);
-    }
-
-    private function readPropertyCounts(array $buckets): array
-    {
-        $counts = [];
-
-        foreach ($buckets as $bucket) {
-            $property = Helper::fromInternalName($bucket['key']);
-            $counts[] = new PropertyFacetCount(
-                PropertyWithURL::fromProperty($property,
-                    WikiTools::getDisplayTitleForProperty($property->getTitle()),
-                    WikiTools::createURLForProperty($property->getTitle())
-                ),
-                $bucket['doc_count']);
-        }
-        return $counts;
     }
 
     private function getBaseQuery(BaseQuery $q): array
@@ -413,38 +223,6 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
     }
 
-    public function readDocument($doc): Document
-    {
-        return new Document($doc['_id'],
-            $this->readProperties($doc['_source']),
-            array_map(fn($c) => new CategoryFacetValue($c, WikiTools::getDisplayTitleForCategory($c), WikiTools::createURLForCategory($c)), $doc['_source']['__categories']),
-            array_map(fn($c) => new CategoryFacetValue($c, WikiTools::getDisplayTitleForCategory($c), WikiTools::createURLForCategory($c)), $doc['_source']['__directCategories']),
-            new NamespaceFacetValue($doc['_source']['__namespace'], WikiTools::getNamespaceName($doc['_source']['__namespace'])),
-            $doc['_source']['__title'],
-            $doc['_source']['__display'],
-            WikiTools::createURLForPage($doc['_source']['__title'], $doc['_source']['__namespace']),
-            $doc['_score'] ?? 0,
-            $doc['highlight']['__fulltext'][0] ?? '');
-    }
-
-    private function fillEmptyExtraProperties(array $propertyFacetValues): array
-    {
-        global $fs2gExtraPropertiesToRequest;
-
-        foreach($fs2gExtraPropertiesToRequest as $extraProperty) {
-            if (count(array_filter($propertyFacetValues, fn($p) => $p->property->title === $extraProperty->title)) === 0) {
-                $displayTitle = WikiTools::getDisplayTitleForProperty($extraProperty->title);
-                $propertyWithUrl = PropertyWithURL::fromProperty(
-                    $extraProperty,
-                    $displayTitle,
-                    WikiTools::createURLForProperty($extraProperty->title)
-                );
-                $propertyFacetValues[] = new PropertyFacetValues($propertyWithUrl, []);
-            }
-        }
-        return $propertyFacetValues;
-    }
-
     private function fillEmptyCategoryFacetCounts(DocumentsResponse $docResponse, DocumentQuery $q): void
     {
         $categoriesInFacetCounts = array_map(fn($e) => $e->category, $docResponse->categoryFacetCounts);
@@ -466,4 +244,92 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         $documentsResponse = $this->requestDocuments($baseQuery);
         $docResponse->namespaceFacetCounts = $documentsResponse->namespaceFacetCounts;
     }
+
+
+    /**
+     * @throws BackendException
+     */
+    public function addClusterRangeConstraints(FacetQuery $q, array & $aggs): void
+    {
+        $statsQuery = new StatsQuery();
+        $statsQuery->updateQuery($q);
+        if (count($q->getRangeQueries()) > 0) {
+            $statsQuery->setStatsProperties($q->getRangeQueries());
+            $statsResponse = $this->requestStats($statsQuery);
+            foreach ($statsResponse->getStats() as $stat) {
+                $toInternalName = Helper::toInternalName($stat->getProperty());
+                $clusters = array_map(function (Range $r) use ($stat) {
+                    $to = $r->getTo();
+                    $from = $r->getFrom();
+                    if ($stat->getProperty()->getType() === Datatype::DATETIME) {
+                        $from = Helper::fromDateTimeToLong($from);
+                        $to = Helper::fromDateTimeToLong($to);
+                    }
+                    return [
+                        'from' => $from,
+                        'to' => $to
+                    ];
+                }, $stat->clusters);
+
+                $aggs[$toInternalName] = [
+                    'range' => ['field' => $toInternalName,
+                        'ranges' => $clusters]
+
+                ];
+            }
+        }
+
+    }
+
+    public function addPropertyValuesConstraints(FacetQuery $q, array & $query, array & $aggs): void
+    {
+        $aggs = [];
+        $andConditions = [];
+        foreach ($q->getPropertyValueQueries() as $pvq) {
+            $toInternalName = Helper::toInternalName($pvq->getProperty());
+            if ($pvq->getProperty()->getType() === Datatype::WIKIPAGE) {
+                $aggs[$toInternalName] = [
+                    'nested' => [
+                        'path' => $toInternalName,
+
+                    ],
+                    'aggs' => [
+                        'values' => [
+                            'multi_terms' => [
+                                'terms' => [
+                                    ['field' => $toInternalName . '.title'],
+                                    ['field' => $toInternalName . '.display']
+                                ],
+                                'size' => $pvq->getValueLimit() ?? 1000,
+                            ],
+                        ]
+
+                    ]
+                ];
+                if (!is_null($pvq->getValueContains())) {
+                    $andConditions[] = ['nested' => [
+                        'path' => $toInternalName,
+                        'query' => ['wildcard' => [
+                            $toInternalName . '.display' => "*{$pvq->getValueContains()}*"]
+                        ]
+                    ]];
+                }
+            } else {
+                $aggs[$toInternalName] = [
+                    'terms' => [
+                        'field' => $toInternalName,
+                        'size' => $pvq->getValueLimit() ?? 1000,
+                    ],
+
+                ];
+                if (!is_null($pvq->getValueContains())) {
+                    $andConditions[] = ['wildcard' => [$toInternalName => "*{$pvq->getValueContains()}*"]];
+                }
+            }
+        }
+
+
+        $query['bool']['must'] = array_merge($andConditions, $query['bool']['must']);
+    }
+
 }
