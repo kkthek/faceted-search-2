@@ -95,34 +95,39 @@ class Helper
 
     static function mapFacetQueryToESModel(Property $property, FacetValue $value): array
     {
-        if (!is_null($value->getValue())) {
-            if ($property->getType() === Datatype::BOOLEAN) {
-                $condition = [ 'match' => [ self::toInternalName($property) => $value->getValue() ? 'true' : 'false'] ];
-            } else {
-                $condition = ['match' => [self::toInternalName($property) => $value->getValue()]];
-            }
-        } elseif (!is_null($value->getMwTitle())) {
-            $condition = [ 'nested' => [
-                'path' => self::toInternalName($property),
-                'query' => ['match' => [
-                    self::toInternalName($property).'.title' => $value->getMwTitle()->getTitle()]
-                ]
-                ]
-            ];
-
-        } else {
-            if ($property->getType() === Datatype::DATETIME) {
+        switch ($property->getType()) {
+            case Datatype::DATETIME:
                 $from = self::fromDateTimeToLong($value->getRange()->getFrom());
                 $to = self::fromDateTimeToLong($value->getRange()->getTo());
-            } else {
+                $condition = ['range' => [Helper::toInternalName($property) =>
+                    ['gte' => $from, 'lte' => $to]
+                ]];
+                break;
+            case Datatype::NUMBER:
                 $from = $value->getRange()->getFrom();
                 $to = $value->getRange()->getTo();
-            }
-            $condition = ['range' => [Helper::toInternalName($property) =>
-                ['gte' => $from, 'lte' => $to]
-            ]];
+                $condition = ['range' => [Helper::toInternalName($property) =>
+                    ['gte' => $from, 'lte' => $to]
+                ]];
+                break;
+            case Datatype::WIKIPAGE:
+                $condition = [ 'nested' => [
+                    'path' => self::toInternalName($property),
+                    'query' => ['match' => [
+                        self::toInternalName($property).'.title' => $value->getMwTitle()->getTitle()]
+                    ]
+                ]
+                ];
+                break;
+            case Datatype::BOOLEAN:
+                $condition = [ 'match' => [ self::toInternalName($property) => $value->getValue() ? 'true' : 'false'] ];
+                break;
+            case Datatype::STRING:
+            default:
+                $condition = ['match' => [self::toInternalName($property) => $value->getValue()]];
         }
         return $condition;
+
     }
 
     public static function fromLongToDateTime(int $longDate): string

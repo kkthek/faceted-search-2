@@ -23,4 +23,9 @@ class CategoryFacetCount
         $this->count = $count;
     }
 
+    public static function fromCategory(string $category, int $count): self
+    {
+        return new CategoryFacetCount($category, WikiTools::getDisplayTitleForCategory($category), $count);
+    }
+
 }

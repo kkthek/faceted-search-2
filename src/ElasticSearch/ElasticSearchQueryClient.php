@@ -40,8 +40,9 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $params = $this->getParamForIndex();
             $query = $this->getBaseQuery($q);
 
+            $extraProperties = array_map(fn($p) => Helper::toInternalName($p), $q->getExtraProperties());
             $includedProperties = ['__title', '__display', '__fulltext', '__categories', '__namespace', '__directCategories'];
-            $includedProperties = array_merge($includedProperties, array_map(fn($p) => Helper::toInternalName($p), $q->getExtraProperties()));
+            $includedProperties = array_merge($includedProperties, $extraProperties);
             $sorts = array_map(fn($s) => [
                 Helper::toInternalName($s->property) => ['order' => $s->order === Order::ASC ? 'asc' : 'desc']
             ], $q->getSorts());
@@ -228,11 +229,14 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         $categoriesInFacetCounts = array_map(fn($e) => $e->category, $docResponse->categoryFacetCounts);
         foreach ($q->categoryFacets as $c) {
             if (!in_array($c, $categoriesInFacetCounts)) {
-                $docResponse->categoryFacetCounts[] = new CategoryFacetCount($c, WikiTools::getDisplayTitleForCategory($c), 0);
+                $docResponse->categoryFacetCounts[] = CategoryFacetCount::fromCategory($c,0);
             }
         }
     }
 
+    /**
+     * @throws BackendException
+     */
     private function recalculateNamespaceCountsIfNecessary(DocumentsResponse $docResponse, DocumentQuery $q): void
     {
         if (count($q->namespaceFacets) === 0) {
