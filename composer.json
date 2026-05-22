@@ -28,7 +28,8 @@
 		"composer/installers": "1.*,>=1.0.1|2.*",
 		"netresearch/jsonmapper": ">=v4.4.1",
 		"nesbot/carbon": "^2.72",
-		"elasticsearch/elasticsearch": "^8.19"
+		"elasticsearch/elasticsearch": "^8.19",
+		"smalot/pdfparser": "^2.12"
 	},
 	"suggest": {
 

@@ -16,9 +16,10 @@ use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\FacetResponse;
 use DIQA\FacetedSearch2\Model\Response\StatsResponse;
-use DIQA\FacetedSearch2\Utils\WikiTools;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
+use Exception;
+use Smalot\PdfParser\Parser;
 
 class ElasticSearchQueryClient extends AbstractElasticSearchClient implements FacetedSearchClient
 {
@@ -141,8 +142,20 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
     public function requestFileExtraction(string $fileContent, string $contentType): string
     {
-        // TODO: Implement requestFileExtraction() method.
-        return "";
+        switch($contentType) {
+            case 'application/pdf':
+                $parser  = new Parser();
+                try {
+                    $pdf = $parser->parseContent($fileContent);
+                    return $pdf->getText();
+                } catch (Exception $e) {
+                    return "Could not extract PDF content due to: " . $e->getMessage();
+                }
+            case 'application/msword':
+                //TODO: implement extraction
+            default:
+                return "Unsupported content type: $contentType";
+        }
     }
 
     /**
