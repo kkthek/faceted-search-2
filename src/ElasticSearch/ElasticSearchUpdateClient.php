@@ -110,6 +110,7 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         $body = [];
         $body['__categories'] = $doc->getCategories();
         $body['__directCategories'] = $doc->getDirectCategories();
+        $body['__templates'] = $doc->getTemplates();
         $properties = array_map(fn(PropertyValues $pv) => Helper::toInternalName($pv->getProperty()), $doc->getPropertyValues());
         $body['__properties'] = array_values(array_unique($properties));
         $body['__fulltext'] = $doc->getFulltext();
@@ -140,6 +141,7 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         $schemaProperties = [];
         $schemaProperties['__categories'] = ['type' => 'keyword'];
         $schemaProperties['__directCategories'] = ['type' => 'keyword'];
+        $schemaProperties['__templates'] = ['type' => 'keyword'];
         $schemaProperties['__properties'] = ['type' => 'keyword'];
         $schemaProperties['__fulltext'] = ['type' => 'text'];
         $schemaProperties['__title'] = ['type' => 'wildcard'];

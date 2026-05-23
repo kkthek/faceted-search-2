@@ -233,8 +233,31 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $andConditions[] = $fullTextConditions;
         }
 
-        return ['bool' => ['must' => $andConditions]];
+        $must = count($andConditions) > 0 ? $andConditions : ['match_all' => new \stdClass()];
+        $query = ['bool' => ['must' => $must]];
 
+        $boostConstraints = $this->getBoostConstraints();
+        if (count($boostConstraints) > 0) {
+            $query['bool']['should'] = $boostConstraints;
+        }
+
+        return $query;
+    }
+
+    private function getBoostConstraints(): array
+    {
+        global $fs2gCategoryBoosts, $fs2gNamespaceBoosts, $fs2gTemplateBoosts;
+        $boostConstraints = [];
+        foreach($fs2gCategoryBoosts as $category => $boost) {
+            $boostConstraints[] = ['terms' => ['__categories' => [$category], 'boost' => $boost]];
+        }
+        foreach($fs2gNamespaceBoosts as $namespace => $boost) {
+            $boostConstraints[] = ['terms' => ['__namespace' => [$namespace], 'boost' => $boost]];
+        }
+        foreach($fs2gTemplateBoosts as $template => $boost) {
+            $boostConstraints[] = ['terms' => ['__templates' => [$template], 'boost' => $boost]];
+        }
+        return $boostConstraints;
     }
 
     private function fillEmptyCategoryFacetCounts(DocumentsResponse $docResponse, DocumentQuery $q): void
