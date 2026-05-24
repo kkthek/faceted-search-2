@@ -192,7 +192,7 @@ class MWDBReader
         }
         $res->free();
 
-        return $smwhTemplates;
+        return array_unique($smwhTemplates);
     }
 
 }
