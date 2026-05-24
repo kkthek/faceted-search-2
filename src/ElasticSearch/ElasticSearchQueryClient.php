@@ -228,10 +228,13 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         if (!empty($q->getSearchText())) {
             $fullTextConditions = ['bool' =>
                 ['should' => [
-                    ['match' => ['__title' => $q->getSearchText()]],
-                    ['match' => ['__fulltext' => $q->getSearchText()]]
-                ]
-                ]
+                    ['multi_match' => [
+                        'query'    => $q->getSearchText(),
+                        'fields'   => ['__title^3', '__fulltext'],
+                        'operator' => 'and',
+                        'type'     => 'best_fields',  // default; finds the best single field
+                    ]],
+                ]]
             ];
             $andConditions[] = $fullTextConditions;
         }
