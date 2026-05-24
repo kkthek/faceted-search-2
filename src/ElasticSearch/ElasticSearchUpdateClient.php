@@ -143,11 +143,44 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         $schemaProperties['__directCategories'] = ['type' => 'keyword'];
         $schemaProperties['__templates'] = ['type' => 'keyword'];
         $schemaProperties['__properties'] = ['type' => 'keyword'];
-        $schemaProperties['__fulltext'] = ['type' => 'text'];
-        $schemaProperties['__title'] = ['type' => 'wildcard'];
+        $schemaProperties['__fulltext'] = [
+            'type' => 'text',
+            'analyzer' => 'substring_analyzer',
+            'search_analyzer' => 'substring_search_analyzer'];
+        $schemaProperties['__title'] = [
+            'type' => 'text',
+            'analyzer' => 'substring_analyzer',
+            'search_analyzer' => 'substring_search_analyzer'
+        ];
         $schemaProperties['__namespace'] = ['type' => 'long'];
         $schemaProperties['__display'] = ['type' => 'wildcard'];
         return [
+            "settings"=> [
+                "analysis"=> [
+                    "analyzer"=> [
+                        "substring_analyzer"=> [
+                            "type"=> "custom",
+                            "tokenizer"=> "standard",
+                            "filter"=> ["lowercase", "substring_ngram"]
+                        ],
+                        "substring_search_analyzer"=> [
+                            "type"=> "custom",
+                            "tokenizer"=> "standard",
+                            "filter"=> ["lowercase"]
+                        ]
+                    ],
+                    "filter"=> [
+                        "substring_ngram"=> [
+                            "type"=> "ngram",
+                            "min_gram"=> 2,
+                            "max_gram"=> 20
+                        ]
+                    ]
+                ],
+                "index"=> [
+                    "max_ngram_diff"=> 18
+                ]
+            ],
             'mappings' => [
                 'properties' => $schemaProperties,
                 "dynamic_templates" => [

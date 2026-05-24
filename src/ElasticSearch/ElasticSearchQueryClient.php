@@ -48,6 +48,8 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 Helper::toInternalName($s->property) => ['order' => $s->order === Order::ASC ? 'asc' : 'desc']
             ], $q->getSorts());
 
+            $query['bool']['must'] = count($query['bool']['must']) > 0 ? $query['bool']['must'] : ['match_all' => new \stdClass()];
+
             $params['body'] = [
                 'query' => $query,
                 'aggs' =>
@@ -63,6 +65,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 'highlight' => ['fields' => ['__fulltext' => ['type' => 'plain']]],
                 'sort' => $sorts
             ];
+
 
             $response = $this->client->search($params);
             $response = $response->asArray();
@@ -87,7 +90,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $aggs = [];
             $this->addPropertyValuesConstraints($q, $query, $aggs);
             $this->addClusterRangeConstraints($q, $aggs);
-
+            $query['bool']['must'] = count($query['bool']['must']) > 0 ? $query['bool']['must'] : ['match_all' => new \stdClass()];
             $params['body'] = [
                 'query' => $query,
                 'size' => 0
@@ -115,7 +118,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         try {
             $params = $this->getParamForIndex();
             $query = $this->getBaseQuery($q);
-
+            $query['bool']['must'] = count($query['bool']['must']) > 0 ? $query['bool']['must'] : ['match_all' => new \stdClass()];
             $aggs = [];
             foreach ($q->getStatsProperties() as $property) {
                 $toInternalName = Helper::toInternalName($property);
@@ -233,8 +236,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $andConditions[] = $fullTextConditions;
         }
 
-        $must = count($andConditions) > 0 ? $andConditions : ['match_all' => new \stdClass()];
-        $query = ['bool' => ['must' => $must]];
+        $query = ['bool' => ['must' => $andConditions]];
 
         $boostConstraints = $this->getBoostConstraints();
         if (count($boostConstraints) > 0) {
@@ -350,7 +352,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                     $andConditions[] = ['nested' => [
                         'path' => $toInternalName,
                         'query' => ['wildcard' => [
-                            $toInternalName . '.display' => "*{$pvq->getValueContains()}*"]
+                            $toInternalName . '.display' => ['value' => "*{$pvq->getValueContains()}*", 'case_insensitive' => true]]
                         ]
                     ]];
                 }
@@ -363,7 +365,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
                 ];
                 if (!is_null($pvq->getValueContains())) {
-                    $andConditions[] = ['wildcard' => [$toInternalName => "*{$pvq->getValueContains()}*"]];
+                    $andConditions[] = ['wildcard' => [$toInternalName => ['value' => "*{$pvq->getValueContains()}*", 'case_insensitive' => true]]];
                 }
             }
         }
