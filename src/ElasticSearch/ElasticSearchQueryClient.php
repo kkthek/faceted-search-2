@@ -25,6 +25,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 {
 
     private QueryResponseParser $queryResponseParser;
+
     public function __construct($client = null)
     {
         parent::__construct($client);
@@ -145,9 +146,9 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
     public function requestFileExtraction(string $fileContent, string $contentType): string
     {
-        switch($contentType) {
+        switch ($contentType) {
             case 'application/pdf':
-                $parser  = new Parser();
+                $parser = new Parser();
                 try {
                     $pdf = $parser->parseContent($fileContent);
                     return $pdf->getText();
@@ -229,10 +230,10 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $fullTextConditions = ['bool' =>
                 ['should' => [
                     ['multi_match' => [
-                        'query'    => $q->getSearchText(),
-                        'fields'   => ['__title^3', '__fulltext'],
+                        'query' => $q->getSearchText(),
+                        'fields' => ['__title^3', '__fulltext'],
                         'operator' => 'and',
-                        'type'     => 'best_fields',  // default; finds the best single field
+                        'type' => 'best_fields',  // default; finds the best single field
                     ]],
                 ]]
             ];
@@ -253,13 +254,13 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
     {
         global $fs2gCategoryBoosts, $fs2gNamespaceBoosts, $fs2gTemplateBoosts;
         $boostConstraints = [];
-        foreach($fs2gCategoryBoosts as $category => $boost) {
+        foreach ($fs2gCategoryBoosts as $category => $boost) {
             $boostConstraints[] = ['terms' => ['__categories' => [$category], 'boost' => $boost]];
         }
-        foreach($fs2gNamespaceBoosts as $namespace => $boost) {
+        foreach ($fs2gNamespaceBoosts as $namespace => $boost) {
             $boostConstraints[] = ['terms' => ['__namespace' => [$namespace], 'boost' => $boost]];
         }
-        foreach($fs2gTemplateBoosts as $template => $boost) {
+        foreach ($fs2gTemplateBoosts as $template => $boost) {
             $boostConstraints[] = ['terms' => ['__templates' => [$template], 'boost' => $boost]];
         }
         return $boostConstraints;
@@ -270,7 +271,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         $categoriesInFacetCounts = array_map(fn($e) => $e->category, $docResponse->categoryFacetCounts);
         foreach ($q->categoryFacets as $c) {
             if (!in_array($c, $categoriesInFacetCounts)) {
-                $docResponse->categoryFacetCounts[] = CategoryFacetCount::fromCategory($c,0);
+                $docResponse->categoryFacetCounts[] = CategoryFacetCount::fromCategory($c, 0);
             }
         }
     }
@@ -294,39 +295,42 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
     /**
      * @throws BackendException
      */
-    public function addClusterRangeConstraints(FacetQuery $q, array & $aggs): void
+    public function addClusterRangeConstraints(FacetQuery $q, array &$aggs): void
     {
+        if (count($q->getRangeQueries()) === 0) {
+            return;
+        }
         $statsQuery = new StatsQuery();
         $statsQuery->updateQuery($q);
-        if (count($q->getRangeQueries()) > 0) {
-            $statsQuery->setStatsProperties($q->getRangeQueries());
-            $statsResponse = $this->requestStats($statsQuery);
-            foreach ($statsResponse->getStats() as $stat) {
-                $toInternalName = Helper::toInternalName($stat->getProperty());
-                $clusters = array_map(function (Range $r) use ($stat) {
-                    $to = $r->getTo();
-                    $from = $r->getFrom();
-                    if ($stat->getProperty()->getType() === Datatype::DATETIME) {
-                        $from = Helper::fromDateTimeToLong($from);
-                        $to = Helper::fromDateTimeToLong($to);
-                    }
-                    return [
-                        'from' => $from,
-                        'to' => $to
-                    ];
-                }, $stat->clusters);
 
-                $aggs[$toInternalName] = [
-                    'range' => ['field' => $toInternalName,
-                        'ranges' => $clusters]
-
+        $statsQuery->setStatsProperties($q->getRangeQueries());
+        $statsResponse = $this->requestStats($statsQuery);
+        foreach ($statsResponse->getStats() as $stat) {
+            $toInternalName = Helper::toInternalName($stat->getProperty());
+            $clusters = array_map(function (Range $r) use ($stat) {
+                $to = $r->getTo();
+                $from = $r->getFrom();
+                if ($stat->getProperty()->getType() === Datatype::DATETIME) {
+                    $from = Helper::fromDateTimeToLong($from);
+                    $to = Helper::fromDateTimeToLong($to);
+                }
+                return [
+                    'from' => $from,
+                    'to' => $to
                 ];
-            }
+            }, $stat->clusters);
+
+            $aggs[$toInternalName] = [
+                'range' => ['field' => $toInternalName,
+                    'ranges' => $clusters]
+
+            ];
         }
+
 
     }
 
-    public function addPropertyValuesConstraints(FacetQuery $q, array & $query, array & $aggs): void
+    public function addPropertyValuesConstraints(FacetQuery $q, array &$query, array &$aggs): void
     {
         $aggs = [];
         $andConditions = [];
@@ -352,12 +356,20 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                     ]
                 ];
                 if (!is_null($pvq->getValueContains())) {
+                    $words = preg_split('/\s+/', trim($pvq->getValueContains()), -1, PREG_SPLIT_NO_EMPTY);
+                    $wordClauses = array_map(fn($w) => [
+                        'wildcard' => [
+                            $toInternalName . '.display' => [
+                                'value' => "*{$w}*",
+                                'case_insensitive' => true,
+                            ],
+                        ],
+                    ], $words);
                     $andConditions[] = ['nested' => [
                         'path' => $toInternalName,
-                        'query' => ['wildcard' => [
-                            $toInternalName . '.display' => ['value' => "*{$pvq->getValueContains()}*", 'case_insensitive' => true]]
-                        ]
+                        'query' => $wordClauses
                     ]];
+
                 }
             } else {
                 $aggs[$toInternalName] = [
@@ -368,7 +380,18 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
                 ];
                 if (!is_null($pvq->getValueContains())) {
-                    $andConditions[] = ['wildcard' => [$toInternalName => ['value' => "*{$pvq->getValueContains()}*", 'case_insensitive' => true]]];
+                    $words = preg_split('/\s+/', trim($pvq->getValueContains()), -1, PREG_SPLIT_NO_EMPTY);
+
+                    $wordClauses = array_map(fn($w) => [
+                        'wildcard' => [
+                            $toInternalName => [
+                                'value' => "*{$w}*",
+                                'case_insensitive' => true,
+                            ],
+                        ],
+                    ], $words);
+
+                    $andConditions[] = ['bool' => ['must' => $wordClauses]];
                 }
             }
         }
