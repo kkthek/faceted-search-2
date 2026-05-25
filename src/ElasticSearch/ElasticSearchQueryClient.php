@@ -49,7 +49,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 Helper::toInternalName($s->property) => ['order' => $s->order === Order::ASC ? 'asc' : 'desc']
             ], $q->getSorts());
 
-            $query['bool']['must'] = count($query['bool']['must']) > 0 ? $query['bool']['must'] : ['match_all' => new \stdClass()];
+            $query = $this->fillMustConditionIfNecessary($query);
 
             $params['body'] = [
                 'query' => $query,
@@ -91,7 +91,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             $aggs = [];
             $this->addPropertyValuesConstraints($q, $query, $aggs);
             $this->addClusterRangeConstraints($q, $aggs);
-            $query['bool']['must'] = count($query['bool']['must']) > 0 ? $query['bool']['must'] : ['match_all' => new \stdClass()];
+            $query = $this->fillMustConditionIfNecessary($query);
             $params['body'] = [
                 'query' => $query,
                 'size' => 0
@@ -119,7 +119,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         try {
             $params = $this->getParamForIndex();
             $query = $this->getBaseQuery($q);
-            $query['bool']['must'] = count($query['bool']['must']) > 0 ? $query['bool']['must'] : ['match_all' => new \stdClass()];
+            $query = $this->fillMustConditionIfNecessary($query);
             $aggs = [];
             foreach ($q->getStatsProperties() as $property) {
                 $toInternalName = Helper::toInternalName($property);
@@ -141,24 +141,6 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
             return new StatsResponse($stats);
         } catch (ClientResponseException|ServerResponseException $e) {
             throw BackendException::create($e);
-        }
-    }
-
-    public function requestFileExtraction(string $fileContent, string $contentType): string
-    {
-        switch ($contentType) {
-            case 'application/pdf':
-                $parser = new Parser();
-                try {
-                    $pdf = $parser->parseContent($fileContent);
-                    return $pdf->getText();
-                } catch (Exception $e) {
-                    return "Could not extract PDF content due to: " . $e->getMessage();
-                }
-            case 'application/msword':
-                //TODO: implement extraction
-            default:
-                return "Unsupported content type: $contentType";
         }
     }
 
@@ -398,6 +380,12 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
 
         $query['bool']['must'] = array_merge($andConditions, $query['bool']['must']);
+    }
+
+    public function fillMustConditionIfNecessary(array $query): array
+    {
+        $query['bool']['must'] = count($query['bool']['must']) > 0 ? $query['bool']['must'] : ['match_all' => new \stdClass()];
+        return $query;
     }
 
 }

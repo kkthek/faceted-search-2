@@ -1,14 +1,15 @@
 {
 	"name": "diqa/faceted-search-2",
 	"type": "mediawiki-extension",
-	"description": "Enhanced retrieval provides a faceted search for Mediawiki and SMW. It requires a SOLR server as backend.",
+	"description": "Provides a faceted search for Mediawiki and SMW. It requires a SOLR or Elastic search server as backend.",
 	"keywords": [
 		"Faceted search",
 		"Drilldown",
 		"Enhanced retrieval",
 		"Wiki",
 		"MediaWiki",
-		"SOLR"
+		"SOLR",
+        "Elastic search"
 	],
 	"homepage": "https://www.semantic-mediawiki.org/wiki/Enhanced_Retrieval",
 	"license": "GPL-2.0-or-later",
@@ -29,8 +30,13 @@
 		"netresearch/jsonmapper": ">=v4.4.1",
 		"nesbot/carbon": "^2.72",
 		"elasticsearch/elasticsearch": "^8.19",
-		"smalot/pdfparser": "^2.12"
-	},
+		"smalot/pdfparser": "^2.12",
+		"phpoffice/phpword": "^1.4",
+		"phpoffice/phppresentation": "^1.2",
+		"phpoffice/phpspreadsheet": "^1.12",
+        "ext-dom": "*",
+        "ext-libxml": "*"
+    },
 	"suggest": {
 
 	},
