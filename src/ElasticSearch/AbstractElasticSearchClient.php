@@ -3,12 +3,13 @@
 namespace DIQA\FacetedSearch2\ElasticSearch;
 
 
+use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Elasticsearch\Exception\AuthenticationException;
 
 abstract class AbstractElasticSearchClient
 {
-    protected $client;
+    protected Client $client;
     protected array $config;
 
     /**

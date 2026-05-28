@@ -299,8 +299,10 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 if ($stat->getProperty()->getType() === Datatype::DATETIME) {
                     $from = Helper::fromDateTimeToLong($from);
                     $to = Helper::fromDateTimeToLong($to);
-                    $from--;
-                    $to++;
+                    if ($from === $to) {
+                        $from--;
+                        $to++;
+                    }
                 }
                 return [
                     'from' => $from,
