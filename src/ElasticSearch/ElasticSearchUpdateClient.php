@@ -20,11 +20,13 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
     /**
      * @throws BackendException
      */
-    public function updateDocuments(...$docs): void
+    public function updateDocuments(...$docs): array
     {
+        $updates = [];
         foreach ($docs as $doc) {
-            $this->updateDocument($doc);
+            $updates[] = $this->updateDocument($doc);
         }
+        return $updates;
     }
 
     /**
@@ -103,7 +105,7 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
      * @return void
      * @throws BackendException
      */
-    public function updateDocument(Document $doc): void
+    public function updateDocument(Document $doc): array
     {
         $params = $this->getParamForIndex();
         $propertyValues = $doc->getPropertyValues();
@@ -125,6 +127,7 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
             $params['id'] = $doc->getId();
             $params['body'] = $body;
             $this->client->index($params);
+            return $params;
         } catch (
         ClientResponseException
         |MissingParameterException
@@ -252,6 +255,21 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         } catch (
         ClientResponseException
         |MissingParameterException
+        |ServerResponseException $e) {
+            throw BackendException::create($e);
+        }
+    }
+
+    /**
+     * @throws BackendException
+     */
+    public function refreshIndex(): void
+    {
+        try {
+        $params = $this->getParamForIndex();
+        $this->client->indices()->refresh($params);
+        } catch (
+        ClientResponseException
         |ServerResponseException $e) {
             throw BackendException::create($e);
         }

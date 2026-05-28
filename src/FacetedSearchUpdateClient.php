@@ -43,4 +43,6 @@ interface FacetedSearchUpdateClient
      */
     public function existsIndex(): bool;
 
+    public function refreshIndex(): void;
+
 }

@@ -17,6 +17,7 @@ use DIQA\FacetedSearch2\Model\Response\NamespaceFacetCount;
 use DIQA\FacetedSearch2\Model\Response\NamespaceFacetValue;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetCount;
 use DIQA\FacetedSearch2\Model\Response\PropertyFacetValues;
+use DIQA\FacetedSearch2\Model\Response\PropertyValueCount;
 use DIQA\FacetedSearch2\Model\Response\PropertyWithURL;
 use DIQA\FacetedSearch2\Model\Response\Stats;
 use DIQA\FacetedSearch2\Model\Response\ValueCount;
@@ -154,7 +155,7 @@ class QueryResponseParser {
                 $valueCounts = array_map(fn($b) => ValueCount::fromValue($b['key'], $b['doc_count']),
                     $aggregations[$toInternalName]['buckets']);
             }
-            $propertyValueCounts[] = new PropertyFacetValues(PropertyWithURL::fromProperty(
+            $propertyValueCounts[] = new PropertyValueCount(PropertyWithURL::fromProperty(
                 $pvq->getProperty(),
                 WikiTools::getDisplayTitleForProperty($pvq->getProperty()->getTitle()),
                 WikiTools::createURLForProperty($pvq->getProperty()->getTitle())), $valueCounts);
@@ -162,6 +163,11 @@ class QueryResponseParser {
 
         foreach ($q->getRangeQueries() as $property) {
             $toInternalName = Helper::toInternalName($property);
+            $buckets = $aggregations[$toInternalName]['buckets'] ?? [];
+            if (count($buckets) === 0) {
+                continue;
+            }
+
             $valueCounts = array_map(function ($b) use ($property) {
                 $from = $b['from'];
                 $to = $b['to'];
@@ -170,9 +176,10 @@ class QueryResponseParser {
                     $to = Helper::fromLongToDateTime($to);
                 }
                 return ValueCount::fromRange(new Range($from, $to), $b['doc_count']);
-            }, $aggregations[$toInternalName]['buckets']);
+            }, $buckets);
             $valueCounts = array_values(array_filter($valueCounts, fn($vc) => $vc->count > 0));
-            $propertyValueCounts[] = new PropertyFacetValues(PropertyWithURL::fromProperty(
+
+            $propertyValueCounts[] = new PropertyValueCount(PropertyWithURL::fromProperty(
                 $property,
                 WikiTools::getDisplayTitleForProperty($property->getTitle()),
                 WikiTools::createURLForProperty($property->getTitle())), $valueCounts);

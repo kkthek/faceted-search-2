@@ -194,4 +194,9 @@ XML;
         // no impl. for SOLR
         return false;
     }
+
+    public function refreshIndex(): void
+    {
+        // no impl. for SOLR
+    }
 }

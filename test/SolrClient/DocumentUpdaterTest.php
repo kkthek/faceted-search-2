@@ -1,28 +1,25 @@
 <?php
 namespace DIQA\FacetedSearch2\SolrClient;
 
-use DIQA\FacetedSearch2\ConfigTools;
-use DIQA\FacetedSearch2\Model\Common\Datatype;
-use DIQA\FacetedSearch2\Model\Common\Property;
-use DIQA\FacetedSearch2\Model\Update\Document;
-use DIQA\FacetedSearch2\Model\Update\PropertyValues;
-use DIQA\FacetedSearch2\Setup;
+use DIQA\FacetedSearch2\BaseDocumentUpdaterTest;
 
-final class DocumentUpdaterTest extends BaseTest {
+final class DocumentUpdaterTest extends BaseDocumentUpdaterTest {
 
-    public function testUpdate(): void
+    protected function setUp(): void
     {
-        $document = new Document('4711', "Markus, Schumacher.", "", 0);
-        $p = new Property('Has name', Datatype::STRING);
+        parent::setUp();
 
-        $pv = new PropertyValues($p, ['Markus']);
-        $document->setPropertyValues([$pv]);
-
-        $updater = ConfigTools::getFacetedSearchUpdateClient();
-        $updater->clearAllDocuments();
-        $xml = $updater->updateDocuments($document);
-
-        $this->assertNotEmpty($xml);
+        global $fs2gBackend, $fs2gBackendConfig;
+        $fs2gBackend = 'solr';
+        $fs2gBackendConfig = [
+            'host' => "localhost",
+            'port' => "8983",
+            'indexName' => "mw"
+        ];
+        $this->client = new SolrRequestClient();
+        $this->updateClient = new SolrUpdateClient();
+        $this->updateClient->clearAllDocuments();
+        $this->updateClient->updateDocuments(TestData::generateData());
     }
 
 

@@ -287,7 +287,11 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
         $statsQuery->setStatsProperties($q->getRangeQueries());
         $statsResponse = $this->requestStats($statsQuery);
+
         foreach ($statsResponse->getStats() as $stat) {
+            if ($stat->min == 0 || $stat->max == 0) {
+                continue;
+            }
             $toInternalName = Helper::toInternalName($stat->getProperty());
             $clusters = array_map(function (Range $r) use ($stat) {
                 $to = $r->getTo();
@@ -295,6 +299,8 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 if ($stat->getProperty()->getType() === Datatype::DATETIME) {
                     $from = Helper::fromDateTimeToLong($from);
                     $to = Helper::fromDateTimeToLong($to);
+                    $from--;
+                    $to++;
                 }
                 return [
                     'from' => $from,
