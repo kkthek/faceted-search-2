@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 abstract class BaseFacetQueryTest extends TestCase {
 
     protected FacetedSearchClient $client;
+    protected FacetedSearchUpdateClient $updateClient;
 
     protected function setUp(): void
     {

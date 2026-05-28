@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 abstract class BaseDocumentQueryTest extends TestCase {
 
     protected FacetedSearchClient $client;
+    protected FacetedSearchUpdateClient $updateClient;
 
     protected function setUp(): void
     {

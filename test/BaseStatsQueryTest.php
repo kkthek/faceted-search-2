@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 abstract class BaseStatsQueryTest extends TestCase {
     protected FacetedSearchClient $client;
+    protected FacetedSearchUpdateClient $updateClient;
     protected function setUp(): void
     {
         require_once 'dev-config.php';
