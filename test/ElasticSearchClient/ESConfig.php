@@ -21,12 +21,10 @@ trait ESConfig {
      */
     public function initESConfig(): void
     {
-        global $fs2gBackendConfig, $fs2gBackend, $env_elasticSearchPass;
-        $fs2gBackendConfig = [
+        global $fs2gBackendConfig, $fs2gBackend;
+        $fs2gBackendConfig = array_merge($fs2gBackendConfig, [
             'indexName' => 'test',
-            'pass' => $env_elasticSearchPass,
-            'ssl' => true,
-        ];
+        ]);
         $fs2gBackend = 'elastic';
         $this->client = new ElasticSearchQueryClient();
         $this->updateClient = new ElasticSearchUpdateClient();

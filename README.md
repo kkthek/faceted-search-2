@@ -26,10 +26,9 @@ and go to `/var/www/html/mediawiki/vm-ubuntu` and run:
 goto to `/var/www/html/mediawiki/vm-ubuntu` and run:
 
     sudo ./install-elastic.sh
+    sudo ./set-password-for-elastic.sh
 
-At the end of the installation the superuser password is printed to the console.
-Create a file `env.php` from the `env-template.php` and configure the password there.
-
+This creates a user "elastic" with a password and sets it in the env.php file.
 
 # Build Frontend
 

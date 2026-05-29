@@ -24,7 +24,7 @@ abstract class AbstractElasticSearchClient
             'port' => $fs2gBackendConfig['port'] ?? 9200,
             'user' => $fs2gBackendConfig['user'] ?? 'elastic',
             'pass' => $fs2gBackendConfig['pass'] ?? '',
-            'ssl' => $fs2gBackendConfig['ssl'] ?? false,
+            'ssl' => $fs2gBackendConfig['ssl'] ?? true,
             'verify-ssl' => $fs2gBackendConfig['verify-ssl'] ?? false,
 
         ];

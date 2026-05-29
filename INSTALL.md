@@ -29,6 +29,9 @@
 
         composer update --no-dev
 
+You can EITHER use SOLR or ElasticSearch as the index backend.
+
+### SOLR Installation
 
 * Install SOLR core:
   * We assume SOLR is installed
@@ -57,6 +60,28 @@
       $smwgEnabledDeferredUpdate = false; // only if SMW installed
 
 * Start the SOLR server 
+
+### ElasticSearch Installation
+* Install ElasticSearch according to the instructions on https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html
+* Add to your LocalSettings.php (adjust the values if different from default):
+
+      # Default values:
+
+      $fs2gBackend = 'elastic';          
+      $fs2gBackendConfig = [
+        'host' => 'localhost',  
+        'port' => 9200,         
+        'indexName' => 'mw',          
+        'user' => 'elastic',           
+        'pass' => '',
+        'ssl' => true,
+        'verify-ssl' => false
+      ];
+      
+      wfLoadExtension('FacetedSearch2');
+      $smwgEnabledDeferredUpdate = false; // only if SMW installed
+
+### Update index
 
 * Create the initial index: 
     

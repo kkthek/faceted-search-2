@@ -1,9 +1,9 @@
 <?php
-global $env_backend, $env_elasticSearchPass;
 
-// ElasticSearch
-#$env_backend = 'elastic';
-#$env_elasticSearchPass = '....';
+global $fs2gBackendConfig, $fs2gBackend;
+$fs2gBackend = 'elastic';
+#$fs2gBackend = 'solr';
 
-// Solr
-#$env_backend = 'solr';
+$fs2gBackendConfig = [
+    'pass' => '$PASS',
+];
