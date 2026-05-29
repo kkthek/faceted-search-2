@@ -2,6 +2,8 @@
 
 namespace DIQA\FacetedSearch2\Maintenance;
 
+use DIQA\FacetedSearch2\ElasticSearch\ElasticSearchUpdateClient;
+use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\Update\FSIndexer;
 use MediaWiki\MediaWikiServices;
 use Title;
@@ -45,6 +47,8 @@ class UpdateIndex extends \Maintenance
             echo("ERROR: The FacetedSearch2 extension is not properly installed or configured.\n");
             die(1);
         }
+
+        $this->createIndexIfNecessary();
 
         if( $this->hasOption('g') ) {
             $max = $this->getMaxId();
@@ -243,6 +247,29 @@ class UpdateIndex extends \Maintenance
             }
         }
         return 0;
+    }
+
+    private function createIndexIfNecessary() {
+        global $fs2gBackend;
+        if ($fs2gBackend !== 'elastic') {
+           return;
+        }
+        try {
+            $client = new ElasticSearchUpdateClient();
+            $indexExists = $client->existsIndex();
+            if ($indexExists) {
+                $client->clearAllDocuments();
+                print "\nIndex already exists. Documents cleared.\n";
+            } else {
+                $client->initIndex();
+                print "\nIndex created.\n";
+            }
+            $client->refreshIndex();
+
+        } catch (BackendException $e) {
+            echo("ERROR: Creating the index failed.\n" . $e->getMessage());
+            die(1);
+        }
     }
 }
 
