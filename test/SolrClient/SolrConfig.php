@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\SolrClient;
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\FacetedSearchClient;
 use DIQA\FacetedSearch2\FacetedSearchUpdateClient;
 
@@ -18,8 +19,8 @@ trait SolrConfig {
             'port' => "8983",
             'indexName' => "mw"
         ];
-        $this->client = new SolrRequestClient();
-        $this->updateClient = new SolrUpdateClient();
+        $this->client = ConfigTools::getFacetedSearchClient();
+        $this->updateClient = ConfigTools::getFacetedSearchUpdateClient();
         $this->updateClient->clearAllDocuments();
         $this->updateClient->updateDocuments(TestData::generateData());
     }
