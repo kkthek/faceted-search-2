@@ -1,4 +1,4 @@
-.vagrant
+.vagrant*
 *.log
 *.gz
 solr/solr-*.zip

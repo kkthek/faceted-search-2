@@ -21,11 +21,10 @@ trait ESConfig {
      */
     public function initESConfig(): void
     {
-        global $fs2gBackendConfig, $fs2gBackend;
+        global $fs2gBackendConfig, $fs2gBackend, $env_elasticSearchPass;
         $fs2gBackendConfig = [
-            'indexName' => 'testit',
-            'pass' => 'pVhvpIHOHp4DHJZcWD*u',
-            'host' => '192.168.56.1',
+            'indexName' => 'test',
+            'pass' => $env_elasticSearchPass,
             'ssl' => true,
         ];
         $fs2gBackend = 'elastic';

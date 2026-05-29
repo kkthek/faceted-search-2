@@ -22,14 +22,8 @@ function setConfigForDevContext() {
     $wgServer = "http://localhost";
     $wgArticlePath = '/main/mediawiki/$1';
 
+
     // set development settings ------------------------------
-    global $fs2gBackendConfig, $fs2gBackend;
-    $fs2gBackendConfig = [
-        'pass' => 'pVhvpIHOHp4DHJZcWD*u',
-        'host' => '192.168.56.1',
-        'ssl' => true,
-    ];
-    $fs2gBackend = 'elastic';
 
 
 
@@ -158,6 +152,21 @@ function setConfigForDevContext() {
     $fs2gTemplateBoosts = [];
 
 // -------------------------------------------------------
+
+    if (file_exists('env.php')) {
+        require_once 'env.php';
+    }
+
+    global $env_backend, $env_elasticSearchPass;
+    if ($env_backend === 'elastic') {
+
+        global $fs2gBackendConfig, $fs2gBackend;
+        $fs2gBackendConfig = [
+            'pass' => $env_elasticSearchPass,
+            'ssl' => true,
+        ];
+        $fs2gBackend = 'elastic';
+    }
 }
 
 function getConfigForDevContext(): array

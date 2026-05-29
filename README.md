@@ -18,25 +18,18 @@ Enter VM by running:
 
 and go to `/var/www/html/mediawiki/vm-ubuntu` and run:
 
-    ./solr-installPowerSearch.sh
-    ./solr-installCore.sh
+    sudo ./solr-installPowerSearch.sh
+    sudo ./solr-installCore.sh
 
 ### ElasticSearch
-Install Docker - https://docs.docker.com/get-docker/
-and run:
 
-    docker run --name es01 --net elastic -p 9200:9200 -it docker.elastic.co/elasticsearch/elasticsearch:9.3.3
+goto to `/var/www/html/mediawiki/vm-ubuntu` and run:
 
-Configure ElasticSearch in `LocalSettings.php`
+    sudo ./install-elastic.sh
 
-    global $fs2gBackendConfig, $fs2gBackend;
-    $fs2gBackend = 'elastic';
-    $fs2gBackendConfig = [
-        'host' => '192.168.56.1',
-        'user' => 'elastic',
-        'pass' => '....',
-        'ssl' => true,
-    ];
+At the end of the installation the superuser password is printed to the console.
+Create a file `env.php` from the `env-template.php` and configure the password there.
+
 
 # Build Frontend
 

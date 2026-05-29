@@ -57,7 +57,9 @@ require_once '../dev-config.php';
 setConfigForDevContext();
 
 $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
+$documentUpdater->initIndex();
 $documentUpdater->clearAllDocuments();
+$documentUpdater->refreshIndex();
 $documentUpdater->updateDocuments(TestData::generateData(),TestData::generateData2(),TestData::generateData3(),
     TestData::generateData4(),TestData::generateData5(), TestData::generateData6());
-
+$documentUpdater->refreshIndex();
