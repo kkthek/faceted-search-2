@@ -3,18 +3,20 @@
 namespace DIQA\FacetedSearch2\ElasticSearchClient;
 
 use DIQA\FacetedSearch2\BaseDocumentUpdaterTest;
-use DIQA\FacetedSearch2\Exceptions\BackendException;
 
 final class DocumentUpdaterTest extends BaseDocumentUpdaterTest {
-
-    use ESConfig;
-    /**
-     * @throws BackendException
-     */
-    protected function setUp(): void
+    private static function init(): void
     {
-        parent::setUp();
-        $this->initESConfig();
+        global $fs2gBackendConfig, $fs2gBackend;
+        $fs2gBackendConfig = array_merge($fs2gBackendConfig ?? [], [
+            'indexName' => 'test',
+        ]);
+        $fs2gBackend = 'elastic';
     }
 
+    public static function setUpBeforeClass(): void
+    {
+        self::init();
+        parent::setUpBeforeClass();
+    }
 }

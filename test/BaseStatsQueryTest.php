@@ -2,19 +2,30 @@
 
 namespace DIQA\FacetedSearch2;
 
+
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use PHPUnit\Framework\TestCase;
 
 abstract class BaseStatsQueryTest extends TestCase {
+
     protected FacetedSearchClient $client;
     protected FacetedSearchUpdateClient $updateClient;
     protected function setUp(): void
     {
+        $this->client = ConfigTools::getFacetedSearchClient();
+        $this->updateClient = ConfigTools::getFacetedSearchUpdateClient();
+        BaseTestUtil::clearIndex();
+    }
+
+    public static function setUpBeforeClass(): void
+    {
         require_once 'dev-config.php';
         setConfigForDevContext();
+        BaseTestUtil::recreateIndexIfExists();
     }
+
     public function testStatsQuery(): void
     {
 

@@ -5,12 +5,20 @@ use DIQA\FacetedSearch2\BaseFacetQueryTest;
 
 final class FacetQueryTest extends BaseFacetQueryTest {
 
-    use SolrConfig;
+    private static function init(): void {
+        global $fs2gBackend, $fs2gBackendConfig;
+        $fs2gBackend = 'solr';
+        $fs2gBackendConfig = [
+            'host' => "localhost",
+            'port' => "8983",
+            'indexName' => "mw"
+        ];
+    }
 
-    protected function setUp(): void
+    public static function setUpBeforeClass(): void
     {
-        parent::setUp();
-        $this->initSolrConfig();
+        self::init();
+        parent::setUpBeforeClass();
     }
 
 }

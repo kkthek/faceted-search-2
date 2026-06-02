@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2;
 
+
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\MWTitle;
 use DIQA\FacetedSearch2\Model\Common\Property;
@@ -18,8 +19,16 @@ abstract class BaseDocumentQueryTest extends TestCase {
 
     protected function setUp(): void
     {
+        $this->client = ConfigTools::getFacetedSearchClient();
+        $this->updateClient = ConfigTools::getFacetedSearchUpdateClient();
+        BaseTestUtil::clearIndex();
+    }
+
+    public static function setUpBeforeClass(): void
+    {
         require_once 'dev-config.php';
         setConfigForDevContext();
+        BaseTestUtil::recreateIndexIfExists();
     }
 
     public function testStringPropertyConstraint(): void

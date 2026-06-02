@@ -153,8 +153,8 @@ function setConfigForDevContext() {
 
 // -------------------------------------------------------
 
-    if (file_exists('env.php')) {
-        require_once 'env.php';
+    if (file_exists(__DIR__ . '/env.php')) {
+        require_once __DIR__ . '/env.php';
     }
 
 }
