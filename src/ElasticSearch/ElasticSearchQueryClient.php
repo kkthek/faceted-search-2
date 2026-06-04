@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\ElasticSearch;
 
+use Carbon\Carbon;
 use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\FacetedSearchClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
@@ -16,6 +17,7 @@ use DIQA\FacetedSearch2\Model\Response\Document;
 use DIQA\FacetedSearch2\Model\Response\DocumentsResponse;
 use DIQA\FacetedSearch2\Model\Response\FacetResponse;
 use DIQA\FacetedSearch2\Model\Response\StatsResponse;
+use DIQA\FacetedSearch2\Utils\DateTools;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Exception;
@@ -289,9 +291,6 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         $statsResponse = $this->requestStats($statsQuery);
 
         foreach ($statsResponse->getStats() as $stat) {
-            if ($stat->min == '19700101000000' && $stat->max == '19700101000000') {
-                continue;
-            }
             $toInternalName = Helper::toInternalName($stat->getProperty());
             $clusters = array_map(function (Range $r) use ($stat) {
                 $to = $r->getTo();
@@ -299,10 +298,11 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
                 return [
                     'from' => $from,
-                    'to' => $from == $to ? Helper::plusOneSecond($to) : $to
+                    'to' => $to
                 ];
             }, $stat->clusters);
 
+            $this->adjustLastCluster($clusters, $stat->getProperty()->getType());
             $aggs[$toInternalName] = [
                 'range' => ['field' => $toInternalName,
                     'ranges' => $clusters]
@@ -311,6 +311,29 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         }
 
 
+    }
+
+    private function adjustLastCluster(array &$clusters, int $datatype): void
+    {
+        // ES does not support a range query with "to" included, so we need to
+        // adjust the last cluster.
+        $lastCluster = array_pop($clusters);
+        if ($datatype === Datatype::DATETIME) {
+            $datetime = Carbon::parse($lastCluster['to']);
+            if (DateTools::isEndOfYear($datetime)) {
+                $datetime = $datetime->addYear();
+            } else if (DateTools::isEndOfMonth($datetime)) {
+                $datetime = $datetime->addMonth();
+            } elseif ($datetime->isEndOfDay()) {
+                $datetime = $datetime->addDay();
+            } else {
+                $datetime = $datetime->addSecond();
+            }
+            $lastCluster['to'] = $datetime->format('Y-m-d\TH:i:s\Z');
+        } else {
+            $lastCluster['to']++;
+        }
+        $clusters[] = $lastCluster;
     }
 
     public function addPropertyValuesConstraints(FacetQuery $q, array &$query, array &$aggs): void

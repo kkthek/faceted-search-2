@@ -16,15 +16,17 @@ class NumericClusterer implements Clusterer
     }
 
 
-    public function makeClusters(float $min, float $max, int $numSteps): array
+    public function makeClusters(string $min, string $max, int $numSteps): array
     {
+        $minNum = (float)$min;
+        $maxNum = (float)$max;
         if ($min === $max) {
-            return [new Range($min, $max)];
+            return [new Range($minNum, $maxNum)];
         }
         if ($this->isInteger) {
-            return $this->makeClustersInteger($min, $max, $numSteps);
+            return $this->makeClustersInteger($minNum, $maxNum, $numSteps);
         }
-        $diff =  $max - $min;
+        $diff =  $maxNum - $minNum;
         $values = [];
         $currVal = $min;
         $incr =  $diff / $numSteps;

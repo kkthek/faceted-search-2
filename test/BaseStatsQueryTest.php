@@ -36,8 +36,8 @@ abstract class BaseStatsQueryTest extends TestCase {
 
         $this->assertCount(1, $response->getStats());
         $this->assertEquals(1, $response->getStats()[0]->getCount());
-        $this->assertEquals('19690610000000', $response->getStats()[0]->getMin());
-        $this->assertEquals('19690610000000', $response->getStats()[0]->getMax());
+        $this->assertEquals('1969-06-10T00:00:00.000Z', $response->getStats()[0]->getMin());
+        $this->assertEquals('1969-06-10T00:00:00.000Z', $response->getStats()[0]->getMax());
 
     }
 }

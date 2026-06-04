@@ -121,16 +121,4 @@ class Helper
 
     }
 
-    public static function convertISOToLong($date): string
-    {
-        $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $date);
-        return $datetime->format('YmdHis');
-    }
-
-    public static function plusOneSecond($date): string
-    {
-        $datetime = Carbon::createFromFormat('Y-m-d\TH:i:s+\Z', $date);
-        return $datetime->addSecond()->format('Y-m-d\TH:i:s\Z');
-    }
-
 }

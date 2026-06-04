@@ -35,7 +35,8 @@
 		"phpoffice/phppresentation": "^1.2",
 		"phpoffice/phpspreadsheet": "^1.12",
         "ext-dom": "*",
-        "ext-libxml": "*"
+        "ext-libxml": "*",
+        "ext-ctype": "*"
     },
 	"suggest": {
 

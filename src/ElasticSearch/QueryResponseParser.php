@@ -196,8 +196,8 @@ class QueryResponseParser {
                 if (!isset($aggregations['min' . $toInternalName]['value_as_string'])) {
                     continue;
                 }
-                $min = Helper::convertISOToLong($aggregations['min' . $toInternalName]['value_as_string']);
-                $max = Helper::convertISOToLong($aggregations['max' . $toInternalName]['value_as_string']);
+                $min = $aggregations['min' . $toInternalName]['value_as_string'];
+                $max = $aggregations['max' . $toInternalName]['value_as_string'];
 
             } else {
                 $min = $aggregations['min' . $toInternalName]['value'] ?? 0;
