@@ -21,8 +21,8 @@
 		}
 	],
 	"support": {
-		"email": "kuehn@diqa-pm.com",
-		"issues": "https://bugs.diqa-pm.com/"
+		"email": "kuehn@diqa.de",
+		"issues": "https://support.diqa-pm.com/"
 	},
 	"require": {
 		"php": ">=7.4.0",
