@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\ElasticSearch;
 
+use Carbon\Carbon;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Request\FacetValue;
@@ -69,12 +70,7 @@ class Helper
     {
         $result = [];
         switch ($values->getProperty()->getType()) {
-            case Datatype::DATETIME:
-                foreach ($values->getValues() as $value) {
-                    $value = self::fromDateTimeToLong($value);
-                    $result[] = $value;
-                }
-                break;
+
             case Datatype::WIKIPAGE:
                 foreach ($values->getMwTitles() as $value) {
                     $value = [
@@ -97,18 +93,13 @@ class Helper
     {
         switch ($property->getType()) {
             case Datatype::DATETIME:
-                $from = self::fromDateTimeToLong($value->getRange()->getFrom());
-                $to = self::fromDateTimeToLong($value->getRange()->getTo());
-                $condition = ['range' => [Helper::toInternalName($property) =>
-                    ['gte' => $from, 'lte' => $to]
-                ]];
-                break;
             case Datatype::NUMBER:
                 $from = $value->getRange()->getFrom();
                 $to = $value->getRange()->getTo();
                 $condition = ['range' => [Helper::toInternalName($property) =>
                     ['gte' => $from, 'lte' => $to]
                 ]];
+
                 break;
             case Datatype::WIKIPAGE:
                 $condition = [ 'nested' => [
@@ -130,15 +121,16 @@ class Helper
 
     }
 
-    public static function fromLongToDateTime(int $longDate): string
+    public static function convertISOToLong($date): string
     {
-        $datetime = \DateTime::createFromFormat('YmdHis', $longDate);
-        return $datetime->format('Y-m-d\TH:i:s\Z');
-    }
-
-    public static function fromDateTimeToLong($date): string
-    {
-        $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s\Z', $date);
+        $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s.u\Z', $date);
         return $datetime->format('YmdHis');
     }
+
+    public static function plusOneSecond($date): string
+    {
+        $datetime = Carbon::createFromFormat('Y-m-d\TH:i:s+\Z', $date);
+        return $datetime->addSecond()->format('Y-m-d\TH:i:s\Z');
+    }
+
 }

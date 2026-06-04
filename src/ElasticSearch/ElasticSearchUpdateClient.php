@@ -210,7 +210,7 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
                         "fs2-datetime-template" => [
                             "match" => "datetime_*",
                             "mapping" => [
-                                "type" => "long"
+                                "type" => "date"
                             ]
                         ],
                     ],

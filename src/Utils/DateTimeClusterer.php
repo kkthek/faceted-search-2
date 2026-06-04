@@ -24,6 +24,13 @@ class DateTimeClusterer implements Clusterer
         $this->numSteps = $numSteps;
         $this->currentStep = 0;
 
+        if ($min === $max) {
+            if ($min == 0) return [];
+            return [new Range(
+                Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $min)->format(self::DATETIME_FORMAT),
+                Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $max)->format(self::DATETIME_FORMAT)
+            )];
+        }
         $this->findIncrement($min, $max, $this->numSteps);
         $values = [];
 

@@ -77,10 +77,8 @@ class QueryResponseParser {
             switch ($property->getType()) {
                 case Datatype::STRING:
                 case Datatype::NUMBER:
-                    $facetValues = $values;
-                    break;
                 case Datatype::DATETIME:
-                    $facetValues = array_map(fn($v) => Helper::fromLongToDateTime($v), $values);
+                    $facetValues = $values;
                     break;
                 case Datatype::BOOLEAN:
                     $facetValues = array_map(fn($v) => $v === 'true', $values);
@@ -169,11 +167,13 @@ class QueryResponseParser {
             }
 
             $valueCounts = array_map(function ($b) use ($property) {
-                $from = $b['from'];
-                $to = $b['to'];
                 if ($property->getType() === Datatype::DATETIME) {
-                    $from = Helper::fromLongToDateTime($from);
-                    $to = Helper::fromLongToDateTime($to);
+                    $from = $b['from_as_string'];
+                    $to = $b['to_as_string'];
+
+                } else {
+                    $from = $b['from'];
+                    $to = $b['to'];
                 }
                 return ValueCount::fromRange(new Range($from, $to), $b['doc_count']);
             }, $buckets);
@@ -192,8 +192,17 @@ class QueryResponseParser {
         $stats = [];
         foreach ($q->getStatsProperties() as $property) {
             $toInternalName = Helper::toInternalName($property);
-            $min = $aggregations['min' . $toInternalName]['value'] ?? 0;
-            $max = $aggregations['max' . $toInternalName]['value'] ?? 0;
+            if ($property->getType() === Datatype::DATETIME) {
+                if (!isset($aggregations['min' . $toInternalName]['value_as_string'])) {
+                    continue;
+                }
+                $min = Helper::convertISOToLong($aggregations['min' . $toInternalName]['value_as_string']);
+                $max = Helper::convertISOToLong($aggregations['max' . $toInternalName]['value_as_string']);
+
+            } else {
+                $min = $aggregations['min' . $toInternalName]['value'] ?? 0;
+                $max = $aggregations['max' . $toInternalName]['value'] ?? 0;
+            }
             $sum = $aggregations['sum' . $toInternalName]['value'] ?? 0;
             $cardinality = $aggregations['cardinality' . $toInternalName]['value'] ?? 0;
 
