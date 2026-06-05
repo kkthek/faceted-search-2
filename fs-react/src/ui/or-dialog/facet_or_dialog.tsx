@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {SyntheticEvent, useContext, useState} from 'react';
+import {Dispatch, SetStateAction, SyntheticEvent, useContext, useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -131,7 +131,8 @@ export class ORDialogInput {
         this.facetResponse = facetResponse;
     }
 
-    static createORDialogState(baseQuery: BaseQuery, client: Client): [ORDialogInput, ()=>void, (p: Property)=>void] {
+    static createORDialogState(baseQuery: BaseQuery, client: Client,
+                               setLoadPromise: Dispatch<SetStateAction<Promise<any>>>): [ORDialogInput, ()=>void, (p: Property)=>void] {
         const [openOrDialog, setOpenOrDialog] = useState<ORDialogInput>(new ORDialogInput());
 
         const handleCloseFacetOrDialog = function() {
@@ -139,11 +140,13 @@ export class ORDialogInput {
         };
 
 
-        const onOrDialogClick = async function(p: Property): Promise<void> {
+        const onOrDialogClick = function(p: Property) {
 
             const query = QueryUtils.prepareValueQueryWithoutFacet(baseQuery, p);
-            const facetResponse = await client.searchFacets(query);
-            setOpenOrDialog(new ORDialogInput(true, p, facetResponse));
+            setLoadPromise(async function() {
+                const response = await client.searchFacets(query);
+                setOpenOrDialog(new ORDialogInput(true, p, response));
+            });
 
         }
 

@@ -165,6 +165,7 @@ function App() {
                                    expandedFacets={expandedFacets}
                                    eventHandler={eventHandler}
                                    textFilters={textFilters}
+                                   setLoadPromise={setLoadPromise}
                         />,
 
                         <CategoryDropdown key={'categoryDropDown'}

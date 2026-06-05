@@ -4,8 +4,6 @@ namespace DIQA\FacetedSearch2\ElasticSearch;
 
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
-use DIQA\FacetedSearch2\Model\Request\FacetValue;
-use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 
 class Helper
 {
@@ -41,83 +39,17 @@ class Helper
     static function fromInternalName(string $internalName): Property
     {
         list($type, $name) = explode('__', $internalName);
-        switch ($type) {
-            case 'number':
-                $datatype = Datatype::NUMBER;
-                break;
-            case 'datetime':
-                $datatype = Datatype::DATETIME;
-                break;
-            case 'boolean':
-                $datatype = Datatype::BOOLEAN;
-                break;
-            case 'wikipage':
-                $datatype = Datatype::WIKIPAGE;
-                break;
-            case 'text':
-                $datatype = Datatype::STRING;
-                break;
-            default:
-                throw new \InvalidArgumentException(
-                    sprintf('Unknown datatype prefix: "%s"', $type)
-                );
-        }
+        $datatype = match ($type) {
+            'number' => Datatype::NUMBER,
+            'datetime' => Datatype::DATETIME,
+            'boolean' => Datatype::BOOLEAN,
+            'wikipage' => Datatype::WIKIPAGE,
+            'text' => Datatype::STRING,
+            default => throw new \InvalidArgumentException(
+                sprintf('Unknown datatype prefix: "%s"', $type)
+            ),
+        };
         return new Property($name, $datatype);
-    }
-
-    static function mapPropertyValuesToESModel(PropertyValues $values): array
-    {
-        $result = [];
-        switch ($values->getProperty()->getType()) {
-
-            case Datatype::WIKIPAGE:
-                foreach ($values->getMwTitles() as $value) {
-                    $value = [
-                        "title" => $value->getTitle(),
-                        "display" => $value->getDisplayTitle()
-                    ];
-                    $result[] = $value;
-                }
-                break;
-            default:
-                foreach ($values->getValues() as $value) {
-                    $result[] = $value;
-                }
-                break;
-        }
-        return $result;
-    }
-
-    static function mapFacetValueToESModel(Property $property, FacetValue $value): array
-    {
-        switch ($property->getType()) {
-            case Datatype::DATETIME:
-            case Datatype::NUMBER:
-                $from = $value->getRange()->getFrom();
-                $to = $value->getRange()->getTo();
-                $condition = ['range' => [Helper::toInternalName($property) =>
-                    ['gte' => $from, 'lte' => $to]
-                ]];
-
-                break;
-            case Datatype::WIKIPAGE:
-                $condition = [ 'nested' => [
-                    'path' => self::toInternalName($property),
-                    'query' => ['match' => [
-                        self::toInternalName($property).'.title' => $value->getMwTitle()->getTitle()]
-                    ]
-                ]
-                ];
-                break;
-            case Datatype::BOOLEAN:
-                $condition = [ 'match' => [ self::toInternalName($property) => $value->getValue() ? 'true' : 'false'] ];
-                break;
-            case Datatype::STRING:
-            default:
-                $condition = ['match' => [self::toInternalName($property) => $value->getValue()]];
-        }
-        return $condition;
-
     }
 
 }

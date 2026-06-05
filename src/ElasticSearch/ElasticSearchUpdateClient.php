@@ -4,6 +4,7 @@ namespace DIQA\FacetedSearch2\ElasticSearch;
 
 use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\FacetedSearchUpdateClient;
+use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Update\Document;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
@@ -290,8 +291,32 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         $propertyValues = $doc->getPropertyValues();
         foreach ($propertyValues as $propertyValue) {
             $name = Helper::toInternalName($propertyValue->getProperty());
-            $body[$name] = Helper::mapPropertyValuesToESModel($propertyValue);
+            $body[$name] = self::mapValuesForUpdateToESModel($propertyValue);
         }
         return $body;
     }
+
+    private static function mapValuesForUpdateToESModel(PropertyValues $values): array
+    {
+        $result = [];
+        switch ($values->getProperty()->getType()) {
+
+            case Datatype::WIKIPAGE:
+                foreach ($values->getMwTitles() as $value) {
+                    $value = [
+                        "title" => $value->getTitle(),
+                        "display" => $value->getDisplayTitle()
+                    ];
+                    $result[] = $value;
+                }
+                break;
+            default:
+                foreach ($values->getValues() as $value) {
+                    $result[] = $value;
+                }
+                break;
+        }
+        return $result;
+    }
+
 }

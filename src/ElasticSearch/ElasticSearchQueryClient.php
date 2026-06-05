@@ -12,6 +12,7 @@ use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\BaseQuery;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
+use DIQA\FacetedSearch2\Model\Request\FacetValue;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Response\CategoryFacetCount;
 use DIQA\FacetedSearch2\Model\Response\Document;
@@ -175,23 +176,19 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
     {
         $andConditions = [];
         foreach ($q->getPropertyFacets() as $facet) {
-            if (count($facet->getValues()) === 1) {
-                $value = $facet->getValues()[0];
-                if ($value->isAllValues()) {
-                    if ($facet->property->getType() === Datatype::WIKIPAGE) {
-                        $must = ['nested' => [
-                            'path' => Helper::toInternalName($facet->property),
-                            'query' => ['match_all' => new \stdClass()]
-                        ]];
-                    } else {
-                        $must = ['exists' => ['field' => Helper::toInternalName($facet->property)]];
-                    }
+            if ($facet->isAllValues()) {
+                if ($facet->property->getType() === Datatype::WIKIPAGE) {
+                    $andConditions[] = ['nested' => [
+                        'path' => Helper::toInternalName($facet->property),
+                        'query' => ['match_all' => new \stdClass()]
+                    ]];
                 } else {
-                    $must = Helper::mapFacetValueToESModel($facet->property, $value);
+                    $andConditions[] = ['exists' => ['field' => Helper::toInternalName($facet->property)]];
                 }
-                $andConditions[] = $must;
+            } else if ($facet->isSingleValue()) {
+                $andConditions[] = self::mapValuesForQueryToESModel($facet->property, $facet->values[0]);
             } else {
-                $orConditions = array_map(fn($v) => Helper::mapFacetValueToESModel($facet->getProperty(), $v), $facet->getValues());
+                $orConditions = array_map(fn($v) => self::mapValuesForQueryToESModel($facet->getProperty(), $v), $facet->getValues());
                 $andConditions[] = ['bool' => ['should' => $orConditions]];
             }
 
@@ -232,6 +229,39 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
         return $query;
     }
+
+    private static function mapValuesForQueryToESModel(Property $property, FacetValue $value): array
+    {
+        switch ($property->getType()) {
+            case Datatype::DATETIME:
+            case Datatype::NUMBER:
+                $from = $value->getRange()->getFrom();
+                $to = $value->getRange()->getTo();
+                $condition = ['range' => [Helper::toInternalName($property) =>
+                    ['gte' => $from, 'lte' => $to]
+                ]];
+
+                break;
+            case Datatype::WIKIPAGE:
+                $condition = [ 'nested' => [
+                    'path' => Helper::toInternalName($property),
+                    'query' => ['match' => [
+                        Helper::toInternalName($property).'.title' => $value->getMwTitle()->getTitle()]
+                    ]
+                ]
+                ];
+                break;
+            case Datatype::BOOLEAN:
+                $condition = [ 'match' => [ Helper::toInternalName($property) => $value->getValue() ? 'true' : 'false'] ];
+                break;
+            case Datatype::STRING:
+            default:
+                $condition = ['match' => [Helper::toInternalName($property) => $value->getValue()]];
+        }
+        return $condition;
+
+    }
+
 
     private function getBoostConstraints(): array
     {
@@ -291,13 +321,13 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
         foreach ($statsResponse->getStats() as $stat) {
             $toInternalName = Helper::toInternalName($stat->getProperty());
-            $clusters = array_map(fn (Range $r) => [
+            $clusters = array_map(fn(Range $r) => [
                 'from' => $r->getFrom(), 'to' => $r->getTo()
             ], $stat->clusters);
 
             $this->adjustLastCluster($clusters, $stat->getProperty());
             $aggs[$toInternalName] = [
-                'range' => ['field' => $toInternalName, 'ranges' => $clusters ]
+                'range' => ['field' => $toInternalName, 'ranges' => $clusters]
             ];
         }
 
@@ -321,7 +351,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 $datetime = $datetime->addSecond();
             }
             $lastCluster['to'] = $datetime->format('Y-m-d\TH:i:s\Z');
-        } elseif ($datatype->getType() === Datatype::NUMBER){
+        } elseif ($datatype->getType() === Datatype::NUMBER) {
             $lastCluster['to']++;
         }
         $clusters[] = $lastCluster;
