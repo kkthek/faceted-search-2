@@ -347,6 +347,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                                     ['field' => $toInternalName . '.display']
                                 ],
                                 'size' => $pvq->getValueLimit() ?? 1000,
+                                'order' => ['_count' => 'desc'],
                             ],
                         ]
 
@@ -373,6 +374,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                     'terms' => [
                         'field' => $toInternalName,
                         'size' => $pvq->getValueLimit() ?? 1000,
+                        'order' => ['_count' => 'desc'],
                     ],
 
                 ];
