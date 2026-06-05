@@ -12,6 +12,8 @@ use Elastic\Elasticsearch\Exception\ServerResponseException;
 
 class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements FacetedSearchUpdateClient
 {
+    const int MAX_BULK_SIZE = 1000;
+
     public function __construct()
     {
         parent::__construct();
@@ -20,13 +22,39 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
     /**
      * @throws BackendException
      */
-    public function updateDocuments(...$docs): array
+    public function updateDocuments(...$docs): void
     {
-        $updates = [];
-        foreach ($docs as $doc) {
-            $updates[] = $this->updateDocument($doc);
+        global $fs2gBackendConfig;
+
+        $params = ['body' => [] ];
+        $i = 0;
+        try {
+            foreach ($docs as $doc) {
+                $params['body'][] = [
+                    'index' => [
+                        '_index' => $fs2gBackendConfig['indexName'] ?? 'mw',
+                        '_id' => $doc->getId(),
+                    ],
+                ];
+                $params['body'][] = $this->getDocumentBody($doc);
+
+                if ($i % self::MAX_BULK_SIZE == 0) {
+
+                    $responses = $this->client->bulk($params);
+                    $params = ['body' => []];
+                    unset($responses);
+                }
+                $i++;
+            }
+
+            if (!empty($params['body'])) {
+                $this->client->bulk($params);
+            }
+        } catch (
+        ClientResponseException
+        |ServerResponseException $e) {
+            throw BackendException::create($e);
         }
-        return $updates;
     }
 
     /**
@@ -62,6 +90,9 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         }
     }
 
+    /**
+     * @throws BackendException
+     */
     public function deleteIndex(): void
     {
         $params = $this->getParamForIndex();
@@ -101,45 +132,9 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
     }
 
     /**
-     * @param mixed $doc
-     * @return void
-     * @throws BackendException
-     */
-    public function updateDocument(Document $doc): array
-    {
-        $params = $this->getParamForIndex();
-        $propertyValues = $doc->getPropertyValues();
-        $body = [];
-        $body['__categories'] = $doc->getCategories();
-        $body['__directCategories'] = $doc->getDirectCategories();
-        $body['__templates'] = $doc->getTemplates();
-        $properties = array_map(fn(PropertyValues $pv) => Helper::toInternalName($pv->getProperty()), $doc->getPropertyValues());
-        $body['__properties'] = array_values(array_unique($properties));
-        $body['__fulltext'] = $doc->getFulltext();
-        $body['__title'] = $doc->getTitle();
-        $body['__namespace'] = $doc->getNamespace();
-        $body['__display'] = $doc->getDisplayTitle();
-        foreach ($propertyValues as $propertyValue) {
-            $name = Helper::toInternalName($propertyValue->getProperty());
-            $body[$name] = Helper::mapPropertyValuesToESModel($propertyValue);
-        }
-        try {
-            $params['id'] = $doc->getId();
-            $params['body'] = $body;
-            $this->client->index($params);
-            return $params;
-        } catch (
-        ClientResponseException
-        |MissingParameterException
-        |ServerResponseException $e) {
-            throw BackendException::create($e);
-        }
-    }
-
-    /**
      * @return array[]
      */
-    public function getSchemaMappings(): array
+    private function getSchemaMappings(): array
     {
         $schemaProperties = [];
         $schemaProperties['__categories'] = ['type' => 'keyword'];
@@ -158,30 +153,30 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         $schemaProperties['__namespace'] = ['type' => 'long'];
         $schemaProperties['__display'] = ['type' => 'wildcard'];
         return [
-            "settings"=> [
-                "analysis"=> [
-                    "analyzer"=> [
-                        "substring_analyzer"=> [
-                            "type"=> "custom",
-                            "tokenizer"=> "standard",
-                            "filter"=> ["lowercase", "substring_ngram"]
+            "settings" => [
+                "analysis" => [
+                    "analyzer" => [
+                        "substring_analyzer" => [
+                            "type" => "custom",
+                            "tokenizer" => "standard",
+                            "filter" => ["lowercase", "substring_ngram"]
                         ],
-                        "substring_search_analyzer"=> [
-                            "type"=> "custom",
-                            "tokenizer"=> "standard",
-                            "filter"=> ["lowercase"]
+                        "substring_search_analyzer" => [
+                            "type" => "custom",
+                            "tokenizer" => "standard",
+                            "filter" => ["lowercase"]
                         ]
                     ],
-                    "filter"=> [
-                        "substring_ngram"=> [
-                            "type"=> "ngram",
-                            "min_gram"=> 2,
-                            "max_gram"=> 20
+                    "filter" => [
+                        "substring_ngram" => [
+                            "type" => "ngram",
+                            "min_gram" => 2,
+                            "max_gram" => 20
                         ]
                     ]
                 ],
-                "index"=> [
-                    "max_ngram_diff"=> 18
+                "index" => [
+                    "max_ngram_diff" => 18
                 ]
             ],
             'mappings' => [
@@ -242,7 +237,7 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
     }
 
     /**
-     * Check if index exists
+     * Check if the index exists
      * @return bool
      * @throws BackendException
      */
@@ -266,12 +261,37 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
     public function refreshIndex(): void
     {
         try {
-        $params = $this->getParamForIndex();
-        $this->client->indices()->refresh($params);
+            $params = $this->getParamForIndex();
+            $this->client->indices()->refresh($params);
         } catch (
         ClientResponseException
         |ServerResponseException $e) {
             throw BackendException::create($e);
         }
+    }
+
+    /**
+     * @param Document $doc
+     * @return array
+     */
+    private function getDocumentBody(Document $doc): array
+    {
+        $body = [];
+        $body['__categories'] = $doc->getCategories();
+        $body['__directCategories'] = $doc->getDirectCategories();
+        $body['__templates'] = $doc->getTemplates();
+        $properties = array_map(fn(PropertyValues $pv) =>
+            Helper::toInternalName($pv->getProperty()), $doc->getPropertyValues());
+        $body['__properties'] = array_values(array_unique($properties));
+        $body['__fulltext'] = $doc->getFulltext();
+        $body['__title'] = $doc->getTitle();
+        $body['__namespace'] = $doc->getNamespace();
+        $body['__display'] = $doc->getDisplayTitle();
+        $propertyValues = $doc->getPropertyValues();
+        foreach ($propertyValues as $propertyValue) {
+            $name = Helper::toInternalName($propertyValue->getProperty());
+            $body[$name] = Helper::mapPropertyValuesToESModel($propertyValue);
+        }
+        return $body;
     }
 }
