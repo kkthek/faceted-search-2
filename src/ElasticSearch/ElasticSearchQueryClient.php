@@ -7,6 +7,7 @@ use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\FacetedSearchClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Order;
+use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Common\Range;
 use DIQA\FacetedSearch2\Model\Request\BaseQuery;
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
@@ -20,17 +21,15 @@ use DIQA\FacetedSearch2\Model\Response\StatsResponse;
 use DIQA\FacetedSearch2\Utils\DateTools;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
-use Exception;
-use Smalot\PdfParser\Parser;
 
 class ElasticSearchQueryClient extends AbstractElasticSearchClient implements FacetedSearchClient
 {
 
     private QueryResponseParser $queryResponseParser;
 
-    public function __construct($client = null)
+    public function __construct()
     {
-        parent::__construct($client);
+        parent::__construct();
         $this->queryResponseParser = new QueryResponseParser();
     }
 
@@ -188,11 +187,11 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                         $must = ['exists' => ['field' => Helper::toInternalName($facet->property)]];
                     }
                 } else {
-                    $must = Helper::mapFacetQueryToESModel($facet->property, $value);
+                    $must = Helper::mapFacetValueToESModel($facet->property, $value);
                 }
                 $andConditions[] = $must;
             } else {
-                $orConditions = array_map(fn($v) => Helper::mapFacetQueryToESModel($facet->getProperty(), $v), $facet->getValues());
+                $orConditions = array_map(fn($v) => Helper::mapFacetValueToESModel($facet->getProperty(), $v), $facet->getValues());
                 $andConditions[] = ['bool' => ['should' => $orConditions]];
             }
 
@@ -279,7 +278,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
     /**
      * @throws BackendException
      */
-    public function addClusterRangeConstraints(FacetQuery $q, array &$aggs): void
+    private function addClusterRangeConstraints(FacetQuery $q, array &$aggs): void
     {
         if (count($q->getRangeQueries()) === 0) {
             return;
@@ -292,33 +291,25 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
         foreach ($statsResponse->getStats() as $stat) {
             $toInternalName = Helper::toInternalName($stat->getProperty());
-            $clusters = array_map(function (Range $r) use ($stat) {
-                $to = $r->getTo();
-                $from = $r->getFrom();
+            $clusters = array_map(fn (Range $r) => [
+                'from' => $r->getFrom(), 'to' => $r->getTo()
+            ], $stat->clusters);
 
-                return [
-                    'from' => $from,
-                    'to' => $to
-                ];
-            }, $stat->clusters);
-
-            $this->adjustLastCluster($clusters, $stat->getProperty()->getType());
+            $this->adjustLastCluster($clusters, $stat->getProperty());
             $aggs[$toInternalName] = [
-                'range' => ['field' => $toInternalName,
-                    'ranges' => $clusters]
-
+                'range' => ['field' => $toInternalName, 'ranges' => $clusters ]
             ];
         }
 
 
     }
 
-    private function adjustLastCluster(array &$clusters, int $datatype): void
+    private function adjustLastCluster(array &$clusters, Property $datatype): void
     {
         // ES does not support a range query with "to" included, so we need to
         // adjust the last cluster.
         $lastCluster = array_pop($clusters);
-        if ($datatype === Datatype::DATETIME) {
+        if ($datatype->getType() === Datatype::DATETIME) {
             $datetime = Carbon::parse($lastCluster['to']);
             if (DateTools::isEndOfYear($datetime)) {
                 $datetime = $datetime->addYear();
@@ -330,13 +321,13 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 $datetime = $datetime->addSecond();
             }
             $lastCluster['to'] = $datetime->format('Y-m-d\TH:i:s\Z');
-        } else {
+        } elseif ($datatype->getType() === Datatype::NUMBER){
             $lastCluster['to']++;
         }
         $clusters[] = $lastCluster;
     }
 
-    public function addPropertyValuesConstraints(FacetQuery $q, array &$query, array &$aggs): void
+    private function addPropertyValuesConstraints(FacetQuery $q, array &$query, array &$aggs): void
     {
         $aggs = [];
         $andConditions = [];
@@ -406,7 +397,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         $query['bool']['must'] = array_merge($andConditions, $query['bool']['must']);
     }
 
-    public function fillMustConditionIfNecessary(array $query): array
+    private function fillMustConditionIfNecessary(array $query): array
     {
         $query['bool']['must'] = count($query['bool']['must']) > 0 ? $query['bool']['must'] : ['match_all' => new \stdClass()];
         return $query;

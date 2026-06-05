@@ -15,7 +15,7 @@ abstract class AbstractElasticSearchClient
     /**
      * @throws AuthenticationException
      */
-    public function __construct($client = null)
+    public function __construct()
     {
         global $fs2gBackendConfig;
         $config = [
@@ -30,18 +30,12 @@ abstract class AbstractElasticSearchClient
         ];
 
         $protocol = $config['ssl'] ? 'https' : 'http';
-        $this->client = is_null($client) ? ClientBuilder::create()
+        $this->client = ClientBuilder::create()
             ->setSSLVerification($config['verify-ssl'])
             ->setHosts(["$protocol://" . $config['host'] . ':' . $config['port']])
             ->setBasicAuthentication($config['user'], $config['pass'])
-            ->build() : $client;
+            ->build();
         $this->config = $config;
-    }
-
-
-    public function getConfig(): array
-    {
-        return $this->config;
     }
 
     protected function getParamForIndex(): array

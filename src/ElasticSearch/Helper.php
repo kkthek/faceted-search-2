@@ -2,7 +2,6 @@
 
 namespace DIQA\FacetedSearch2\ElasticSearch;
 
-use Carbon\Carbon;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Request\FacetValue;
@@ -66,7 +65,7 @@ class Helper
         return new Property($name, $datatype);
     }
 
-    static function mapValuesToESModel(PropertyValues $values): array
+    static function mapPropertyValuesToESModel(PropertyValues $values): array
     {
         $result = [];
         switch ($values->getProperty()->getType()) {
@@ -89,7 +88,7 @@ class Helper
         return $result;
     }
 
-    static function mapFacetQueryToESModel(Property $property, FacetValue $value): array
+    static function mapFacetValueToESModel(Property $property, FacetValue $value): array
     {
         switch ($property->getType()) {
             case Datatype::DATETIME:

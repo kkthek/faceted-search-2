@@ -11,7 +11,7 @@ class Stats
     public PropertyWithURL $property;
     public ?string $min;
     public ?string $max;
-    public ?string $count;
+    public ?int $count;
     public ?string $sum;
     public array $clusters;
 
@@ -20,10 +20,10 @@ class Stats
      * @param PropertyWithURL $property
      * @param string|null $min
      * @param string|null $max
-     * @param string|null $count
+     * @param int|null $count
      * @param string|null $sum
      */
-    public function __construct(PropertyWithURL $property, ?string $min, ?string $max, ?string $count, ?string $sum)
+    public function __construct(PropertyWithURL $property, ?string $min, ?string $max, ?int $count, ?string $sum)
     {
         $this->property = $property;
         $this->min = $min;
@@ -42,7 +42,7 @@ class Stats
     }
 
     /**
-     * @return float|null
+     * @return string|null
      */
     public function getMin(): ?string
     {
@@ -50,7 +50,7 @@ class Stats
     }
 
     /**
-     * @return float|null
+     * @return string|null
      */
     public function getMax(): ?string
     {
@@ -58,15 +58,15 @@ class Stats
     }
 
     /**
-     * @return float|null
+     * @return int|null
      */
-    public function getCount(): ?string
+    public function getCount(): ?int
     {
         return $this->count;
     }
 
     /**
-     * @return float|null
+     * @return string|null
      */
     public function getSum(): ?string
     {
@@ -81,8 +81,8 @@ class Stats
                 global $fs2gDateTimePropertyClusters;
                 if (array_key_exists($property->getTitle(), $fs2gDateTimePropertyClusters)) {
                     $constraints = $fs2gDateTimePropertyClusters[$property->getTitle()];
-                    $min = str_replace([':', '-'], '', $constraints['min']);
-                    $max = str_replace([':', '-'], '', $constraints['max']);
+                    $min = $constraints['min'];
+                    $max = $constraints['max'];
                 }
                 $this->clusters = $clusterer->makeClusters($min, $max, 10);
                 break;

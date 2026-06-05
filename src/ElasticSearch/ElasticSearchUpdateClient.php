@@ -12,9 +12,9 @@ use Elastic\Elasticsearch\Exception\ServerResponseException;
 
 class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements FacetedSearchUpdateClient
 {
-    public function __construct($client = null)
+    public function __construct()
     {
-        parent::__construct($client);
+        parent::__construct();
     }
 
     /**
@@ -121,7 +121,7 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
         $body['__display'] = $doc->getDisplayTitle();
         foreach ($propertyValues as $propertyValue) {
             $name = Helper::toInternalName($propertyValue->getProperty());
-            $body[$name] = Helper::mapValuesToESModel($propertyValue);
+            $body[$name] = Helper::mapPropertyValuesToESModel($propertyValue);
         }
         try {
             $params['id'] = $doc->getId();
