@@ -176,22 +176,15 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
     {
         $andConditions = [];
         foreach ($q->getPropertyFacets() as $facet) {
-            if ($facet->isAllValues()) {
-                if ($facet->property->getType() === Datatype::WIKIPAGE) {
-                    $andConditions[] = ['nested' => [
-                        'path' => Helper::toInternalName($facet->property),
-                        'query' => ['match_all' => new \stdClass()]
-                    ]];
-                } else {
-                    $andConditions[] = ['exists' => ['field' => Helper::toInternalName($facet->property)]];
-                }
-            } else if ($facet->isSingleValue()) {
-                $andConditions[] = self::mapValuesForQueryToESModel($facet->property, $facet->values[0]);
-            } else {
-                $orConditions = array_map(fn($v) => self::mapValuesForQueryToESModel($facet->getProperty(), $v), $facet->getValues());
+            global $fs2gFacetsWithOR;
+            if (in_array($facet->property->getTitle(), $fs2gFacetsWithOR)) {
+                $orConditions = array_map(fn($v) =>
+                    self::mapValuesForQueryToESModel($facet->getProperty(), $v), $facet->values);
                 $andConditions[] = ['bool' => ['should' => $orConditions]];
+            } else {
+                $andConditions = array_merge($andConditions, array_map(fn($v) =>
+                    self::mapValuesForQueryToESModel($facet->property, $v), $facet->values));
             }
-
         }
 
         foreach ($q->getCategoryFacets() as $category) {
@@ -235,6 +228,9 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
         switch ($property->getType()) {
             case Datatype::DATETIME:
             case Datatype::NUMBER:
+                if (is_null($value->getRange())) {
+                    return ['exists' => ['field' => Helper::toInternalName($property)]];
+                }
                 $from = $value->getRange()->getFrom();
                 $to = $value->getRange()->getTo();
                 $condition = ['range' => [Helper::toInternalName($property) =>
@@ -243,19 +239,31 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
 
                 break;
             case Datatype::WIKIPAGE:
-                $condition = [ 'nested' => [
+                if (is_null($value->getMwTitle())) {
+                    return ['nested' => [
+                        'path' => Helper::toInternalName($property),
+                        'query' => ['match_all' => new \stdClass()]
+                    ]];
+                }
+                $condition = ['nested' => [
                     'path' => Helper::toInternalName($property),
                     'query' => ['match' => [
-                        Helper::toInternalName($property).'.title' => $value->getMwTitle()->getTitle()]
+                        Helper::toInternalName($property) . '.title' => $value->getMwTitle()->getTitle()]
                     ]
                 ]
                 ];
                 break;
             case Datatype::BOOLEAN:
-                $condition = [ 'match' => [ Helper::toInternalName($property) => $value->getValue() ? 'true' : 'false'] ];
+                if (is_null($value->getValue())) {
+                    return ['exists' => ['field' => Helper::toInternalName($property)]];
+                }
+                $condition = ['match' => [Helper::toInternalName($property) => $value->getValue() ? 'true' : 'false']];
                 break;
             case Datatype::STRING:
             default:
+                if (is_null($value->getValue())) {
+                    return ['exists' => ['field' => Helper::toInternalName($property)]];
+                }
                 $condition = ['match' => [Helper::toInternalName($property) => $value->getValue()]];
         }
         return $condition;

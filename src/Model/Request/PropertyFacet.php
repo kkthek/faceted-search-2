@@ -48,16 +48,6 @@ class PropertyFacet {
         return $this->values;
     }
 
-    public function isSingleValue(): bool
-    {
-        return count($this->values) === 1 && !$this->values[0]->isAllValues();
-    }
-
-    public function isAllValues(): bool
-    {
-        return count($this->values) === 1 && $this->values[0]->isAllValues();
-    }
-
     /**
      * @param FacetValue[] $values
      * @return PropertyFacet
