@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Maintenance;
 
-use DIQA\FacetedSearch2\ElasticSearch\ElasticSearchUpdateClient;
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\Update\FSIndexer;
 use MediaWiki\MediaWikiServices;
@@ -249,25 +249,23 @@ class UpdateIndex extends \Maintenance
         return 0;
     }
 
-    private function createIndexIfNecessary() {
-        global $fs2gBackend;
-        if ($fs2gBackend !== 'elastic') {
-           return;
-        }
+    private function createIndexIfNecessary(): void
+    {
+
         try {
-            $client = new ElasticSearchUpdateClient();
-            $indexExists = $client->existsIndex();
-            if ($indexExists) {
+            $client = ConfigTools::getFacetedSearchUpdateClient();
+            if ($client->existsIndex()) {
                 $client->clearAllDocuments();
                 print "\nIndex already exists. Documents cleared.\n";
             } else {
-                $client->initIndex();
-                print "\nIndex created.\n";
+                if ($client->initIndex()) {
+                    print "\nIndex created.\n";
+                }
             }
             $client->refreshIndex();
 
         } catch (BackendException $e) {
-            echo("ERROR: Creating the index failed.\n" . $e->getMessage());
+            echo("\nERROR: Creating the index failed. Reason: " . $e->getMessage());
             die(1);
         }
     }

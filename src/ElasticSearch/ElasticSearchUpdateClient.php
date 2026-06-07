@@ -110,20 +110,20 @@ class ElasticSearchUpdateClient extends AbstractElasticSearchClient implements F
     /**
      * @throws BackendException
      */
-    public function initIndex(): void
+    public function initIndex(): bool
     {
         $params = $this->getParamForIndex();
 
         try {
             $response = $this->client->indices()->exists($params);
             if ($response->asBool()) {
-                return;
+                return true;
             }
 
             $params['body'] = $this->getSchemaMappings();
 
             $this->client->indices()->create($params);
-
+            return true;
         } catch (ClientResponseException
         |MissingParameterException
         |ServerResponseException $e) {

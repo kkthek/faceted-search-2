@@ -29,7 +29,7 @@ interface FacetedSearchUpdateClient
     /**
      * Initializes the index.
      */
-    public function initIndex(): void;
+    public function initIndex(): bool;
 
     /**
      * Deletes the index.

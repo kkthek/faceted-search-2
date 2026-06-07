@@ -179,9 +179,10 @@ XML;
     }
 
 
-    public function initIndex(): void
+    public function initIndex(): bool
     {
         // no impl. for SOLR
+        return false;
     }
 
     public function deleteIndex(): void
