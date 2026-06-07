@@ -146,6 +146,7 @@ function App() {
                                             expandedFacets={expandedFacets}
                                             eventHandler={eventHandler}
                                             textFilters={textFilters}
+                                            setLoadPromise={setLoadPromise}
 
                         />,
                         <SelectedCategoriesView key={'selectedCategoryView'}
