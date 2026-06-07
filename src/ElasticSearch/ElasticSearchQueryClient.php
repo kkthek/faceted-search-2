@@ -204,7 +204,7 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 ['should' => [
                     ['multi_match' => [
                         'query' => $q->getSearchText(),
-                        'fields' => ['__title^3', '__fulltext'],
+                        'fields' => ['__title^3', '__display^3', '__fulltext'],
                         'operator' => 'and',
                         'type' => 'best_fields',  // default; finds the best single field
                     ]],
