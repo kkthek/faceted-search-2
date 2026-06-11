@@ -68,7 +68,7 @@ class QueryResponseParser {
         $results = [];
 
         foreach ($properties as $propertyWithType => $values) {
-            if (strpos($propertyWithType, '__') === 0) {
+            if (str_starts_with($propertyWithType, '__')) {
                 continue;
             }
 
