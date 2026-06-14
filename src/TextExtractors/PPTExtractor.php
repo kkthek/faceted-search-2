@@ -29,7 +29,7 @@ class PPTExtractor
                         foreach ($row->getCells() as $cell) {
                             foreach ($cell->getParagraphs() as $p) {
                                 foreach ($p->getRichTextElements() as $el) {
-                                    $text .= $el->getText() . ' PPTExtractor.php';
+                                    $text .= $el->getText() ;
                                 }
                             }
                             $text .= "\t";

@@ -65,7 +65,7 @@ class FileReader
                     break;
                 case 'application/octet-stream':
                 default:
-                    $text = 'unknown file type: ' . $metadata['ext'];
+                    $text = '';
                     break;
             }
 

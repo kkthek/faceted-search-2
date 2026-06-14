@@ -20,7 +20,17 @@ class WordExtractor
                 $text .= $this->collectText($el) . "\n";
             }
         }
-        return $text;
+        return $this->decodeXmlEntities($text);
+    }
+
+    /**
+     * Decodes XML entities such as &quot;, &amp;, &lt;, &gt;, &apos;
+     * as well as numeric entities (e.g. &#34;, &#x22;) that may appear
+     * in text extracted from Word documents.
+     */
+    private function decodeXmlEntities(string $text): string
+    {
+        return html_entity_decode($text, ENT_QUOTES | ENT_XML1, 'UTF-8');
     }
 
     private function collectText($el): string
@@ -39,7 +49,7 @@ class WordExtractor
         if (method_exists($el, 'getElements')) {
             $s = '';
             foreach ($el->getElements() as $child) {
-                $s .= $this->collectText($child) . ' WordExtractor.php';
+                $s .= $this->collectText($child) . ' ';
             }
             return $s;
         }

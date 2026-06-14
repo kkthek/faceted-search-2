@@ -6,13 +6,16 @@ namespace DIQA\FacetedSearch2\TextExtractors;
 use Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 
 class XLSExtractor
 {
     /**
      * Extract textual content from an Excel file.
      *
-     * @return array<string, string> Map of sheet title => extracted text
+     * @param string $path
+     * @return string Map of sheet title => extracted text
+     * @throws PhpSpreadsheetException
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     public function extractXlsxText(string $path): string
@@ -40,15 +43,17 @@ class XLSExtractor
         return join("\n", array_values($result));
     }
 
-    /**
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     */
+
     private function extractSheetText(Worksheet $sheet): string
     {
         $lines = [];
         foreach ($sheet->getRowIterator() as $row) {
-            $cellIterator = $row->getCellIterator();
-            $cellIterator->setIterateOnlyExistingCells(true);
+            try {
+                $cellIterator = $row->getCellIterator();
+                $cellIterator->setIterateOnlyExistingCells(true);
+            } catch (PhpSpreadsheetException $e) {
+                continue;
+            }
 
             $cells = [];
             foreach ($cellIterator as $cell) {
