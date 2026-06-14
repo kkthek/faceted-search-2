@@ -2,12 +2,14 @@
 
 namespace DIQA\FacetedSearch2\Update;
 
+
 use DIQA\FacetedSearch2\TextExtractors\PPTExtractor;
 use DIQA\FacetedSearch2\TextExtractors\WordExtractor;
 use DIQA\FacetedSearch2\TextExtractors\XLSExtractor;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
+use DIQA\FacetedSearch2\Utils\ConfusableCharacterNormalizer;
 use Exception;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Title\Title;
@@ -35,39 +37,9 @@ class FileReader
                 $this->retrieveFileSystemPath($pageNamespace, $pageDbKey, $doc);
             }
 
-            $mediaExtractor = new WordExtractor();
-            $excelExtractor = new XLSExtractor();
-            $powerPointExtractor = new PPTExtractor();
             $metadata = $this->getDocumentMetadata($pageTitle);
             if (is_null($metadata)) return '';
-            switch ($metadata['contentType']) {
-                case 'application/pdf':
-                    $parser = new Parser();
-                    try {
-                        $content = file_get_contents($metadata['filePath']);
-                        $pdf = $parser->parseContent($content);
-                        $text =  $pdf->getText();
-                    } catch (Exception $e) {
-                        $text = "Could not extract PDF content due to: " . $e->getMessage();
-                    }
-                    break;
-                case 'application/msword':
-                    $text = $mediaExtractor->extractDocument($metadata['filePath'], 'MsDoc');
-                    break;
-                case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                    $text = $mediaExtractor->extractDocument($metadata['filePath'], 'Word2007');
-                    break;
-                case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
-                    $text = $excelExtractor->extractXlsxText($metadata['filePath']);
-                    break;
-                case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-                    $text = $powerPointExtractor->extractPptxTextViaLib($metadata['filePath']);
-                    break;
-                case 'application/octet-stream':
-                default:
-                    $text = '';
-                    break;
-            }
+            $text = $this->extractText($metadata);
 
 
         } catch (Exception $e) {
@@ -128,5 +100,47 @@ class FileReader
         }
 
         return ['filePath' => $filepath, 'contentType' => $contentType, 'ext' => $ext];
+    }
+
+    /**
+     * @param array $metadata
+     * @return string
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    public function extractText(array $metadata): string
+    {
+        $mediaExtractor = new WordExtractor();
+        $excelExtractor = new XLSExtractor();
+        $powerPointExtractor = new PPTExtractor();
+        switch ($metadata['contentType']) {
+            case 'application/pdf':
+                try {
+                    $parser = new Parser();
+                    $content = file_get_contents($metadata['filePath']);
+                    $pdf = $parser->parseContent($content);
+                    $text = $pdf->getText();
+                } catch (Exception $e) {
+                    $text = "Could not extract PDF content due to: " . $e->getMessage();
+                }
+                break;
+            case 'application/msword':
+                $text = $mediaExtractor->extractDocument($metadata['filePath'], 'MsDoc');
+                break;
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                $text = $mediaExtractor->extractDocument($metadata['filePath'], 'Word2007');
+                break;
+            case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+                $text = $excelExtractor->extractXlsxText($metadata['filePath']);
+                break;
+            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                $text = $powerPointExtractor->extractPptxTextViaLib($metadata['filePath']);
+                break;
+
+            default:
+                $text = '';
+                break;
+        }
+        return ConfusableCharacterNormalizer::normalize($text);
     }
 }

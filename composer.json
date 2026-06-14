@@ -36,7 +36,8 @@
 		"phpoffice/phpspreadsheet": "^1.12",
         "ext-dom": "*",
         "ext-libxml": "*",
-        "ext-ctype": "*"
+        "ext-ctype": "*",
+        "ext-intl": "*"
     },
 	"suggest": {
 
@@ -55,14 +56,18 @@
 		"update": "php maintenance/updateIndex.php -v"
 	},
 	"autoload": {
-	"psr-4": {
-		"DIQA\\FacetedSearch2\\": [
-			"src/", "test/"]
-	  }
+      "psr-4": {
+          "DIQA\\FacetedSearch2\\": [ "src/" ]
+      }
     },
+    "autoload-dev": {
+      "psr-4": {
+          "DIQA\\FacetedSearch2\\": [ "test/" ]
+      }
+  },
 	"require-dev": {
 		"phpunit/phpunit": "^7"
-	},
+    },
 	"archive": {
 		"exclude": [
 			"/.git", "/.idea", "/vm-ubuntu", "/test",
