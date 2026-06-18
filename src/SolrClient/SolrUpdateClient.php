@@ -179,4 +179,25 @@ XML;
     }
 
 
+    public function initIndex(): bool
+    {
+        // no impl. for SOLR
+        return false;
+    }
+
+    public function deleteIndex(): void
+    {
+        // no impl. for SOLR
+    }
+
+    public function existsIndex(): bool
+    {
+        // no impl. for SOLR
+        return false;
+    }
+
+    public function refreshIndex(): void
+    {
+        // no impl. for SOLR
+    }
 }

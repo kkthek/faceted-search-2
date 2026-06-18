@@ -39,6 +39,11 @@ class FacetValue {
         return new FacetValue(null, null, $range);
     }
 
+    public function isAllValues(): bool
+    {
+        return is_null($this->value) && is_null($this->mwTitle) && is_null($this->range);
+    }
+
     /**
      * @return string|null
      */

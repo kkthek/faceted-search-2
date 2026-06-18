@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {Dispatch, SetStateAction, useContext} from "react";
 import EventHandler from "../../common/event_handler";
 import {WikiContext} from "../../index";
 import ConfigUtils from "../../util/config_utils";
@@ -22,7 +22,8 @@ function FacetView(prop: {
     searchStateFacets: SearchStateFacet,
     expandedFacets: string[],
     eventHandler: EventHandler
-    textFilters: TextFilters
+    textFilters: TextFilters,
+    setLoadPromise: Dispatch<SetStateAction<Promise<any>>>
 
 }) {
     if (!prop.searchStateDocument) return;
@@ -40,12 +41,14 @@ function FacetView(prop: {
 
     const [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick] = ORDialogInput.createORDialogState(
         prop.searchStateDocument.query,
-        prop.client
+        prop.client,
+        prop.setLoadPromise
     );
 
     const [openDateRangeDialog, handleCloseFacetDateRangeDialog, onDateRangeDialogClick] = DateRangeDialogInput.createDateRangeDialogState(
         prop.searchStateDocument.query,
-        prop.client
+        prop.client,
+        prop.setLoadPromise
     );
 
 

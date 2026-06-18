@@ -22,14 +22,10 @@ function setConfigForDevContext() {
     $wgServer = "http://localhost";
     $wgArticlePath = '/main/mediawiki/$1';
 
+
     // set development settings ------------------------------
-    global $fs2gBackend, $fs2gBackendConfig;
-    $fs2gBackend = 'solr';
-    $fs2gBackendConfig = [
-        'host' => "localhost",
-        'port' => "8983",
-        'indexName' => "mw"
-    ];
+
+
 
     global $fs2gExtraPropertiesToRequest;
     $fs2gExtraPropertiesToRequest = [];
@@ -60,7 +56,7 @@ function setConfigForDevContext() {
     $fs2gShowNamespaces = true;
     $fs2gNamespacesToShow = [0, 14, 10];
 
-    $fs2gFacetValueLimit = 20;
+    $fs2gFacetValueLimit = 2;
     $fs2gShowArticleProperties = true;
 
     $fs2gShownFacets = []; //['Employee' => ['Works at'] ];
@@ -150,7 +146,17 @@ function setConfigForDevContext() {
     global $fs2gShowEmptyNamespaces;
     $fs2gShowEmptyNamespaces = false;
 
+    global $fs2gCategoryBoosts, $fs2gNamespaceBoosts, $fs2gTemplateBoosts;
+    $fs2gCategoryBoosts = [];//['Employee' => 5.5];
+    $fs2gNamespaceBoosts = [];
+    $fs2gTemplateBoosts = [];
+
 // -------------------------------------------------------
+
+    if (file_exists(__DIR__ . '/env.php')) {
+        require_once __DIR__ . '/env.php';
+    }
+
 }
 
 function getConfigForDevContext(): array

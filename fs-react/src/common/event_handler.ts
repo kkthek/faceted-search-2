@@ -315,33 +315,38 @@ class EventHandler {
 
     }
 
-    private async updateDocuments() {
-        return this.client.searchDocuments(this.currentDocumentsQueryBuilder.build()).then(response => {
+    private async updateDocuments(): Promise<void> {
+        try {
+            const documentQuery = this.currentDocumentsQueryBuilder.build();
+            const response = await this.client.searchDocuments(documentQuery);
             this.setSearchState({
                 documentResponse: response,
-                query: this.currentDocumentsQueryBuilder.build()
+                query: documentQuery
             });
-        }).catch((e) => {
+        } catch (e) {
             if (e.name === 'AbortError') return;
             console.error("Request to backend failed");
             console.error(e);
             this.setError(e.message);
-        });
+        }
     }
 
-    private async updateFacets() {
-        this.currentFacetsQueryBuilder.updateBaseQuery(this.currentDocumentsQueryBuilder.build());
-        return this.client.searchFacets(this.currentFacetsQueryBuilder.build()).then(response => {
+    private async updateFacets(): Promise<void> {
+        try {
+            const documentQuery = this.currentDocumentsQueryBuilder.build();
+            this.currentFacetsQueryBuilder.updateBaseQuery(documentQuery);
+            const facetsQuery = this.currentFacetsQueryBuilder.build();
+            const response = await this.client.searchFacets(facetsQuery);
             this.setFacetState({
                 facetsResponse: response,
-                query: this.currentFacetsQueryBuilder.build()
+                query: facetsQuery
             });
-        }).catch((e) => {
+        } catch (e) {
             if (e.name === 'AbortError') return;
             console.error("Request to backend failed");
             console.error(e);
             this.setError(e.message);
-        });
+        }
     }
 
 }

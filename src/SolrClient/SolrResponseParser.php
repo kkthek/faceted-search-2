@@ -143,9 +143,10 @@ class SolrResponseParser {
             foreach($this->body->stats->stats_fields as $p => $info) {
                 $property = $this->parsePropertyFromStats($p);
                 if (!is_null($property)) {
+                    if ($info->min == 0 && $info->max == 0) continue;
                     $stat = new Stats($property,
-                        $info->min ?? 0,
-                        $info->max ?? 0,
+                        $this->convertIfNecessary($info->min, $property->getType()),
+                        $this->convertIfNecessary($info->max, $property->getType()),
                         $info->count ?? 0,
                         $info->sum ?? 0
                     );
@@ -155,6 +156,15 @@ class SolrResponseParser {
         }
 
         return new StatsResponse($stats);
+    }
+
+    private function convertIfNecessary($long, int $datatype): string
+    {
+        if ($datatype === Datatype::DATETIME) {
+            return Carbon::createFromIsoFormat('YYYYMMDDHHmmss', $long)
+                ->format('Y-m-d\TH:i:s.v\Z');
+        }
+        return $long;
     }
 
     public function parseFacetResponse(): FacetResponse {

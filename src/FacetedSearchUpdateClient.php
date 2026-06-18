@@ -26,4 +26,23 @@ interface FacetedSearchUpdateClient
      */
     public function clearAllDocuments();
 
+    /**
+     * Initializes the index.
+     */
+    public function initIndex(): bool;
+
+    /**
+     * Deletes the index.
+     * @return void
+     */
+    public function deleteIndex(): void;
+
+    /**
+     * Checks if the index exists.
+     * @return bool
+     */
+    public function existsIndex(): bool;
+
+    public function refreshIndex(): void;
+
 }

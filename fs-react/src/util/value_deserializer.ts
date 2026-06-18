@@ -7,7 +7,7 @@ class ValueDeserializer {
         }
         if (value.title) {
             return new MWTitleWithURL(value.title, value.displayTitle, value.url);
-        } else if (typeof(value) === 'string' && value.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/)) {
+        } else if (typeof(value) === 'string' && value.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z/)) {
             return new Date(Date.parse(value))
         } else if (this.isNumeric(value)) {
             return parseFloat(value);

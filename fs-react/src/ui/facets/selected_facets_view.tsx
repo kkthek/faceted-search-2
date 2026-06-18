@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Dispatch, SetStateAction} from "react";
 import EventHandler from "../../common/event_handler";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import Client from "../../common/client";
@@ -14,13 +14,15 @@ function SelectedFacetsView(prop: {
     searchStateDocument: SearchStateDocument,
     expandedFacets: string[],
     eventHandler: EventHandler
-    textFilters: TextFilters
+    textFilters: TextFilters,
+    setLoadPromise: Dispatch<SetStateAction<Promise<any>>>
 }) {
     if (!prop.searchStateFacet) return;
 
     const [openOrDialog, handleCloseFacetOrDialog, onOrDialogClick] = ORDialogInput.createORDialogState(
         prop.searchStateFacet.query,
-        prop.client
+        prop.client,
+        prop.setLoadPromise
     );
 
     const documentResponse = prop.searchStateDocument?.documentResponse

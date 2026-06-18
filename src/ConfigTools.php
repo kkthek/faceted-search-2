@@ -2,6 +2,8 @@
 
 namespace DIQA\FacetedSearch2;
 
+use DIQA\FacetedSearch2\ElasticSearch\ElasticSearchQueryClient;
+use DIQA\FacetedSearch2\ElasticSearch\ElasticSearchUpdateClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\SolrClient\SolrRequestClient;
@@ -12,7 +14,8 @@ use SMW\DataTypeRegistry;
 use SMWDataItem;
 use SMW\DIProperty as SMWDIProperty;
 
-class ConfigTools {
+class ConfigTools
+{
 
     public static function initializeServersideConfig(): void
     {
@@ -85,6 +88,7 @@ class ConfigTools {
                     $result[] = new Property($property, Datatype::NUMBER);
                     break;
                 case SMWDataItem::TYPE_BLOB:
+                default:
                     $result[] = new Property($property, Datatype::STRING);
                     break;
                 case SMWDataItem::TYPE_WIKIPAGE:
@@ -101,33 +105,32 @@ class ConfigTools {
 
     public static function getFacetedSearchUpdateClient(): FacetedSearchUpdateClient
     {
-        static $backendUpdateClient;
-        if (!isset($backendUpdateClient)) {
-            global $fs2gBackend;
-            switch($fs2gBackend) {
-                case 'solr':
-                default:
-                    $backendUpdateClientClass = SolrUpdateClient::class;
-                    break;
-            }
-            $backendUpdateClient = new $backendUpdateClientClass;
+        global $fs2gBackend;
+        switch ($fs2gBackend) {
+            case 'solr':
+            default:
+                $backendUpdateClientClass = SolrUpdateClient::class;
+                break;
+            case 'elastic':
+                $backendUpdateClientClass = ElasticSearchUpdateClient::class;
+                break;
+
         }
-        return $backendUpdateClient;
+        return new $backendUpdateClientClass;
     }
 
     public static function getFacetedSearchClient(): FacetedSearchClient
     {
-        static $backendQueryClient;
-        if (!isset($backendQueryClient)) {
-            global $fs2gBackend;
-            switch($fs2gBackend) {
-                case 'solr':
-                default:
-                    $backendQueryClientClass = SolrRequestClient::class;
-                    break;
-            }
-            $backendQueryClient = new $backendQueryClientClass;
+        global $fs2gBackend;
+        switch ($fs2gBackend) {
+            case 'solr':
+            default:
+                $backendQueryClientClass = SolrRequestClient::class;
+                break;
+            case 'elastic':
+                $backendQueryClientClass = ElasticSearchQueryClient::class;
+                break;
         }
-        return $backendQueryClient;
+        return new $backendQueryClientClass;
     }
 }

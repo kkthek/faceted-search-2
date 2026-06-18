@@ -146,6 +146,7 @@ function App() {
                                             expandedFacets={expandedFacets}
                                             eventHandler={eventHandler}
                                             textFilters={textFilters}
+                                            setLoadPromise={setLoadPromise}
 
                         />,
                         <SelectedCategoriesView key={'selectedCategoryView'}
@@ -165,6 +166,7 @@ function App() {
                                    expandedFacets={expandedFacets}
                                    eventHandler={eventHandler}
                                    textFilters={textFilters}
+                                   setLoadPromise={setLoadPromise}
                         />,
 
                         <CategoryDropdown key={'categoryDropDown'}

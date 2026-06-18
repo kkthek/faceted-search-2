@@ -72,7 +72,8 @@ class MWDBReader
         }
 
         $options = [];
-        $this->boostingCalculator->calculateBoosting($wikiPage, $options, $doc);
+        $doc['smwh_templates'] = $this->retrieveTemplates($pageID);
+        $this->boostingCalculator->calculateBoosting($wikiPage, $doc['smwh_templates'], $options, $doc);
 
         $hookContainer = MediaWikiServices::getInstance()->getHookContainer();
         $hookContainer->run('fs_saveArticle', [$text, &$doc]);
@@ -84,6 +85,7 @@ class MWDBReader
         $document->setPropertyValues($doc['smwh_properties'] ?? [])
             ->setCategories($doc['smwh_categories'] ?? [])
             ->setDirectCategories($doc['smwh_directcategories'] ?? [])
+            ->setTemplates($doc['smwh_templates'] ?? [])
             ->setBoost($options['smwh_boost_dummy']['boost'] ?? 1.0)
             ->setFulltext($doc['smwh_full_text']);
 
@@ -167,6 +169,30 @@ class MWDBReader
         $superCategories = array_map(fn($category) => Title::newFromText($category)->getDBkey(), $superCategories);
         $doc['smwh_categories'] = array_unique(array_merge($doc['smwh_directcategories'], $superCategories));
 
+    }
+
+    public function retrieveTemplates($pageId): array
+    {
+        $db = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection(DB_REPLICA);
+        $res = $db->newSelectQueryBuilder()
+            ->select('CAST(lt_title AS CHAR) AS template')
+            ->from('templatelinks')
+            ->join('page', null, ['page_id = tl_from'])
+            ->join('linktarget', null, ['lt_id = tl_target_id'])
+            ->where("tl_from = $pageId")
+            ->caller(__METHOD__)
+            ->fetchResultSet();
+
+        $smwhTemplates = [];
+        if ($res->numRows() > 0) {
+            while ($row = $res->fetchObject()) {
+                $template = $row->template;
+                $smwhTemplates[] = str_replace("_", " ", $template);
+            }
+        }
+        $res->free();
+
+        return array_unique($smwhTemplates);
     }
 
 }

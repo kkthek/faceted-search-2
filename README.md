@@ -14,10 +14,21 @@ Enter VM by running:
 
     vagrant ssh
 
+### SOLR
+
 and go to `/var/www/html/mediawiki/vm-ubuntu` and run:
 
-    ./solr-installPowerSearch.sh
-    ./solr-installCore.sh
+    sudo ./solr-installPowerSearch.sh
+    sudo ./solr-installCore.sh
+
+### ElasticSearch
+
+goto to `/var/www/html/mediawiki/vm-ubuntu` and run:
+
+    sudo ./install-elastic.sh
+    sudo ./set-password-for-elastic.sh
+
+This creates a user "elastic" with a password and sets it in the env.php file.
 
 # Build Frontend
 

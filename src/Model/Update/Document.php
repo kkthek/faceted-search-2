@@ -12,6 +12,7 @@ class Document {
     private $propertyValues = [];    /* @var PropertyValues[] */
     private $categories = [];        /* @var string[] */
     private $directCategories = [];  /* @var string[] */
+    private $templates = [];         /* @var string[] */
     private ?float $boost = null;
 
     /**
@@ -66,7 +67,7 @@ class Document {
     }
 
     /**
-     * @return PropertyValues[]
+     * @return string[]
      */
     public function getCategories(): array
     {
@@ -98,6 +99,17 @@ class Document {
     public function setDirectCategories(array $directCategories): Document
     {
         $this->directCategories = $directCategories;
+        return $this;
+    }
+
+    public function getTemplates(): array
+    {
+        return $this->templates;
+    }
+
+    public function setTemplates(array $templates): Document
+    {
+        $this->templates = $templates;
         return $this;
     }
 

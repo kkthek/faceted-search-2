@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\Utils;
 
+use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 
 final class DateTimeClustererTest extends TestCase
@@ -10,7 +11,7 @@ final class DateTimeClustererTest extends TestCase
     public function testDateTimeCluster()
     {
         $clusterer = new DateTimeClusterer();
-        $clusters = $clusterer->makeClusters("20240703143421","20240803120000", 10);
+        $clusters = $clusterer->makeClusters("2024-07-03T14:34:21Z","2024-08-03T12:00:00Z", 10);
 
         $this->assertEquals("2024-07-03T00:00:00Z", $clusters[0]->from);
         $this->assertEquals("2024-07-06T02:23:59Z", $clusters[0]->to);
@@ -22,9 +23,10 @@ final class DateTimeClustererTest extends TestCase
     public function testDateTimeSingleValueCluster()
     {
         $clusterer = new DateTimeClusterer();
-        $clusters = $clusterer->makeClusters("20240703143421","20240703143421", 10);
+        $clusters = $clusterer->makeClusters("2024-07-03T14:34:21Z","2024-07-03T14:34:21Z", 10);
 
         $this->assertEquals("2024-07-03T14:34:21Z", $clusters[0]->from);
         $this->assertEquals("2024-07-03T14:34:21Z", $clusters[0]->to);
     }
+
 }
