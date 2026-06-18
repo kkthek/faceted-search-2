@@ -11,7 +11,7 @@
 		"SOLR",
         "Elastic search"
 	],
-	"homepage": "https://www.semantic-mediawiki.org/wiki/Enhanced_Retrieval",
+	"homepage": "https://www.semantic-mediawiki.org/wiki/FacetedSearch2",
 	"license": "GPL-2.0-or-later",
 	"authors": [
 		{
