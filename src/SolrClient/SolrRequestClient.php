@@ -2,6 +2,7 @@
 
 namespace DIQA\FacetedSearch2\SolrClient;
 
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\FacetedSearchClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
 use DIQA\FacetedSearch2\Model\Common\Order;
@@ -394,12 +395,12 @@ class SolrRequestClient implements FacetedSearchClient
 
     private function recalculateNamespaceCountsIfNecessary(DocumentsResponse $docResponse, DocumentQuery $q): void
     {
-        if (count($q->namespaceFacets) === 0) {
+        if (count($q->namespaceFacets) === 0 || $q->limit === 0) {
             return;
         }
         $queryParams = $this->getParams($q->searchText, $q->propertyFacets, $q->categoryFacets,
-            [], []);
-        $sortsAndLimits = $this->encodeSortsAndLimits([], 1, 0);
+            ConfigTools::getAllowedNamespaces(), []);
+        $sortsAndLimits = $this->encodeSortsAndLimits([], 0, 0);
         $queryParams = array_merge($queryParams, $sortsAndLimits);
 
         $response = new SolrResponseParser($this->requestSOLR($queryParams));

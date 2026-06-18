@@ -3,6 +3,7 @@
 namespace DIQA\FacetedSearch2\ElasticSearch;
 
 use Carbon\Carbon;
+use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\FacetedSearchClient;
 use DIQA\FacetedSearch2\Model\Common\Datatype;
@@ -302,11 +303,11 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
      */
     private function recalculateNamespaceCountsIfNecessary(DocumentsResponse $docResponse, DocumentQuery $q): void
     {
-        if (count($q->namespaceFacets) === 0) {
+        if (count($q->namespaceFacets) === 0 || $q->limit === 0) {
             return;
         }
         $baseQuery = clone $q;
-        $baseQuery->setNamespaceFacets([]);
+        $baseQuery->setNamespaceFacets(ConfigTools::getAllowedNamespaces());
         $baseQuery->setLimit(0);
         $documentsResponse = $this->requestDocuments($baseQuery);
         $docResponse->namespaceFacetCounts = $documentsResponse->namespaceFacetCounts;
