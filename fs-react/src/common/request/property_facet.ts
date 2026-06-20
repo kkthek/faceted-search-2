@@ -2,8 +2,6 @@ import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 import {Property} from "../property";
 import {FacetValue} from "./facet_value";
 
-import {PropertyWithURL} from "../response/property_with_URL";
-
 @jsonObject
 export class PropertyFacet {
     @jsonMember(Property)
@@ -14,7 +12,7 @@ export class PropertyFacet {
     constructor(property: Property,
                 values: FacetValue[]
     ) {
-        this.property = property instanceof PropertyWithURL ? (property as PropertyWithURL).asProperty() : property;
+        this.property = property.asProperty();
         this.values = values;
     }
 

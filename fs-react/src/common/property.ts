@@ -42,4 +42,8 @@ export class Property {
     equals(that: Property) {
         return that.title === this.title && that.type === this.type;
     }
+
+    asProperty() {
+        return this;
+    }
 }
