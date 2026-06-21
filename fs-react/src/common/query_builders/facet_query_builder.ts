@@ -27,7 +27,7 @@ class FacetQueryBuilder {
     }
 
     withoutPropertyFacet(p: Property) {
-        this.query.propertyFacets.removeAll((e: PropertyFacet) => e.property.title === p.title);
+        this.query.removePropertyFacet(p);
         return this;
     }
 
@@ -37,7 +37,7 @@ class FacetQueryBuilder {
     }
 
     clearRangeQueriesForProperty(p : Property) {
-        this.query.rangeQueries.removeAll((e: Property) => e.title === p.title);
+        this.query.removeRangeQuery(p);
         return this;
     }
 
@@ -48,23 +48,23 @@ class FacetQueryBuilder {
 
     withPropertyValueQuery(propertyValueQuery: PropertyValueQuery): FacetQueryBuilder {
         if (!propertyValueQuery) return this;
-        let constraint = this.query.propertyValueQueries.replaceFirst(
-            (e: PropertyValueQuery) => e.property.title === propertyValueQuery.property.title, propertyValueQuery);
-        if (constraint === null) {
+        const valueQuery = this.query.findPropertyValueQuery(propertyValueQuery.property);
+        if (valueQuery !== null) {
+            this.query.replacePropertyValueQuery(propertyValueQuery);
+        } else {
             this.query.propertyValueQueries.push(propertyValueQuery);
         }
         return this;
     }
 
     existsUnlimitedPropertyValueQuery(property: Property): boolean {
-        const valueQuery = this.query.propertyValueQueries.findFirst(
-            (e: PropertyValueQuery) => e.property.equals(property));
+        const valueQuery = this.query.findPropertyValueQuery(property);
         if (valueQuery === null) return false;
         return valueQuery.valueLimit === null
     }
 
     clearPropertyValueQueryForProperty(p : Property) {
-        this.query.propertyValueQueries.removeAll((e: PropertyValueQuery) => e.property.title === p.title);
+        this.query.removePropertyValueQuery(p);
         return this;
     }
 

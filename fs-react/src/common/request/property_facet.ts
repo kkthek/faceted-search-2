@@ -16,7 +16,23 @@ export class PropertyFacet {
         this.values = values;
     }
 
-    containsFacet(value: FacetValue): boolean {
+    addValuesFromFacet(facet: PropertyFacet) {
+        facet.values.forEach(vNew => {
+            if (!this.values.some(vOld => vOld.equals(vNew))) {
+                this.values.push(vNew);
+            }
+        });
+    }
+
+    removeValue(value: FacetValue) {
+        this.values = this.values.filter(e => !e.equals(value));
+    }
+
+    hasNoValues(): boolean {
+        return this.values.length === 0;
+    }
+
+    containsValue(value: FacetValue): boolean {
         if (!value) return false;
         return this.values.some(e => e.equals(value) || e.withinRange(value));
     }

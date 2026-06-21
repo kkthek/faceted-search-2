@@ -46,7 +46,7 @@ describe('PropertyFacet', () => {
             const facet = new PropertyFacet(stringProperty, [value]);
 
             const searchValue = new FacetValue('testValue', null, null);
-            expect(facet.containsFacet(searchValue)).to.be.true;
+            expect(facet.containsValue(searchValue)).to.be.true;
         });
 
         it('should return false when facet does not contain matching value', () => {
@@ -54,14 +54,14 @@ describe('PropertyFacet', () => {
             const facet = new PropertyFacet(stringProperty, [value]);
 
             const searchValue = new FacetValue('otherValue', null, null);
-            expect(facet.containsFacet(searchValue)).to.be.false;
+            expect(facet.containsValue(searchValue)).to.be.false;
         });
 
         it('should return false for null value', () => {
             const value = new FacetValue('testValue', null, null);
             const facet = new PropertyFacet(stringProperty, [value]);
 
-            expect(facet.containsFacet(null)).to.be.false;
+            expect(facet.containsValue(null)).to.be.false;
         });
 
         it('should return true when value is within a range', () => {
@@ -71,7 +71,7 @@ describe('PropertyFacet', () => {
 
             const searchRange = new Range(0, 100);
             const searchValue = new FacetValue(null, null, searchRange);
-            expect(facet.containsFacet(searchValue)).to.be.true;
+            expect(facet.containsValue(searchValue)).to.be.true;
         });
 
         it('should return true with multiple values when one matches', () => {
@@ -80,13 +80,13 @@ describe('PropertyFacet', () => {
             const facet = new PropertyFacet(stringProperty, [value1, value2]);
 
             const searchValue = new FacetValue('val2', null, null);
-            expect(facet.containsFacet(searchValue)).to.be.true;
+            expect(facet.containsValue(searchValue)).to.be.true;
         });
 
         it('should return false when facet has no values', () => {
             const facet = new PropertyFacet(stringProperty, []);
             const searchValue = new FacetValue('testValue', null, null);
-            expect(facet.containsFacet(searchValue)).to.be.false;
+            expect(facet.containsValue(searchValue)).to.be.false;
         });
     });
 

@@ -42,41 +42,36 @@ class DocumentQueryBuilder {
         return this;
     }
 
-    withPropertyFacet(propertyFacetConstraint: PropertyFacet): DocumentQueryBuilder {
-        const pf = this.query.propertyFacets.findFirst((e: PropertyFacet) => e.property.title === propertyFacetConstraint.property.title);
-        if (pf === null) {
-            this.query.propertyFacets.push(propertyFacetConstraint);
+    withPropertyFacet(facet: PropertyFacet): DocumentQueryBuilder {
+        const existingFacet = this.query.findPropertyFacet(facet.property);
+        if (existingFacet === null) {
+            this.query.propertyFacets.push(facet);
         } else {
-            propertyFacetConstraint.values.forEach(vNew => {
-                if (!pf.values.some(vOld => vOld.equals(vNew))) {
-                    pf.values.push(vNew);
-                }
-            });
-
+            existingFacet.addValuesFromFacet(facet);
         }
         return this;
     }
 
     clearFacetsForProperty(property: Property): DocumentQueryBuilder {
-        this.query.propertyFacets.removeAll((e: PropertyFacet) => e.property.title === property.title);
+        this.query.removePropertyFacet(property);
         return this;
     }
 
     withoutPropertyFacet(pf: PropertyFacet, facetValue: FacetValue = null) {
         if (facetValue === null) {
-            this.query.propertyFacets.removeFirst( (e: PropertyFacet) => e.property.equals(pf.property));
+            this.query.removePropertyFacet(pf.property);
         } else {
-            const f = this.query.propertyFacets.findFirst((e: PropertyFacet) => e.property.equals(pf.property));
-            f.values.removeFirst((v: FacetValue) => v.equals(facetValue));
-            if (f.values.length === 0) {
-                this.withoutPropertyFacet(pf);
+            const existingFacet = this.query.findPropertyFacet(pf.property);
+            existingFacet.removeValue(facetValue);
+            if (existingFacet.hasNoValues()) {
+                this.query.removePropertyFacet(pf.property);
             }
         }
         return this;
     }
 
     existsPropertyFacetForProperty(p: Property): boolean {
-        return this.query.propertyFacets.findFirst( (e: PropertyFacet) => e.property.title === p.title) !== null;
+        return this.query.findPropertyFacet(p) !== null;
     }
 
     withCategoryFacet(category: string): DocumentQueryBuilder {

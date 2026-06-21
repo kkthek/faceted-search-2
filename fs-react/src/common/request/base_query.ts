@@ -28,6 +28,10 @@ export abstract class BaseQuery {
         return this.propertyFacets.findFirst((e) => e.property.title === property.title);
     }
 
+    removePropertyFacet(property: Property) {
+        this.propertyFacets = this.propertyFacets.filter((e) => e.property.title !== property.title);
+    }
+
     isPropertyFacetSelected(property: Property): boolean {
         return this.findPropertyFacet(property) !== null;
     }
