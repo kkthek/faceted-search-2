@@ -90,7 +90,7 @@ class ConfigUtils {
     private static getFullTitle(wikiContext: WikiContextAccessor, doc: Document) {
         const namespaces = wikiContext.config['wgFormattedNamespaces'];
         const namespaceAsText = namespaces[doc.namespaceFacet.namespace];
-        return doc.namespaceFacet.namespace !== 0 ? `${namespaceAsText}:${doc.title}` : doc.title;
+        return doc.namespaceFacet.isMainNamespace() ? doc.title : `${namespaceAsText}:${doc.title}`;
     }
 }
 

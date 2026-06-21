@@ -24,7 +24,7 @@ function SelectedFacetValues(prop: {
     const displayValue = prop.propertyValueCount.getDisplayText(wikiContext);
     const facetValue = FacetValue.fromValueCount(prop.propertyValueCount);
     const propertyFacet = new PropertyFacet(property, [facetValue]);
-    const removable = property.isRangeProperty() ? false : prop.selectedPropertyFacet.containsFacet(facetValue);
+    const removable = property.isRangeProperty() ? false : prop.selectedPropertyFacet.containsValue(facetValue);
 
     const onRemovePropertyFacet = () => {
         if (!removable) return;

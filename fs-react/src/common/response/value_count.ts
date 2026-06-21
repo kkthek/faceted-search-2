@@ -35,8 +35,8 @@ export class ValueCount implements Sortable<ValueCount> {
     compareToSelectedFirst(other: ValueCount, propertyFacet: PropertyFacet) {
         const facetValueA = FacetValue.fromValueCount(this);
         const facetValueB = FacetValue.fromValueCount(other);
-        const containsA = propertyFacet.containsFacet(facetValueA);
-        const containsB = propertyFacet.containsFacet(facetValueB);
+        const containsA = propertyFacet.containsValue(facetValueA);
+        const containsB = propertyFacet.containsValue(facetValueB);
         if (containsA === containsB) return 0;
         return containsA && !containsB ? -1 : 1;
     }

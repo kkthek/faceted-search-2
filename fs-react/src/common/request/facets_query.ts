@@ -22,4 +22,21 @@ export class FacetsQuery extends BaseQuery {
         this.propertyValueQueries = propertyValueQueries;
     }
 
+    removeRangeQuery(property: Property) {
+        this.rangeQueries = this.rangeQueries.filter((e) => e.title !== property.title);
+    }
+
+    removePropertyValueQuery(property: Property) {
+        this.propertyValueQueries = this.propertyValueQueries.filter((e) => !e.property.equals(property));
+    }
+
+    replacePropertyValueQuery(newQuery: PropertyValueQuery) {
+        return this.propertyValueQueries.replaceFirst(
+            (e: PropertyValueQuery) => e.property.equals(newQuery.property), newQuery);
+    }
+
+    findPropertyValueQuery(property: Property) {
+        return this.propertyValueQueries.findFirst(
+            (e: PropertyValueQuery) => e.property.equals(property));
+    }
 }

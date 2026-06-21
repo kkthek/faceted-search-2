@@ -2,8 +2,6 @@ import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 import {Property} from "../property";
 import {FacetValue} from "./facet_value";
 
-import {PropertyWithURL} from "../response/property_with_URL";
-
 @jsonObject
 export class PropertyFacet {
     @jsonMember(Property)
@@ -14,11 +12,27 @@ export class PropertyFacet {
     constructor(property: Property,
                 values: FacetValue[]
     ) {
-        this.property = property instanceof PropertyWithURL ? (property as PropertyWithURL).asProperty() : property;
+        this.property = property.asProperty();
         this.values = values;
     }
 
-    containsFacet(value: FacetValue): boolean {
+    addValuesFromFacet(facet: PropertyFacet) {
+        facet.values.forEach(vNew => {
+            if (!this.values.some(vOld => vOld.equals(vNew))) {
+                this.values.push(vNew);
+            }
+        });
+    }
+
+    removeValue(value: FacetValue) {
+        this.values = this.values.filter(e => !e.equals(value));
+    }
+
+    hasNoValues(): boolean {
+        return this.values.length === 0;
+    }
+
+    containsValue(value: FacetValue): boolean {
         if (!value) return false;
         return this.values.some(e => e.equals(value) || e.withinRange(value));
     }

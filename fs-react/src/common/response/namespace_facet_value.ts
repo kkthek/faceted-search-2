@@ -6,4 +6,8 @@ export class NamespaceFacetValue {
     namespace: number;
     @jsonMember(String)
     displayTitle: string
+
+    public isMainNamespace() {
+        return this.namespace === 0;
+    }
 }

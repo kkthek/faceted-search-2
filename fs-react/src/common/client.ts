@@ -118,7 +118,7 @@ class Client {
         return await response.json();
     }
 
-    async handleErrorIfAny(response: Response) {
+    private async handleErrorIfAny(response: Response) {
         if (!response.ok) {
             throw ({
                 status: response.status,
