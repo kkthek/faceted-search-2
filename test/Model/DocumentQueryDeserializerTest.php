@@ -24,7 +24,7 @@ JSON;
         $this->assertEquals(1, count($documentQuery->getPropertyFacets()) );
         $this->assertEquals('Has name', $documentQuery->getPropertyFacets()[0]->getProperty()->getTitle() );
         $this->assertEquals(Datatype::STRING, $documentQuery->getPropertyFacets()[0]->getProperty()->getType() );
-        $this->assertEquals('Markus', $documentQuery->getPropertyFacets()[0]->getValues()[0]->getValue() );
+        $this->assertEquals('Markus', $documentQuery->getPropertyFacets()[0]->getValues()[0]->getValue(Datatype::STRING) );
         $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getMwTitle() );
         $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getRange() );
     }
@@ -54,7 +54,7 @@ JSON;
         $this->assertEquals(Datatype::WIKIPAGE, $documentQuery->getPropertyFacets()[0]->getProperty()->getType() );
         $this->assertEquals('Koblenz, RP', $documentQuery->getPropertyFacets()[0]->getValues()[0]->getMwTitle()->getTitle() );
         $this->assertEquals('Koblenz', $documentQuery->getPropertyFacets()[0]->getValues()[0]->getMwTitle()->getDisplayTitle() );
-        $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getValue() );
+        $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getValue(DATATYPE::STRING) );
         $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getRange() );
     }
 }

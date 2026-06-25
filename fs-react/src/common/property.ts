@@ -43,7 +43,7 @@ export class Property {
         return that.title === this.title && that.type === this.type;
     }
 
-    asProperty() {
+    asProperty(): Property {
         return this;
     }
 }

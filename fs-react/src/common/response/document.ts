@@ -46,4 +46,8 @@ export class Document implements ElementWithURL {
             return values.includes(value);
         }
     }
+
+    getDisplayTitle(): string {
+        return this.displayTitle;
+    }
 }
