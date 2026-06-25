@@ -234,11 +234,8 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                 }
                 $from = $value->getRange()->getFrom();
                 $to = $value->getRange()->getTo();
-                $condition = ['range' => [Helper::toInternalName($property) =>
-                    ['gte' => $from, 'lte' => $to]
-                ]];
+                return ['range' => [Helper::toInternalName($property) => ['gte' => $from, 'lte' => $to] ]];
 
-                break;
             case Datatype::WIKIPAGE:
                 if (is_null($value->getMwTitle())) {
                     return ['nested' => [
@@ -246,28 +243,23 @@ class ElasticSearchQueryClient extends AbstractElasticSearchClient implements Fa
                         'query' => ['match_all' => new \stdClass()]
                     ]];
                 }
-                $condition = ['nested' => [
+                return ['nested' => [
                     'path' => Helper::toInternalName($property),
                     'query' => ['match' => [
                         Helper::toInternalName($property) . '.title' => $value->getMwTitle()->getTitle()]
                     ]
                 ]
                 ];
-                break;
+
             case Datatype::BOOLEAN:
-                if (is_null($value->getValue())) {
-                    return ['exists' => ['field' => Helper::toInternalName($property)]];
-                }
-                $condition = ['match' => [Helper::toInternalName($property) => $value->getValue() ? 'true' : 'false']];
-                break;
             case Datatype::STRING:
             default:
-                if (is_null($value->getValue())) {
+                $valueToMatch = $value->getValue($property->getType());
+                if (is_null($valueToMatch)) {
                     return ['exists' => ['field' => Helper::toInternalName($property)]];
                 }
-                $condition = ['match' => [Helper::toInternalName($property) => $value->getValue()]];
+                return ['match' => [Helper::toInternalName($property) => $valueToMatch]];
         }
-        return $condition;
 
     }
 
