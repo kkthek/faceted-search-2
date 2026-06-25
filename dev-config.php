@@ -151,6 +151,10 @@ function setConfigForDevContext() {
     $fs2gNamespaceBoosts = [];
     $fs2gTemplateBoosts = [];
 
+    global $fs2gSMWLanguage;
+    $fs2gSMWLanguage = [
+        '_MDAT' => 'Modification date'
+    ];
 // -------------------------------------------------------
 
     if (file_exists(__DIR__ . '/env.php')) {

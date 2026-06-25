@@ -9,4 +9,8 @@ export class CategoryFacetValue implements ElementWithURL {
     displayTitle: string
     @jsonMember(String)
     url: string
+
+    getDisplayTitle(): string {
+        return this.displayTitle;
+    }
 }

@@ -45,6 +45,14 @@ class Setup
         return $keys;
     }
 
+    private static function getMessagesFromSMW(): array {
+        if (!class_exists('\SMW\Localizer\Localizer')) {
+            return [];
+        }
+        $lang = \SMW\Localizer\Localizer::getInstance()->getLang();
+        return $lang->getPropertyLabels();
+    }
+
     public static function setupFacetedSearch()
     {
 
@@ -111,6 +119,7 @@ class Setup
             self::checkIfCompiled();
             $out->addModules('ext.diqa.facetedsearch2');
         }
+        $out->addJsConfigVars('fs2gSMWLanguage', self::getMessagesFromSMW() );
     }
 
     private static function checkIfCompiled(): void
