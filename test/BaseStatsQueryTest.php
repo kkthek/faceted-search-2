@@ -8,7 +8,7 @@ use DIQA\FacetedSearch2\Model\Common\Property;
 use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use PHPUnit\Framework\TestCase;
 
-abstract class BaseStatsQueryTest extends TestCase {
+class BaseStatsQueryTest extends TestCase {
 
     protected FacetedSearchClient $client;
     protected FacetedSearchUpdateClient $updateClient;

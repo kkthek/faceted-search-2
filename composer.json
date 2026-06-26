@@ -25,7 +25,7 @@
 		"issues": "https://support.diqa-pm.com/"
 	},
 	"require": {
-		"php": ">=7.4.0",
+		"php": ">=8.3.0",
 		"composer/installers": "1.*,>=1.0.1|2.*",
 		"netresearch/jsonmapper": ">=v4.4.1",
 		"nesbot/carbon": "^2.72",
@@ -33,7 +33,7 @@
 		"smalot/pdfparser": "^2.12",
 		"phpoffice/phpword": "^1.4",
 		"phpoffice/phppresentation": "^1.2",
-		"phpoffice/phpspreadsheet": "^1.12",
+		"phpoffice/phpspreadsheet": "^4.0",
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-ctype": "*",
@@ -50,7 +50,12 @@
 		"allow-plugins": {
 			"composer/installers": true,
 			"php-http/discovery": true
-		}
+		},
+        "policy": {
+          "advisories": {
+            "block": false
+          }
+        }
 	},
 	"scripts": {
 		"update": "php maintenance/updateIndex.php -v"
@@ -66,7 +71,7 @@
       }
   },
 	"require-dev": {
-		"phpunit/phpunit": "^7"
+		"phpunit/phpunit": "^12"
     },
 	"archive": {
 		"exclude": [

@@ -9,7 +9,7 @@ use DIQA\FacetedSearch2\Model\Update\Document;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 use PHPUnit\Framework\TestCase;
 
-abstract class BaseDocumentUpdaterTest extends TestCase {
+class BaseDocumentUpdaterTest extends TestCase {
 
     protected FacetedSearchClient $client;
     protected FacetedSearchUpdateClient $updateClient;
