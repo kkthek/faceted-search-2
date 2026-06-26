@@ -86,6 +86,10 @@ class Setup
 
     public static function initializeBeforeParserInit()
     {
+        if (PHP_SAPI == 'cli') {
+            return true;
+        }
+
         if (!RequestContext::getMain()->hasTitle()) {
             return true;
         }
