@@ -29,37 +29,37 @@ module.exports = {
     proxy: [
       {
         context: ['/documents'],
-        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
+        target: 'http://localhost/mediawiki/dev/rest.php/FacetedSearch2/v1/proxy',
         changeOrigin: true,
       },
       {
         context: ['/stats'],
-        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
+        target: 'http://localhost/mediawiki/dev/rest.php/FacetedSearch2/v1/proxy',
         changeOrigin: true,
       },
       {
         context: ['/facets'],
-        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
+        target: 'http://localhost/mediawiki/dev/rest.php/FacetedSearch2/v1/proxy',
         changeOrigin: true,
       },
       {
         context: ['/document-by-id'],
-        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
+        target: 'http://localhost/mediawiki/dev/rest.php/FacetedSearch2/v1/proxy',
         changeOrigin: true,
       },
       {
         context: ['/category-tree'],
-        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1/proxy',
+        target: 'http://localhost/mediawiki/dev/rest.php/FacetedSearch2/v1/proxy',
         changeOrigin: true,
       },
       {
         context: ['/settings'],
-        target: 'http://localhost/mediawiki/rest.php/FacetedSearch2/v1',
+        target: 'http://localhost/mediawiki/dev/rest.php/FacetedSearch2/v1',
         changeOrigin: true,
       },
       {
         context: ['/sample-group-hierarchy'],
-        target: 'http://localhost/mediawiki/rest.php',
+        target: 'http://localhost/mediawiki/dev/rest.php',
         changeOrigin: true,
       }
     ],

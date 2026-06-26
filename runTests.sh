@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -z $1 ]; then
-  php phpunit test
+  php test/phpunit test
 else
-  php phpunit test/$1
+  php test/phpunit test/$1
 fi
 

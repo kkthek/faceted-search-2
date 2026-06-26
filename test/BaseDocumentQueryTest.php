@@ -26,7 +26,7 @@ class BaseDocumentQueryTest extends TestCase {
 
     public static function setUpBeforeClass(): void
     {
-        require_once 'dev-config.php';
+        require_once 'dev/dev-config.php';
         setConfigForDevContext();
         BaseTestUtil::recreateIndexIfExists();
     }

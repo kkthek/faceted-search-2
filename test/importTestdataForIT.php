@@ -53,7 +53,7 @@ use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Setup;
 use DIQA\FacetedSearch2\SolrClient\TestData;
 
-require_once '../dev-config.php';
+require_once '../dev/dev-config.php';
 setConfigForDevContext();
 
 $data1 = TestData::generateData();

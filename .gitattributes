@@ -7,10 +7,8 @@ fs-react/*.json export-ignore
 fs-react/*.js export-ignore
 fs-react/public/index.html export-ignore
 fs-react/.gitignore export-ignore
-rest.php export-ignore
-dev-config.php export-ignore
+dev export-ignore
 runTests.sh export-ignore
-phpunit export-ignore
 composer.lock export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
