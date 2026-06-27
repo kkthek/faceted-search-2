@@ -9,7 +9,7 @@ use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\PropertyValueQuery;
 use PHPUnit\Framework\TestCase;
 
-abstract class BaseFacetQueryTest extends TestCase {
+class BaseFacetQueryTest extends TestCase {
 
     protected FacetedSearchClient $client;
     protected FacetedSearchUpdateClient $updateClient;
@@ -23,7 +23,7 @@ abstract class BaseFacetQueryTest extends TestCase {
 
     public static function setUpBeforeClass(): void
     {
-        require_once 'dev-config.php';
+        require_once 'dev/dev-config.php';
         setConfigForDevContext();
         BaseTestUtil::recreateIndexIfExists();
     }

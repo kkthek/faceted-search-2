@@ -10,7 +10,8 @@ use DIQA\FacetedSearch2\Model\Common\Property;
  * This is ONLY for development necessary. The settings are used in the rest.php wiki-mock endpoint
  *
  */
-function setConfigForDevContext() {
+function setConfigForDevContext(): void
+{
 
     global $wgFormattedNamespaces, $wgServer, $wgArticlePath;
     $wgFormattedNamespaces = [
@@ -175,6 +176,6 @@ function getConfigForDevContext(): array
     }
     $settings['skin'] = 'chameleon';
     $langCode = $wgUserLanguage ?? 'en';
-    $lang = json_decode(file_get_contents("i18n/$langCode.json"));
+    $lang = json_decode(file_get_contents("../i18n/$langCode.json"));
     return [ 'settings' => $settings, 'options' => $userOptions, 'lang' => $lang ];
 }

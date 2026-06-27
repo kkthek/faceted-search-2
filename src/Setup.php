@@ -86,6 +86,10 @@ class Setup
 
     public static function initializeBeforeParserInit()
     {
+        if (PHP_SAPI == 'cli') {
+            return true;
+        }
+
         if (!RequestContext::getMain()->hasTitle()) {
             return true;
         }
@@ -118,8 +122,8 @@ class Setup
             && ($out->getTitle()->isSpecial("FacetedSearch2") || $out->getTitle()->isSpecial("Search"))) {
             self::checkIfCompiled();
             $out->addModules('ext.diqa.facetedsearch2');
+            $out->addJsConfigVars('fs2gSMWLanguage', self::getMessagesFromSMW() );
         }
-        $out->addJsConfigVars('fs2gSMWLanguage', self::getMessagesFromSMW() );
     }
 
     private static function checkIfCompiled(): void

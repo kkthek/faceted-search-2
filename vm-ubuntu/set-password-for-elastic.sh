@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cp ../env-template.php ../env.php
-TEXTFILE="../env.php"
+cp ../dev/env-template.php ../dev/env.php
+TEXTFILE="../dev/env.php"
 
 # Capture the new password from the elasticsearch reset tool.
 # Flags: -u elastic (user), -b (batch/non-interactive), -s (silent, prints only the password)

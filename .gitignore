@@ -1,4 +1,5 @@
 /.idea
 /vendor
 /logs/
-/env.php
+/dev/env.php
+/test/.phpunit.result.cache

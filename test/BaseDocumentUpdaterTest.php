@@ -9,7 +9,7 @@ use DIQA\FacetedSearch2\Model\Update\Document;
 use DIQA\FacetedSearch2\Model\Update\PropertyValues;
 use PHPUnit\Framework\TestCase;
 
-abstract class BaseDocumentUpdaterTest extends TestCase {
+class BaseDocumentUpdaterTest extends TestCase {
 
     protected FacetedSearchClient $client;
     protected FacetedSearchUpdateClient $updateClient;
@@ -22,7 +22,7 @@ abstract class BaseDocumentUpdaterTest extends TestCase {
 
     public static function setUpBeforeClass(): void
     {
-        require_once 'dev-config.php';
+        require_once 'dev/dev-config.php';
         setConfigForDevContext();
         BaseTestUtil::recreateIndexIfExists();
     }
