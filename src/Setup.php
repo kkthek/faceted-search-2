@@ -64,7 +64,7 @@ class Setup
             $wgSpecialPages['Search'] = "DIQA\\FacetedSearch\\Specials\\FSFacetedSearchSpecial";
         } else {
             global $fs2gFacetedSearchForMW;
-            if (!$fs2gFacetedSearchForMW) {
+            if (!($fs2gFacetedSearchForMW ?? false)) {
                 global $wgSpecialPages;
                 unset($wgSpecialPages['Search']);
             }

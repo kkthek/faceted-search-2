@@ -194,6 +194,10 @@ $fs2gDateTimePropertyClusters['Released on'] = [
 
 ### Search UI
 
+### `FacetedSearchForMW`
+- **Default:** `false`
+- If true, searches that entered the standard MediaWiki search field are redirected to the faceted search special page. If false, the search is only available on the special page `Special:FacetedSearch2`.
+
 ### `HitsPerPage`
 - **Default:** `10`
 - Maximum number of search results displayed per page.
