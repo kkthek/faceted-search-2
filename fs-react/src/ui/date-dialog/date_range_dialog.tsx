@@ -5,7 +5,7 @@ import "dayjs/locale/en";
 import "dayjs/locale/en-gb";
 
 import * as React from 'react';
-import {useContext, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -35,7 +35,6 @@ function DateRangeDialog(prop: {
 
 }) {
     const wikiContext = useContext(WikiContext);
-    const [range, setRange] = useState<Range>(Range.collapsedDateTimeRange());
 
     const propertyValueCount = prop.facetResponse?.getPropertyValueCount(prop.property);
     if (!propertyValueCount) return;
@@ -43,12 +42,9 @@ function DateRangeDialog(prop: {
     const values = ObjectTools.deepClone(propertyValueCount.values);
     const first = values.length === 1 ? values[0] : values.shift();
     const last = values.length === 1 ?  values[0] : values.pop();
-    const minDate = first?.range ? first.range.from as Date : undefined;
-    const maxDate = last?.range ? last.range.to as Date : undefined;
-
-    if (minDate && maxDate && !range.equals(new Range(minDate, maxDate))) {
-        setRange(new Range(minDate, maxDate));
-    }
+    const minDate = first?.range ? first.range.from as Date : new Date();
+    const maxDate = last?.range ? last.range.to as Date : new Date();
+    const [range, setRange] = useState<Range>(new Range(minDate, maxDate));
 
     const onOK = function() {
 
