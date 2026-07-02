@@ -37,7 +37,8 @@
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-ctype": "*",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "ext-curl": "*"
     },
 	"suggest": {
 
