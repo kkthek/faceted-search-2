@@ -17,7 +17,11 @@ class IdTools {
     }
 
     private static removeNonIdChars(rawId: string) {
-        return rawId.replace(/\W/g, '')
+        return rawId.replace(/\W/g, (ch) =>
+            Array.from(ch)
+                .map((c) => '_' + c.charCodeAt(0).toString(16))
+                .join('')
+        );
     }
 
 }
