@@ -10,6 +10,7 @@ fs-react/.gitignore export-ignore
 dev export-ignore
 runTests.sh export-ignore
 composer.lock export-ignore
+README.md export-ignore
 .gitignore export-ignore
 .gitattributes export-ignore
 *.sh		text eol=lf
