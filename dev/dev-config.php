@@ -44,7 +44,7 @@ function setConfigForDevContext(): void
            $fs2gShowCategories, $fs2gShowSortOrder, $fs2gFacetValueLimit, $fs2gShowNamespaces,
            $fs2gShowArticleProperties, $fs2gShownFacets, $fs2gShownCategoryFacets, $fs2gPromotionProperty,
            $fs2gDemotionProperty, $fs2gNumericPropertyClusters, $fs2gDateTimePropertyClusters, $fs2gNamespaceConstraint,
-           $fs2gFacetsWithOR, $fs2gShowSolrScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay,
+           $fs2gFacetsWithOR, $fs2gShowScore, $fs2gCreateNewPageLink, $fs2gShowFileInOverlay,
            $fs2gHeaderControlOrder, $fs2gFacetControlOrder, $fs2gPropertyGrouping, $fs2gNamespacesToShow,
            $fs2gPropertyGroupingBySeparator, $fs2gPropertyGroupingByUrl;
 
@@ -81,7 +81,7 @@ function setConfigForDevContext(): void
 
     $fs2gFacetsWithOR = ['Has name', 'Works at'];
 
-    $fs2gShowSolrScore = true;
+    $fs2gShowScore = true;
 
     $fs2gCreateNewPageLink = false;//'?action=edit';
 
