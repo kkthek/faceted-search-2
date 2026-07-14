@@ -6,13 +6,12 @@ import React, {useContext} from "react";
 import {Document} from "../../common/response/document";
 import {WikiContext} from "../../index";
 import ConfigUtils from "../../util/config_utils";
-import {Typography} from "@mui/material";
 
 const TitleWithPreview = (prop: {
     doc: Document
 }) => {
     const wikiContext = useContext(WikiContext);
-    const showSolrScore = wikiContext.config['fs2gShowSolrScore'];
+    const showSolrScore = wikiContext.config['fs2gShowScore'];
 
     const score = showSolrScore ? "score: " + prop.doc.score : '';
     const hasFileResource = ConfigUtils.getFileResourceURL(prop.doc) !== undefined;
