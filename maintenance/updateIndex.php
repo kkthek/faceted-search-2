@@ -255,8 +255,13 @@ class UpdateIndex extends \Maintenance
         try {
             $client = ConfigTools::getFacetedSearchUpdateClient();
             if ($client->existsIndex()) {
-                $client->clearAllDocuments();
-                print "\nIndex already exists. Documents cleared.\n";
+                if ($this->confirm("\nIndex already exists. Clear all documents and continue? (yes/no): ")) {
+                    $client->clearAllDocuments();
+                    print "\nIndex already exists. Documents cleared.\n";
+                } else {
+                    print "\nAborted.\n";
+                    die(1);
+                }
             } else {
                 if ($client->initIndex()) {
                     print "\nIndex created.\n";
@@ -267,6 +272,24 @@ class UpdateIndex extends \Maintenance
         } catch (BackendException $e) {
             echo("\nERROR: Creating the index failed. Reason: " . $e->getMessage());
             die(1);
+        }
+    }
+
+    private function confirm(string $prompt): bool
+    {
+        while (true) {
+            print $prompt;
+            $handle = fopen("php://stdin", "r");
+            $line = fgets($handle);
+            fclose($handle);
+            $answer = strtolower(trim((string)$line));
+            if ($answer === 'yes' || $answer === 'y') {
+                return true;
+            }
+            if ($answer === 'no' || $answer === 'n') {
+                return false;
+            }
+            print "Please answer 'yes' or 'no'.\n";
         }
     }
 }
