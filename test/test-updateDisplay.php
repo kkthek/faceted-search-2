@@ -50,17 +50,12 @@ unset($options);
 require COMPOSER_INSTALL;
 
 use DIQA\FacetedSearch2\ConfigTools;
+use DIQA\FacetedSearch2\Setup;
 use DIQA\FacetedSearch2\SolrClient\TestData;
 
 require_once '../dev/dev-config.php';
 setConfigForDevContext();
 
 $documentUpdater = ConfigTools::getFacetedSearchUpdateClient();
-if ($documentUpdater->existsIndex()) {
-    $documentUpdater->deleteIndex();
-}
-$documentUpdater->initIndex();
-$documentUpdater->refreshIndex();
-$documentUpdater->updateDocuments(TestData::generateData(),TestData::generateData2(),TestData::generateData3(),
-    TestData::generateData4(),TestData::generateData5(), TestData::generateData6());
-$documentUpdater->refreshIndex();
+
+$documentUpdater->updateDisplayTitles('Maier, Peter', 'Pit Maier');
