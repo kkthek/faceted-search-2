@@ -21,6 +21,11 @@ class FSIndexer
         self::indexArticlesWithText([$title], null, $messages);
     }
 
+    public static function indexArticles(array $titles, &$messages = []): void
+    {
+        self::indexArticlesWithText($titles, null, $messages);
+    }
+
     /**
      * @throws \Exception
      */

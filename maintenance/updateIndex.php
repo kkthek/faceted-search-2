@@ -67,7 +67,11 @@ class UpdateIndex extends \Maintenance
         if (!$this->hasOption('p')) {
             $startId = $this->getStartId();
             $endId = $this->getEndId($startId);
-            $this->refreshPagesByIds($startId, $endId);
+            if (ConfigTools::getFacetedSearchUpdateClient()->supportBulkUpdates()) {
+                $this->refreshPagesByIdsBulk($startId, $endId);
+            } else {
+                $this->refreshPagesByIds($startId, $endId);
+            }
         } else {
             $pages = explode(',', $this->getOption('p'));
             $this->refreshPages($pages);
@@ -128,6 +132,65 @@ class UpdateIndex extends \Maintenance
 
     }
 
+
+    /**
+     * Refresh all pages from ID start to ID end using bulk updates.
+     * Collects Title objects in batches and passes them as an array to updateIndexWithBatch().
+     * Writes last processed ID to a file if option 'startidfile' is set.
+     *
+     * @param int $start
+     * @param int $end
+     */
+    private function refreshPagesByIdsBulk($start, $end)
+    {
+        print "Processing all IDs from $start to " . ($end ? "$end" : 'last ID') . " ... (bulk mode)\n";
+
+        $batchSize = 100;
+        $titles = [];
+        $id = $start;
+        $lastIdInBatch = $start;
+
+        while (((! $end) || ($id <= $end)) && ($id > 0)) {
+            $title = Title::newFromID($id);
+            if ($this->hasOption('v')) {
+                print sprintf("(%s) Processing ID %s ... [%s]\n",
+                    $this->num_files, $id, ! is_null($title) ? $title->getPrefixedText() : "-");
+            }
+            $id ++;
+            if (is_null($title)) {
+                continue;
+            }
+
+            $titles[] = $title;
+            $lastIdInBatch = $id;
+            $this->num_files ++;
+
+            if (count($titles) >= $batchSize) {
+                $this->updateIndexWithBatch($titles);
+                $titles = [];
+
+                if ($this->hasOption('d')) {
+                    usleep($this->getOption('d'));
+                }
+                $this->linkCache->clear(); // avoid memory leaks
+
+                if ($this->writeToStartidfile) {
+                    file_put_contents($this->getOption('startidfile'), "$lastIdInBatch");
+                }
+            }
+        }
+
+        // flush remaining titles
+        if (count($titles) > 0) {
+            $this->updateIndexWithBatch($titles);
+            $this->linkCache->clear();
+
+            if ($this->writeToStartidfile) {
+                file_put_contents($this->getOption('startidfile'), "$lastIdInBatch");
+            }
+        }
+    }
+
     /**
      * Refresh given pages.
      *
@@ -167,6 +230,28 @@ class UpdateIndex extends \Maintenance
             FSIndexer::indexArticle($title, $messages);
             if ($this->hasOption('x')) {
                 print sprintf("\t[SUCCESSFULLY INDEXED]\n%s", $title->getPrefixedText());
+            }
+            if (count($messages) > 0) {
+                print implode("\t\n", $messages);
+            }
+        } catch (Exception $e) {
+            print sprintf("\t[NOT INDEXED] [HTTP code %s]\n", $e->getCode());
+            if ($this->hasOption('x')) {
+                print sprintf("\t[NOT INDEXED] %s\n", $e->getMessage());
+                print sprintf("%s\n", $e->getTraceAsString());
+                print "---------------------------------------------------------\n";
+            }
+        }
+    }
+
+
+    private function updateIndexWithBatch(array $titles) {
+
+        try {
+            $messages = [];
+            FSIndexer::indexArticles($titles, $messages);
+            if ($this->hasOption('x')) {
+                print sprintf("\t[SUCCESSFULLY INDEXED]\n%s", count($titles) . " pages");
             }
             if (count($messages) > 0) {
                 print implode("\t\n", $messages);

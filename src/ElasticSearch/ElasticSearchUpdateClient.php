@@ -457,4 +457,8 @@ PAINLESS;
         }
     }
 
+    public function supportBulkUpdates(): bool
+    {
+        return true;
+    }
 }
