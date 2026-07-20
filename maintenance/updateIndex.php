@@ -77,7 +77,7 @@ class UpdateIndex extends \Maintenance
             $this->refreshPages($pages);
         }
 
-        print "{$this->num_files} IDs refreshed.\n";
+        print "\n\n{$this->num_files} IDs refreshed.\n";
     }
 
     /**
@@ -152,10 +152,7 @@ class UpdateIndex extends \Maintenance
 
         while (((! $end) || ($id <= $end)) && ($id > 0)) {
             $title = Title::newFromID($id);
-            if ($this->hasOption('v')) {
-                print sprintf("(%s) Processing ID %s ... [%s]\n",
-                    $this->num_files, $id, ! is_null($title) ? $title->getPrefixedText() : "-");
-            }
+
             $id ++;
             if (is_null($title)) {
                 continue;
@@ -166,6 +163,7 @@ class UpdateIndex extends \Maintenance
             $this->num_files ++;
 
             if (count($titles) >= $batchSize) {
+                $this->logOnConsole($id, $batchSize, $titles);
                 $this->updateIndexWithBatch($titles);
                 $titles = [];
 
@@ -182,6 +180,7 @@ class UpdateIndex extends \Maintenance
 
         // flush remaining titles
         if (count($titles) > 0) {
+            $this->logOnConsole($id, $batchSize, $titles);
             $this->updateIndexWithBatch($titles);
             $this->linkCache->clear();
 
@@ -254,7 +253,7 @@ class UpdateIndex extends \Maintenance
                 print sprintf("\t[SUCCESSFULLY INDEXED]\n%s", count($titles) . " pages");
             }
             if (count($messages) > 0) {
-                print implode("\t\n", $messages);
+                print "\n\n\t" . implode("\t\n", $messages) . "\n";
             }
         } catch (Exception $e) {
             print sprintf("\t[NOT INDEXED] [HTTP code %s]\n", $e->getCode());
@@ -341,8 +340,9 @@ class UpdateIndex extends \Maintenance
             $client = ConfigTools::getFacetedSearchUpdateClient();
             if ($client->existsIndex()) {
                 if ($this->confirm("\nIndex already exists. Clear all documents and continue? (yes/no): ")) {
-                    $client->clearAllDocuments();
-                    print "\nIndex already exists. Documents cleared.\n";
+                    $client->deleteIndex();
+                    $client->initIndex();
+                    print "\nIndex was deleted and re-created.\n";
                 } else {
                     print "\nAborted.\n";
                     die(1);
@@ -376,6 +376,28 @@ class UpdateIndex extends \Maintenance
             }
             print "Please answer 'yes' or 'no'.\n";
         }
+    }
+
+    /**
+     * @param int $id
+     * @param int $batchSize
+     * @param array $titles
+     * @return void
+     */
+    private function logOnConsole(int $id, int $batchSize, array $titles): void
+    {
+        if ($this->hasOption('v')) {
+            $startFrom = $id - $batchSize;
+            $startTitle = $titles[0]->getPrefixedText();
+            $endTitle = $titles[count($titles) - 1]->getPrefixedText();
+            print sprintf("\nProcessing IDs [%s to %s] [%s to %s]...",
+                $startFrom, $id, self::shorten($startTitle), self::shorten($endTitle));
+
+        }
+    }
+
+    private static function shorten(string $s) {
+        return mb_strlen($s) > 50 ?  trim(substr($s, 0, 50)) . "..." : $s;
     }
 }
 
