@@ -19,8 +19,8 @@ export class PropertyWithURL extends Property implements ElementWithURL {
         const wikiContext = useContext(WikiContext);
         const fs2SMWLanguage = wikiContext.config['fs2gSMWLanguage'] ?? {};
         let displayTitle = this.displayTitle;
-        if (fs2SMWLanguage[displayTitle] !== undefined) {
-            displayTitle = fs2SMWLanguage[displayTitle];
+        if (fs2SMWLanguage[this.title] !== undefined) {
+            displayTitle = fs2SMWLanguage[this.title];
         }
         return displayTitle;
     }

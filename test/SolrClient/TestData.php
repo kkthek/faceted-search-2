@@ -178,4 +178,19 @@ class TestData {
         $document = new Document('665544', "Employee", "Employee", 14);
         return $document;
     }
+
+    public static function generateData7() {
+        $document = new Document('876', "Müller,  Ingo", "", 0);
+
+        $p = new Property('Knows', Datatype::WIKIPAGE);
+        $pvWorksAt = new PropertyValues($p, [new MWTitle('Markus, Schumacher.', '')]);
+
+
+        $document->setPropertyValues([$pvWorksAt])
+            ->setFulltext("Ingo Müller arbeitet bei Siemens.")
+            ->setCategories(["Employee"])
+            ->setDirectCategories(["Employee"])
+            ->setNamespace(0);
+        return $document;
+    }
 }

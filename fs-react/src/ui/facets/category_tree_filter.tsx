@@ -1,4 +1,4 @@
-import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useMemo} from "react";
+import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useMemo, useState} from "react";
 import {SearchStateDocument, TextFilters} from "../../common/datatypes";
 import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler from "../../common/event_handler";
@@ -19,34 +19,42 @@ function CategoryTreeFilter(prop: {
     const [, fullTree] = prop.treeState;
     const categories = prop.searchStateDocument?.documentResponse
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
-    const text = prop.textFilters['category_tree'] ?? '';
-    const debouncedSearchValue = useDebounce(text, TYPING_DELAY);
+    const globalFilterText = prop.textFilters['category_tree'] ?? '';
+    const [localFilterText, setLocalFilterText] = useState(globalFilterText);
+    const debouncedSearchValue = useDebounce(localFilterText, TYPING_DELAY);
     const filteredTree = useMemo(() => {
         return fullTree
             .filterForCategories(categories)
-            .filterForText(text);
-    }, [categories, text]);
+            .filterForText(localFilterText);
+    }, [categories, localFilterText]);
 
     useEffect(() => {
         if (!prop.treeState) return;
         prop.setCategoryTree([filteredTree, fullTree]);
+        setGlobalFilter(debouncedSearchValue)
     }, [debouncedSearchValue]);
+
+    useEffect(() => {
+        setLocalFilterText(globalFilterText);
+    }, [globalFilterText]);
 
     if (!prop.treeState) return;
 
     const onKeyDown = function (e: KeyboardEvent<HTMLDivElement>) {
-        if (e.key === "Enter") {
-            prop.setCategoryTree([fullTree.filterForText(text), fullTree]);
-        } else if (e.key === "Escape") {
-            setFilter('');
+        if (e.key === "Escape") {
+            setGlobalFilter('');
         }
         e.stopPropagation();
     }
 
-    const setFilter = function (text: string): void {
+    const setGlobalFilter = function (text: string): void {
         const f = ObjectTools.deepClone(prop.textFilters);
         f['category_tree'] = text;
         prop.eventHandler.setTextFilters(f);
+    }
+
+    const onChange = function (text: string): void {
+        setLocalFilterText(text);
     }
 
     return <TextField id={'category-tree-filter-input'}
@@ -54,8 +62,8 @@ function CategoryTreeFilter(prop: {
                       sx={{marginTop: '5px', marginBottom: '5px'}}
                       size={'small'}
                       variant="standard"
-                      value={text}
-                      onChange={(e) => setFilter(e.target.value)}
+                      value={localFilterText}
+                      onChange={(e) => onChange(e.target.value)}
                       onKeyDown={onKeyDown}
     />;
 
