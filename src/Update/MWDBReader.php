@@ -15,14 +15,53 @@ use WikiPage;
 class MWDBReader
 {
     private SMWReader $smwReader;
-    private FileReader $fileReader;
+    private MWFileReader $fileReader;
     private BoostingCalculator $boostingCalculator;
 
     public function __construct()
     {
         $this->smwReader = new SMWReader();
-        $this->fileReader = new FileReader();
+        $this->fileReader = new MWFileReader();
         $this->boostingCalculator = new BoostingCalculator();
+    }
+
+    /**
+     * Retrieves the display title from the properties table for the given page.
+     * It will probably only properly work if the DisplayTitles extension is installed and used.
+     * The default value is the pagename.
+     *
+     * This code is inspired by getDisplayTitle() from DisplayTitle\includes\DisplayTitleHooks.php
+     *
+     * @param Title $title
+     * @param ?WikiPage $wikipage (optional) if present redirects will be followed
+     * @return string smwh_displaytitle
+     */
+    public static function findDisplayTitle(Title $title, WikiPage $wikipage = null): string
+    {
+        $title = $title->createFragmentTarget('');
+        $originalPageName = $title->getText();
+
+        $redirect = false;
+        if ($wikipage) {
+            $redirectTarget = MediaWikiServices::getInstance()->getRedirectLookup()->getRedirectTarget($wikipage);
+            if (!is_null($redirectTarget)) {
+                $redirect = true;
+                $title = Title::makeTitle($redirectTarget->getNamespace(), $redirectTarget->getDBkey());
+            }
+        }
+
+        $id = $title->getArticleID();
+        $values = MediaWikiServices::getInstance()->getPageProps()->getProperties($title, 'displaytitle');
+
+        if (array_key_exists($id, $values)) {
+            $value = $values[$id];
+            if (trim(str_replace('&#160;', '', strip_tags($value))) !== '') {
+                return $value;
+            }
+        } elseif ($redirect) {
+            return $title->getPrefixedText();
+        }
+        return $originalPageName;
     }
 
 
@@ -64,7 +103,7 @@ class MWDBReader
         $doc['smwh_namespace_id'] = $pageNamespace;
         $doc['smwh_title'] = $pageDbKey;
         $doc['smwh_full_text'] = $text;
-        $doc['smwh_displaytitle'] = FacetedSearchUtil::findDisplayTitle($pageTitle, $wikiPage);
+        $doc['smwh_displaytitle'] = self::findDisplayTitle($pageTitle, $wikiPage);
 
         if ($pageTitle->exists()) {
             $this->smwReader->retrievePropertyValues($pageTitle, $doc);

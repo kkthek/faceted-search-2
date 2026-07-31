@@ -2,7 +2,7 @@
 
 namespace DIQA\FacetedSearch2\TextExtractors;
 
-use DIQA\FacetedSearch2\Update\FileReader;
+use DIQA\FacetedSearch2\Update\MWFileReader;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -16,7 +16,7 @@ final class PDFExtractorTest extends TestCase {
     public function testPDFExtraction(): void
     {
 
-        $textExtractor = new FileReader();
+        $textExtractor = new MWFileReader();
         $metadata=[
             'filePath' => 'test/data/documents/test-pdf-document.pdf',
             'contentType' => 'application/pdf',
