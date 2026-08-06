@@ -10,7 +10,7 @@ final class WordExtractorTest extends TestCase {
     {
 
         $textExtractor = new WordExtractor();
-        $text = $textExtractor->extractDocument('test/data/documents/test-word-document.docx');
+        $text = $textExtractor->extractDocument('test/resources/data/documents/test-word-document.docx');
         $this->assertStringContainsString('Lorem ipsum', $text);
         $this->assertStringContainsString('"de Finibus Bonorum et Malorum"', $text);
 

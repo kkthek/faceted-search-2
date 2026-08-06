@@ -67,7 +67,7 @@ class TestData {
         $pvSpouse = new PropertyValues($p, [new MWTitle('Maier, Maria', 'Maria')]);
 
         $p = new Property('Diqa import fullpath', Datatype::STRING);
-        $pvDiqa_import_fullpath = new PropertyValues($p, ['http://localhost/mediawiki/test/resources/sample.png']);
+        $pvDiqa_import_fullpath = new PropertyValues($p, ['http://localhost/mediawiki/test/resources/data/images/sample.png']);
 
         $document->setPropertyValues([$pvName, $pvAge, $pvWasBornAt, $pvIsOnPension, $pvWorksAt, $pvSpouse, $pvDiqa_import_fullpath, $pv_MDAT])
             ->setFulltext("Peter Maier arbeitet bei Mercedes.")

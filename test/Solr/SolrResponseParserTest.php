@@ -7,7 +7,7 @@ final class SolrResponseParserTest extends TestCase {
 
     public function testParse(): void
     {
-        $jsonResponse = file_get_contents('test/data/solr_response_sample.json');
+        $jsonResponse = file_get_contents('test/resources/data/solr-queries/solr_response_sample.json');
         $parser = new SolrResponseParser(json_decode($jsonResponse));
         $solrDocumentResponse = $parser->parse();
         $this->assertEquals(864,$solrDocumentResponse->getNumResults());
@@ -16,7 +16,7 @@ final class SolrResponseParserTest extends TestCase {
 
     public function testParseStats(): void
     {
-        $jsonResponse = file_get_contents('test/data/solr_response_stats.json');
+        $jsonResponse = file_get_contents('test/resources/data/solr-queries/solr_response_stats.json');
         $parser = new SolrResponseParser(json_decode($jsonResponse));
         $solrDocumentResponse = $parser->parseStatsResponse();
 
@@ -27,7 +27,7 @@ final class SolrResponseParserTest extends TestCase {
 
     public function testParseFacetQueries(): void
     {
-        $jsonResponse = file_get_contents('test/data/solr_response_facetQueries.json');
+        $jsonResponse = file_get_contents('test/resources/data/solr-queries/solr_response_facetQueries.json');
         $parser = new SolrResponseParser(json_decode($jsonResponse));
         $solrDocumentResponse = $parser->parseFacetResponse();
 
