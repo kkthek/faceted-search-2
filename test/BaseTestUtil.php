@@ -2,8 +2,7 @@
 
 namespace DIQA\FacetedSearch2;
 
-use DIQA\FacetedSearch2\ConfigTools;
-use DIQA\FacetedSearch2\SolrClient\TestData;
+use DIQA\FacetedSearch2\Solr\TestData;
 
 class BaseTestUtil {
 

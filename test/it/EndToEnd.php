@@ -1,8 +1,8 @@
 <?php
 namespace DIQA\FacetedSearch2;
 
-use DIQA\FacetedSearch2\SolrClient\TestData;
-use DIQA\FacetedSearch2\SolrClient\Util;
+use DIQA\FacetedSearch2\Solr\TestData;
+use DIQA\FacetedSearch2\Solr\Util;
 use Exception;
 use PHPUnit\Framework\TestCase;
 

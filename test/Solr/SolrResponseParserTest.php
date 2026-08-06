@@ -1,5 +1,5 @@
 <?php
-namespace DIQA\FacetedSearch2\SolrClient;
+namespace DIQA\FacetedSearch2\Solr;
 
 use PHPUnit\Framework\TestCase;
 

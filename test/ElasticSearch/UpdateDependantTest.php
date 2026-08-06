@@ -5,8 +5,9 @@ namespace DIQA\FacetedSearch2\ElasticSearchClient;
 use DIQA\FacetedSearch2\BaseTestUtil;
 use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\FacetedSearchClient;
+use DIQA\FacetedSearch2\FacetedSearchDependantUpdates;
 use DIQA\FacetedSearch2\FacetedSearchUpdateClient;
-use DIQA\FacetedSearch2\SolrClient\TestData;
+use DIQA\FacetedSearch2\Solr\TestData;
 use PHPUnit\Framework\TestCase;
 
 class UpdateDependantTest extends TestCase
@@ -41,7 +42,11 @@ class UpdateDependantTest extends TestCase
     {
         $doc = TestData::generateData();
         $doc->setDisplayTitle("Macki Schumacher");
-        $this->updateClient->updateDocumentWithDependant($doc);
+
+        $updateClient = $this->updateClient;
+        $this->assertTrue($updateClient instanceof FacetedSearchDependantUpdates);
+        /* @var FacetedSearchDependantUpdates $updateClient */
+        $updateClient->updateDocumentWithDependant($doc);
 
         $this->updateClient->refreshIndex();
 
