@@ -226,7 +226,7 @@ class UpdateIndex extends \Maintenance
 
         try {
             $messages = [];
-            FSIndexer::indexArticle($title, $messages);
+            FSIndexer::indexArticles([$title], $messages);
             if ($this->hasOption('x')) {
                 print sprintf("\t[SUCCESSFULLY INDEXED]\n%s", $title->getPrefixedText());
             }

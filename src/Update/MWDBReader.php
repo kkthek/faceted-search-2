@@ -65,20 +65,7 @@ class MWDBReader
     }
 
 
-    /**
-     * Updates the index for the given $wikiPage.
-     * It retrieves all semantic data of the new version and adds it to the index.
-     *
-     * @param WikiPage $wikiPage
-     *         The article that changed.
-     * @param string|null $rawText
-     *        Optional content of the article. If it is null, the content of $wikiPage is
-     *        retrieved in this method.
-     * @param array $messages
-     *      User readable messages (out)
-     * @throws Exception
-     */
-    public function fromWikiPage(WikiPage $wikiPage, string $rawText = null, array &$messages = []): Document
+    public function fromWikiPage(WikiPage $wikiPage, array &$messages = []): Document
     {
 
         $doc = [];
@@ -97,7 +84,7 @@ class MWDBReader
 
         $pageNamespace = $pageTitle->getNamespace();
         $pageDbKey = $pageTitle->getDBkey();
-        $text = $rawText ?? $this->getText($wikiPage, $doc, $messages);
+        $text = $this->getText($wikiPage, $doc, $messages);
 
         $doc['id'] = $pageID;
         $doc['smwh_namespace_id'] = $pageNamespace;

@@ -18,7 +18,7 @@ use SMW\Store;
 use StatusValue;
 use WikiPage;
 
-class FSIncrementalUpdater  {
+class Hooks  {
 
     private function __construct() {
     }
