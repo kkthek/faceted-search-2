@@ -14,6 +14,7 @@ import {Property} from "../../common/property";
 import {FacetResponse} from "../../common/response/facet_response";
 import {PropertyFacetCount} from "../../common/response/property_facet_count";
 import SliderItem from "./slider_item";
+import DisplayTools from "../../util/display_tools";
 
 
 function FacetViewProperty(prop: {
@@ -88,11 +89,11 @@ function FacetViewProperty(prop: {
         }
     }
     return <CustomTreeItem itemId={IdTools.createItemIdForProperty(property)}
-                                                                             label={<FacetWithCount displayTitle={property.getDisplayTitle()} count={prop.propertyFacetCount?.count}/>}
-                                                                             itemAction={() => prop.eventHandler.onPropertyClick(property)}
-                                                                             actionIcon={getActionIcon()}
-                                                                             action={action}
-                                                                             className={'fs-facets'}>
+                           label={<FacetWithCount displayTitle={DisplayTools.getDisplayTitle(property)} count={prop.propertyFacetCount?.count}/>}
+                           itemAction={() => prop.eventHandler.onPropertyClick(property)}
+                           actionIcon={getActionIcon()}
+                           action={action}
+                           className={'fs-facets'}>
         {filterTreeItem}
         {sliderItem}
         {facetTreeItems}

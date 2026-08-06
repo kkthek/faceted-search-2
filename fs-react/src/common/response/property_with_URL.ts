@@ -1,8 +1,6 @@
 import {jsonMember, jsonObject} from "typedjson";
 import {Property} from "../property";
 import {ElementWithURL} from "../datatypes";
-import {useContext} from "react";
-import {WikiContext} from "../../index";
 
 @jsonObject
 export class PropertyWithURL extends Property implements ElementWithURL {
@@ -16,12 +14,14 @@ export class PropertyWithURL extends Property implements ElementWithURL {
     }
 
     getDisplayTitle() {
-        const wikiContext = useContext(WikiContext);
-        const fs2SMWLanguage = wikiContext.config['fs2gSMWLanguage'] ?? {};
-        let displayTitle = this.displayTitle;
-        if (fs2SMWLanguage[this.title] !== undefined) {
-            displayTitle = fs2SMWLanguage[this.title];
-        }
-        return displayTitle;
+        return this.displayTitle;
+    }
+
+    getTitle() {
+        return this.title;
+    }
+
+    getUrl(): string {
+        return this.url;
     }
 }

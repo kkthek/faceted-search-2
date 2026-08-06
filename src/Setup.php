@@ -74,13 +74,13 @@ class Setup
 
         if ($fs2gEnableIncrementalIndexer) {
             $hookContainer = MediaWikiServices::getInstance()->getHookContainer();
-            $hookContainer->register('SMW::SQLStore::AfterDataUpdateComplete', 'DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onUpdateDataAfter');
-            $hookContainer->register('UploadComplete','DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onUploadComplete');
-            $hookContainer->register('AfterImportPage','DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onAfterImportPage');
-            $hookContainer->register('PageMoveCompleting','DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onTitleMoveComplete');
-            $hookContainer->register('PageDelete','DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onPageDelete');
-            $hookContainer->register('ApprovedRevsRevisionApproved','DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onRevisionApproved');
-            $hookContainer->register('PageSaveComplete','DIQA\FacetedSearch2\Update\FSIncrementalUpdater::onPageSaveComplete');
+            $hookContainer->register('SMW::SQLStore::AfterDataUpdateComplete', 'DIQA\FacetedSearch2\Update\Hooks::onUpdateDataAfter');
+            $hookContainer->register('UploadComplete','DIQA\FacetedSearch2\Update\Hooks::onUploadComplete');
+            $hookContainer->register('AfterImportPage','DIQA\FacetedSearch2\Update\Hooks::onAfterImportPage');
+            $hookContainer->register('PageMoveCompleting','DIQA\FacetedSearch2\Update\Hooks::onTitleMoveComplete');
+            $hookContainer->register('PageDelete','DIQA\FacetedSearch2\Update\Hooks::onPageDelete');
+            $hookContainer->register('ApprovedRevsRevisionApproved','DIQA\FacetedSearch2\Update\Hooks::onRevisionApproved');
+            $hookContainer->register('PageSaveComplete','DIQA\FacetedSearch2\Update\Hooks::onPageSaveComplete');
         }
     }
 

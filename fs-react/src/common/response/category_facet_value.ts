@@ -13,4 +13,12 @@ export class CategoryFacetValue implements ElementWithURL {
     getDisplayTitle(): string {
         return this.displayTitle;
     }
+
+    getTitle(): string {
+        return this.category;
+    }
+
+    getUrl(): string {
+        return this.url;
+    }
 }

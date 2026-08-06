@@ -14,9 +14,8 @@ export interface TextFilters {
 }
 
 export interface ElementWithURL {
-    url: string,
-    displayTitle: string
-
+    getUrl(): string;
+    getTitle(): string;
     getDisplayTitle(): string;
 }
 

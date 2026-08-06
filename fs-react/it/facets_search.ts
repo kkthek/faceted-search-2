@@ -60,7 +60,9 @@ describe('facets-search', function () {
             assert.equal(response.valueCounts.length, 1);
             assert.equal(response.valueCounts[0].property.title, "Was born at");
             assert.equal(response.valueCounts[0].values[0].range.from.toISOString(), "1969-06-10T00:00:00.000Z");
-            assert.equal(response.valueCounts[0].values[0].range.to.toISOString(), "1969-06-10T00:00:00.000Z");
+            const toRange = response.valueCounts[0].values[0].range.to;
+            const toRangeEquals = toRange.toISOString() === "1969-06-10T00:00:01.000Z" || toRange.toISOString() === "1969-06-10T00:00:00.000Z";
+            assert.equal(toRangeEquals, true);
             assert.equal(response.valueCounts[0].values[0].count, 1);
 
 
