@@ -15,4 +15,12 @@ export class MWTitleWithURL extends MWTitle implements ElementWithURL {
     getDisplayTitle(): string {
         return this.displayTitle;
     }
+
+    getTitle(): string {
+        return this.title;
+    }
+
+    getUrl(): string {
+        return this.url;
+    }
 }
