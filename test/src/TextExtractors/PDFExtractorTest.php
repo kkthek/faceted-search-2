@@ -18,7 +18,7 @@ final class PDFExtractorTest extends TestCase {
 
         $textExtractor = new MWFileReader();
         $metadata=[
-            'filePath' => 'test/resources/data/documents/test-pdf-document.pdf',
+            'filePath' => 'test/resources/documents/test-pdf-document.pdf',
             'contentType' => 'application/pdf',
         ];
         $text = $textExtractor->extractText($metadata);

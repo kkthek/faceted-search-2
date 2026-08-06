@@ -11,7 +11,7 @@ final class PowerPointExtractorTest extends TestCase {
     {
 
         $textExtractor = new PPTExtractor();
-        $text = $textExtractor->extractPptxTextViaLib('test/resources/data/documents/test-powerpoint-document.pptx');
+        $text = $textExtractor->extractPptxTextViaLib('test/resources/documents/test-powerpoint-document.pptx');
         $this->assertStringContainsString('Lorem Ipsum', $text);
         $this->assertStringContainsString('"de Finibus Bonorum et Malorum"', $text);
 

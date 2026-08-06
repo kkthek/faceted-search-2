@@ -1,6 +1,6 @@
 <?php
 
-namespace DIQA\FacetedSearch2\ElasticSearchClient;
+namespace DIQA\FacetedSearch2\ElasticSearch;
 
 use DIQA\FacetedSearch2\BaseStatsQueryTest;
 

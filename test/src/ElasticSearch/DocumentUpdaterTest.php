@@ -1,10 +1,10 @@
 <?php
 
-namespace DIQA\FacetedSearch2\ElasticSearchClient;
+namespace DIQA\FacetedSearch2\ElasticSearch;
 
-use DIQA\FacetedSearch2\BaseFacetQueryTest;
+use DIQA\FacetedSearch2\BaseDocumentUpdaterTest;
 
-final class FacetQueryTest extends BaseFacetQueryTest {
+final class DocumentUpdaterTest extends BaseDocumentUpdaterTest {
     private static function init(): void
     {
         global $fs2gBackendConfig, $fs2gBackend;
@@ -19,5 +19,4 @@ final class FacetQueryTest extends BaseFacetQueryTest {
         self::init();
         parent::setUpBeforeClass();
     }
-
 }
