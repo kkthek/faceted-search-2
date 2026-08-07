@@ -1,0 +1,16 @@
+<?php
+
+namespace DIQA\FacetedSearch2\Solr;
+
+use DIQA\FacetedSearch2\Model\Common\Datatype;
+use PHPUnit\Framework\TestCase;
+
+class HelperTest extends TestCase {
+
+    public function testGenerateSOLRProperty() {
+        $encodedProperty = Helper::generateSOLRProperty("Test Ä und ß test", Datatype::WIKIPAGE);
+        list($name, $type) = Helper::parseSOLRProperty($encodedProperty);
+        $this->assertEquals("Test Ä und ß test", $name);
+        $this->assertEquals(Datatype::WIKIPAGE, $type);
+    }
+}

@@ -50,7 +50,7 @@ unset($options);
 require COMPOSER_INSTALL;
 
 use DIQA\FacetedSearch2\ConfigTools;
-use DIQA\FacetedSearch2\SolrClient\TestData;
+use DIQA\FacetedSearch2\Solr\TestData;
 
 require_once '../dev/dev-config.php';
 setConfigForDevContext();

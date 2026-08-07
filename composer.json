@@ -68,7 +68,7 @@
     },
     "autoload-dev": {
       "psr-4": {
-          "DIQA\\FacetedSearch2\\": [ "test/" ]
+          "DIQA\\FacetedSearch2\\": [ "test/src/" ]
       }
   },
 	"require-dev": {
