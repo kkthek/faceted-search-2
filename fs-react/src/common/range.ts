@@ -69,7 +69,23 @@ export class Range {
     }
 
     toString(): string {
-        return `${this.from}-${this.to}`;
+        return `${this.fromToString()}-${this.toToString()}`;
+    }
+
+    fromToString(): string {
+        if (this.from instanceof Date) {
+            return `${(this.from as Date).toISOString()}`;
+        } else {
+            return `${this.from}`;
+        }
+    }
+
+    toToString(): string {
+        if (this.to instanceof Date) {
+            return `${(this.to as Date).toISOString()}`;
+        } else {
+            return `${this.to}`;
+        }
     }
 
     static collapsedDateTimeRange(): Range {
