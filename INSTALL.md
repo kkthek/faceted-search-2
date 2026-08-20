@@ -227,6 +227,10 @@ $fs2gDateTimePropertyClusters['Released on'] = [
 - **Default:** `false`
 - If `true`, the raw relevance score is shown as a tooltip on the "Show Details" link of each search result. Useful for debugging relevance.
 
+### `ShowExportLinks`
+- **Default:** `false`
+- If `true`, shows export links for JSON and CSV in the header. (Note: It is not possible to include fulltext filters in the export links because the SMW backend does not support them.)
+
 ### `HeaderControlOrder`
 - **Default:** `["sortView", "searchView", "saveSearchLink", "createArticleLink"]`
 - Defines the display order of controls in the search header area.

@@ -9,6 +9,9 @@ function ExportSearchAsQuery(prop: {
     documentQuery: DocumentQuery
 }) {
     const wikiContext = useContext(WikiContext);
+    if (!wikiContext.config['fs2gShowExportLinks']) {
+        return;
+    }
 
     const baseUrl = wikiContext.config['wgServer'] + wikiContext.config['wgArticlePath'];
     const specialAskUrl = baseUrl.replace(/\$1/, 'Special:Ask');

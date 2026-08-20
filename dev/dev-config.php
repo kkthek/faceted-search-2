@@ -156,6 +156,9 @@ function setConfigForDevContext(): void
     $fs2gSMWLanguage = [
         '_MDAT' => 'Modification date'
     ];
+
+    global $fs2gShowExportLinks;
+    $fs2gShowExportLinks = true;
 // -------------------------------------------------------
 
     if (file_exists(__DIR__ . '/env.php')) {
