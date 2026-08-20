@@ -5,6 +5,9 @@ namespace DIQA\FacetedSearch2\Maintenance;
 use DIQA\FacetedSearch2\ConfigTools;
 use DIQA\FacetedSearch2\Exceptions\BackendException;
 use DIQA\FacetedSearch2\Update\FSIndexer;
+use DIQA\Formatter\Color;
+use DIQA\Formatter\Config;
+use DIQA\Formatter\Formatter;
 use MediaWiki\MediaWikiServices;
 use Title;
 
@@ -25,6 +28,8 @@ class UpdateIndex extends \Maintenance
     private $writeToStartidfile;
     private $num_files = 0;
 
+    private Formatter $formatter;
+
     public function __construct()
     {
         parent::__construct();
@@ -39,6 +44,18 @@ class UpdateIndex extends \Maintenance
         $this->addOption('n', 'Number of IDs from Start-ID', false, true);
         $this->addOption('f', 'End-ID by Pagename', false, true);
         $this->addOption('startidfile', 'File containing ID to start processing and saves last processed ID to this file', false, true);
+
+        $config = new Config([6, 70, 12],
+            [Config::LEFT_ALIGN, Config::LEFT_ALIGN],
+            [
+                'borderPadding' => true
+            ]
+        );
+        $config->highlightWord("[ERROR]", Color::fromColor(Color::LIGHT_GREY, Color::RED), 3)
+               ->highlightWord("[WARNING]", Color::fromColor(Color::LIGHT_GREY, Color::YELLOW), 3)
+               ->highlightWord("[SUCCESS]", Color::fromColor(Color::LIGHT_GREY, Color::GREEN), 3)
+            ;
+        $this->formatter = new Formatter($config);
     }
 
     public function execute()
@@ -108,16 +125,15 @@ class UpdateIndex extends \Maintenance
         $id = $start;
         while (((! $end) || ($id <= $end)) && ($id > 0)) {
             $title = Title::newFromID($id);
-            if ($this->hasOption('v')) {
-                print sprintf("(%s) Processing ID %s ... [%s]\n",
-                    $this->num_files, $id, ! is_null($title) ? $title->getPrefixedText() : "-");
-            }
-            $id ++;
+
             if (is_null($title)) {
+                $id ++;
                 continue;
             }
 
-            $this->updateIndex($title);
+            $this->updateIndex($title, $id);
+
+            $id ++;
 
             if (($this->hasOption('d')) && (($this->num_files + 1) % 100 === 0)) {
                 usleep($this->getOption('d'));
@@ -222,23 +238,24 @@ class UpdateIndex extends \Maintenance
      *
      * @param Title $title
      */
-    private function updateIndex($title) {
+    private function updateIndex($title, $id = null) {
 
         try {
             $messages = [];
             FSIndexer::indexArticles([$title], $messages);
-            if ($this->hasOption('x')) {
-                print sprintf("\t[SUCCESSFULLY INDEXED]\n%s", $title->getPrefixedText());
+
+            if ($this->hasOption('v')) {
+                print $this->formatter->formatLine($id ?? '', $title->getPrefixedText(), "SUCCESS");
             }
             if (count($messages) > 0) {
                 print implode("\t\n", $messages);
             }
         } catch (Exception $e) {
-            print sprintf("\t[NOT INDEXED] [HTTP code %s]\n", $e->getCode());
+            print $this->formatter->formatLine($id ?? '', $title->getPrefixedText(), "ERRROR");
             if ($this->hasOption('x')) {
-                print sprintf("\t[NOT INDEXED] %s\n", $e->getMessage());
-                print sprintf("%s\n", $e->getTraceAsString());
-                print "---------------------------------------------------------\n";
+                print $this->formatter->formatLine('', sprintf('HTTP code %s', $e->getCode()), '');
+                print $this->formatter->formatLine('', $e->getMessage(), '');
+                print $this->formatter->formatLine('', $e->getTraceAsString(), '');
             }
         }
     }
@@ -249,18 +266,18 @@ class UpdateIndex extends \Maintenance
         try {
             $messages = [];
             FSIndexer::indexArticles($titles, $messages);
-            if ($this->hasOption('x')) {
-                print sprintf("\t[SUCCESSFULLY INDEXED]\n%s", count($titles) . " pages");
+            if ($this->hasOption('v')) {
+                print $this->formatter->formatLine(count($titles), "Successfully indexed", "SUCCESS");
             }
             if (count($messages) > 0) {
-                print "\n\n\t" . implode("\t\n", $messages) . "\n";
+                print $this->formatter->formatLine('', implode(' ', $messages), "WARNING");
             }
         } catch (Exception $e) {
-            print sprintf("\t[NOT INDEXED] [HTTP code %s]\n", $e->getCode());
+            print $this->formatter->formatLine('', "Error occured", "ERRROR");
             if ($this->hasOption('x')) {
-                print sprintf("\t[NOT INDEXED] %s\n", $e->getMessage());
-                print sprintf("%s\n", $e->getTraceAsString());
-                print "---------------------------------------------------------\n";
+                print $this->formatter->formatLine('', sprintf('HTTP code %s', $e->getCode()), '');
+                print $this->formatter->formatLine('', $e->getMessage(), '');
+                print $this->formatter->formatLine('', $e->getTraceAsString(), '');
             }
         }
     }
