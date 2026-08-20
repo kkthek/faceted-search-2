@@ -123,7 +123,8 @@ div.fs-create-article {
     flex-direction: column;
 }
 
-div.fs-save-search-link {
+div.fs-save-search-link,
+div.fs-export-as-json {
     display: flex;
     justify-content: center;
     flex-direction: column;

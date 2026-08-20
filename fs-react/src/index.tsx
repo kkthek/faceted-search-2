@@ -41,6 +41,7 @@ import {initializeDevContext} from "./util/dev_context";
 import ConfigUtils from "./util/config_utils";
 import MaximizeButton from "./ui/search-bar/maximize-button";
 import CreateArticleLink from "./ui/search-bar/create_article";
+import ExportSearchAsQuery from "./ui/search-bar/export_search_as_query";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -82,7 +83,7 @@ function App() {
     );
 
     const headerControlsOrder = wikiContext.config.fs2gHeaderControlOrder.calculatePermutation(
-        ['sortView', 'searchView', 'saveSearchLink', 'createArticleLink', 'categoryDropDown']
+        ['sortView', 'searchView', 'saveSearchLink', 'createArticleLink', 'exportQueryLinks', 'categoryDropDown']
     );
     const facetControlsOrder = wikiContext.config.fs2gFacetControlOrder.calculatePermutation(
         ['sortView', 'selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
@@ -111,6 +112,9 @@ function App() {
                         />,
                         <CreateArticleLink key={'createArticleLink'}
                                            searchStateDocument={searchStateDocument}/>,
+                        <ExportSearchAsQuery key={'exportSearchLinks'}
+                                             documentQuery={currentDocumentQuery}
+                        />,
                         <CategoryDropdown key={'categoryView'}
                                           documentQuery={currentDocumentQuery}
                                           eventHandler={eventHandler}
@@ -184,9 +188,6 @@ function App() {
                                       searchStateDocument={searchStateDocument}
                                       textFilters={textFilters}
                                       eventHandler={eventHandler}
-                        />,
-                        <SaveSearchLink key={'saveSearchLink'}
-                                        documentQuery={currentDocumentQuery}
                         />
                     ].reorder(facetControlsOrder)}
                 </Box>

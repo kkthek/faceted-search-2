@@ -49,5 +49,7 @@
     "fs-operation-successful":  "Operation erfolgreich abgeschlossen",
     "fs-generic-error-message": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
     "fs-error-message":         "Fehler",
-    "fs-category-tree":         "Kategorie-Baum"
+    "fs-category-tree":         "Kategorie-Baum",
+    "fs-export-as-json":        "Exportiere als JSON",
+    "fs-export-as-csv":         "Exportiere als CSV"
 }
