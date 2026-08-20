@@ -13,8 +13,7 @@ function ExportSearchAsQuery(prop: {
         return;
     }
 
-    const baseUrl = wikiContext.config['wgServer'] + wikiContext.config['wgArticlePath'];
-    const specialAskUrl = baseUrl.replace(/\$1/, 'Special:Ask');
+    const baseUrl = wikiContext.getArticleUrl('Special:Ask');
     const queryParams = {
         '': generateAskQuery(prop.documentQuery, wikiContext),
         ...getAskParams(prop.documentQuery, wikiContext)
@@ -24,8 +23,8 @@ function ExportSearchAsQuery(prop: {
 
     return <Box className={'fs-export-as-json'}>
         <Stack direction="row" spacing={2}>
-            <Link href={specialAskUrl + '/' + urlParamsJson} title={wikiContext.msg('fs-export-as-json')}>JSON</Link>
-            <Link href={specialAskUrl + '/' + urlParamsCsv} title={wikiContext.msg('fs-export-as-csv')}>CSV</Link>
+            <Link href={baseUrl + '/' + urlParamsJson} title={wikiContext.msg('fs-export-as-json')}>JSON</Link>
+            <Link href={baseUrl + '/' + urlParamsCsv} title={wikiContext.msg('fs-export-as-csv')}>CSV</Link>
         </Stack>
     </Box>;
 
