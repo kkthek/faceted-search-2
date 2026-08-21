@@ -51,5 +51,6 @@
     "fs-error-message":         "Error",
     "fs-category-tree":         "Category tree",
     "fs-export-as-json":        "Export as JSON",
-    "fs-export-as-csv":         "Export as CSV"
+    "fs-export-as-csv":         "Export as CSV",
+    "fs-export-search-text-warning": "Fulltext filter cannot be considered in an ASK query. The result set will be a superset."
 }

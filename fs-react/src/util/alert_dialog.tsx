@@ -12,6 +12,7 @@ import {Transition} from "../custom_ui/transition";
 export type AlertDialogState = {
     open: boolean
     message?: string,
+    data?: any,
 }
 
 function AlertDialogSlide(prop: {

@@ -51,5 +51,6 @@
     "fs-error-message":         "Fehler",
     "fs-category-tree":         "Kategorie-Baum",
     "fs-export-as-json":        "Exportiere als JSON",
-    "fs-export-as-csv":         "Exportiere als CSV"
+    "fs-export-as-csv":         "Exportiere als CSV",
+    "fs-export-search-text-warning": "Ein Volltextfilter kann in einer ASK-Query nicht berücksichtigt werden. Die Ergebnismenge wird eine Obermenge sein."
 }
