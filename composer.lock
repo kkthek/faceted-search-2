@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68df94991d0434054fb3d32c78d19560",
+    "content-hash": "d845de90715544024ec02b8f5e3dd2aa",
     "packages": [
         {
             "name": "carbonphp/carbon-doctrine-types",
@@ -296,6 +296,58 @@
                 }
             ],
             "time": "2026-06-07T11:47:49+00:00"
+        },
+        {
+            "name": "diqa/formatter",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kkthek/diqa-formatter.git",
+                "reference": "ce01efc358dfef4dbdc069661c066a785723834f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kkthek/diqa-formatter/zipball/ce01efc358dfef4dbdc069661c066a785723834f",
+                "reference": "ce01efc358dfef4dbdc069661c066a785723834f",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": ">=2.3",
+                "php": ">=7.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DIQA\\Formatter\\": [
+                        "src/",
+                        "test/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Kai Kühn",
+                    "homepage": "https://www.diqa.de"
+                }
+            ],
+            "description": "CLI formatting library",
+            "homepage": "https://www.diqa.de/",
+            "keywords": [
+                "cli",
+                "formatting"
+            ],
+            "support": {
+                "issues": "https://github.com/kkthek/diqa-formatter/issues",
+                "source": "https://github.com/kkthek/diqa-formatter/tree/release-1.2"
+            },
+            "time": "2025-08-28T09:09:04+00:00"
         },
         {
             "name": "elastic/transport",
@@ -4436,7 +4488,8 @@
         "ext-dom": "*",
         "ext-libxml": "*",
         "ext-ctype": "*",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "ext-curl": "*"
     },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
