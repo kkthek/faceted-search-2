@@ -157,8 +157,8 @@ function setConfigForDevContext(): void
         '_MDAT' => 'Modification date'
     ];
 
-    global $fs2gShowExportLinks;
-    $fs2gShowExportLinks = true;
+    global $fs2gExportLinkFormats;
+    $fs2gExportLinkFormats = ['json', 'csv', 'rdf'];
 // -------------------------------------------------------
 
     if (file_exists(__DIR__ . '/env.php')) {

@@ -124,10 +124,14 @@ div.fs-create-article {
 }
 
 div.fs-save-search-link,
-div.fs-export-as-json {
+div.fs-export-link-box {
     display: flex;
     justify-content: center;
     flex-direction: column;
+}
+
+a.fs-export-link {
+    cursor: pointer;
 }
 
 #sort-order-select-control {
