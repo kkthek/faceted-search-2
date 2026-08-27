@@ -62,6 +62,7 @@ class TreeCreator {
 
         const groups: Groups = {};
         const groupsCopy = ObjectTools.deepClone(specifiedValues);
+        this.validateGroupConfiguration(groupsCopy);
         for (let groupId in groupsCopy) {
             const groupItems = valueCounts.intersect(
                 (v) => v.itemId(),
@@ -76,6 +77,30 @@ class TreeCreator {
         }
 
         return groups;
+    }
+
+    private static validateGroupConfiguration(specifiedValues: any) {
+        if (specifiedValues === undefined || typeof specifiedValues !== 'object') {
+            const message = "Group configuration must be an object. " +
+                "Found: "+JSON.stringify(specifiedValues);
+            throw new Error(message);
+        }
+        for(let groupId in specifiedValues) {
+            const groupConfiguration = specifiedValues[groupId];
+            if (!Array.isArray(groupConfiguration)) {
+                const message = "Group configuration error. Value for key '"+groupId+"' must be an array. " +
+                    "Found: "+JSON.stringify(groupConfiguration);
+                throw new Error(message);
+            }
+            for(let i = 0; i < groupConfiguration.length; i++) {
+                const groupItem = groupConfiguration[i];
+                if (typeof groupItem !== 'string' && typeof groupItem !== 'number') {
+                    const message = "The "+i+". value of key '"+groupId+"' must be of type string or number. " +
+                        "Found: "+JSON.stringify(groupItem);
+                    throw new Error(message);
+                }
+            }
+        }
     }
 }
 
