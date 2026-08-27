@@ -67,9 +67,10 @@ function ExportSearchAsQuery(prop: {
             {exportLinks.map((format: string) => {
                 const url = baseUrl + '/' + encodeParameters({
                     ...queryParams,
-                    'format': format
+                    format: format
                 });
                 return <Link className={'fs-export-link'}
+                             key={'export-as-query-'+format}
                              href={url}
                              onClick={onClick(url, format)}
                              title={wikiContext.msg('fs-export-as-json')}>
