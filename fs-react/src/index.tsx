@@ -20,7 +20,7 @@ import FacetQueryBuilder from "./common/query_builders/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
 import {SearchStateDocument, SearchStateFacet, TextFilters} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
-import {Divider, ThemeProvider, Typography} from "@mui/material";
+import {Divider, ThemeProvider} from "@mui/material";
 import ErrorView from "./ui/common/error_view";
 import SaveSearchLink from "./ui/search-bar/save_search_link";
 import {WikiContextAccessor} from "./common/wiki_context";
@@ -41,6 +41,7 @@ import {initializeDevContext} from "./util/dev_context";
 import ConfigUtils from "./util/config_utils";
 import MaximizeButton from "./ui/search-bar/maximize-button";
 import CreateArticleLink from "./ui/search-bar/create_article";
+import HeaderExtensionPoint from "./extensions/header_ep";
 
 const browserWindow = window as any;
 const isInWikiContext = !!browserWindow.mw;
@@ -117,6 +118,13 @@ function App() {
                                           showLabel={false}
                         />
                     ].reorder(headerControlsOrder)}
+                    <HeaderExtensionPoint key={'headerExtensionPoint'}
+                                         client={client}
+                                         searchStateDocument={searchStateDocument}
+                                         searchStateFacets={searchFacetState}
+                                         expandedFacets={expandedFacets}
+                                         eventHandler={eventHandler}
+                    />
                     <MaximizeButton key={'maximizeButton'}/>
                 </Box>
 
