@@ -118,11 +118,16 @@ div.fs-boxes {
  */
 div.fs-save-search-link,
 div.fs-header-extension-point,
-div.fs-create-article {
+div.fs-create-article,
+div.fs-export-link-box {
     margin-left: 10px;
     display: flex;
     justify-content: center;
     flex-direction: column;
+}
+
+a.fs-export-link {
+    cursor: pointer;
 }
 
 #sort-order-select-control {

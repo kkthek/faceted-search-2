@@ -226,6 +226,10 @@
 			"value": false,
 			"description": "Show some files in an overlay. Either 'false' or array of file types ['pdf', 'png',...]"
 		},
+        "ExportLinkFormats": {
+            "value": [],
+            "description": "Shows export links in the specified formats: json, csv, rdf, rss"
+        },
 		"HeaderControlOrder": {
 			"value": [],
 			"description": "Order of controls in header"

@@ -45,7 +45,7 @@ class ConfigTools
         }
         global $fs2gHeaderControlOrder;
         if (count($fs2gHeaderControlOrder) === 0) {
-            $fs2gHeaderControlOrder = ["sortView", "searchView", "saveSearchLink", "createArticleLink"];
+            $fs2gHeaderControlOrder = ["sortView", "searchView", "saveSearchLink",  "exportQueryLinks", "createArticleLink"];
         }
     }
 
