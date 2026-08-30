@@ -90,7 +90,7 @@ function setConfigForDevContext(): void
         $fs2gExtraPropertiesToRequest[] = new Property("Diqa import fullpath", Datatype::STRING);
     }
 
-    $fs2gHeaderControlOrder = [  'searchView', 'sortView', 'categoryDropDown', 'saveSearchLink', 'createArticleLink' ];
+    $fs2gHeaderControlOrder = [  'searchView', 'sortView', 'categoryDropDown', 'saveSearchLink', 'createArticleLink', 'exportQueryLinks' ];
     $fs2gFacetControlOrder = ['selectedFacetLabel', 'selectedFacetView', 'selectedCategoryView', 'removeAllFacets', 'divider',
         'facetView', 'categoryView', 'categoryDropDown', 'categoryTree', 'sortView'];
 
@@ -156,6 +156,9 @@ function setConfigForDevContext(): void
     $fs2gSMWLanguage = [
         '_MDAT' => 'Modification date'
     ];
+
+    global $fs2gExportLinkFormats;
+    $fs2gExportLinkFormats = ['json', 'csv', 'rdf'];
 // -------------------------------------------------------
 
     if (file_exists(__DIR__ . '/env.php')) {

@@ -43,6 +43,12 @@ class DateTools {
         return (fromStr === toStr ? fromStr : fromStr + " - " + toStr);
     }
 
+    public static formatTimestamp(date: Date): string {
+        const pad = (n: number) => n.toString().padStart(2, '0');
+        return `${date.getFullYear()}${pad(date.getMonth() + 1)}${pad(date.getDate())}`
+            + `_${pad(date.getHours())}${pad(date.getMinutes())}${pad(date.getSeconds())}`;
+    }
+
     private static isBeginOfDay(d: Date) {
         return d.getUTCHours() === 0
             && d.getUTCMinutes() === 0

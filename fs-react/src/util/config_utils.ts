@@ -92,6 +92,11 @@ class ConfigUtils {
         const namespaceAsText = namespaces[doc.namespaceFacet.namespace];
         return doc.namespaceFacet.isMainNamespace() ? doc.title : `${namespaceAsText}:${doc.title}`;
     }
+
+    public static getNamespaceAsText(wikiContext: WikiContextAccessor, namespace: number) {
+        const namespaces = wikiContext.config['wgFormattedNamespaces'];
+        return namespaces[namespace] ?? '';
+    }
 }
 
 export default ConfigUtils;

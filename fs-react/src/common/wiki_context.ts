@@ -34,6 +34,11 @@ export class WikiContextAccessor {
         return this.globals.mwRestUrl + "/FacetedSearch2/v1/proxy"
     }
 
+    getArticleUrl(title: string): string {
+        const baseUrl = this.config['wgServer'] + this.config['wgArticlePath'];
+        return baseUrl.replace(/\$1/, title);
+    }
+
     static fromMWConfig(mw: any): WikiContextAccessor {
         const globals: any = {};
         const wgServer = mw.config.get("wgServer");

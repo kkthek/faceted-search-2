@@ -22,9 +22,9 @@ export class FacetValue {
     }
 
     isEmpty() {
-        return (!this.value)
-            && (!this.mwTitle)
-            && (!this.range);
+        return this.isNullish(this.value)
+            && this.isNullish(this.mwTitle)
+            && this.isNullish(this.range);
     }
 
     static fromValueCount(valueCount: ValueCount) {
@@ -69,7 +69,13 @@ export class FacetValue {
 
     toString(): string {
         if (this.range) return this.range.toString();
-        return this.mwTitle ? this.mwTitle.title : (this.value as string).toString();
+        return this.mwTitle ? this.mwTitle.title : FacetValue.valueToString(this.value);
+    }
+
+    private static valueToString(value: ValueType | void): string {
+        if (value === null || value === undefined) return "";
+        if (value instanceof Date) return (value as Date).toISOString();
+        return (value as ValueType).toString();
     }
 
     static sameValue(a: ValueType | void, b: ValueType | void) {

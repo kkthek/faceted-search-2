@@ -12,6 +12,7 @@ import {Transition} from "../custom_ui/transition";
 export type ConfirmDialogState = {
     open: boolean
     message?: string,
+    data?: any,
 }
 
 function ConfirmDialogSlide(prop: {
