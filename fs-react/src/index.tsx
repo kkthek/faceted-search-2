@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React, {createContext, useState} from 'react';
+import React, {createContext, StrictMode, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search-bar/search_bar_view";
 import ResultView from "./ui/search-results/result_view";
@@ -256,12 +256,16 @@ function startApp(params: {
     client = params.client;
     wikiContext = params.wikiContext;
     applyQueryConstraints();
-    render(<ErrorBoundary FallbackComponent={ErrorComponent}><App/></ErrorBoundary>);
+    render(<ErrorBoundary FallbackComponent={ErrorComponent}>
+        <StrictMode>
+            <App/>
+        </StrictMode>
+    </ErrorBoundary>);
 }
 
 if (isInWikiContext) {
     const accessor = WikiContextAccessor.fromMWConfig(browserWindow.mw);
-    const wikiClient = new Client(accessor.getSolrProxyUrl());
+    const wikiClient = new Client(accessor.getBackendProxyUrl());
 
     startApp({
         wikiContext: accessor,

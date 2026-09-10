@@ -30,7 +30,7 @@ export class WikiContextAccessor {
         return this.config['wgUserLanguage'] ?? (this.config['wgContentLanguage'] ?? 'en');
     }
 
-    getSolrProxyUrl(): string {
+    getBackendProxyUrl(): string {
         return this.globals.mwRestUrl + "/FacetedSearch2/v1/proxy"
     }
 

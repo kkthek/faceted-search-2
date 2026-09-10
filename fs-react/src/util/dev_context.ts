@@ -35,7 +35,7 @@ class WikiContextAccessorMock extends WikiContextAccessor {
         return new WikiContextAccessorMock(config, solrProxyUrl);
     }
 
-    getSolrProxyUrl(): string {
+    getBackendProxyUrl(): string {
         return this.globals.mwRestUrl;
     }
 }
