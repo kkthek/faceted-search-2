@@ -33,7 +33,15 @@ export function generateAskQuery(query: DocumentQuery, wikiContext: WikiContextA
                 cond = `[[${propertyTitle}::${v.toString()}]]`;
             }
         } else {
-            cond = `[[${propertyTitle}::${p.values.join(' || ')}]]`;
+            if (p.property.isRangeProperty()) {
+                // this is not OR because range properties cannot be ORed.
+                // It's a drilldown, so consider only last value
+                const range = p.values[p.values.length-1].range as Range;
+                cond = `[[${propertyTitle}::>=${range.fromToString()}]] [[${propertyTitle}::<=${range.toToString()}]]`;
+            } else {
+                const valuesWithoutEmpty = p.values.filter(v => !v.isEmpty());
+                cond = `[[${propertyTitle}::${valuesWithoutEmpty.join(' || ')}]]`;
+            }
         }
         q.push(cond);
     });
