@@ -14,7 +14,6 @@ function SelectedFacetsView(prop: {
     searchStateDocument: SearchStateDocument,
     expandedFacets: string[],
     eventHandler: EventHandler
-    textFilters: TextFilters,
     setLoadPromise: Dispatch<SetStateAction<Promise<any>>>
 }) {
     if (!prop.searchStateFacet) return;
@@ -35,12 +34,13 @@ function SelectedFacetsView(prop: {
             if (!documentResponse) return;
             const facetCount = documentResponse.getPropertyFacetCount(v.property);
             return <SelectedFacet key={v.property.title}
+                                  searchStateFacets={prop.searchStateFacet}
                                   propertyValueCount={v}
                                   facetCount={facetCount}
                                   searchStateFacet={prop.searchStateFacet}
                                   eventHandler={prop.eventHandler}
                                   onOrDialogClick={onOrDialogClick}
-                                  textFilters={prop.textFilters}
+
             />
         }
     );

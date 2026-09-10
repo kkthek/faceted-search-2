@@ -13,7 +13,6 @@ import {CategoryNode} from "../../common/response/category_node";
 function CategoryTree(prop: {
     client: Client,
     searchStateDocument: SearchStateDocument,
-    textFilters: TextFilters,
     eventHandler: EventHandler
 }) {
     const wikiContext = useContext(WikiContext);
@@ -25,6 +24,7 @@ function CategoryTree(prop: {
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
 
     useEffect(() => {
+
         const [filteredTree, fullTree] = categoryTree;
         if (!filteredTree) {
             (async function fetchCategoryTree() {
@@ -35,7 +35,7 @@ function CategoryTree(prop: {
             }());
         } else {
 
-            let newFilteredTree = fullTree.filterForCategories(categories);
+            let newFilteredTree = filteredTree.filterForCategories(categories);
             setCategoryTree([newFilteredTree, fullTree]);
             setExpandedFacets(newFilteredTree.getNodeItemIds());
 
@@ -64,9 +64,9 @@ function CategoryTree(prop: {
     return <div id={'fs-category-tree'}>
         <Typography variant={"subtitle1"}>{wikiContext.msg('fs-category-tree')}</Typography>
         <CategoryTreeFilter setCategoryTree={setCategoryTree}
+                            setExpandedFacets={setExpandedFacets}
                             treeState={categoryTree}
                             searchStateDocument={prop.searchStateDocument}
-                            textFilters={prop.textFilters}
                             eventHandler={prop.eventHandler}
 
         />

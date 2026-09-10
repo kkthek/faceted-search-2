@@ -14,14 +14,16 @@ import {Property} from "../../common/property";
 import {Range} from "../../common/range";
 import {PropertyValueCount} from "../../common/response/property_value_count";
 import {PropertyFacetCount} from "../../common/response/property_facet_count";
+import {FacetsQuery} from "../../common/request/facets_query";
 
 function SelectedFacet(prop: {
     propertyValueCount: PropertyValueCount
+    searchStateFacets: SearchStateFacet,
     facetCount: PropertyFacetCount
     searchStateFacet: SearchStateFacet,
     eventHandler: EventHandler
     onOrDialogClick: (property: Property) => void
-    textFilters: TextFilters
+
 }) {
     const query = prop.searchStateFacet.query;
     const property = prop.propertyValueCount.property;
@@ -79,7 +81,9 @@ function SelectedFacet(prop: {
         showAllTreeItem = <CustomTreeItem itemId={property.title + "-showall"}
                                           label={<Span color={'secondary'}>{"[" + wikiContext.msg('fs-show-all') + "]"}</Span>}
                                           itemAction={() => {
-                                              const filterText = prop.textFilters[property.title];
+                                              const q = prop.searchStateFacets.query as FacetsQuery;
+                                              const pvq = q.findPropertyValueQuery(property);
+                                              const filterText = pvq?.valueContains ?? '';
                                               prop.eventHandler.onShowAllValues(property, filterText);
                                           } }
         />;
@@ -87,9 +91,10 @@ function SelectedFacet(prop: {
 
     let filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
                                          label={<FacetFilter eventHandler={prop.eventHandler}
+                                                             searchStateFacets={prop.searchStateFacets}
                                                              numberOfValues={prop.propertyValueCount?.values.length}
                                                              property={prop.propertyValueCount?.property}
-                                                             textFilters={prop.textFilters}
+
                                          />}
     />;
 

@@ -9,49 +9,44 @@ import {CategoryNode} from "../../common/response/category_node";
 
 function CategoryTreeFilter(prop: {
     setCategoryTree: Dispatch<SetStateAction<[CategoryNode, CategoryNode]>>,
+    setExpandedFacets: Dispatch<SetStateAction<string[]>>,
     treeState: [CategoryNode, CategoryNode],
     searchStateDocument: SearchStateDocument,
-    textFilters: TextFilters,
-    eventHandler: EventHandler
+    eventHandler: EventHandler,
 }) {
 
     const wikiContext = useContext(WikiContext);
     const [, fullTree] = prop.treeState;
     const categories = prop.searchStateDocument?.documentResponse
         .categoryFacetCounts.map(cfc => cfc.category) ?? [];
-    const globalFilterText = prop.textFilters['category_tree'] ?? '';
-    const [localFilterText, setLocalFilterText] = useState(globalFilterText);
+
+    const [localFilterText, setLocalFilterText] = useState('');
     const debouncedSearchValue = useDebounce(localFilterText, TYPING_DELAY);
     const filteredTree = useMemo(() => {
         return fullTree
             .filterForCategories(categories)
             .filterForText(localFilterText);
-    }, [categories, localFilterText]);
+    }, [prop.searchStateDocument, localFilterText]);
 
     useEffect(() => {
         if (!prop.treeState) return;
         prop.setCategoryTree([filteredTree, fullTree]);
-        setGlobalFilter(debouncedSearchValue)
-    }, [debouncedSearchValue]);
+        prop.setExpandedFacets(filteredTree.getNodeItemIds());
 
-    useEffect(() => {
-        setLocalFilterText(globalFilterText);
-    }, [globalFilterText]);
+    }, [debouncedSearchValue, prop.searchStateDocument]);
+
+
 
     if (!prop.treeState) return;
 
     const onKeyDown = function (e: KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Escape") {
-            setGlobalFilter('');
+            setLocalFilterText('');
         }
         e.stopPropagation();
     }
 
-    const setGlobalFilter = function (text: string): void {
-        const f = ObjectTools.deepClone(prop.textFilters);
-        f['category_tree'] = text;
-        prop.eventHandler.setTextFilters(f);
-    }
+
 
     const onChange = function (text: string): void {
         setLocalFilterText(text);

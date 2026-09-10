@@ -12,7 +12,6 @@ import {ValueCount} from "../../common/response/value_count";
 function TagCloudFacet(prop: {
     searchStateFacets: SearchStateFacet,
     eventHandler: EventHandler
-    textFilters: TextFilters
 }) {
 
     if (!prop.searchStateFacets) return;
@@ -43,10 +42,11 @@ function TagCloudFacet(prop: {
     return <div id={'fs-tagcloud'}>
         <div>
             <FacetFilter eventHandler={prop.eventHandler}
+                         searchStateFacets={prop.searchStateFacets}
                          numberOfValues={tags.length}
                          property={tagProperty}
                          width={'100%'}
-                         textFilters={prop.textFilters}
+
             />
         </div>
         <div id={'fs-tagcloud-container'} style={{width: '100%'}}>
