@@ -21,7 +21,6 @@ class EventHandler {
     private readonly setFacetState: Dispatch<SetStateAction<SearchStateFacet>>;
     private readonly setExpandedFacets: Dispatch<SetStateAction<string[]>>;
     private readonly setError: Dispatch<SetStateAction<string>>;
-    private readonly setTextFiltersState: Dispatch<SetStateAction<TextFilters>>;
     private readonly setLoadPromise: Dispatch<SetStateAction<Promise<any>>>;
     private readonly wikiContext: WikiContextAccessor;
     private expandedFacets: string[];
@@ -32,7 +31,6 @@ class EventHandler {
                 setFacetState: Dispatch<SetStateAction<SearchStateFacet>>,
                 setExpandedFacets: Dispatch<SetStateAction<string[]>>,
                 setError: Dispatch<SetStateAction<string>>,
-                setTextFilters: Dispatch<SetStateAction<TextFilters>>,
                 setLoadPromise: Dispatch<SetStateAction<Promise<any>>>,
                 wikiContext: WikiContextAccessor,
                 client: Client) {
@@ -42,7 +40,6 @@ class EventHandler {
         this.setSearchState = setDocumentState;
         this.setFacetState = setFacetState;
         this.setError = setError;
-        this.setTextFiltersState = setTextFilters;
         this.setLoadPromise = setLoadPromise;
         this.wikiContext = wikiContext;
 
@@ -50,14 +47,6 @@ class EventHandler {
         this.setExpandedFacets = setExpandedFacets;
 
         this.createClosuresForEventHandlers();
-    }
-
-    setTextFilters(filter: TextFilters): void {
-        this.setTextFiltersState(filter);
-    }
-
-    private resetTextFilters(): void {
-        this.setTextFiltersState({});
     }
 
     private createClosuresForEventHandlers() {
@@ -76,7 +65,6 @@ class EventHandler {
             .withSearchText(text)
             .withOffset(0);
 
-        this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacets()
@@ -98,7 +86,6 @@ class EventHandler {
             .withOffset(0);
 
         this.expandFacet(p.getItemId());
-        this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacetValuesForProperties(p)
@@ -132,7 +119,6 @@ class EventHandler {
             .withPropertyFacet(propertyFacet);
 
         this.expandFacet(property.getItemId());
-        this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacetValuesForProperties(property)
@@ -155,7 +141,6 @@ class EventHandler {
         properties.forEach(property => {
             this.expandFacet(property.getItemId());
         });
-        this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacetValuesForProperties(...properties)
@@ -172,7 +157,6 @@ class EventHandler {
             .clearPropertyValueQueryForProperty(property);
 
         this.expandFacet(property.getItemId());
-        this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacetValuesForProperties(property)
@@ -194,7 +178,6 @@ class EventHandler {
                 .clearPropertyValueQueryForProperty(property);
         }
 
-        this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacetValuesForProperties(property)
@@ -233,7 +216,6 @@ class EventHandler {
             .withNamespaceFacets(namespaces)
             .withOffset(0);
 
-        this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacets()
@@ -245,7 +227,6 @@ class EventHandler {
             .withOffset(0)
             .withCategoryFacet(category);
 
-        this.resetTextFilters();
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacets()
@@ -283,7 +264,6 @@ class EventHandler {
             .clearAllPropertyValueQueries()
             .withPropertyValueQuery(QueryUtils.prepareTagCloudValueQuery(this.wikiContext));
 
-        this.resetTextFilters();
         this.setExpandedFacets([]);
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),

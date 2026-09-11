@@ -22,7 +22,6 @@ function FacetView(prop: {
     searchStateFacets: SearchStateFacet,
     expandedFacets: string[],
     eventHandler: EventHandler
-    textFilters: TextFilters,
     setLoadPromise: Dispatch<SetStateAction<Promise<any>>>
 
 }) {
@@ -60,12 +59,13 @@ function FacetView(prop: {
 
         return <FacetViewProperty key={facetCount.property.title+facetCount.property.type}
                            searchStateDocument={prop.searchStateDocument}
+                           searchStateFacets={prop.searchStateFacets}
                            facetResponse={prop.searchStateFacets?.facetsResponse}
                            propertyFacetCount={facetCount}
                            eventHandler={prop.eventHandler}
                            onOrDialogClick={onOrDialogClick}
                            onDateRangeDialog={onDateRangeDialogClick}
-                           textFilters={prop.textFilters}
+
         />
     }
     );

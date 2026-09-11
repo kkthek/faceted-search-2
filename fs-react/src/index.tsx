@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React, {createContext, useState} from 'react';
+import React, {createContext, StrictMode, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search-bar/search_bar_view";
 import ResultView from "./ui/search-results/result_view";
@@ -66,7 +66,6 @@ function App() {
     const [searchStateDocument, setSearchStateDocument] = useState((): SearchStateDocument => null);
     const [searchFacetState, setSearchFacetState] = useState((): SearchStateFacet => null);
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
-    const [textFilters, setTextFilters] = useState<TextFilters>({});
     const [error, setError] = useState('');
     const [loadPromise, setLoadPromise] = useState<Promise<any>>(null);
 
@@ -77,7 +76,6 @@ function App() {
         setSearchFacetState,
         setExpandedFacets,
         setError,
-        setTextFilters,
         setLoadPromise,
         wikiContext,
         client
@@ -140,7 +138,6 @@ function App() {
                 <TagCloudFacet key={'tagCloud'}
                                searchStateFacets={searchFacetState}
                                eventHandler={eventHandler}
-                               textFilters={textFilters}
                 />
 
                 <Box id={'fs-facets'} className={'fs-boxes fs-body'}>
@@ -157,7 +154,6 @@ function App() {
                                             searchStateFacet={searchFacetState}
                                             expandedFacets={expandedFacets}
                                             eventHandler={eventHandler}
-                                            textFilters={textFilters}
                                             setLoadPromise={setLoadPromise}
 
                         />,
@@ -177,7 +173,6 @@ function App() {
                                    searchStateFacets={searchFacetState}
                                    expandedFacets={expandedFacets}
                                    eventHandler={eventHandler}
-                                   textFilters={textFilters}
                                    setLoadPromise={setLoadPromise}
                         />,
 
@@ -194,7 +189,6 @@ function App() {
                         <CategoryTree key={'categoryTree'}
                                       client={client}
                                       searchStateDocument={searchStateDocument}
-                                      textFilters={textFilters}
                                       eventHandler={eventHandler}
                         />
                     ].reorder(facetControlsOrder)}
@@ -261,7 +255,7 @@ function startApp(params: {
 
 if (isInWikiContext) {
     const accessor = WikiContextAccessor.fromMWConfig(browserWindow.mw);
-    const wikiClient = new Client(accessor.getSolrProxyUrl());
+    const wikiClient = new Client(accessor.getBackendProxyUrl());
 
     startApp({
         wikiContext: accessor,

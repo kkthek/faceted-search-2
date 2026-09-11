@@ -1,37 +1,34 @@
 import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
-import {TextFilters} from "../../common/datatypes";
+import {SearchStateFacet, TextFilters} from "../../common/datatypes";
 import {TYPING_DELAY, WikiContext} from "../../index";
 import {useDebounce} from "../../custom_ui/custom_hooks";
 import EventHandler from "../../common/event_handler";
 import ObjectTools from "../../util/object_tools";
 import {TextField} from "@mui/material";
 import {Property} from "../../common/property";
+import {FacetsQuery} from "../../common/request/facets_query";
+import {PropertyValueQuery} from "../../common/request/property_value_query";
 
 function FacetFilter(prop : {
     property: Property
+    searchStateFacets: SearchStateFacet,
     numberOfValues: number
     eventHandler: EventHandler,
     width?: string
-    textFilters: TextFilters
 }) {
 
     const wikiContext = useContext(WikiContext);
     const [unchanged, setUnchanged] = useState((): boolean => true);
 
-    const globalFilterText = prop.textFilters[prop.property?.title] ?? '';
+    const q = prop.searchStateFacets.query as FacetsQuery;
+    const pvq = q.findPropertyValueQuery(prop.property);
+    const globalFilterText = pvq?.valueContains ?? '';
     const [localFilterText, setLocalFilterText] = useState(globalFilterText);
     const debouncedSearchValue = useDebounce(localFilterText, TYPING_DELAY);
 
-    const setGlobalFilter = function(text: string): void {
-        const f = ObjectTools.deepClone(prop.textFilters);
-        f[prop.property.title] = text;
-        prop.eventHandler.setTextFilters(f);
-    }
-    
     useEffect(() => {
-        if (!prop.property) return;
+        if (!prop.property || unchanged) return;
         prop.eventHandler.onFacetValueContains(debouncedSearchValue, prop.property);
-        setGlobalFilter(debouncedSearchValue);
     }, [debouncedSearchValue]);
 
     useEffect(() => {

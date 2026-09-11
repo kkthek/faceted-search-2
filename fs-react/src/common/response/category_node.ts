@@ -19,6 +19,10 @@ export class CategoryNode {
         this.displayTitle = displayTitle;
     }
 
+    getItemId() {
+        return this.category + this.parent?.category;
+    }
+
     createParentReferences(node: CategoryNode | null = null): CategoryNode {
         if (node === null) node = this;
         node.children.forEach(child => {

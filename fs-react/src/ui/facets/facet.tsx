@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {SearchStateDocument, TextFilters} from "../../common/datatypes";
+import {SearchStateDocument, SearchStateFacet, TextFilters} from "../../common/datatypes";
 import IdTools from "../../util/id_tools";
 import FacetValues from "./facet_values_view";
 import EventHandler from "../../common/event_handler";
@@ -15,16 +15,17 @@ import {FacetResponse} from "../../common/response/facet_response";
 import {PropertyFacetCount} from "../../common/response/property_facet_count";
 import SliderItem from "./slider_item";
 import DisplayTools from "../../util/display_tools";
+import {FacetsQuery} from "../../common/request/facets_query";
 
 
 function FacetViewProperty(prop: {
     searchStateDocument: SearchStateDocument,
+    searchStateFacets: SearchStateFacet,
     facetResponse: FacetResponse,
     propertyFacetCount: PropertyFacetCount,
     eventHandler: EventHandler
     onOrDialogClick: (property: Property) => void
     onDateRangeDialog: (property: Property) => void,
-    textFilters: TextFilters
 }) {
 
     const property =  prop.propertyFacetCount.property;
@@ -50,7 +51,10 @@ function FacetViewProperty(prop: {
         showAllTreeItem = <CustomTreeItem itemId={property.title + "-showall"}
                                           label={<Span color={'secondary'}>{"[" + wikiContext.msg('fs-show-all') + "]"}</Span>}
                                           itemAction={() => {
-                                              const filterText = prop.textFilters[property.title];
+                                              const q = prop.searchStateFacets.query as FacetsQuery;
+                                              const pvq = q.findPropertyValueQuery(property);
+                                              const filterText = pvq?.valueContains ?? '';
+
                                               prop.eventHandler.onShowAllValues(property, filterText);
                                           }}
         />;
@@ -58,9 +62,10 @@ function FacetViewProperty(prop: {
 
     const filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
                                          label={<FacetFilter eventHandler={prop.eventHandler}
+                                                             searchStateFacets={prop.searchStateFacets}
                                                              numberOfValues={propertyValueCount?.values.length}
                                                              property={propertyValueCount?.property}
-                                                             textFilters={prop.textFilters}
+
                                          />}
     />;
 

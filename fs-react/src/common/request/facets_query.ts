@@ -36,6 +36,9 @@ export class FacetsQuery extends BaseQuery {
     }
 
     findPropertyValueQuery(property: Property) {
+        if (property == null) {
+            return null;
+        }
         return this.propertyValueQueries.findFirst(
             (e: PropertyValueQuery) => e.property.equals(property));
     }
