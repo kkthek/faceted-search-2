@@ -33,4 +33,12 @@ export class DocumentsResponse {
             (pfc: PropertyFacetCount) => pfc.property.getItemId() === itemId);
     }
 
+    getCategoryFacetCount(category: string) {
+        return this.categoryFacetCounts.findFirst((c: CategoryFacetCount) => c.category === category);
+    }
+
+    getCategoriesFromFacetCounts(): string[] {
+        return this.categoryFacetCounts.map((c: CategoryFacetCount) => c.category);
+    }
+
 }
