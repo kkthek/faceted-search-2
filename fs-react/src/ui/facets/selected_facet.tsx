@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {SearchStateFacet, TextFilters,} from "../../common/datatypes";
+import {SearchStateFacet,} from "../../common/datatypes";
 import EventHandler from "../../common/event_handler";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -14,7 +14,7 @@ import {Property} from "../../common/property";
 import {Range} from "../../common/range";
 import {PropertyValueCount} from "../../common/response/property_value_count";
 import {PropertyFacetCount} from "../../common/response/property_facet_count";
-import {FacetsQuery} from "../../common/request/facets_query";
+import ShowAllButton from "./show_all_button";
 
 function SelectedFacet(prop: {
     propertyValueCount: PropertyValueCount
@@ -78,18 +78,13 @@ function SelectedFacet(prop: {
     const showAll = prop.propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
         !(property.isRangeProperty() || property.isBooleanProperty());
     if (showAll) {
-        showAllTreeItem = <CustomTreeItem itemId={property.title + "-showall"}
-                                          label={<Span color={'secondary'}>{"[" + wikiContext.msg('fs-show-all') + "]"}</Span>}
-                                          itemAction={() => {
-                                              const q = prop.searchStateFacets.query as FacetsQuery;
-                                              const pvq = q.findPropertyValueQuery(property);
-                                              const filterText = pvq?.valueContains ?? '';
-                                              prop.eventHandler.onShowAllValues(property, filterText);
-                                          } }
-        />;
+        showAllTreeItem = <ShowAllButton property={property}
+                                         searchStateFacets={prop.searchStateFacets}
+                                         eventHandler={prop.eventHandler}
+        />
     }
 
-    let filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
+    const filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
                                          label={<FacetFilter eventHandler={prop.eventHandler}
                                                              searchStateFacets={prop.searchStateFacets}
                                                              numberOfValues={prop.propertyValueCount?.values.length}
