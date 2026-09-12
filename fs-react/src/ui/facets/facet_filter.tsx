@@ -20,20 +20,16 @@ function FacetFilter(prop : {
     const wikiContext = useContext(WikiContext);
     const [unchanged, setUnchanged] = useState((): boolean => true);
 
-    const q = prop.searchStateFacets.query as FacetsQuery;
-    const pvq = q.findPropertyValueQuery(prop.property);
-    const globalFilterText = pvq?.valueContains ?? '';
-    const [localFilterText, setLocalFilterText] = useState(globalFilterText);
-    const debouncedSearchValue = useDebounce(localFilterText, TYPING_DELAY);
+    const facetsQuery = prop.searchStateFacets.query as FacetsQuery;
+    const propertyValueQuery = facetsQuery.findPropertyValueQuery(prop.property);
+    const initialFilterValue = propertyValueQuery?.valueContains ?? '';
+    const [filterText, setFilterText] = useState(initialFilterValue);
+    const debouncedSearchValue = useDebounce(filterText, TYPING_DELAY);
 
     useEffect(() => {
         if (!prop.property || unchanged) return;
         prop.eventHandler.onFacetValueContains(debouncedSearchValue, prop.property);
     }, [debouncedSearchValue]);
-
-    useEffect(() => {
-        setLocalFilterText(globalFilterText);
-    }, [globalFilterText]);
 
     if (!prop.property) return;
     const unsuitableProperty = prop.property.isRangeProperty() || prop.property.isBooleanProperty();
@@ -43,15 +39,13 @@ function FacetFilter(prop : {
     }
 
     const onChange = function(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
-        setLocalFilterText(e.target.value);
+        setFilterText(e.target.value);
         setUnchanged(false);
     }
 
     const onKeyDown = function(e: KeyboardEvent<HTMLDivElement>) {
-        if (e.key === "Enter") {
-            prop.eventHandler.onFacetValueContains(globalFilterText, prop.property);
-        } else if (e.key === "Escape") {
-            setLocalFilterText('');
+        if (e.key === "Escape") {
+            setFilterText('');
         }
         e.stopPropagation();
     }
@@ -62,7 +56,7 @@ function FacetFilter(prop : {
                   placeholder={wikiContext.msg('fs-filter-property', prop.property.title)}
                   size={'small'}
                   variant="standard"
-                  value={localFilterText}
+                  value={filterText}
                   onChange={onChange}
                   onKeyDown={onKeyDown}
     />;

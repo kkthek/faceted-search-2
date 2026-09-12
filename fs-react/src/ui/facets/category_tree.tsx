@@ -4,7 +4,7 @@ import Client from "../../common/client";
 import {SearchStateDocument} from "../../common/datatypes";
 import {SimpleTreeView} from "@mui/x-tree-view";
 import CustomTreeItem from "../../custom_ui/custom_tree_item";
-import {Typography} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import {TYPING_DELAY, WikiContext} from "../../index";
 import CategoryTreeFilter from "./category_tree_filter";
 import FacetWithCount from "../common/facet_with_count";
@@ -64,7 +64,7 @@ function CategoryTree(prop: {
 
     };
 
-    return <div id={'fs-category-tree'}>
+    return <Box id={'fs-category-tree'}>
         <Typography variant={"subtitle1"}>{wikiContext.msg('fs-category-tree')}</Typography>
         <CategoryTreeFilter filterText={filterText}
                             setFilterText={setFilterText}
@@ -74,12 +74,12 @@ function CategoryTree(prop: {
                         disabledItemsFocusable
                         onItemExpansionToggle={handleItemExpansionToggle}
         >
-            {filteredTree.children.map(node => <CategoryItem key={node.category + node.parent.category}
+            {filteredTree.children.map(node => <CategoryItem key={node.getItemId()}
                                                              node={node}
                                                              searchStateDocument={prop.searchStateDocument}
                                                              eventHandler={prop.eventHandler}/>)}
         </SimpleTreeView>
-    </div>
+    </Box>
 }
 
 function CategoryItem(prop: {
@@ -94,7 +94,7 @@ function CategoryItem(prop: {
     const documentResponse = prop.searchStateDocument.documentResponse;
     const categoryFacetCount = documentResponse.getCategoryFacetCount(prop.node.category);
 
-    let itemId = prop.node.getItemId();
+    const itemId = prop.node.getItemId();
     return <CustomTreeItem key={itemId}
                            itemId={itemId}
                            label={<FacetWithCount displayTitle={prop.node.displayTitle ?? prop.node.category}

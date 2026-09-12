@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {SearchStateDocument, SearchStateFacet, TextFilters} from "../../common/datatypes";
+import {SearchStateDocument, SearchStateFacet} from "../../common/datatypes";
 import IdTools from "../../util/id_tools";
 import FacetValues from "./facet_values_view";
 import EventHandler from "../../common/event_handler";
@@ -9,13 +9,12 @@ import ChecklistIcon from '@mui/icons-material/Checklist';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 import FacetFilter from "./facet_filter";
 import FacetWithCount from "../common/facet_with_count";
-import Span from "../../custom_ui/span";
 import {Property} from "../../common/property";
 import {FacetResponse} from "../../common/response/facet_response";
 import {PropertyFacetCount} from "../../common/response/property_facet_count";
 import SliderItem from "./slider_item";
 import DisplayTools from "../../util/display_tools";
-import {FacetsQuery} from "../../common/request/facets_query";
+import ShowAllButton from "./show_all_button";
 
 
 function FacetViewProperty(prop: {
@@ -48,16 +47,10 @@ function FacetViewProperty(prop: {
     const showAll = propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
         !(property.isRangeProperty() || property.isBooleanProperty());
     if (showAll) {
-        showAllTreeItem = <CustomTreeItem itemId={property.title + "-showall"}
-                                          label={<Span color={'secondary'}>{"[" + wikiContext.msg('fs-show-all') + "]"}</Span>}
-                                          itemAction={() => {
-                                              const q = prop.searchStateFacets.query as FacetsQuery;
-                                              const pvq = q.findPropertyValueQuery(property);
-                                              const filterText = pvq?.valueContains ?? '';
-
-                                              prop.eventHandler.onShowAllValues(property, filterText);
-                                          }}
-        />;
+        showAllTreeItem = <ShowAllButton property={property}
+                                         searchStateFacets={prop.searchStateFacets}
+                                         eventHandler={prop.eventHandler}
+        />
     }
 
     const filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
