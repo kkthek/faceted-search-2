@@ -16,7 +16,6 @@ class DocumentQueryBuilder {
             [],
             [],
             [],
-            [],
 
             10,
             0
@@ -33,7 +32,6 @@ class DocumentQueryBuilder {
     withQueryFromJson(json: string) {
         const deserializer = new TypedJSON(DocumentQuery);
         this.query = deserializer.parse(json);
-        this.query.extraProperties = this.query.extraProperties ?? [];
         return this;
     }
 
@@ -94,11 +92,6 @@ class DocumentQueryBuilder {
 
     withNamespaceFacets(namespaces: number[]): DocumentQueryBuilder {
         this.query.namespaceFacets = namespaces;
-        return this;
-    }
-
-    withExtraProperty(property: Property): DocumentQueryBuilder {
-        this.query.extraProperties.push(property);
         return this;
     }
 
