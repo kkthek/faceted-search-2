@@ -226,11 +226,6 @@ function applyQueryConstraints() {
     }
     currentDocumentsQueryBuilder.withLimit(wikiContext.config['fs2gHitsPerPage']);
 
-    // extra properties need to be added always, even if the query
-    // comes from a URL-param, because they are never stored. (see save_search_link.tsx)
-    wikiContext.config.fs2gExtraPropertiesToRequest.forEach((p: any) => {
-        currentDocumentsQueryBuilder.withExtraProperty(new Property(p.title, p.type));
-    });
     // facet values for tag cloud need to be restored always, even if the query comes from URL-param,
     // because the facet query is not stored and needs to be rebuilt from the document query
     currentFacetsQueryBuilder.withPropertyValueQuery(QueryUtils.prepareTagCloudValueQuery(wikiContext));

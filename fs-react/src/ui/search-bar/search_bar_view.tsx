@@ -30,7 +30,7 @@ function SearchBar(prop: {
         }
         // Required because the facet query is not stored in the URL for length optimization reasons.
         // In case that the q-param is used, facet values/ranges must be re-created once
-        prop.eventHandler.onValuesClick(prop.query.propertyFacets);
+        prop.eventHandler.onReplaceValues(prop.query.propertyFacets);
         restoreFromQuery.current = false;
         return true;
     }

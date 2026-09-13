@@ -125,17 +125,13 @@ class EventHandler {
         ]));
     }
 
-    onValuesClick(propertyFacets: PropertyFacet[], removeOld: boolean = true) {
+    onValuesClick(propertyFacets: PropertyFacet[]) {
 
         propertyFacets.forEach((pf) => {
-            if (removeOld) {
-                this.currentDocumentsQueryBuilder.withoutPropertyFacet(pf);
-            }
             this.currentDocumentsQueryBuilder
                 .withOffset(0)
                 .withPropertyFacet(pf);
         });
-
 
         const properties = propertyFacets.map(pf => pf.getProperty());
         properties.forEach(property => {
@@ -145,6 +141,15 @@ class EventHandler {
             this.updateDocuments(),
             this.updateFacetValuesForProperties(...properties)
         ]));
+    }
+
+    onReplaceValues(propertyFacets: PropertyFacet[]) {
+
+        propertyFacets.forEach((pf) => {
+            this.currentDocumentsQueryBuilder.withoutPropertyFacet(pf);
+        });
+
+        this.onValuesClick(propertyFacets);
     }
 
     onRemoveAllFacetsForProperty(property: Property) {

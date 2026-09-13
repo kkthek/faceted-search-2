@@ -9,7 +9,6 @@ function SaveSearchLink(prop: {
 }) {
     const wikiContext = useContext(WikiContext);
     const q = ObjectTools.deepClone(prop.documentQuery);
-    delete q['extraProperties']; // optimization
 
     const url = new URL(window.location.href);
     url.searchParams.set('q',  btoa(JSON.stringify(q)));
