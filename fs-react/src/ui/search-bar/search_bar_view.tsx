@@ -1,9 +1,8 @@
-import React, {KeyboardEvent, useContext, useEffect, useRef, useState} from "react";
+import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
 import {TYPING_DELAY, WikiContext} from "../../index";
 import {Box, Button, TextField} from "@mui/material";
 import EventHandler from "../../common/event_handler";
 import {useDebounce} from "../../custom_ui/custom_hooks";
-import CreateArticleLink from "./create_article";
 import {DocumentQuery} from "../../common/request/document_query";
 
 function SearchBar(prop: {
@@ -15,25 +14,12 @@ function SearchBar(prop: {
     const wikiContext = useContext(WikiContext);
     const placeholderText = wikiContext.config['fs2gPlaceholderText'] ?? wikiContext.msg('fs-search-placeholder');
 
-    const restoreFromQuery = useRef(prop.restoreFromQuery);
     const [searchText, setSearchText] = useState(prop.query.searchText ?? '');
-    const debouncedSearchValue = useDebounce(searchText, TYPING_DELAY);
+    const debouncedSearchText = useDebounce(searchText, TYPING_DELAY);
 
     useEffect(() => {
-        if (restoreFromQueryAndTriggerUpdate()) return;
-        prop.eventHandler.onSearchClick(debouncedSearchValue);
-    }, [debouncedSearchValue, restoreFromQuery]);
-
-    const restoreFromQueryAndTriggerUpdate = function () {
-        if (!restoreFromQuery.current) {
-            return false;
-        }
-        // Required because the facet query is not stored in the URL for length optimization reasons.
-        // In case that the q-param is used, facet values/ranges must be re-created once
-        prop.eventHandler.onReplaceValues(prop.query.propertyFacets);
-        restoreFromQuery.current = false;
-        return true;
-    }
+         prop.eventHandler.onSearchClick(debouncedSearchText);
+    }, [debouncedSearchText]);
 
     const onKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Enter') {
