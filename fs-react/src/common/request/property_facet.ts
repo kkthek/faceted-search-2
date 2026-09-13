@@ -12,7 +12,7 @@ export class PropertyFacet {
     constructor(property: Property,
                 values: FacetValue[]
     ) {
-        this.property = property.asProperty();
+        this.property = property?.asProperty();
         this.values = values;
     }
 
