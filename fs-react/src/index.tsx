@@ -4,7 +4,7 @@
  * (c) 2024 DIQA Projektmanagement GmbH
  *
  */
-import React, {createContext, StrictMode, useState} from 'react';
+import React, {createContext, useEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import SearchBar from "./ui/search-bar/search_bar_view";
 import ResultView from "./ui/search-results/result_view";
@@ -18,7 +18,7 @@ import SelectedCategoriesView from "./ui/facets/selected_categories_view";
 import NamespaceView from "./ui/search-bar/namespace_view";
 import FacetQueryBuilder from "./common/query_builders/facet_query_builder";
 import SortView from "./ui/search-bar/sort_view";
-import {SearchStateDocument, SearchStateFacet, TextFilters} from "./common/datatypes";
+import {SearchStateDocument, SearchStateFacet} from "./common/datatypes";
 import CategoryDropdown from "./ui/search-bar/category_dropdown";
 import {Divider, ThemeProvider} from "@mui/material";
 import ErrorView from "./ui/common/error_view";
@@ -30,7 +30,6 @@ import TagCloudFacet from "./ui/facets/tag_cloud";
 import CategoryTree from "./ui/facets/category_tree";
 import DEFAULT_THEME from "./custom_ui/theme";
 import SelectedFacetsHeader from "./ui/facets/selected_facets_header";
-import {Property} from "./common/property";
 import {ErrorBoundary} from "react-error-boundary";
 import ErrorComponent from "./ui/common/error_component";
 import {BarLoader} from "react-spinners";
@@ -68,6 +67,7 @@ function App() {
     const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
     const [error, setError] = useState('');
     const [loadPromise, setLoadPromise] = useState<Promise<any>>(null);
+    const restoreFromQuery = useRef(storedQuery !== null);
 
     const eventHandler = new EventHandler(
         currentDocumentsQueryBuilder,
@@ -89,6 +89,21 @@ function App() {
             'facetView', 'categoryDropDown', 'categoryView', 'categoryTree', 'saveSearchLink']);
 
     const currentDocumentQuery = currentDocumentsQueryBuilder.build();
+
+    useEffect(() => {
+        restoreFromQueryAndTriggerUpdate();
+    }, [restoreFromQuery]);
+
+    const restoreFromQueryAndTriggerUpdate = function () {
+        if (!restoreFromQuery.current) {
+            return;
+        }
+        // Required because the facet query is not stored in the URL for length optimization reasons.
+        // In case that the q-param is used, facet values/ranges must be re-created once
+        eventHandler.onReplaceValues(currentDocumentsQueryBuilder.build().propertyFacets);
+        restoreFromQuery.current = false;
+    }
+
     return <WikiContext.Provider value={wikiContext}>
         <ThemeProvider theme={DEFAULT_THEME}>
             <Box id={'fs-content'}>
