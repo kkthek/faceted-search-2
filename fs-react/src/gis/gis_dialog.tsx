@@ -59,7 +59,7 @@ function GisDialog(prop: {
         const [minx, maxx, miny, maxy] = gisBrowserApi.getCoordinatesFromGIS();
         const koordX = new PropertyFacet(PROPERTY_COORDINATE_X, [FacetValue.fromRange(new Range(minx, maxx))]);
         const koordY = new PropertyFacet(PROPERTY_COORDINATE_Y, [FacetValue.fromRange(new Range(miny, maxy))]);
-        prop.eventHandler.onValuesClick([koordX, koordY]);
+        prop.eventHandler.onReplaceValues([koordX, koordY]);
         prop.handleClose();
     }
 
