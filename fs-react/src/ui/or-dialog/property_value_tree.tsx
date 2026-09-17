@@ -21,24 +21,24 @@ function PropertyValueTree(prop: {
     const groupConfigurationBySeparator = wikiContext.config.fs2gPropertyGroupingBySeparator[prop.property.title];
     const groupConfigurationByUrl = wikiContext.config.fs2gPropertyGroupingByUrl[prop.property.title];
 
-    const [content, setContent] = useState<Groups>(null);
+    let groups: Groups;
+    if (groupConfigurationBySeparator) {
+        groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, groupConfigurationBySeparator, wikiContext);
+    } else if (groupConfiguration) {
+        groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, groupConfiguration);
+    }
+    const [content, setContent] = useState<Groups>(groups);
     const [selectedItems, setSelectedItems] = useState<string[]>(prop.selectedItemIds.map(i => encodeURIComponent(i)));
 
     useEffect(() => {
-        let groups: Groups;
-        if (groupConfigurationByUrl) {
-            const path = groupConfigurationByUrl.trim();
-            prop.client.getCustomEndpoint(wikiContext.globals.mwRestUrl + path).then((jsonObject) => {
-                groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, jsonObject);
-                setContent(groups);
-            });
-        } else if (groupConfigurationBySeparator) {
-            groups = TreeCreator.createGroupItemsBySeparator(prop.valueCounts, prop.property, groupConfigurationBySeparator, wikiContext);
-            setContent(groups);
-        } else if (groupConfiguration) {
-            groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, groupConfiguration);
-            setContent(groups);
+        if (!groupConfigurationByUrl) {
+            return;
         }
+        const path = groupConfigurationByUrl.trim();
+        prop.client.getCustomEndpoint(wikiContext.globals.mwRestUrl + path).then((jsonObject) => {
+            const groups = TreeCreator.createGroupItemsBySpecifiedValues(prop.valueCounts, jsonObject);
+            setContent(groups);
+        });
 
     }, [prop.valueCounts]);
 
@@ -53,8 +53,9 @@ function PropertyValueTree(prop: {
         prop.onBulkChange(event, selectedValueCounts);
     }
 
+    const groupIds = Object.keys(content ?? []);
     return <SimpleTreeView checkboxSelection={true}
-                           expandedItems={Object.keys(content ?? []).map(e => "group_"+e)}
+                           expandedItems={groupIds.map(groupIdPrefix)}
                            multiSelect={true}
                            selectedItems={selectedItems}
                            selectionPropagation={{descendants: true, parents: true}}
@@ -63,36 +64,41 @@ function PropertyValueTree(prop: {
     </SimpleTreeView>
 }
 
+function groupIdPrefix(groupId: string) {
+    return "group_" + groupId;
+}
+
 function createItemsFromGroups(groups: Groups) {
     const groupTreeItems = [];
-    const ordered = ObjectTools.orderKeys(groups ?? {});
-    for (let groupId in ordered) {
+    const orderedGroupIds = ObjectTools.orderKeys(groups ?? {});
+    for (let groupId in orderedGroupIds) {
 
         if (groupId === '__ungrouped__') {
             groups[groupId].items
-                .sort((a,b) => a.label.localeCompare(b.label))
+                .sort((a, b) => a.label.localeCompare(b.label))
                 .map((v: GroupItem) => {
                     return <TreeItem key={encodeURIComponent(v.id)}
                                      itemId={encodeURIComponent(v.id)}
-                                     label={v.label+ " (" + v.count + ")"}
+                                     label={v.label + " (" + v.count + ")"}
                     />
                 }).forEach(e => groupTreeItems.push(e));
             continue;
         }
-        let facetValueTreeItems = groups[groupId].items
-            .sort((a,b) => a.label.localeCompare(b.label))
+        const facetValueTreeItems = groups[groupId].items
+            .sort((a, b) => a.label.localeCompare(b.label))
             .map((v: GroupItem) => {
                 return <TreeItem key={encodeURIComponent(v.id)}
                                  itemId={encodeURIComponent(v.id)}
-                                 label={v.label+ " (" + v.count + ")"}
+                                 label={v.label + " (" + v.count + ")"}
                 />
             });
-        if (facetValueTreeItems.length > 0) {
-            groupTreeItems.push(<TreeItem key={"group_"+groupId}
-                                          itemId={"group_"+groupId}
-                                          label={groups[groupId].label}
-            >{facetValueTreeItems}</TreeItem>);
+        if (facetValueTreeItems.length === 0) {
+            return;
         }
+        groupTreeItems.push(<TreeItem key={groupIdPrefix(groupId)}
+                                      itemId={groupIdPrefix(groupId)}
+                                      label={groups[groupId].label}
+        >{facetValueTreeItems}</TreeItem>);
     }
     return groupTreeItems;
 }

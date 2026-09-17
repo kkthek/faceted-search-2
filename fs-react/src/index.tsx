@@ -100,7 +100,8 @@ function App() {
         }
         // Required because the facet query is not stored in the URL for length optimization reasons.
         // In case that the q-param is used, facet values/ranges must be re-created once
-        eventHandler.onReplaceValues(currentDocumentsQueryBuilder.build().propertyFacets);
+        const documentQuery = currentDocumentsQueryBuilder.build();
+        eventHandler.onReplaceValues(documentQuery.propertyFacets);
         restoreFromQuery.current = false;
     }
 
