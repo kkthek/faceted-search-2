@@ -35,7 +35,7 @@
 		"fs2-sort-order-preferences": "sort-alphabetically"
 	},
 	"ExtensionMessagesFiles": {
-		"FacetedSearch2Magic": "i18n/MagicWords.php"
+		"FacetedSearch2Magic": "i18n/MagicWordsAndAliases.php"
 	},
 	"MessagesDirs": {
 		"FacetedSearch2": [
