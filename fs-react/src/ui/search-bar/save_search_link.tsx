@@ -1,17 +1,15 @@
 import React, {useContext} from "react";
 import {Box, Link} from "@mui/material";
 import {WikiContext} from "../../index";
-import ObjectTools from "../../util/object_tools";
 import {DocumentQuery} from "../../common/request/document_query";
 
 function SaveSearchLink(prop: {
     documentQuery: DocumentQuery
 }) {
     const wikiContext = useContext(WikiContext);
-    const q = ObjectTools.deepClone(prop.documentQuery);
 
     const url = new URL(window.location.href);
-    url.searchParams.set('q',  btoa(JSON.stringify(q)));
+    url.searchParams.set('q',  btoa(JSON.stringify(prop.documentQuery)));
 
     const copyLinkToClipboard = function (event: React.MouseEvent<HTMLElement>) {
 

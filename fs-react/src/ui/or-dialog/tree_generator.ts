@@ -35,7 +35,7 @@ export interface Groups {
 
 class TreeCreator {
 
-    static createGroupItemsBySeparator(valueCounts: ValueCount[], property: Property, separator: string, wikiContext: WikiContextAccessor): Groups {
+    static createGroupItemsBySeparator(valueCounts: ValueCount[], separator: string, wikiContext: WikiContextAccessor): Groups {
 
         const groups: Groups = {};
         valueCounts.forEach((v) => {
