@@ -50,7 +50,6 @@ unset($options);
 require COMPOSER_INSTALL;
 
 use DIQA\FacetedSearch2\Model\Request\DocumentQuery;
-use DIQA\FacetedSearch2\Model\Request\StatsQuery;
 use DIQA\FacetedSearch2\Model\Request\FacetQuery;
 use DIQA\FacetedSearch2\Model\Request\DocumentByIdQuery;
 use DIQA\FacetedSearch2\Model\Response\CategoryNode;
@@ -69,9 +68,6 @@ try {
     if (endsWith($url, '/FacetedSearch2/v1/proxy/documents')) {
         $query = DocumentQuery::fromJson($entityBody);
         echo json_encode($client->requestDocuments($query));
-    } else if (endsWith($url, '/FacetedSearch2/v1/proxy/stats')) {
-        $query = StatsQuery::fromJson($entityBody);
-        echo json_encode($client->requestStats($query));
     } else if (endsWith($url, '/FacetedSearch2/v1/proxy/facets')) {
         $query = FacetQuery::fromJson($entityBody);
         echo json_encode($client->requestFacets($query));
