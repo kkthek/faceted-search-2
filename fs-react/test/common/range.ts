@@ -1,4 +1,4 @@
-import {Range} from "../../src/common/range";
+import {Range} from "app/common/range";
 
 const assert = require('assert');
 const util = require('util')

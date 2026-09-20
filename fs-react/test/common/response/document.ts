@@ -1,10 +1,10 @@
 import {expect} from 'chai';
-import '../../../src/util/array_ext';
-import {Document} from '../../../src/common/response/document';
-import {PropertyFacetValues} from '../../../src/common/response/property_facet_values';
-import {CategoryFacetValue} from '../../../src/common/response/category_facet_value';
-import {PropertyWithURL} from '../../../src/common/response/property_with_URL';
-import {Datatype} from "../../../src/common/datatypes";
+import 'app/util/array_ext';
+import {Document} from 'app/common/response/document';
+import {PropertyFacetValues} from 'app/common/response/property_facet_values';
+import {CategoryFacetValue} from 'app/common/response/category_facet_value';
+import {PropertyWithURL} from 'app/common/response/property_with_URL';
+import {Datatype} from "app/common/datatypes";
 
 function makePropertyFacetValues(propertyTitle: string, type: Datatype, values: any[]): PropertyFacetValues {
     const pfv = new PropertyFacetValues();

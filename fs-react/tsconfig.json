@@ -9,10 +9,12 @@
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
     "esModuleInterop": true,
+    "baseUrl": "./",
     "paths": {
       "app/*": ["src/*"],
+      "app-test/*": ["test/*"],
       "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
     }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }

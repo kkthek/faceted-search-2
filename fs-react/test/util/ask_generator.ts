@@ -1,13 +1,13 @@
 import {expect} from "chai";
-import {generateAskQuery, getAskParams} from "../../src/util/ask_generator";
-import {DocumentQuery} from "../../src/common/request/document_query";
-import {WikiContextAccessor} from "../../src/common/wiki_context";
-import {Property} from "../../src/common/property";
-import {PropertyFacet} from "../../src/common/request/property_facet";
-import {FacetValue} from "../../src/common/request/facet_value";
-import {Sort} from "../../src/common/request/sort";
-import {Datatype, Order} from "../../src/common/datatypes";
-import {Range} from "../../src/common/range";
+import {generateAskQuery, getAskParams} from "app/util/ask_generator";
+import {DocumentQuery} from "app/common/request/document_query";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import {Property} from "app/common/property";
+import {PropertyFacet} from "app/common/request/property_facet";
+import {FacetValue} from "app/common/request/facet_value";
+import {Sort} from "app/common/request/sort";
+import {Datatype, Order} from "app/common/datatypes";
+import {Range} from "app/common/range";
 
 /**
  * Builds a minimal DocumentQuery. Missing fields are added by callers when needed.
