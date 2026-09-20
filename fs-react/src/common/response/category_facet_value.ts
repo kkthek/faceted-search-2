@@ -1,5 +1,5 @@
 import {jsonMember, jsonObject} from "typedjson";
-import {ElementWithURL} from "../datatypes";
+import {ElementWithURL} from "app/common/datatypes";
 
 @jsonObject
 export class CategoryFacetValue implements ElementWithURL {

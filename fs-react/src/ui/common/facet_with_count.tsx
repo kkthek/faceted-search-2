@@ -1,5 +1,5 @@
 import React from "react";
-import Span from "../../custom_ui/span";
+import Span from "app/custom_ui/span";
 
 
 function FacetWithCount(prop: {

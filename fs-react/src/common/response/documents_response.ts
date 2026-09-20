@@ -1,9 +1,9 @@
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
-import {Document} from "./document";
-import {CategoryFacetCount} from "./category_facet_count";
-import {PropertyFacetCount} from "./property_facet_count";
-import {NamespaceFacetCount} from "./namespace_facet_count";
-import {Property} from "../property";
+import {CategoryFacetCount} from "app/common/response/category_facet_count";
+import {PropertyFacetCount} from "app/common/response/property_facet_count";
+import {NamespaceFacetCount} from "app/common/response/namespace_facet_count";
+import {Property} from "app/common/property";
+import {Document} from "app/common/response/document";
 
 @jsonObject
 export class DocumentsResponse {

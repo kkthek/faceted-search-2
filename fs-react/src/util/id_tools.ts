@@ -1,5 +1,5 @@
-import {Property} from "../common/property";
-import {FacetValue} from "../common/request/facet_value";
+import {Property} from "app/common/property";
+import {FacetValue} from "app/common/request/facet_value";
 
 class IdTools {
 

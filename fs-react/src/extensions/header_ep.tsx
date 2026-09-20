@@ -1,8 +1,9 @@
 import React from "react";
-import Client from "../common/client";
-import EventHandler from "../common/event_handler";
-import {SearchStateDocument, SearchStateFacet} from "../common/datatypes";
+
 import {Box} from "@mui/material";
+import {SearchStateDocument, SearchStateFacet} from "app/common/datatypes";
+import EventHandler from "app/common/event_handler";
+import Client from "app/common/client";
 
 function HeaderExtensionPoint(prop: {
     client: Client

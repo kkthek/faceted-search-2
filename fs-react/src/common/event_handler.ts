@@ -1,6 +1,6 @@
 import DocumentQueryBuilder from "./query_builders/document_query_builder";
 import FacetQueryBuilder from "./query_builders/facet_query_builder";
-import {SearchStateDocument, SearchStateFacet, TextFilters} from "./datatypes";
+import {SearchStateDocument, SearchStateFacet} from "./datatypes";
 import Client from "./client";
 import {Dispatch, SetStateAction} from "react";
 import {WikiContextAccessor} from "./wiki_context";

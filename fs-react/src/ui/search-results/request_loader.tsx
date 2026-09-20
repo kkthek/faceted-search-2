@@ -1,12 +1,14 @@
 import React, {useContext, useState} from "react";
 import {BarLoader} from "react-spinners";
-import Client from "../../common/client";
+
 import {Link} from "@mui/material";
-import {Document} from "../../common/response/document";
-import Loader from "../../util/loader";
-import AlertDialogSlide, {AlertDialogState} from "../../util/alert_dialog";
-import ConfirmDialogSlide, {ConfirmDialogState} from "../../util/confirm_dialog";
-import {WikiContext} from "../../index";
+import {Document} from "app/common/response/document";
+import Client from "app/common/client";
+import {WikiContext} from "app/index";
+import ConfirmDialogSlide, {ConfirmDialogState} from "app/util/confirm_dialog";
+import AlertDialogSlide, {AlertDialogState} from "app/util/alert_dialog";
+import Loader from "app/util/loader";
+
 
 const RequestLoader = (prop: {
     client: Client,

@@ -7,18 +7,18 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Box, FormGroup, TextField} from "@mui/material";
-import FacetOrDialogContent from "./facet_or_dialog_content";
-import {TYPING_DELAY, WikiContext} from "../../index";
-import {useDebounce} from "../../custom_ui/custom_hooks";
-import EventHandler from "../../common/event_handler";
-import Client from "../../common/client";
-import QueryUtils from "../../util/query_utils";
-import {Property} from "../../common/property";
-import {FacetValue} from "../../common/request/facet_value";
-import {PropertyFacet} from "../../common/request/property_facet";
-import {BaseQuery} from "../../common/request/base_query";
-import {ValueCount} from "../../common/response/value_count";
-import {FacetResponse} from "../../common/response/facet_response";
+import Client from "app/common/client";
+import {FacetResponse} from "app/common/response/facet_response";
+import {BaseQuery} from "app/common/request/base_query";
+import {Property} from "app/common/property";
+import EventHandler from "app/common/event_handler";
+import {TYPING_DELAY, WikiContext} from "app/index";
+import {useDebounce} from "app/custom_ui/custom_hooks";
+import {FacetValue} from "app/common/request/facet_value";
+import {ValueCount} from "app/common/response/value_count";
+import {PropertyFacet} from "app/common/request/property_facet";
+import FacetOrDialogContent from "app/ui/or-dialog/facet_or_dialog_content";
+import QueryUtils from "app/util/query_utils";
 
 function FacetOrDialog(prop: {
         open: boolean,

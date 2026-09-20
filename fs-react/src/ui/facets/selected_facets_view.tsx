@@ -1,11 +1,12 @@
 import React, {Dispatch, SetStateAction} from "react";
-import EventHandler from "../../common/event_handler";
+
 import {SimpleTreeView} from "@mui/x-tree-view";
-import Client from "../../common/client";
-import FacetOrDialog, {ORDialogInput} from "../or-dialog/facet_or_dialog";
-import SelectedFacet from "./selected_facet";
-import {SearchStateDocument, SearchStateFacet, TextFilters} from "../../common/datatypes";
 import {createPortal} from "react-dom";
+import Client from "app/common/client";
+import {SearchStateDocument, SearchStateFacet} from "app/common/datatypes";
+import EventHandler from "app/common/event_handler";
+import FacetOrDialog, {ORDialogInput} from "app/ui/or-dialog/facet_or_dialog";
+import SelectedFacet from "app/ui/facets/selected_facet";
 
 
 function SelectedFacetsView(prop: {

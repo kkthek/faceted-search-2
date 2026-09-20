@@ -1,14 +1,14 @@
 import {Slider} from "@mui/material";
 import React, {useEffect, useState} from "react";
-import {Property} from "../../common/property";
-import EventHandler from "../../common/event_handler";
 import Box from "@mui/material/Box";
-import ObjectTools from "../../util/object_tools";
-import {Range} from "../../common/range";
-import {PropertyFacet} from "../../common/request/property_facet";
-import {FacetValue} from "../../common/request/facet_value";
 import Button from "@mui/material/Button";
-import {FacetResponse} from "../../common/response/facet_response";
+import {Property} from "app/common/property";
+import {FacetResponse} from "app/common/response/facet_response";
+import EventHandler from "app/common/event_handler";
+import ObjectTools from "app/util/object_tools";
+import {PropertyFacet} from "app/common/request/property_facet";
+import {FacetValue} from "app/common/request/facet_value";
+import {Range} from "app/common/range";
 
 function SliderItem(prop: {
     property: Property,

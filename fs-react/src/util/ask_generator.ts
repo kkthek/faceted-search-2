@@ -1,8 +1,8 @@
-import {DocumentQuery} from "../common/request/document_query";
-import {WikiContextAccessor} from "../common/wiki_context";
-import ConfigUtils from "./config_utils";
-import {Range} from "../common/range";
-import {Order} from "../common/datatypes";
+import {DocumentQuery} from "app/common/request/document_query";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import ConfigUtils from "app/util/config_utils";
+import {Order} from "app/common/datatypes";
+import {Range} from "app/common/range";
 
 export function generateAskQuery(query: DocumentQuery, wikiContext: WikiContextAccessor): string {
     let q: string[];

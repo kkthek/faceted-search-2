@@ -1,7 +1,8 @@
 import React from "react";
-import Client from "../common/client";
-import EventHandler from "../common/event_handler";
-import {SearchStateDocument, SearchStateFacet} from "../common/datatypes";
+import Client from "app/common/client";
+import {SearchStateDocument, SearchStateFacet} from "app/common/datatypes";
+import EventHandler from "app/common/event_handler";
+
 
 function FacetExtensionPoint(prop: {
     client: Client

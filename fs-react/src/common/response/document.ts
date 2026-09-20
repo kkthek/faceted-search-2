@@ -1,8 +1,9 @@
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
-import {PropertyFacetValues} from "./property_facet_values";
-import {CategoryFacetValue} from "./category_facet_value";
-import {NamespaceFacetValue} from "./namespace_facet_value";
-import {ElementWithURL, ValueType} from "../datatypes";
+import {PropertyFacetValues} from "app/common/response/property_facet_values";
+import {CategoryFacetValue} from "app/common/response/category_facet_value";
+import {ElementWithURL, ValueType} from "app/common/datatypes";
+import {NamespaceFacetValue} from "app/common/response/namespace_facet_value";
+
 
 @jsonObject
 export class Document implements ElementWithURL {

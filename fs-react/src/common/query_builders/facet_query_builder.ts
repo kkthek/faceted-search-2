@@ -1,7 +1,6 @@
 import {TypedJSON} from "typedjson";
 import {Property} from "../property";
 import {PropertyValueQuery} from "../request/property_value_query";
-import {PropertyFacet} from "../request/property_facet";
 import {BaseQuery} from "../request/base_query";
 import {FacetsQuery} from "../request/facets_query";
 

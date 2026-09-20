@@ -1,9 +1,9 @@
 import {Button} from "@mui/material";
 import React, {useContext} from "react";
-import EventHandler from "../../common/event_handler";
-import {WikiContext} from "../../index";
-import {BaseQuery} from "../../common/request/base_query";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {BaseQuery} from "app/common/request/base_query";
+import EventHandler from "app/common/event_handler";
+import {WikiContext} from "app/index";
 
 function RemoveAllFacetsButton(prop: {
     query: BaseQuery,

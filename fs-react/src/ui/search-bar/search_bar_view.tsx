@@ -1,9 +1,9 @@
 import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
-import {TYPING_DELAY, WikiContext} from "../../index";
 import {Box, Button, TextField} from "@mui/material";
-import EventHandler from "../../common/event_handler";
-import {useDebounce} from "../../custom_ui/custom_hooks";
-import {DocumentQuery} from "../../common/request/document_query";
+import EventHandler from "app/common/event_handler";
+import {DocumentQuery} from "app/common/request/document_query";
+import {TYPING_DELAY, WikiContext} from "app/index";
+import {useDebounce} from "app/custom_ui/custom_hooks";
 
 function SearchBar(prop: {
     eventHandler: EventHandler

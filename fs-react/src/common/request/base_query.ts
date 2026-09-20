@@ -1,7 +1,7 @@
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
-import {PropertyFacet} from "./property_facet";
-import {Property} from "../property";
-import ObjectTools from "../../util/object_tools";
+import {PropertyFacet} from "app/common/request/property_facet";
+import {Property} from "app/common/property";
+import ObjectTools from "app/util/object_tools";
 
 @jsonObject
 export abstract class BaseQuery {

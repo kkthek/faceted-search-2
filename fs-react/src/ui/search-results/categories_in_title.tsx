@@ -1,10 +1,9 @@
 import React, {useContext} from "react";
-import {WikiContext} from "../../index";
-import ValueSerializer from "../../util/value_serializer";
-import WikiLink from "../common/wiki_link";
-import {Typography} from "@mui/material";
-import {Document} from "../../common/response/document";
-import Span from "../../custom_ui/span";
+import {Document} from "app/common/response/document";
+import {WikiContext} from "app/index";
+import Span from "app/custom_ui/span";
+import WikiLink from "app/ui/common/wiki_link";
+import ValueSerializer from "app/util/value_serializer";
 
 function CategoriesInTitle(prop: { doc: Document }) {
     const wikiContext = useContext(WikiContext);

@@ -1,11 +1,11 @@
-import CustomTreeItem from "../../custom_ui/custom_tree_item";
-import Span from "../../custom_ui/span";
-import {FacetsQuery} from "../../common/request/facets_query";
 import React, {useContext} from "react";
-import {SearchStateFacet} from "../../common/datatypes";
-import EventHandler from "../../common/event_handler";
-import {Property} from "../../common/property";
-import {WikiContext} from "../../index";
+import {Property} from "app/common/property";
+import {SearchStateFacet} from "app/common/datatypes";
+import EventHandler from "app/common/event_handler";
+import {WikiContext} from "app/index";
+import {FacetsQuery} from "app/common/request/facets_query";
+import Span from "app/custom_ui/span";
+import CustomTreeItem from "app/custom_ui/custom_tree_item";
 
 
 function ShowAllButton(prop: {

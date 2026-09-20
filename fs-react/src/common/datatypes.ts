@@ -5,9 +5,10 @@
  *
  * interfaces, enums and types used in the request and response objects
  */
-import {DocumentsResponse} from "./response/documents_response";
-import {BaseQuery} from "./request/base_query";
-import {FacetResponse} from "./response/facet_response";
+import {DocumentsResponse} from "app/common/response/documents_response";
+import {BaseQuery} from "app/common/request/base_query";
+import {FacetResponse} from "app/common/response/facet_response";
+
 
 export interface TextFilters {
     [title:string] : string;

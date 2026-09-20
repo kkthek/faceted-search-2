@@ -1,9 +1,10 @@
 import {TypedJSON} from "typedjson";
-import {Property} from "../property";
-import {FacetValue} from "../request/facet_value";
-import {PropertyFacet} from "../request/property_facet";
-import {Sort} from "../request/sort";
-import {DocumentQuery} from "../request/document_query";
+import {DocumentQuery} from "app/common/request/document_query";
+import {PropertyFacet} from "app/common/request/property_facet";
+import {Property} from "app/common/property";
+import {FacetValue} from "app/common/request/facet_value";
+import {Sort} from "app/common/request/sort";
+
 
 class DocumentQueryBuilder {
 

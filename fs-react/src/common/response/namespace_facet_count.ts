@@ -1,5 +1,6 @@
 import {jsonMember, jsonObject} from "typedjson";
-import {Sortable} from "../datatypes";
+import {Sortable} from "app/common/datatypes";
+
 
 @jsonObject
 export class NamespaceFacetCount implements Sortable<NamespaceFacetCount>  {

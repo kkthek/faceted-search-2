@@ -1,11 +1,11 @@
 import React, {useContext} from "react";
-import EventHandler from "../../common/event_handler";
-import {WikiContext} from "../../index";
 import {SimpleTreeView} from "@mui/x-tree-view";
-import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FacetWithCount from "../common/facet_with_count";
-import {SearchStateDocument} from "../../common/datatypes";
+import {SearchStateDocument} from "app/common/datatypes";
+import EventHandler from "app/common/event_handler";
+import {WikiContext} from "app/index";
+import CustomTreeItem from "app/custom_ui/custom_tree_item";
+import FacetWithCount from "app/ui/common/facet_with_count";
 
 
 function SelectedCategoriesView(prop: {

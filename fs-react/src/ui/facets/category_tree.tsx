@@ -1,15 +1,17 @@
 import React, {useContext, useEffect, useState} from "react";
-import EventHandler from "../../common/event_handler";
-import Client from "../../common/client";
-import {SearchStateDocument} from "../../common/datatypes";
+
+
 import {SimpleTreeView} from "@mui/x-tree-view";
-import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {Box, Typography} from "@mui/material";
-import {TYPING_DELAY, WikiContext} from "../../index";
-import CategoryTreeFilter from "./category_tree_filter";
-import FacetWithCount from "../common/facet_with_count";
-import {CategoryNode} from "../../common/response/category_node";
-import {useDebounce} from "../../custom_ui/custom_hooks";
+import {SearchStateDocument} from "app/common/datatypes";
+import Client from "app/common/client";
+import EventHandler from "app/common/event_handler";
+import {TYPING_DELAY, WikiContext} from "app/index";
+import {CategoryNode} from "app/common/response/category_node";
+import {useDebounce} from "app/custom_ui/custom_hooks";
+import CategoryTreeFilter from "app/ui/facets/category_tree_filter";
+import CustomTreeItem from "app/custom_ui/custom_tree_item";
+import FacetWithCount from "app/ui/common/facet_with_count";
 
 
 function CategoryTree(prop: {

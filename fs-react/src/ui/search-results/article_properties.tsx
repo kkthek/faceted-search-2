@@ -1,10 +1,10 @@
 import React, {Suspense, useContext, useRef, useState} from "react";
-import {WikiContext} from "../../index";
-import Client from "../../common/client";
 import {Box, Button} from "@mui/material";
-import {Document} from "../../common/response/document";
 import {BarLoader} from "react-spinners";
-import LoadProperties from "./load_properties";
+import Client from "app/common/client";
+import {WikiContext} from "app/index";
+import LoadProperties from "app/ui/search-results/load_properties";
+import {Document} from "app/common/response/document";
 
 const ArticleProperties = function ArticleProperties(prop: {
     doc: Document,

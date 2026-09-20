@@ -1,7 +1,7 @@
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
-import {BaseQuery} from "./base_query";
-import {Sort} from "./sort";
-import {PropertyFacet} from "./property_facet";
+import {BaseQuery} from "app/common/request/base_query";
+import {Sort} from "app/common/request/sort";
+import {PropertyFacet} from "app/common/request/property_facet";
 
 @jsonObject
 export class DocumentQuery extends BaseQuery {

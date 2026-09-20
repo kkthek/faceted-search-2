@@ -1,4 +1,5 @@
-import {MWTitleWithURL} from "../common/response/mw_title_with_URL";
+import {MWTitleWithURL} from "app/common/response/mw_title_with_URL";
+
 
 class ValueDeserializer {
     static deserializeValue(value: any) {

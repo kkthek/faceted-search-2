@@ -1,8 +1,8 @@
-import Span from "../../custom_ui/span";
 import React, {useContext} from "react";
-import {WikiContext} from "../../index";
 import {Box, Typography} from "@mui/material";
-import {BaseQuery} from "../../common/request/base_query";
+import {BaseQuery} from "app/common/request/base_query";
+import {WikiContext} from "app/index";
+import Span from "app/custom_ui/span";
 
 function SelectedFacetsHeader(prop: {
     query: BaseQuery

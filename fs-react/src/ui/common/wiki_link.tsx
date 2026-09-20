@@ -1,4 +1,4 @@
-import { Link } from "@mui/material";
+import {Link} from "@mui/material";
 import {ElementWithURL} from "../../common/datatypes";
 import React from "react";
 import DisplayTools from "../../util/display_tools";

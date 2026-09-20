@@ -1,6 +1,6 @@
 import {jsonMember, jsonObject} from "typedjson";
-import {Property} from "../property";
-import {Order} from "../datatypes";
+import {Property} from "app/common/property";
+import {Order} from "app/common/datatypes";
 
 @jsonObject
 export class Sort {

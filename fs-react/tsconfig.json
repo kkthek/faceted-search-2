@@ -10,7 +10,8 @@
     "jsx": "react",
     "esModuleInterop": true,
     "paths": {
-            "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
+      "app/*": ["src/*"],
+      "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
     }
   },
   "include": ["src/**/*"]
