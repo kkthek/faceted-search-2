@@ -221,5 +221,25 @@ describe('ask_generator', () => {
                 ConfigUtils.getSortByKeyOrDefault = original;
             }
         });
+
+
+        it('generates namespace conditions joined with OR', () => {
+            const query = buildQuery({
+                categoryFacets: ['Employee'],
+                namespaceFacets: [0, 14]
+            } as any);
+
+            const wikiContext = buildWikiContext();
+            // ConfigUtils.getNamespaceAsText reads namespaces from
+            // wikiContext.config['wgFormattedNamespaces'].
+            (wikiContext.config as any)['wgFormattedNamespaces'] = {
+                0: '',
+                14: 'Category'
+            };
+
+            const result = generateAskQuery(query, wikiContext);
+            expect(result).to.equal('[[Category:Employee]]\n[[:+ || Category:+]]');
+        });
+
     });
 });

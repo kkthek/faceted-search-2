@@ -13,9 +13,11 @@ export function generateAskQuery(query: DocumentQuery, wikiContext: WikiContextA
     // Namespaces
     const namespaceConditions = query.namespaceFacets.map((namespaceId) => {
         const namespaceAsText = ConfigUtils.getNamespaceAsText(wikiContext, namespaceId);
-        return `[[${namespaceAsText}:+]]`;
+        return `${namespaceAsText}:+`;
     });
-    q = [...q, ...namespaceConditions];
+    if (namespaceConditions.length > 0) {
+        q.push("[[" + namespaceConditions.join(' || ') + "]]");
+    }
 
     // Properties
     query.propertyFacets.forEach((p) => {
