@@ -1,12 +1,11 @@
 import React, {useContext} from "react";
-import {WikiContext} from "../../index";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
-import ConfigUtils from "../../util/config_utils";
-import EventHandler from "../../common/event_handler";
-
-import {Sort} from "../../common/request/sort";
-import {DocumentQuery} from "../../common/request/document_query";
-import {SearchStateDocument} from "../../common/datatypes";
+import EventHandler from "app/common/event_handler";
+import {SearchStateDocument} from "app/common/datatypes";
+import {WikiContext} from "app/index";
+import {Sort} from "app/common/request/sort";
+import ConfigUtils from "app/util/config_utils";
+import {DocumentQuery} from "app/common/request/document_query";
 
 function SortView(prop : {
     eventHandler: EventHandler,

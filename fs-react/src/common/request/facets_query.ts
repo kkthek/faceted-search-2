@@ -1,8 +1,8 @@
 import {jsonArrayMember, jsonObject} from "typedjson";
-import {BaseQuery} from "./base_query";
-import {Property} from "../property";
-import {PropertyValueQuery} from "./property_value_query";
-import {PropertyFacet} from "./property_facet";
+import {BaseQuery} from "app/common/request/base_query";
+import {Property} from "app/common/property";
+import {PropertyValueQuery} from "app/common/request/property_value_query";
+import {PropertyFacet} from "app/common/request/property_facet";
 
 @jsonObject
 export class FacetsQuery extends BaseQuery {

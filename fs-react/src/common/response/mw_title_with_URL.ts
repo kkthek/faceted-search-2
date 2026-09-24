@@ -1,6 +1,7 @@
 import {jsonMember, jsonObject} from "typedjson";
-import {MWTitle} from "../mw_title";
-import {ElementWithURL} from "../datatypes";
+import {MWTitle} from "app/common/mw_title";
+import {ElementWithURL} from "app/common/datatypes";
+
 
 @jsonObject
 export class MWTitleWithURL extends MWTitle implements ElementWithURL {

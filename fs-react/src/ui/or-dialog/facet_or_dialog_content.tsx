@@ -1,14 +1,14 @@
 import {Grid, Typography} from "@mui/material";
 import * as React from "react";
 import {SyntheticEvent, useContext} from "react";
-import {WikiContext} from "../../index";
-import Client from "../../common/client";
-import PropertyValueGrid from "./property_value_grid";
-import PropertyValueTree from "./property_value_tree";
-import {Property} from "../../common/property";
-import {FacetValue} from "../../common/request/facet_value";
-import {ValueCount} from "../../common/response/value_count";
-import {FacetResponse} from "../../common/response/facet_response";
+import Client from "app/common/client";
+import {FacetResponse} from "app/common/response/facet_response";
+import {FacetValue} from "app/common/request/facet_value";
+import {Property} from "app/common/property";
+import {ValueCount} from "app/common/response/value_count";
+import {WikiContext} from "app/index";
+import PropertyValueTree from "app/ui/or-dialog/property_value_tree";
+import PropertyValueGrid from "app/ui/or-dialog/property_value_grid";
 
 function FacetOrDialogContent(prop: {
     client: Client,

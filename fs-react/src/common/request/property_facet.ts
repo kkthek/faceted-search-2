@@ -1,6 +1,6 @@
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
-import {Property} from "../property";
-import {FacetValue} from "./facet_value";
+import {Property} from "app/common/property";
+import {FacetValue} from "app/common/request/facet_value";
 
 @jsonObject
 export class PropertyFacet {

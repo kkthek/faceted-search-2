@@ -1,9 +1,10 @@
-import {Property} from "../../common/property";
-import {FacetResponse} from "../../common/response/facet_response";
-import {BaseQuery} from "../../common/request/base_query";
-import Client from "../../common/client";
+import {Property} from "app/common/property";
+import {FacetResponse} from "app/common/response/facet_response";
+import {BaseQuery} from "app/common/request/base_query";
 import {Dispatch, SetStateAction, useState} from "react";
-import QueryUtils from "../../util/query_utils";
+import Client from "app/common/client";
+import QueryUtils from "app/util/query_utils";
+
 
 export class DateRangeDialogInput {
     open: boolean;

@@ -1,19 +1,19 @@
 import React, {Dispatch, SetStateAction, useContext} from "react";
-import EventHandler from "../../common/event_handler";
-import {WikiContext} from "../../index";
-import ConfigUtils from "../../util/config_utils";
-import FacetOrDialog, {ORDialogInput} from "../or-dialog/facet_or_dialog";
 import {SimpleTreeView} from "@mui/x-tree-view";
-import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import {Typography} from "@mui/material";
-import Client from "../../common/client";
-import FacetExtensionPoint from "../../extensions/facet_ep";
-import FacetWithCount from "../common/facet_with_count";
-import FacetViewProperty from "./facet";
-import {SearchStateDocument, SearchStateFacet, TextFilters} from "../../common/datatypes";
 import {createPortal} from "react-dom";
-import DateRangeDialog from "../date-dialog/date_range_dialog";
-import {DateRangeDialogInput} from "../date-dialog/date_range_dialog_input";
+import {SearchStateDocument, SearchStateFacet} from "app/common/datatypes";
+import EventHandler from "app/common/event_handler";
+import Client from "app/common/client";
+import {WikiContext} from "app/index";
+import FacetOrDialog, {ORDialogInput} from "app/ui/or-dialog/facet_or_dialog";
+import {DateRangeDialogInput} from "app/ui/date-dialog/date_range_dialog_input";
+import ConfigUtils from "app/util/config_utils";
+import FacetViewProperty from "app/ui/facets/facet";
+import FacetExtensionPoint from "app/extensions/facet_ep";
+import CustomTreeItem from "app/custom_ui/custom_tree_item";
+import FacetWithCount from "app/ui/common/facet_with_count";
+import DateRangeDialog from "app/ui/date-dialog/date_range_dialog";
 
 
 function FacetView(prop: {

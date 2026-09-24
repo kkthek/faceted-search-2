@@ -1,15 +1,14 @@
-import Client from "../../common/client";
 import React, {useContext} from "react";
-import {WikiContext} from "../../index";
-
-import CategoriesInTitle from "./categories_in_title";
-import Annotations from "./annotations_snippets";
-import ArticleProperties from "./article_properties";
 import {Box, Typography} from "@mui/material";
-import UserDefinedLinks from "./user_defined_links";
-import Span from "../../custom_ui/span";
-import {Document} from "../../common/response/document";
-import TitleWithPreview from "./title_with_preview";
+import {Document} from "app/common/response/document";
+import Client from "app/common/client";
+import TitleWithPreview from "app/ui/search-results/title_with_preview";
+import CategoriesInTitle from "app/ui/search-results/categories_in_title";
+import Span from "app/custom_ui/span";
+import UserDefinedLinks from "app/ui/search-results/user_defined_links";
+import Annotations from "app/ui/search-results/annotations_snippets";
+import ArticleProperties from "app/ui/search-results/article_properties";
+import {WikiContext} from "app/index";
 
 function SearchResult(prop: { doc: Document, client: Client}) {
 

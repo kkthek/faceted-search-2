@@ -1,12 +1,12 @@
 import * as React from "react";
 import {SyntheticEvent, useContext, useEffect, useState} from "react";
-import {WikiContext} from "../../index";
 import {SimpleTreeView, TreeItem} from "@mui/x-tree-view";
-import TreeCreator, {GroupItem, Groups} from "./tree_generator";
-import Client from "../../common/client";
-import ObjectTools from "../../util/object_tools";
-import {Property} from "../../common/property";
-import {ValueCount} from "../../common/response/value_count";
+import {Property} from "app/common/property";
+import Client from "app/common/client";
+import {ValueCount} from "app/common/response/value_count";
+import {WikiContext} from "app/index";
+import TreeCreator, {GroupItem, Groups} from "app/ui/or-dialog/tree_generator";
+import ObjectTools from "app/util/object_tools";
 
 function PropertyValueTree(prop: {
     client: Client,

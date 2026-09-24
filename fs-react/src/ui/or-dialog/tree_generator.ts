@@ -1,7 +1,6 @@
-import ObjectTools from "../../util/object_tools";
-import {Property} from "../../common/property";
-import {ValueCount} from "../../common/response/value_count";
-import {WikiContextAccessor} from "../../common/wiki_context";
+import {ValueCount} from "app/common/response/value_count";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import ObjectTools from "app/util/object_tools";
 
 export class GroupItem {
     id: string

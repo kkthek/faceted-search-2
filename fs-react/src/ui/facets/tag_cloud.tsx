@@ -1,13 +1,13 @@
 import React, {useContext} from "react";
 import {Tag, TagCloud} from 'react-tagcloud';
-import EventHandler from "../../common/event_handler";
-import {Datatype, SearchStateFacet, TextFilters} from "../../common/datatypes";
-import {WikiContext} from "../../index";
-import FacetFilter from "./facet_filter";
-import {Property} from "../../common/property";
-import {FacetValue} from "../../common/request/facet_value";
-import {PropertyFacet} from "../../common/request/property_facet";
-import {ValueCount} from "../../common/response/value_count";
+import {Datatype, SearchStateFacet} from "app/common/datatypes";
+import EventHandler from "app/common/event_handler";
+import {WikiContext} from "app/index";
+import {Property} from "app/common/property";
+import {ValueCount} from "app/common/response/value_count";
+import {FacetValue} from "app/common/request/facet_value";
+import {PropertyFacet} from "app/common/request/property_facet";
+import FacetFilter from "app/ui/facets/facet_filter";
 
 function TagCloudFacet(prop: {
     searchStateFacets: SearchStateFacet,

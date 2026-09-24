@@ -1,9 +1,9 @@
 import {jsonMember, jsonObject} from "typedjson";
-import ValueDeserializer from "../../util/value_deserializer";
-import {MWTitle} from "../mw_title";
-import {Range} from "../range";
-import {ValueType} from "../datatypes";
-import {ValueCount} from "../response/value_count";
+import ValueDeserializer from "app/util/value_deserializer";
+import {MWTitle} from "app/common/mw_title";
+import {Range} from "app/common/range";
+import {ValueType} from "app/common/datatypes";
+import {ValueCount} from "app/common/response/value_count";
 
 @jsonObject
 export class FacetValue {

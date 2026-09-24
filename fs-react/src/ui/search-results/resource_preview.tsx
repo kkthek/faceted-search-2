@@ -1,10 +1,9 @@
-import {Document} from "../../common/response/document";
-import {Suspense, useContext, useRef, useState} from "react";
-import {WikiContext} from "../../index";
-import ConfigUtils from "../../util/config_utils";
-import React from "react";
-import EmbedWithNotification from "./embed_with_notification";
+import {Document} from "app/common/response/document";
+import React, {Suspense, useContext, useRef, useState} from "react";
+import {WikiContext} from "app/index";
 import {BarLoader} from "react-spinners";
+import ConfigUtils from "app/util/config_utils";
+import EmbedWithNotification from "app/ui/search-results/embed_with_notification";
 
 function ResourcePreview(prop: { doc: Document }) {
     const wikiContext = useContext(WikiContext);

@@ -1,7 +1,8 @@
 import {jsonMember, jsonObject} from "typedjson";
-import ValueDeserializer from "../util/value_deserializer";
-import DateTools from "../util/date_tools";
-import {WikiContextAccessor} from "./wiki_context";
+import ValueDeserializer from "app/util/value_deserializer";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import DateTools from "app/util/date_tools";
+
 
 @jsonObject
 export class Range {

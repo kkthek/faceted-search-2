@@ -1,8 +1,8 @@
 import React, {useContext} from "react";
-import {WikiContext} from "../../index";
 import {Link} from "@mui/material";
 import Box from "@mui/material/Box";
-import {SearchStateDocument} from "../../common/datatypes";
+import {SearchStateDocument} from "app/common/datatypes";
+import {WikiContext} from "app/index";
 
 function CreateArticleLink(prop: {
     searchStateDocument: SearchStateDocument

@@ -1,20 +1,20 @@
 import React, {useContext} from "react";
-import {SearchStateFacet,} from "../../common/datatypes";
-import EventHandler from "../../common/event_handler";
-import CustomTreeItem from "../../custom_ui/custom_tree_item";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SelectedFacetValues from "./selected_facet_values_view";
 import ChecklistIcon from "@mui/icons-material/Checklist";
-import {WikiContext} from "../../index";
-import IdTools from "../../util/id_tools";
-import FacetWithCount from "../common/facet_with_count";
-import FacetFilter from "./facet_filter";
-import Span from "../../custom_ui/span";
-import {Property} from "../../common/property";
-import {Range} from "../../common/range";
-import {PropertyValueCount} from "../../common/response/property_value_count";
-import {PropertyFacetCount} from "../../common/response/property_facet_count";
-import ShowAllButton from "./show_all_button";
+import {PropertyValueCount} from "app/common/response/property_value_count";
+import {SearchStateFacet} from "app/common/datatypes";
+import {PropertyFacetCount} from "app/common/response/property_facet_count";
+import EventHandler from "app/common/event_handler";
+import {Property} from "app/common/property";
+import {WikiContext} from "app/index";
+import SelectedFacetValues from "app/ui/facets/selected_facet_values_view";
+import CustomTreeItem from "app/custom_ui/custom_tree_item";
+import IdTools from "app/util/id_tools";
+import Span from "app/custom_ui/span";
+import ShowAllButton from "app/ui/facets/show_all_button";
+import FacetFilter from "app/ui/facets/facet_filter";
+import FacetWithCount from "app/ui/common/facet_with_count";
+import {Range} from "app/common/range";
 
 function SelectedFacet(prop: {
     propertyValueCount: PropertyValueCount

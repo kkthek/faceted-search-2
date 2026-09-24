@@ -1,4 +1,4 @@
-import {CategoryNode} from "../../../src/common/response/category_node";
+import {CategoryNode} from "app/common/response/category_node";
 
 const assert = require('assert');
 const util = require('util')
@@ -27,7 +27,7 @@ describe('datatypes', function () {
         let filteredTree = node.filterForText('ABA');
         log(filteredTree);
 
-        let nodes = [];
+        let nodes: string[] = [];
         visitNode(filteredTree, (node) => nodes.push(node.category));
         log(nodes);
 

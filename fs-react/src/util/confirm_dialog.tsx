@@ -6,8 +6,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import {WikiContext} from "../index";
-import {Transition} from "../custom_ui/transition";
+import {WikiContext} from "app/index";
+import {Transition} from "app/custom_ui/transition";
 
 export type ConfirmDialogState = {
     open: boolean

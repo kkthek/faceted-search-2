@@ -5,7 +5,7 @@ import "dayjs/locale/en";
 import "dayjs/locale/en-gb";
 
 import * as React from 'react';
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useState} from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,18 +13,18 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Box, FormGroup} from "@mui/material";
-import {WikiContext} from "../../index";
-import EventHandler from "../../common/event_handler";
-import {Property} from "../../common/property";
-import {FacetValue} from "../../common/request/facet_value";
-import {FacetResponse} from "../../common/response/facet_response";
+import {WikiContext} from "app/index";
 import {DatePicker} from "@mui/x-date-pickers";
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from "dayjs";
-import {PropertyFacet} from "../../common/request/property_facet";
-import {Range} from "../../common/range";
-import ObjectTools from "../../util/object_tools";
+import {FacetResponse} from "app/common/response/facet_response";
+import {Property} from "app/common/property";
+import EventHandler from "app/common/event_handler";
+import ObjectTools from "app/util/object_tools";
+import {PropertyFacet} from "app/common/request/property_facet";
+import {FacetValue} from "app/common/request/facet_value";
+import {Range} from "app/common/range";
 
 function DateRangeDialog(prop: {
     open: boolean,

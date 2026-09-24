@@ -1,11 +1,11 @@
 import React, {useContext} from "react";
-import {WikiContext} from "../../index";
-import ValueSerializer from "../../util/value_serializer";
 import UserDefinedLinksExtensionPoint from "../../extensions/user_defined_links_ep";
-import ConfigUtils from "../../util/config_utils";
-import {Document} from "../../common/response/document";
-import Client from "../../common/client";
-import RequestLoader from "./request_loader";
+import {Document} from "app/common/response/document";
+import {WikiContext} from "app/index";
+import Client from "app/common/client";
+import ConfigUtils from "app/util/config_utils";
+import RequestLoader from "app/ui/search-results/request_loader";
+import ValueSerializer from "app/util/value_serializer";
 
 interface LinkConfig {
     [key: string]: string | ActionLink;

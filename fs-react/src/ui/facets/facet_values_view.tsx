@@ -1,13 +1,13 @@
 import React, {useContext} from "react";
-import CustomTreeItem from "../../custom_ui/custom_tree_item";
-import IdTools from "../../util/id_tools";
-import EventHandler from "../../common/event_handler";
-import FacetWithCount from "../common/facet_with_count";
-import {Property} from "../../common/property";
-import {FacetValue} from "../../common/request/facet_value";
-import {PropertyFacet} from "../../common/request/property_facet";
-import {ValueCount} from "../../common/response/value_count";
-import {WikiContext} from "../../index";
+import {ValueCount} from "app/common/response/value_count";
+import {Property} from "app/common/property";
+import EventHandler from "app/common/event_handler";
+import {WikiContext} from "app/index";
+import {FacetValue} from "app/common/request/facet_value";
+import {PropertyFacet} from "app/common/request/property_facet";
+import CustomTreeItem from "app/custom_ui/custom_tree_item";
+import IdTools from "app/util/id_tools";
+import FacetWithCount from "app/ui/common/facet_with_count";
 
 function FacetValues(prop: {
     property: Property,

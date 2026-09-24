@@ -1,7 +1,8 @@
 import React from "react";
 
-import {Document} from "../common/response/document";
-import Client from "../common/client";
+import {Document} from "app/common/response/document";
+import Client from "app/common/client";
+
 
 function UserDefinedLinksExtensionPoint(prop: {
     doc: Document,

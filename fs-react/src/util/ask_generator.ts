@@ -1,8 +1,8 @@
-import {DocumentQuery} from "../common/request/document_query";
-import {WikiContextAccessor} from "../common/wiki_context";
-import ConfigUtils from "./config_utils";
-import {Range} from "../common/range";
-import {Order} from "../common/datatypes";
+import {DocumentQuery} from "app/common/request/document_query";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import ConfigUtils from "app/util/config_utils";
+import {Order} from "app/common/datatypes";
+import {Range} from "app/common/range";
 
 export function generateAskQuery(query: DocumentQuery, wikiContext: WikiContextAccessor): string {
     let q: string[];
@@ -13,9 +13,11 @@ export function generateAskQuery(query: DocumentQuery, wikiContext: WikiContextA
     // Namespaces
     const namespaceConditions = query.namespaceFacets.map((namespaceId) => {
         const namespaceAsText = ConfigUtils.getNamespaceAsText(wikiContext, namespaceId);
-        return `[[${namespaceAsText}:+]]`;
+        return `${namespaceAsText}:+`;
     });
-    q = [...q, ...namespaceConditions];
+    if (namespaceConditions.length > 0) {
+        q.push("[[" + namespaceConditions.join(' || ') + "]]");
+    }
 
     // Properties
     query.propertyFacets.forEach((p) => {

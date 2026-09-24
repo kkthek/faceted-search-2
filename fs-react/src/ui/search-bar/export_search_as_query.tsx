@@ -1,12 +1,12 @@
 import React, {useContext, useState} from "react";
 import {Box, Link, Stack} from "@mui/material";
-import {WikiContext} from "../../index";
-import {DocumentQuery} from "../../common/request/document_query";
-import {encodeParameters} from "../../util/url_encoder";
-import {generateAskQuery, getAskParams} from "../../util/ask_generator";
-import ConfirmDialogSlide, {ConfirmDialogState} from "../../util/confirm_dialog";
-import downloadURL from "../../util/file_utils";
-import DateTools from "../../util/date_tools";
+import {DocumentQuery} from "app/common/request/document_query";
+import {WikiContext} from "app/index";
+import ConfirmDialogSlide, {ConfirmDialogState} from "app/util/confirm_dialog";
+import {generateAskQuery, getAskParams} from "app/util/ask_generator";
+import DateTools from "app/util/date_tools";
+import downloadURLWithTimestamp from "app/util/file_utils";
+import {encodeParameters} from "app/util/url_encoder";
 
 function ExportSearchAsQuery(prop: {
     documentQuery: DocumentQuery
@@ -48,13 +48,13 @@ function ExportSearchAsQuery(prop: {
             return;
         }
 
-        downloadURL(url, getFilename(type));
+        downloadURLWithTimestamp(url, getFilename(type));
     };
 
     const onOk = () => {
         const url = confirmDialogState.data.url;
         const type = confirmDialogState.data.type;
-        downloadURL(url, getFilename(type));
+        downloadURLWithTimestamp(url, getFilename(type));
         setConfirmDialogState({open: false});
     }
 

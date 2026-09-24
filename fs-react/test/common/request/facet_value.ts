@@ -1,9 +1,9 @@
 import {expect} from 'chai';
-import {FacetValue} from '../../../src/common/request/facet_value';
-import {MWTitle} from '../../../src/common/mw_title';
-import {Range} from '../../../src/common/range';
-import {ValueCount} from '../../../src/common/response/value_count';
-import {MWTitleWithURL} from "../../../src/common/response/mw_title_with_URL";
+import {FacetValue} from 'app/common/request/facet_value';
+import {MWTitle} from 'app/common/mw_title';
+import {Range} from 'app/common/range';
+import {ValueCount} from 'app/common/response/value_count';
+import {MWTitleWithURL} from "app/common/response/mw_title_with_URL";
 
 describe('FacetValue', () => {
 

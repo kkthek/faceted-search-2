@@ -1,9 +1,10 @@
 import React, {useContext, useState} from "react";
-import {WikiContext} from "../../index";
+
 import {Link} from "@mui/material";
 import Box from "@mui/material/Box";
 import Fullscreen from "@mui/icons-material/Fullscreen";
 import FullscreenExit from "@mui/icons-material/FullscreenExit";
+import {WikiContext} from "app/index";
 
 function MaximizeButton(prop: {
 

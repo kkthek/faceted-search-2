@@ -1,5 +1,5 @@
 import {jsonMember, jsonObject} from "typedjson";
-import {Property} from "../property";
+import {Property} from "app/common/property";
 
 @jsonObject
 export class PropertyValueQuery {

@@ -1,10 +1,10 @@
-import FacetQueryBuilder from "../common/query_builders/facet_query_builder";
-import {Property} from "../common/property";
-import {PropertyValueQuery} from "../common/request/property_value_query";
-import {BaseQuery} from "../common/request/base_query";
-import {FacetsQuery} from "../common/request/facets_query";
-import {WikiContextAccessor} from "../common/wiki_context";
-import {Datatype} from "../common/datatypes";
+import {BaseQuery} from "app/common/request/base_query";
+import {Property} from "app/common/property";
+import {FacetsQuery} from "app/common/request/facets_query";
+import FacetQueryBuilder from "app/common/query_builders/facet_query_builder";
+import {PropertyValueQuery} from "app/common/request/property_value_query";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import {Datatype} from "app/common/datatypes";
 
 class QueryUtils {
 

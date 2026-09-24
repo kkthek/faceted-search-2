@@ -1,20 +1,21 @@
 import React, {useContext} from "react";
-import {SearchStateDocument, SearchStateFacet} from "../../common/datatypes";
-import IdTools from "../../util/id_tools";
-import FacetValues from "./facet_values_view";
-import EventHandler from "../../common/event_handler";
-import {WikiContext} from "../../index";
-import CustomTreeItem from "../../custom_ui/custom_tree_item";
+
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import DateRangeIcon from '@mui/icons-material/DateRange';
-import FacetFilter from "./facet_filter";
-import FacetWithCount from "../common/facet_with_count";
-import {Property} from "../../common/property";
-import {FacetResponse} from "../../common/response/facet_response";
-import {PropertyFacetCount} from "../../common/response/property_facet_count";
-import SliderItem from "./slider_item";
-import DisplayTools from "../../util/display_tools";
-import ShowAllButton from "./show_all_button";
+import {FacetResponse} from "app/common/response/facet_response";
+import {PropertyFacetCount} from "app/common/response/property_facet_count";
+import EventHandler from "app/common/event_handler";
+import {Property} from "app/common/property";
+import {WikiContext} from "app/index";
+import FacetValues from "app/ui/facets/facet_values_view";
+import ShowAllButton from "app/ui/facets/show_all_button";
+import CustomTreeItem from "app/custom_ui/custom_tree_item";
+import FacetFilter from "app/ui/facets/facet_filter";
+import SliderItem from "app/ui/facets/slider_item";
+import IdTools from "app/util/id_tools";
+import FacetWithCount from "app/ui/common/facet_with_count";
+import DisplayTools from "app/util/display_tools";
+import {SearchStateDocument, SearchStateFacet} from "app/common/datatypes";
 
 
 function FacetViewProperty(prop: {

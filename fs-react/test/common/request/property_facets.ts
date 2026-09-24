@@ -1,10 +1,10 @@
 import {expect} from "chai";
-import {Property} from "../../../src/common/property";
-import {PropertyFacet} from "../../../src/common/request/property_facet";
-import {Datatype} from "../../../src/common/datatypes";
-import {FacetValue} from '../../../src/common/request/facet_value';
-import {MWTitle} from '../../../src/common/mw_title';
-import {Range} from '../../../src/common/range';
+import {Property} from "app/common/property";
+import {PropertyFacet} from "app/common/request/property_facet";
+import {Datatype} from "app/common/datatypes";
+import {FacetValue} from 'app/common/request/facet_value';
+import {MWTitle} from 'app/common/mw_title';
+import {Range} from 'app/common/range';
 
 describe('PropertyFacet', () => {
 

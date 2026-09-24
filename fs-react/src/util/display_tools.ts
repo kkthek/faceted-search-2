@@ -1,6 +1,6 @@
 import {useContext} from "react";
-import {WikiContext} from "../index";
-import {ElementWithURL} from "../common/datatypes";
+import {ElementWithURL} from "app/common/datatypes";
+import {WikiContext} from "app/index";
 
 class DisplayTools {
     static getDisplayTitle(elementWithURL: ElementWithURL) {

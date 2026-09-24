@@ -1,11 +1,11 @@
-import Span from "../../custom_ui/span";
-import WikiLink from "../common/wiki_link";
-import HtmlTooltip from "../../custom_ui/tooltips";
-import ResourcePreview from "./resource_preview";
 import React, {useContext} from "react";
-import {Document} from "../../common/response/document";
-import {WikiContext} from "../../index";
-import ConfigUtils from "../../util/config_utils";
+import {Document} from "app/common/response/document";
+import {WikiContext} from "app/index";
+import ConfigUtils from "app/util/config_utils";
+import Span from "app/custom_ui/span";
+import WikiLink from "app/ui/common/wiki_link";
+import HtmlTooltip from "app/custom_ui/tooltips";
+import ResourcePreview from "app/ui/search-results/resource_preview";
 
 const TitleWithPreview = (prop: {
     doc: Document

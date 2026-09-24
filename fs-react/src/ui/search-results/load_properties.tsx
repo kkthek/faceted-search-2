@@ -1,9 +1,10 @@
 import React, {use} from "react";
-import {Document} from "../../common/response/document";
+import {Document} from "app/common/response/document";
 import {Table, TableBody, TableCell, TableRow} from "@mui/material";
-import {PropertyFacetValues} from "../../common/response/property_facet_values";
-import WikiLink from "../common/wiki_link";
-import ValueSerializer from "../../util/value_serializer";
+import {PropertyFacetValues} from "app/common/response/property_facet_values";
+import WikiLink from "app/ui/common/wiki_link";
+import ValueSerializer from "app/util/value_serializer";
+
 
 const LoadProperties = function LoadProperties(prop: {
     documentPromise: Promise<Document>

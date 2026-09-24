@@ -1,8 +1,8 @@
-import {Range} from "../../src/common/range";
-import {WikiContextAccessor} from "../../src/common/wiki_context";
-import {Document} from "../../src/common/response/document";
-import {NamespaceFacetValue} from "../../src/common/response/namespace_facet_value";
-import ConfigUtils from "../../src/util/config_utils";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import {Document} from "app/common/response/document";
+import {NamespaceFacetValue} from "app/common/response/namespace_facet_value";
+import ConfigUtils from "app/util/config_utils";
+import {expect} from 'chai';
 
 const assert = require('assert');
 const util = require('util')
@@ -62,9 +62,6 @@ describe('replace magic word', function () {
     });
 });
 
-
-
-import { expect } from 'chai';
 
 describe('ConfigUtils.replaceSMWVariables', () => {
 

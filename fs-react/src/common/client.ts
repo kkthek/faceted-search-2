@@ -5,12 +5,12 @@
  *
  */
 import {TypedJSON} from "typedjson";
-import {DocumentQuery} from "./request/document_query";
-import {FacetsQuery} from "./request/facets_query";
-import {FacetResponse} from "./response/facet_response";
-import {Document} from "./response/document";
-import {DocumentsResponse} from "./response/documents_response";
-import {CategoryNode} from "./response/category_node";
+import {DocumentQuery} from "app/common/request/document_query";
+import {DocumentsResponse} from "app/common/response/documents_response";
+import {FacetsQuery} from "app/common/request/facets_query";
+import {FacetResponse} from "app/common/response/facet_response";
+import {CategoryNode} from "app/common/response/category_node";
+import {Document} from "app/common/response/document";
 
 const HTTP_REQUEST_OPTIONS: any = {
     method: "POST",

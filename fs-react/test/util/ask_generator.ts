@@ -1,13 +1,13 @@
 import {expect} from "chai";
-import {generateAskQuery, getAskParams} from "../../src/util/ask_generator";
-import {DocumentQuery} from "../../src/common/request/document_query";
-import {WikiContextAccessor} from "../../src/common/wiki_context";
-import {Property} from "../../src/common/property";
-import {PropertyFacet} from "../../src/common/request/property_facet";
-import {FacetValue} from "../../src/common/request/facet_value";
-import {Sort} from "../../src/common/request/sort";
-import {Datatype, Order} from "../../src/common/datatypes";
-import {Range} from "../../src/common/range";
+import {generateAskQuery, getAskParams} from "app/util/ask_generator";
+import {DocumentQuery} from "app/common/request/document_query";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import {Property} from "app/common/property";
+import {PropertyFacet} from "app/common/request/property_facet";
+import {FacetValue} from "app/common/request/facet_value";
+import {Sort} from "app/common/request/sort";
+import {Datatype, Order} from "app/common/datatypes";
+import {Range} from "app/common/range";
 
 /**
  * Builds a minimal DocumentQuery. Missing fields are added by callers when needed.
@@ -221,5 +221,25 @@ describe('ask_generator', () => {
                 ConfigUtils.getSortByKeyOrDefault = original;
             }
         });
+
+
+        it('generates namespace conditions joined with OR', () => {
+            const query = buildQuery({
+                categoryFacets: ['Employee'],
+                namespaceFacets: [0, 14]
+            } as any);
+
+            const wikiContext = buildWikiContext();
+            // ConfigUtils.getNamespaceAsText reads namespaces from
+            // wikiContext.config['wgFormattedNamespaces'].
+            (wikiContext.config as any)['wgFormattedNamespaces'] = {
+                0: '',
+                14: 'Category'
+            };
+
+            const result = generateAskQuery(query, wikiContext);
+            expect(result).to.equal('[[Category:Employee]]\n[[:+ || Category:+]]');
+        });
+
     });
 });

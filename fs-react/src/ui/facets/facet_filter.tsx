@@ -1,13 +1,11 @@
 import React, {KeyboardEvent, useContext, useEffect, useState} from "react";
-import {SearchStateFacet, TextFilters} from "../../common/datatypes";
-import {TYPING_DELAY, WikiContext} from "../../index";
-import {useDebounce} from "../../custom_ui/custom_hooks";
-import EventHandler from "../../common/event_handler";
-import ObjectTools from "../../util/object_tools";
 import {TextField} from "@mui/material";
-import {Property} from "../../common/property";
-import {FacetsQuery} from "../../common/request/facets_query";
-import {PropertyValueQuery} from "../../common/request/property_value_query";
+import {SearchStateFacet} from "app/common/datatypes";
+import {Property} from "app/common/property";
+import EventHandler from "app/common/event_handler";
+import {TYPING_DELAY, WikiContext} from "app/index";
+import {FacetsQuery} from "app/common/request/facets_query";
+import {useDebounce} from "app/custom_ui/custom_hooks";
 
 function FacetFilter(prop : {
     property: Property

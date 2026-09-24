@@ -1,11 +1,6 @@
-import React, {Dispatch, KeyboardEvent, SetStateAction, useContext, useEffect, useMemo, useState} from "react";
-import {SearchStateDocument, TextFilters} from "../../common/datatypes";
-import {useDebounce} from "../../custom_ui/custom_hooks";
-import EventHandler from "../../common/event_handler";
-import ObjectTools from "../../util/object_tools";
+import React, {Dispatch, KeyboardEvent, SetStateAction, useContext} from "react";
 import {TextField} from "@mui/material";
-import {TYPING_DELAY, WikiContext} from "../../index";
-import {CategoryNode} from "../../common/response/category_node";
+import {WikiContext} from "app/index";
 
 function CategoryTreeFilter(prop: {
     filterText: string,

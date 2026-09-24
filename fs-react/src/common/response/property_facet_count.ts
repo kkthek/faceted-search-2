@@ -1,6 +1,7 @@
 import {jsonMember, jsonObject} from "typedjson";
-import {PropertyWithURL} from "./property_with_URL";
-import {Sortable} from "../datatypes";
+import {Sortable} from "app/common/datatypes";
+import {PropertyWithURL} from "app/common/response/property_with_URL";
+
 
 @jsonObject
 export class PropertyFacetCount implements Sortable<PropertyFacetCount> {

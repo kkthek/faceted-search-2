@@ -1,5 +1,5 @@
-import Client from "../common/client";
-import {WikiContextAccessor} from "../common/wiki_context";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import Client from "app/common/client";
 
 export async function initializeDevContext()
 {

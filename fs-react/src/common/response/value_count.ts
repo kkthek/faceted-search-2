@@ -1,12 +1,13 @@
 import {jsonMember, jsonObject} from "typedjson";
-import ValueDeserializer from "../../util/value_deserializer";
-import {MWTitleWithURL} from "./mw_title_with_URL";
-import {Range} from "../range";
-import {PropertyFacet} from "../request/property_facet";
-import {FacetValue} from "../request/facet_value";
-import {Sortable, ValueType} from "../datatypes";
-import DateTools from "../../util/date_tools";
-import {WikiContextAccessor} from "../wiki_context";
+import {Sortable, ValueType} from "app/common/datatypes";
+import ValueDeserializer from "app/util/value_deserializer";
+import {MWTitleWithURL} from "app/common/response/mw_title_with_URL";
+import {PropertyFacet} from "app/common/request/property_facet";
+import {FacetValue} from "app/common/request/facet_value";
+import {WikiContextAccessor} from "app/common/wiki_context";
+import DateTools from "app/util/date_tools";
+import {Range} from "app/common/range";
+
 
 @jsonObject
 export class ValueCount implements Sortable<ValueCount> {

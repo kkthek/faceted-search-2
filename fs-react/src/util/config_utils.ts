@@ -1,9 +1,10 @@
-import {Datatype, Order, Sortable, ValueType} from "../common/datatypes";
-import {WikiContextAccessor} from "../common/wiki_context";
-import {Property} from "../common/property";
-import {MWTitle} from "../common/mw_title";
-import {Sort} from "../common/request/sort";
-import {Document} from "../common/response/document";
+import {Document} from "app/common/response/document";
+import {Datatype, Order, Sortable, ValueType} from "app/common/datatypes";
+import {Property} from "app/common/property";
+import {Sort} from "app/common/request/sort";
+import {MWTitle} from "app/common/mw_title";
+import {WikiContextAccessor} from "app/common/wiki_context";
+
 class ConfigUtils {
 
     static getSortFunction<T extends Sortable<T>>(sortType: string): (a: T, b: T) => number {

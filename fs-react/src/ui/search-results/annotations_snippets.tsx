@@ -1,10 +1,9 @@
 import React, {useContext} from "react";
-import {WikiContext} from "../../index";
-import WikiLink from "../common/wiki_link";
-import ValueSerializer from "../../util/value_serializer";
 import {Box, Table, TableBody, TableCell, TableRow} from "@mui/material";
-import {Document} from "../../common/response/document";
-
+import {WikiContext} from "app/index";
+import WikiLink from "app/ui/common/wiki_link";
+import ValueSerializer from "app/util/value_serializer";
+import {Document} from "app/common/response/document";
 
 function Annotations(prop: {doc: Document}) {
     const wikiContext = useContext(WikiContext);

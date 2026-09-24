@@ -1,6 +1,6 @@
 import {jsonArrayMember, jsonObject} from "typedjson";
-import {PropertyValueCount} from "./property_value_count";
-import {Property} from "../property";
+import {PropertyValueCount} from "app/common/response/property_value_count";
+import {Property} from "app/common/property";
 
 @jsonObject
 export class FacetResponse {

@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
-import Span from "../../custom_ui/span";
+
 import React from "react";
+import Span from "app/custom_ui/span";
 
 function ErrorComponent(prop: {error: any}) {
     return <><Box sx={

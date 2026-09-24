@@ -1,6 +1,7 @@
 import {jsonMember, jsonObject} from "typedjson";
-import IdTools from "../util/id_tools";
-import {Datatype} from "./datatypes";
+import {Datatype} from "app/common/datatypes";
+import IdTools from "app/util/id_tools";
+
 
 @jsonObject
 export class Property {
