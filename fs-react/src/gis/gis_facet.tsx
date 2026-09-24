@@ -1,12 +1,12 @@
 import React, {useContext, useState} from "react";
-import EventHandler from "../common/event_handler";
 import RoomIcon from '@mui/icons-material/Room';
-
-import GisDialog from "./gis_dialog";
-import CustomTreeItem from "../custom_ui/custom_tree_item";
-import {WikiContext} from "../index";
+import EventHandler from "app/common/event_handler";
+import {SearchStateDocument} from "app/common/datatypes";
+import {WikiContext} from "app/index";
+import CustomTreeItem from "app/custom_ui/custom_tree_item";
 import {createPortal} from "react-dom";
-import {SearchStateDocument} from "../common/datatypes";
+import GisDialog from "app/gis/gis_dialog";
+
 
 function GisFacet(prop: {
     searchStateDocument: SearchStateDocument,
