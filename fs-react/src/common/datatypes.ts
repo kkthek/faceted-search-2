@@ -9,17 +9,11 @@ import {DocumentsResponse} from "app/common/response/documents_response";
 import {BaseQuery} from "app/common/request/base_query";
 import {FacetResponse} from "app/common/response/facet_response";
 
-
-export interface TextFilters {
-    [title:string] : string;
-}
-
 export interface ElementWithURL {
     getUrl(): string;
     getTitle(): string;
     getDisplayTitle(): string;
 }
-
 
 export type ValueType = string | number | boolean | Date;
 
@@ -30,7 +24,6 @@ export enum Datatype {
     boolean,
     wikipage,
     internal
-
 }
 
 export enum Order {
