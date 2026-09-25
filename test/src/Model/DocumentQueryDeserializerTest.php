@@ -7,6 +7,12 @@ use PHPUnit\Framework\TestCase;
 
 final class DocumentQueryDeserializerTest extends TestCase {
 
+    public function setUp(): void
+    {
+        global $fs2gNamespacesToShow;
+        $fs2gNamespacesToShow = [];
+    }
+
     public function testPropertyFacet(): void
     {
         $json = <<<JSON
@@ -56,5 +62,19 @@ JSON;
         $this->assertEquals('Koblenz', $documentQuery->getPropertyFacets()[0]->getValues()[0]->getMwTitle()->getDisplayTitle() );
         $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getValue(DATATYPE::STRING) );
         $this->assertNull($documentQuery->getPropertyFacets()[0]->getValues()[0]->getRange() );
+    }
+
+    public function testNamespaceFacet(): void
+    {
+        $json = <<<JSON
+{
+    "namespaceFacets": [123]
+}
+JSON;
+        $documentQuery = DocumentQuery::fromJson($json);
+
+        $this->assertEquals(1, count($documentQuery->getNamespaceFacets()) );
+        $this->assertEquals(123, $documentQuery->getNamespaceFacets()[0]);
+
     }
 }
