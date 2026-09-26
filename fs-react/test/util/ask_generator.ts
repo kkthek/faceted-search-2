@@ -41,6 +41,7 @@ function buildWikiContext(namespaceMap: {[id: number]: string} = {},
     // reads namespaces from it. Since we don't want to depend on the actual
     // ConfigUtils implementation, we place the mapping on the config as well.
     config['namespaces'] = namespaceMap;
+    config['fs2gFacetsWithOR'] = ['Has name'];
     return {
         config,
         msg: (k: string) => k,
@@ -119,6 +120,24 @@ describe('ask_generator', () => {
 
             const result = generateAskQuery(query, buildWikiContext());
             expect(result).to.equal('[[Has name::Peter || Paul]]');
+        });
+
+        it('joins multiple non-range values with AND', () => {
+            const property = new Property('Has hobby', Datatype.string);
+            (property as any).isRangeProperty = () => false;
+
+            const v1 = FacetValue.fromValue('Peter');
+            const v2 = FacetValue.fromValue('Paul');
+            (v1 as any).isEmpty = () => false;
+            (v2 as any).isEmpty = () => false;
+            v1.toString = () => 'Skating';
+            v2.toString = () => 'Reading';
+
+            const facet = new PropertyFacet(property, [v1, v2]);
+            const query = buildQuery({propertyFacets: [facet]} as any);
+
+            const result = generateAskQuery(query, buildWikiContext());
+            expect(result).to.equal('[[Has hobby::Skating]] [[Has hobby::Reading]]');
         });
 
         it('uses only the last range for multiple range values (drilldown)', () => {

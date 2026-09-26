@@ -3,6 +3,7 @@
 namespace DIQA\FacetedSearch2;
 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Title\Title;
 use OutputPage;
 use RequestContext;
 use Skin;
@@ -108,12 +109,12 @@ class Setup
 
     private static function isSpecialPageOrProxy(): bool
     {
-        global $fs2gFacetedSearchForMW;
+
         $currentTitle = RequestContext::getMain()->getTitle();
         $requestUrl = RequestContext::getMain()->getRequest()->getRequestURL();
         $isFacetedSearch2Page = !is_null($currentTitle)
             && ($currentTitle->isSpecial('FacetedSearch2')
-                || ($currentTitle->isSpecial('Search') && ($fs2gFacetedSearchForMW ?? true))
+                || self::shouldReplaceDefaultSearch($currentTitle)
             );
         $isProxyEndpoint = str_contains($requestUrl, '/FacetedSearch2/v1/proxy');
         return $isFacetedSearch2Page || $isProxyEndpoint;
@@ -121,9 +122,10 @@ class Setup
 
     public static function onBeforePageDisplay(OutputPage $out, Skin $skin)
     {
-
         if (!is_null($out->getTitle())
-            && ($out->getTitle()->isSpecial("FacetedSearch2") || $out->getTitle()->isSpecial("Search"))) {
+            && ($out->getTitle()->isSpecial("FacetedSearch2")
+                || self::shouldReplaceDefaultSearch($out->getTitle()))
+        ) {
             self::checkIfCompiled();
             $out->addModules('ext.diqa.facetedsearch2');
             $out->addJsConfigVars('fs2gSMWLanguage', self::getMessagesFromSMW() );
@@ -151,6 +153,12 @@ class Setup
             }
         }
         return $jsVars;
+    }
+
+    private static function shouldReplaceDefaultSearch(Title $title): bool
+    {
+        global $fs2gFacetedSearchForMW;
+        return $title->isSpecial('Search') && ($fs2gFacetedSearchForMW ?? true);
     }
 
 

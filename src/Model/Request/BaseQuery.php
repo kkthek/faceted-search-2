@@ -97,7 +97,7 @@ abstract class BaseQuery {
         return $this;
     }
 
-    public function applyMandatoryFilters(): BaseQuery
+    protected function applyMandatoryFilters(): BaseQuery
     {
         $allowedNamespaces = ConfigTools::getAllowedNamespaces();
         if (empty($allowedNamespaces)) {
