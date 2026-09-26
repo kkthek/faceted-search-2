@@ -24,28 +24,24 @@ export function generateAskQuery(query: DocumentQuery, wikiContext: WikiContextA
         const propertyTitle = p.property.title;
         let cond;
         if (p.values.length === 0) return;
-        if (p.values.length === 1) {
-            const v = p.values[0];
-            if (v.isEmpty()) {
-                cond = `[[${propertyTitle}::+]]`;
-            } else if (p.property.isRangeProperty()) {
-                const range = v.range as Range;
-                cond = `[[${propertyTitle}::>=${range.fromToString()}]] [[${propertyTitle}::<=${range.toToString()}]]`;
-            } else {
-                cond = `[[${propertyTitle}::${v.toString()}]]`;
-            }
+        if (p.values.length === 1 && p.values[0].isEmpty()) {
+            cond = `[[${propertyTitle}::+]]`;
+        } else if (p.property.isRangeProperty()) {
+            // this is not OR because range properties cannot be ORed.
+            // It's a drilldown, so consider only last value
+            const range = p.values[p.values.length - 1].range as Range;
+            cond = `[[${propertyTitle}::>=${range.fromToString()}]] [[${propertyTitle}::<=${range.toToString()}]]`;
         } else {
-            if (p.property.isRangeProperty()) {
-                // this is not OR because range properties cannot be ORed.
-                // It's a drilldown, so consider only last value
-                const range = p.values[p.values.length-1].range as Range;
-                cond = `[[${propertyTitle}::>=${range.fromToString()}]] [[${propertyTitle}::<=${range.toToString()}]]`;
-            } else {
-                const valuesWithoutEmpty = p.values.filter(v => !v.isEmpty());
+            const valuesWithoutEmpty = p.values.filter(v => !v.isEmpty());
+            const facetsWithOR = wikiContext.config.fs2gFacetsWithOR ?? [];
+            if (facetsWithOR.includes(propertyTitle)) {
                 cond = `[[${propertyTitle}::${valuesWithoutEmpty.join(' || ')}]]`;
+            } else {
+                cond = valuesWithoutEmpty.map(v => `[[${propertyTitle}::${v.toString()}]]`).join(' ');
             }
         }
         q.push(cond);
+
     });
 
     return q.join("\n");
