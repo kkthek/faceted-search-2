@@ -58,13 +58,14 @@ class Setup
 
         define('FS2_EXTENSION_VERSION', true);
 
-        if (defined('ER_EXTENSION_VERSION')) {
+        global $fsgFacetedSearchForMW;
+        if (defined('ER_EXTENSION_VERSION') && ($fsgFacetedSearchForMW ?? true)) {
             // if old version is installed in parallel, keep the it the standard search and ignore the FS2 setting
             global $wgSpecialPages;
             $wgSpecialPages['Search'] = "DIQA\\FacetedSearch\\Specials\\FSFacetedSearchSpecial";
         } else {
             global $fs2gFacetedSearchForMW;
-            if (!($fs2gFacetedSearchForMW ?? false)) {
+            if (!($fs2gFacetedSearchForMW ?? true)) {
                 global $wgSpecialPages;
                 unset($wgSpecialPages['Search']);
             }
@@ -105,13 +106,16 @@ class Setup
         return true;
     }
 
-    private static function isSpecialPageOrProxy() {
+    private static function isSpecialPageOrProxy(): bool
+    {
+        global $fs2gFacetedSearchForMW;
         $currentTitle = RequestContext::getMain()->getTitle();
         $requestUrl = RequestContext::getMain()->getRequest()->getRequestURL();
         $isFacetedSearch2Page = !is_null($currentTitle)
-            && $currentTitle->getNamespace() === NS_SPECIAL
-            && ($currentTitle->getText() === 'FacetedSearch2' || $currentTitle->getText() === 'Search');
-        $isProxyEndpoint = strpos($requestUrl, '/FacetedSearch2/v1/proxy') > -1;
+            && ($currentTitle->isSpecial('FacetedSearch2')
+                || ($currentTitle->isSpecial('Search') && ($fs2gFacetedSearchForMW ?? true))
+            );
+        $isProxyEndpoint = str_contains($requestUrl, '/FacetedSearch2/v1/proxy');
         return $isFacetedSearch2Page || $isProxyEndpoint;
     }
 
