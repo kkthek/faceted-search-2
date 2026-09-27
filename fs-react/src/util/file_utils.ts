@@ -1,4 +1,4 @@
-function downloadURLWithTimestamp(url: string, filename: string) {
+function downloadURL(url: string, filename: string) {
 
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -8,4 +8,4 @@ function downloadURLWithTimestamp(url: string, filename: string) {
     document.body.removeChild(anchor);
 }
 
-export default downloadURLWithTimestamp;
+export default downloadURL;
