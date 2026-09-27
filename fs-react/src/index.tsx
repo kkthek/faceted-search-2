@@ -118,7 +118,6 @@ function App() {
                                   searchStateDocument={searchStateDocument}
                         />,
                         <SearchBar key={'searchBar'}
-                                   restoreFromQuery={storedQuery !== null}
                                    eventHandler={eventHandler}
                                    query={currentDocumentQuery}
                         />,
