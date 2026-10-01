@@ -17,7 +17,7 @@ function PropertyValueGrid(prop: {
     const wikiContext = useContext(WikiContext);
     const sortOption = wikiContext.options['fs2-sort-order-preferences'];
 
-    const values: any = [];
+    const values: React.JSX.Element[][] = [];
 
     prop.valueCounts
         .sort(ConfigUtils.getSortFunction(sortOption))
