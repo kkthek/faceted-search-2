@@ -93,7 +93,7 @@ class Client {
         return deserializer.parse(json);
     }
 
-    async getCustomEndpoint(url: string): Promise<any> {
+    async postCustomEndpointJson(url: string): Promise<any> {
         const response = await fetch(url, {
             ...HTTP_REQUEST_OPTIONS
         });
@@ -101,13 +101,12 @@ class Client {
         return await response.json();
     }
 
-    async postCustomEndpoint(url: string): Promise<any> {
+    async postCustomEndpoint(url: string): Promise<Blob> {
         const response = await fetch(url, {
-            ...HTTP_REQUEST_OPTIONS,
-            method: "POST"
+            ...HTTP_REQUEST_OPTIONS
         });
         await this.handleErrorIfAny(response);
-        return await response.json();
+        return await response.blob();
     }
 
     async getSettingsForDevContext(): Promise<any> {

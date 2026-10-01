@@ -109,15 +109,13 @@ function setConfigForDevContext(): void
     global $fs2gAdditionalLinks;
     $fs2gAdditionalLinks = [
         "Employee" => [
-            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{{CURRENTUSER}}&Objekt={SMW:Has spouse}&Title={{FULLPAGENAME}}&Namespace={{NAMESPACENUMBER}}",
-            "Test confirm" => [
-                "url" => 'test/confirm',
-                "confirm" => true,
-                "openNewTab" => false
-            ]
+            'C0O0' => ['url' => 'category-tree','confirm'=>false,'openNewTab'=>false],
+            'C0O1' => ['url' => '','confirm'=>false,'openNewTab'=>true],
+            'C1O0' => ['url' => 'category-tree','confirm'=>true,'openNewTab'=>false],
+            'C1O1' => ['url' => '','confirm'=>true,'openNewTab'=>true],
         ],
         "Pensionist" => [
-            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{{CURRENTUSER}}&Objekt={SMW:Has spouse}",
+            "Objekt in Merkliste einfügen" => "Spezial:AddToMerkliste?user=User:{{CURRENTUSER}}&Objekt={SMW:Has spouse}&objectid={{FULLPAGENAME}}&ns={{NAMESPACENUMBER}}",
 
         ]
     ];
@@ -125,8 +123,8 @@ function setConfigForDevContext(): void
     $fs2gDateTimeZone = '';
 
     global $wgServer, $wgScriptPath;
-    $wgServer = "http://locahost:9000";
-    $wgScriptPath = "/test";
+    $wgServer = "http://localhost:9000";
+    $wgScriptPath = "";
 
     global $userOptions;
     $userOptions = [
