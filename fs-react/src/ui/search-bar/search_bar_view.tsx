@@ -7,7 +7,6 @@ import {useDebounce} from "app/custom_ui/custom_hooks";
 
 function SearchBar(prop: {
     eventHandler: EventHandler
-    restoreFromQuery: boolean
     query: DocumentQuery
 
 }) {

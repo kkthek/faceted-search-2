@@ -5,6 +5,7 @@ import {Property} from "app/common/property";
 import {ValueCount} from "app/common/response/value_count";
 import {WikiContext} from "app/index";
 import ConfigUtils from "app/util/config_utils";
+import FacetWithCount from "app/ui/common/facet_with_count";
 
 function PropertyValueGrid(prop: {
     property: Property,
@@ -34,7 +35,7 @@ function PropertyValueGrid(prop: {
                         onChange={(event, checked) => {
                             prop.onChange(event, checked, value);
                         }}
-                        label={selectedValue + " (" + value.count + ")"}/>
+                        label={<FacetWithCount displayTitle={selectedValue} count={value.count}/>}/>
                 </Grid>;
             }));
 

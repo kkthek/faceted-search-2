@@ -5,7 +5,7 @@ import {WikiContext} from "app/index";
 import ConfirmDialogSlide, {ConfirmDialogState} from "app/util/confirm_dialog";
 import {generateAskQuery, getAskParams} from "app/util/ask_generator";
 import DateTools from "app/util/date_tools";
-import downloadURLWithTimestamp from "app/util/file_utils";
+import downloadURL from "app/util/file_utils";
 import {encodeParameters} from "app/util/url_encoder";
 
 function ExportSearchAsQuery(prop: {
@@ -48,13 +48,13 @@ function ExportSearchAsQuery(prop: {
             return;
         }
 
-        downloadURLWithTimestamp(url, getFilename(type));
+        downloadURL(url, getFilename(type));
     };
 
     const onOk = () => {
         const url = confirmDialogState.data.url;
         const type = confirmDialogState.data.type;
-        downloadURLWithTimestamp(url, getFilename(type));
+        downloadURL(url, getFilename(type));
         setConfirmDialogState({open: false});
     }
 

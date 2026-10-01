@@ -7,6 +7,7 @@ import {ValueCount} from "app/common/response/value_count";
 import {WikiContext} from "app/index";
 import TreeCreator, {GroupItem, Groups} from "app/ui/or-dialog/tree_generator";
 import ObjectTools from "app/util/object_tools";
+import FacetWithCount from "app/ui/common/facet_with_count";
 
 function PropertyValueTree(prop: {
     client: Client,
@@ -79,7 +80,7 @@ function createItemsFromGroups(groups: Groups) {
                 .map((v: GroupItem) => {
                     return <TreeItem key={encodeURIComponent(v.id)}
                                      itemId={encodeURIComponent(v.id)}
-                                     label={v.label + " (" + v.count + ")"}
+                                     label={<FacetWithCount displayTitle={v.label} count={v.count}/>}
                     />
                 }).forEach(e => groupTreeItems.push(e));
             continue;
@@ -89,7 +90,7 @@ function createItemsFromGroups(groups: Groups) {
             .map((v: GroupItem) => {
                 return <TreeItem key={encodeURIComponent(v.id)}
                                  itemId={encodeURIComponent(v.id)}
-                                 label={v.label + " (" + v.count + ")"}
+                                 label={<FacetWithCount displayTitle={v.label} count={v.count}/>}
                 />
             });
         if (facetValueTreeItems.length === 0) {

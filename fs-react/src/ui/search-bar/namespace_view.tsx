@@ -12,11 +12,9 @@ function NamespaceFacet(prop: {
 
 }) {
     const wikiContext = useContext(WikiContext);
-    const namespaces = wikiContext.config['wgFormattedNamespaces'];
-
 
     const namespaceIndex = prop.namespaceFacetCount.namespace;
-    let namespaceText = namespaces[namespaceIndex] ?? 'unknown namespace: ' + namespaceIndex;
+    let namespaceText = ConfigUtils.getNamespaceAsText(wikiContext, namespaceIndex);
     namespaceText = namespaceText === '' ? wikiContext.msg('fs-main-namespace') : namespaceText;
     const countText = prop.namespaceFacetCount.count > 0 ? prop.namespaceFacetCount.count : undefined;
 
