@@ -9,10 +9,9 @@ import {useDebounce} from "app/custom_ui/custom_hooks";
 
 function FacetFilter(prop : {
     property: Property
-    searchStateFacets: SearchStateFacet,
+    searchStateFacets: SearchStateFacet
     numberOfValues: number
-    eventHandler: EventHandler,
-    width?: string
+    eventHandler: EventHandler
 }) {
 
     const wikiContext = useContext(WikiContext);
@@ -50,7 +49,6 @@ function FacetFilter(prop : {
 
     return <TextField
                   id={prop.property.title+"-filter-input"}
-                  style={{width: prop.width ?? '50%'}}
                   placeholder={wikiContext.msg('fs-filter-property', prop.property.title)}
                   size={'small'}
                   variant="standard"
