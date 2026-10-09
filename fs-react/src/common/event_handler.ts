@@ -102,13 +102,16 @@ class EventHandler {
     }
 
     onCollapseFacetClick(itemId: string) {
-        this.expandedFacets = this.expandedFacets.filter(id => id !== itemId)
-        this.setExpandedFacets(this.expandedFacets);
+        this.updateExpandedFacets(this.expandedFacets.filter(id => id !== itemId));
     }
 
     private expandFacet(itemId: string) {
-        this.expandedFacets = [...this.expandedFacets, itemId];
-        this.setExpandedFacets(this.expandedFacets);
+        this.updateExpandedFacets([...this.expandedFacets, itemId]);
+    }
+
+    private updateExpandedFacets(facets: string[]) {
+        this.expandedFacets = facets;
+        this.setExpandedFacets(facets);
     }
 
 
@@ -268,8 +271,8 @@ class EventHandler {
             .clearAllRangeQueries()
             .clearAllPropertyValueQueries()
             .withPropertyValueQuery(QueryUtils.prepareTagCloudValueQuery(this.wikiContext));
-
-        this.setExpandedFacets([]);
+        
+        this.updateExpandedFacets([]);
         this.setLoadPromise(Promise.all([
             this.updateDocuments(),
             this.updateFacets()

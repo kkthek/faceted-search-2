@@ -74,16 +74,6 @@ function SelectedFacet(prop: {
         }
     }
 
-    let showAllTreeItem;
-    const showAll = prop.propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
-        !(property.isRangeProperty() || property.isBooleanProperty());
-    if (showAll) {
-        showAllTreeItem = <ShowAllButton property={property}
-                                         searchStateFacets={prop.searchStateFacets}
-                                         eventHandler={prop.eventHandler}
-        />
-    }
-
     const filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
                                          label={<FacetFilter eventHandler={prop.eventHandler}
                                                              searchStateFacets={prop.searchStateFacets}
@@ -101,7 +91,11 @@ function SelectedFacet(prop: {
         {filterTreeItem}
         {lastRangeTreeItem}
         {facetValues}
-        {showAllTreeItem}
+        <ShowAllButton property={property}
+                       searchStateFacets={prop.searchStateFacets}
+                       eventHandler={prop.eventHandler}
+                       propertyValueCount={prop.propertyValueCount}
+        />
     </CustomTreeItem>
 }
  export default SelectedFacet;

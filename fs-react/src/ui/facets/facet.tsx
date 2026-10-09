@@ -16,6 +16,7 @@ import IdTools from "app/util/id_tools";
 import FacetWithCount from "app/ui/common/facet_with_count";
 import DisplayTools from "app/util/display_tools";
 import {SearchStateDocument, SearchStateFacet} from "app/common/datatypes";
+import {FacetsQuery} from "app/common/request/facets_query";
 
 
 function FacetViewProperty(prop: {
@@ -43,16 +44,6 @@ function FacetViewProperty(prop: {
                             eventHandler={prop.eventHandler}
         />
     });
-
-    let showAllTreeItem;
-    const showAll = propertyValueCount?.values.length === wikiContext.config.fs2gFacetValueLimit &&
-        !(property.isRangeProperty() || property.isBooleanProperty());
-    if (showAll) {
-        showAllTreeItem = <ShowAllButton property={property}
-                                         searchStateFacets={prop.searchStateFacets}
-                                         eventHandler={prop.eventHandler}
-        />
-    }
 
     const filterTreeItem = <CustomTreeItem itemId={property.title+"-filter"}
                                          label={<FacetFilter eventHandler={prop.eventHandler}
@@ -96,7 +87,11 @@ function FacetViewProperty(prop: {
         {filterTreeItem}
         {sliderItem}
         {facetTreeItems}
-        {showAllTreeItem}
+        <ShowAllButton property={property}
+                       searchStateFacets={prop.searchStateFacets}
+                       eventHandler={prop.eventHandler}
+                       propertyValueCount={propertyValueCount}
+        />
 
     </CustomTreeItem>
 }
