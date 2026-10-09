@@ -8,6 +8,8 @@
 import {DocumentsResponse} from "app/common/response/documents_response";
 import {BaseQuery} from "app/common/request/base_query";
 import {FacetResponse} from "app/common/response/facet_response";
+import {FacetsQuery} from "app/common/request/facets_query";
+import {DocumentQuery} from "app/common/request/document_query";
 
 export interface ElementWithURL {
     getUrl(): string;
@@ -40,10 +42,10 @@ export interface Sortable<T> {
 
 export interface SearchStateDocument {
     documentResponse: DocumentsResponse;
-    query: BaseQuery
+    query: DocumentQuery;
 }
 
 export interface SearchStateFacet {
     facetsResponse: FacetResponse;
-    query: BaseQuery
+    query: FacetsQuery;
 }

@@ -42,4 +42,8 @@ export class FacetsQuery extends BaseQuery {
         return this.propertyValueQueries.findFirst(
             (e: PropertyValueQuery) => e.property.equals(property));
     }
+
+    isValueLimitSet(property: Property) {
+        return this.findPropertyValueQuery(property)?.valueLimit !== null;
+    }
 }

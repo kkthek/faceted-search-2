@@ -4,7 +4,6 @@ import {SearchStateFacet} from "app/common/datatypes";
 import {Property} from "app/common/property";
 import EventHandler from "app/common/event_handler";
 import {TYPING_DELAY, WikiContext} from "app/index";
-import {FacetsQuery} from "app/common/request/facets_query";
 import {useDebounce} from "app/custom_ui/custom_hooks";
 
 function FacetFilter(prop : {
@@ -17,7 +16,7 @@ function FacetFilter(prop : {
     const wikiContext = useContext(WikiContext);
     const [unchanged, setUnchanged] = useState((): boolean => true);
 
-    const facetsQuery = prop.searchStateFacets.query as FacetsQuery;
+    const facetsQuery = prop.searchStateFacets.query;
     const propertyValueQuery = facetsQuery.findPropertyValueQuery(prop.property);
     const initialFilterValue = propertyValueQuery?.valueContains ?? '';
     const [filterText, setFilterText] = useState(initialFilterValue);
@@ -49,6 +48,7 @@ function FacetFilter(prop : {
 
     return <TextField
                   id={prop.property.title+"-filter-input"}
+                  sx={{width: "80%"}}
                   placeholder={wikiContext.msg('fs-filter-property', prop.property.title)}
                   size={'small'}
                   variant="standard"

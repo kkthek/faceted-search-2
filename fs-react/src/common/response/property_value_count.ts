@@ -11,4 +11,8 @@ export class PropertyValueCount {
     @jsonArrayMember(ValueCount)
     values: ValueCount[]
 
+    hasNumberOfValues(num: number) {
+        return this.values.length === num;
+    }
+
 }
