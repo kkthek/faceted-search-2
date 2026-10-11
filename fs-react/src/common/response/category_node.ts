@@ -103,6 +103,9 @@ export class CategoryNode {
     }
 
     protected onDeserialized(): CategoryNode {
-        return this.createParentReferences(this);
+        this.children.forEach(child => {
+            child.parent = this;
+        });
+        return this;
     }
 }
