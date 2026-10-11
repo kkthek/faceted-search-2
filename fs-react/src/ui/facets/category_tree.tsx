@@ -23,7 +23,7 @@ function CategoryTree(prop: {
     if (!wikiContext.config['fs2gShowCategoryTree']) return;
 
     const [categoryTree, setCategoryTree] = useState<[CategoryNode, CategoryNode]>([null, null]);
-    const [expandedFacets, setExpandedFacets] = useState<string[]>([]);
+    const [expandedNodes, setExpandedNodes] = useState<string[]>([]);
     const [filterText, setFilterText] = useState('');
     const debouncedFilterText = useDebounce(filterText, TYPING_DELAY);
     const categories = prop.searchStateDocument?.documentResponse.getCategoriesFromFacetCounts() ?? [];
@@ -33,10 +33,9 @@ function CategoryTree(prop: {
         const [filteredTree, fullTree] = categoryTree;
         if (!filteredTree) {
             (async function fetchCategoryTree() {
-                const response = await prop.client.getCategoryTree();
-                const tree = response.createParentReferences();
+                const tree = await prop.client.getCategoryTree();
                 setCategoryTree([tree, tree]);
-                setExpandedFacets(tree.getNodeItemIds());
+                setExpandedNodes(tree.getNodeItemIds());
             }());
         } else {
 
@@ -44,10 +43,10 @@ function CategoryTree(prop: {
                 .filterForCategories(categories)
                 .filterForText(debouncedFilterText);
             setCategoryTree([newFilteredTree, fullTree]);
-            setExpandedFacets(newFilteredTree.getNodeItemIds());
+            setExpandedNodes(newFilteredTree.getNodeItemIds());
 
         }
-    }, [JSON.stringify(categories), debouncedFilterText]);
+    }, [categories.toString(), debouncedFilterText]);
 
     const [filteredTree] = categoryTree;
     if (!filteredTree) return;
@@ -59,19 +58,22 @@ function CategoryTree(prop: {
     ) => {
 
         if (isExpanded) {
-            setExpandedFacets([...expandedFacets, itemId]);
+            setExpandedNodes([...expandedNodes, itemId]);
         } else {
-            setExpandedFacets(expandedFacets.filter(id => id !== itemId));
+            setExpandedNodes(expandedNodes.filter(id => id !== itemId));
         }
 
     };
 
     return <Box id={'fs-category-tree'}>
         <Typography variant={"subtitle1"}>{wikiContext.msg('fs-category-tree')}</Typography>
-        <CategoryTreeFilter filterText={filterText}
-                            setFilterText={setFilterText}
-        />
-        <SimpleTreeView expandedItems={expandedFacets}
+        {filteredTree.hasChildren() ?
+            <CategoryTreeFilter
+                filterText={filterText}
+                setFilterText={setFilterText}
+            /> : undefined
+        }
+        <SimpleTreeView expandedItems={expandedNodes}
                         disableSelection
                         disabledItemsFocusable
                         onItemExpansionToggle={handleItemExpansionToggle}
@@ -80,6 +82,11 @@ function CategoryTree(prop: {
                                                              node={node}
                                                              searchStateDocument={prop.searchStateDocument}
                                                              eventHandler={prop.eventHandler}/>)}
+            {!filteredTree.hasChildren() ?
+                <CustomTreeItem itemId={'none'}
+                                label={<FacetWithCount displayTitle={wikiContext.msg('fs-none')}/>}
+                /> : undefined
+            }
         </SimpleTreeView>
     </Box>
 }

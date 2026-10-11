@@ -1,6 +1,6 @@
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 
-@jsonObject
+@jsonObject({onDeserialized: 'onDeserialized'})
 export class CategoryNode {
     @jsonMember(String)
     category: string;
@@ -23,7 +23,36 @@ export class CategoryNode {
         return this.category + this.parent?.category;
     }
 
-    createParentReferences(node: CategoryNode | null = null): CategoryNode {
+    hasChildren() {
+        return this.children.length > 0;
+    }
+
+    filterForText(text: string): CategoryNode {
+        if (text.trim() === '') return this;
+        const allMatchingNodes = this.filterNodes_((c) => c.contains(text), this);
+        if (allMatchingNodes.length === 0) return this.createRootNode();
+        const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
+        return this.copyTree_((c) => allCategoriesOnPath.includes(c.category), this)
+            .createParentReferences();
+    }
+
+    filterForCategories(categories: string[]): CategoryNode {
+        if (categories.length === 0) return this.createRootNode();
+        const allMatchingNodes = this.filterNodes_((c) => categories.includes(c.category), this);
+        if (allMatchingNodes.length === 0) return this.createRootNode();
+        const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
+        return this.copyTree_((c) => allCategoriesOnPath.includes(c.category), this)
+            .createParentReferences();
+    }
+
+    getNodeItemIds(node: CategoryNode = this): string[] {
+        const found = node.children.map(child => child.category + child.parent?.category)
+            .concat(node.parent ? node.category + node.parent.category : node.category);
+        node.children.forEach(node => found.push(...this.getNodeItemIds(node)));
+        return found;
+    }
+
+    private createParentReferences(node: CategoryNode | null = null): CategoryNode {
         if (node === null) node = this;
         node.children.forEach(child => {
             child.parent = node;
@@ -38,29 +67,8 @@ export class CategoryNode {
             || (this.displayTitle && this.displayTitle.toLowerCase().includes(part.toLowerCase())));
     }
 
-    filterForText(text: string): CategoryNode {
-        if (text.trim() === '') return this;
-        const allMatchingNodes = this.filterNodes_((c) => c.contains(text), this);
-        if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);
-        const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
-        return this.copyTree_((c) => allCategoriesOnPath.includes(c.category), this)
-            .createParentReferences();
-    }
-
-    filterForCategories(categories: string[]): CategoryNode {
-        if (categories.length === 0) return this;
-        const allMatchingNodes = this.filterNodes_((c) => categories.includes(c.category), this);
-        if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);
-        const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
-        return this.copyTree_((c) => allCategoriesOnPath.includes(c.category), this)
-            .createParentReferences();
-    }
-
-    getNodeItemIds(node: CategoryNode = this): string[] {
-        const found = node.children.map(child => child.category + child.parent?.category)
-            .concat(node.parent ? node.category + node.parent.category : node.category);
-        node.children.forEach(node => found.push(...this.getNodeItemIds(node)));
-        return found;
+    private createRootNode() {
+        return new CategoryNode("__ROOT__", []);
     }
 
     private getCategoriesOnPathToRoot(allMatchingNodes: CategoryNode[]) {
@@ -92,5 +100,9 @@ export class CategoryNode {
         const found = node.children.filter(child => predicate(child));
         node.children.forEach(node => found.push(...this.filterNodes_(predicate, node)));
         return found;
+    }
+
+    protected onDeserialized(): CategoryNode {
+        return this.createParentReferences(this);
     }
 }
