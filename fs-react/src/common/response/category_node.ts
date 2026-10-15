@@ -1,6 +1,6 @@
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 
-@jsonObject({onDeserialized: 'onDeserialized'})
+@jsonObject({onDeserialized: 'setParent'})
 export class CategoryNode {
     @jsonMember(String)
     category: string;
@@ -17,6 +17,7 @@ export class CategoryNode {
         this.category = category;
         this.children = children;
         this.displayTitle = displayTitle;
+        this.setParent();
     }
 
     getItemId() {
@@ -27,13 +28,13 @@ export class CategoryNode {
         return this.children.length > 0;
     }
 
-    filterForText(text: string): CategoryNode {
-        if (text.trim() === '') return this;
-        const allMatchingNodes = this.filterNodes_((c) => c.contains(text), this);
+    filterForText(substring: string): CategoryNode {
+        if (substring.trim() === '') return this;
+        const allMatchingNodes = this.filterNodes_((c) => c.containsSubstring(substring), this);
         if (allMatchingNodes.length === 0) return this.createRootNode();
         const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
         return this.copyTree_((c) => allCategoriesOnPath.includes(c.category), this)
-            .createParentReferences();
+            .setParentsRecursively_();
     }
 
     filterForCategories(categories: string[]): CategoryNode {
@@ -42,7 +43,7 @@ export class CategoryNode {
         if (allMatchingNodes.length === 0) return this.createRootNode();
         const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
         return this.copyTree_((c) => allCategoriesOnPath.includes(c.category), this)
-            .createParentReferences();
+            .setParentsRecursively_();
     }
 
     getNodeItemIds(node: CategoryNode = this): string[] {
@@ -52,17 +53,17 @@ export class CategoryNode {
         return found;
     }
 
-    private createParentReferences(node: CategoryNode | null = null): CategoryNode {
+    private setParentsRecursively_(node: CategoryNode | null = null): CategoryNode {
         if (node === null) node = this;
         node.children.forEach(child => {
             child.parent = node;
-            this.createParentReferences(child);
+            this.setParentsRecursively_(child);
         });
         return node;
     }
 
-    private contains(text: string) {
-        const parts = text.split(/\s+/);
+    private containsSubstring(substring: string) {
+        const parts = substring.split(/\s+/);
         return parts.every(part => this.category.toLowerCase().includes(part.toLowerCase())
             || (this.displayTitle && this.displayTitle.toLowerCase().includes(part.toLowerCase())));
     }
@@ -102,7 +103,8 @@ export class CategoryNode {
         return found;
     }
 
-    protected onDeserialized(): CategoryNode {
+    protected setParent(): CategoryNode {
+        if (!this.children) return this;
         this.children.forEach(child => {
             child.parent = this;
         });

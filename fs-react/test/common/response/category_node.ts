@@ -25,10 +25,6 @@ describe('datatypes', function () {
             ])
         ]);
 
-        // assures that parent references are set correctly
-        const deserializer = new TypedJSON(CategoryNode);
-        node = deserializer.parse(JSON.stringify(node));
-
         let filteredTree = node.filterForText('ABA');
         log(filteredTree);
 
@@ -53,10 +49,6 @@ describe('datatypes', function () {
                 ]),
             ])
         ]);
-
-        // assures that parent references are set correctly
-        const deserializer = new TypedJSON(CategoryNode);
-        node = deserializer.parse(JSON.stringify(node));
 
         let itemIds = node.getNodeItemIds(node);
         log(itemIds);
