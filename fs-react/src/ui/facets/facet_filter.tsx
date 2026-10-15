@@ -11,6 +11,7 @@ function FacetFilter(prop : {
     searchStateFacets: SearchStateFacet
     numberOfValues: number
     eventHandler: EventHandler
+    width?: string
 }) {
 
     const wikiContext = useContext(WikiContext);
@@ -48,7 +49,7 @@ function FacetFilter(prop : {
 
     return <TextField
                   id={prop.property.title+"-filter-input"}
-                  sx={{width: "80%"}}
+                  sx={{width: prop.width ?? "80%"}}
                   placeholder={wikiContext.msg('fs-filter-property', prop.property.title)}
                   size={'small'}
                   variant="standard"

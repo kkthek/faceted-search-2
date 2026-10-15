@@ -1,6 +1,6 @@
 import {jsonArrayMember, jsonMember, jsonObject} from "typedjson";
 
-@jsonObject
+@jsonObject({onDeserialized: 'setParent'})
 export class CategoryNode {
     @jsonMember(String)
     category: string;
@@ -17,43 +17,33 @@ export class CategoryNode {
         this.category = category;
         this.children = children;
         this.displayTitle = displayTitle;
+        this.setParent();
     }
 
     getItemId() {
         return this.category + this.parent?.category;
     }
 
-    createParentReferences(node: CategoryNode | null = null): CategoryNode {
-        if (node === null) node = this;
-        node.children.forEach(child => {
-            child.parent = node;
-            this.createParentReferences(child);
-        });
-        return node;
+    hasChildren() {
+        return this.children.length > 0;
     }
 
-    private contains(text: string) {
-        const parts = text.split(/\s+/);
-        return parts.every(part => this.category.toLowerCase().includes(part.toLowerCase())
-            || (this.displayTitle && this.displayTitle.toLowerCase().includes(part.toLowerCase())));
-    }
-
-    filterForText(text: string): CategoryNode {
-        if (text.trim() === '') return this;
-        const allMatchingNodes = this.filterNodes_((c) => c.contains(text), this);
-        if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);
+    filterForText(substring: string): CategoryNode {
+        if (substring.trim() === '') return this;
+        const allMatchingNodes = this.filterNodes_((c) => c.containsSubstring(substring), this);
+        if (allMatchingNodes.length === 0) return this.createRootNode();
         const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
         return this.copyTree_((c) => allCategoriesOnPath.includes(c.category), this)
-            .createParentReferences();
+            .setParentsRecursively_();
     }
 
     filterForCategories(categories: string[]): CategoryNode {
-        if (categories.length === 0) return this;
+        if (categories.length === 0) return this.createRootNode();
         const allMatchingNodes = this.filterNodes_((c) => categories.includes(c.category), this);
-        if (allMatchingNodes.length === 0) return new CategoryNode("__ROOT__", []);
+        if (allMatchingNodes.length === 0) return this.createRootNode();
         const allCategoriesOnPath = this.getCategoriesOnPathToRoot(allMatchingNodes);
         return this.copyTree_((c) => allCategoriesOnPath.includes(c.category), this)
-            .createParentReferences();
+            .setParentsRecursively_();
     }
 
     getNodeItemIds(node: CategoryNode = this): string[] {
@@ -61,6 +51,25 @@ export class CategoryNode {
             .concat(node.parent ? node.category + node.parent.category : node.category);
         node.children.forEach(node => found.push(...this.getNodeItemIds(node)));
         return found;
+    }
+
+    private setParentsRecursively_(node: CategoryNode | null = null): CategoryNode {
+        if (node === null) node = this;
+        node.children.forEach(child => {
+            child.parent = node;
+            this.setParentsRecursively_(child);
+        });
+        return node;
+    }
+
+    private containsSubstring(substring: string) {
+        const parts = substring.split(/\s+/);
+        return parts.every(part => this.category.toLowerCase().includes(part.toLowerCase())
+            || (this.displayTitle && this.displayTitle.toLowerCase().includes(part.toLowerCase())));
+    }
+
+    private createRootNode() {
+        return new CategoryNode("__ROOT__", []);
     }
 
     private getCategoriesOnPathToRoot(allMatchingNodes: CategoryNode[]) {
@@ -92,5 +101,13 @@ export class CategoryNode {
         const found = node.children.filter(child => predicate(child));
         node.children.forEach(node => found.push(...this.filterNodes_(predicate, node)));
         return found;
+    }
+
+    protected setParent(): CategoryNode {
+        if (!this.children) return this;
+        this.children.forEach(child => {
+            child.parent = this;
+        });
+        return this;
     }
 }

@@ -1,4 +1,5 @@
 import {CategoryNode} from "app/common/response/category_node";
+import {TypedJSON} from "typedjson";
 
 const assert = require('assert');
 const util = require('util')
@@ -14,7 +15,7 @@ const log = (obj: unknown) => console.log(util.inspect(obj, {showHidden: false, 
 describe('datatypes', function () {
     it('test node filtering', function () {
 
-        let node = new CategoryNode('A', [
+       let node = new CategoryNode('A', [
             new CategoryNode('AA', [
                 new CategoryNode('AAA', []),
             ]), new CategoryNode('AB', [
@@ -22,7 +23,7 @@ describe('datatypes', function () {
                     new CategoryNode('ABAA', []),
                 ]),
             ])
-        ]).createParentReferences();
+        ]);
 
         let filteredTree = node.filterForText('ABA');
         log(filteredTree);
@@ -47,7 +48,7 @@ describe('datatypes', function () {
                     new CategoryNode('ABAA', []),
                 ]),
             ])
-        ]).createParentReferences();
+        ]);
 
         let itemIds = node.getNodeItemIds(node);
         log(itemIds);
