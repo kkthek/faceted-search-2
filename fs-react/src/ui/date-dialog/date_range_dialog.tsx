@@ -21,7 +21,6 @@ import dayjs from "dayjs";
 import {FacetResponse} from "app/common/response/facet_response";
 import {Property} from "app/common/property";
 import EventHandler from "app/common/event_handler";
-import ObjectTools from "app/util/object_tools";
 import {PropertyFacet} from "app/common/request/property_facet";
 import {FacetValue} from "app/common/request/facet_value";
 import {Range} from "app/common/range";
@@ -34,16 +33,16 @@ function DateRangeDialog(prop: {
     eventHandler: EventHandler
 
 }) {
-    const wikiContext = useContext(WikiContext);
 
     const propertyValueCount = prop.facetResponse?.getPropertyValueCount(prop.property);
-    if (!propertyValueCount) return;
+    if (!propertyValueCount || propertyValueCount.values.length === 0) return;
 
-    const values = ObjectTools.deepClone(propertyValueCount.values);
-    const first = values.length === 1 ? values[0] : values.shift();
-    const last = values.length === 1 ?  values[0] : values.pop();
+    const first = propertyValueCount.values[0];
+    const last = propertyValueCount.values[propertyValueCount.values.length - 1];
     const minDate = first?.range ? first.range.from as Date : new Date();
     const maxDate = last?.range ? last.range.to as Date : new Date();
+
+    const wikiContext = useContext(WikiContext);
     const [range, setRange] = useState<Range>(new Range(minDate, maxDate));
 
     const onOK = function() {
