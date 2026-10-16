@@ -65,10 +65,11 @@ export class ValueCount implements Sortable<ValueCount> {
             return val.toString();
         } else if (v.mwTitle) {
             return v.mwTitle.displayTitle;
-        } else {
-            // range
+        } else if (v.range) {
             const r = v.range as Range;
             return r.displayRange(context);
+        } else {
+            return null;
         }
     }
 }

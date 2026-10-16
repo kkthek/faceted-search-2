@@ -40,8 +40,10 @@ class BaseFacetQueryTest extends TestCase {
         $q->setRangeQueries([$p, $p2]);
         $response = $this->client->requestFacets($q);
 
-        $this->assertCount(1, $response->getValueCounts());
+        $this->assertCount(2, $response->getValueCounts());
         $this->assertEquals(1, $response->getValueCounts()[0]->getValues()[0]->count);
+        $this->assertNull($response->getValueCounts()[1]->getValues()[0]->range);
+
 
     }
 

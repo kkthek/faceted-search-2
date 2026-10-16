@@ -6,6 +6,8 @@ function FacetWithCount(prop: {
     displayTitle: string,
     count?: number
 }) {
+    if (!prop.displayTitle) return;
+
     return <>
         <Span color={'primary'} dangerouslySetInnerHTML={{__html: prop.displayTitle}} className={'fs-facet-title'}></Span>
         {prop.count !== undefined ? <Span color={'secondary'} className={'fs-facet-count'}>&nbsp;({prop.count})</Span> : ''}
