@@ -79,7 +79,7 @@ function FacetViewProperty(prop: {
         }
     }
     return <CustomTreeItem itemId={IdTools.createItemIdForProperty(property)}
-                           label={<FacetWithCount displayTitle={DisplayTools.getDisplayTitle(property)} count={prop.propertyFacetCount?.count}/>}
+                           label={<FacetWithCount displayTitle={DisplayTools.getDisplayTitle(property, wikiContext)} count={prop.propertyFacetCount?.count}/>}
                            itemAction={() => prop.eventHandler.onPropertyClick(property)}
                            actionIcon={getActionIcon()}
                            action={action}
