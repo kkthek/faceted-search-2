@@ -45,7 +45,7 @@ function SelectedFacet(prop: {
     });
 
     const onPropertyActionClick = () => {
-        if (isRemovable && facetValues.length > 0) {
+        if (isRemovable || facetValues.length === 0) {
             prop.eventHandler.onRemovePropertyFacet(propertyFacet)
         } else if (facetsWithOr) {
             prop.onOrDialogClick(property);
@@ -54,7 +54,7 @@ function SelectedFacet(prop: {
     };
 
     let propertyActionIcon = null;
-    if (isRemovable && facetValues.length > 0) {
+    if (isRemovable || facetValues.length === 0) {
         propertyActionIcon = DeleteIcon;
     } else if (facetsWithOr) {
         propertyActionIcon = ChecklistIcon;
@@ -87,7 +87,8 @@ function SelectedFacet(prop: {
                            itemId={IdTools.createItemIdForProperty(property)}
                            label={<FacetWithCount displayTitle={property.displayTitle} count={prop.facetCount?.count ?? 0} />}
                            action={onPropertyActionClick}
-                           actionIcon={propertyActionIcon}>
+                           actionIcon={propertyActionIcon}
+    >
         {filterTreeItem}
         {lastRangeTreeItem}
         {facetValues}

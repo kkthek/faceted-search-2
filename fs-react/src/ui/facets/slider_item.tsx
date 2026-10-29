@@ -5,7 +5,6 @@ import Button from "@mui/material/Button";
 import {Property} from "app/common/property";
 import {FacetResponse} from "app/common/response/facet_response";
 import EventHandler from "app/common/event_handler";
-import ObjectTools from "app/util/object_tools";
 import {PropertyFacet} from "app/common/request/property_facet";
 import {FacetValue} from "app/common/request/facet_value";
 import {Range} from "app/common/range";
@@ -16,13 +15,12 @@ function SliderItem(prop: {
     eventHandler: EventHandler,
 }) {
     const propertyValueCount = prop.facetResponse?.getPropertyValueCount(prop.property);
-    if (!propertyValueCount) return;
+    if (!propertyValueCount || propertyValueCount.values.length === 0) return;
 
     const [range, setRange] = useState<Range>(Range.collapsedNumberRange());
 
-    const values = ObjectTools.deepClone(propertyValueCount.values);
-    const first = values.length === 1 ? values[0] : values.shift();
-    const last = values.length === 1 ?  values[0] : values.pop();
+    const first = propertyValueCount.values[0];
+    const last = propertyValueCount.values[propertyValueCount.values.length - 1];
     const min = first?.range ? first.range.from as number : undefined;
     const max = last?.range ? last.range.to as number : undefined;
 

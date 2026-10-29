@@ -161,7 +161,9 @@ function App() {
                                   eventHandler={eventHandler}
                                   searchStateDocument={searchStateDocument}
                         />,
-                        <SelectedFacetsHeader key={'selectedFacetHeader'} query={currentDocumentQuery}/>,
+                        <SelectedFacetsHeader key={'selectedFacetHeader'}
+                                              searchStateDocument={searchStateDocument}
+                                              query={currentDocumentQuery}/>,
 
                         <SelectedFacetsView key={'selectedFacetView'}
                                             client={client}
