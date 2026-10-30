@@ -1,9 +1,9 @@
 {
 	"name": "FacetedSearch2",
 	"author": [
-		"[https://www.diqa.de DIQA]"
+		"Kai Kühn ([https://www.diqa.de DIQA])"
 	],
-	"url": "https://github.com/kkthek/faceted-search2",
+	"url": "https://github.com/kkthek/faceted-search-2",
 	"descriptionmsg": "facetedsearch2-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
@@ -62,9 +62,9 @@
 			"class": "DIQA\\FacetedSearch2\\Endpoints\\FacetQueryEndpoint"
 		},
         {
-          "path": "/FacetedSearch2/v1/proxy/category-tree",
-          "method": "POST",
-          "class": "DIQA\\FacetedSearch2\\Endpoints\\CategoryTreeEndpoint"
+            "path": "/FacetedSearch2/v1/proxy/category-tree",
+            "method": "POST",
+            "class": "DIQA\\FacetedSearch2\\Endpoints\\CategoryTreeEndpoint"
         }
 	],
 	"config_prefix": "fs2g",
