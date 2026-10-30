@@ -4,8 +4,8 @@
 			"DIQA Projektmanagement GmbH"
 		]
 	},
-	"facetedsearch2-desc": "Faceted search",
-	"facetedsearch2": "Faceted search",
+	"facetedsearch2-desc":      "Ersetzt die Wiki-Standardsuche durch eine facettierte Suche, die auf Basis von Semantic-Mediawiki arbeitet.",
+	"facetedsearch2":           "Faceted search",
 
 	"fs-score": 			    "Relevanz",
 	"fs-newest": 			    "Neuester Artikel zuerst",
