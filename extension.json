@@ -223,7 +223,7 @@
 		},
         "ExportLinkFormats": {
             "value": [],
-            "description": "Shows export links in the specified formats: json, csv, rdf, rss"
+            "description": "Shows export links in the specified formats: json, csv, rdf, rss. Requires the 'SMW'-extension to be installed."
         },
 		"HeaderControlOrder": {
 			"value": [],
@@ -251,7 +251,7 @@
 		},
 		"DateTimeZone": {
 			"value": "Europe/Berlin",
-			"description": "Adds/Subtracts an offset regarding the timezone to the datatime values which are stored in UTC"
+			"description": "Adds/Subtracts an offset regarding the timezone to the datetime values which are stored in UTC"
 		},
         "TagCloudProperty": {
             "value": false,
