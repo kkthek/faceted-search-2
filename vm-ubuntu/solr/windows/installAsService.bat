@@ -28,7 +28,7 @@ goto end
 IF [%1] == [/?] goto usage
 
 set FG=1
-set SOLR_DIR=%~dp0\..\solr-8.11.1\bin\
+set SOLR_DIR=%~dp0\..\solr-9.10.0\bin\
 IF NOT EXIST %SOLR_DIR% GOTO unzip
 set NSSMEXE=%CD%\service\%PLATFORM%\nssm.exe
 
@@ -40,7 +40,7 @@ IF "%JAVA_HOME%" == "" goto nojavahome
 IF NOT EXIST "%JAVA_HOME%" GOTO nojavahome
 
 :install
-"%NSSMEXE%" install "%SERVICE_NAME%" "%SOLR_DIR%solr.cmd" "start" -f
+"%NSSMEXE%" install "%SERVICE_NAME%" "%SOLR_DIR%solr.cmd" "start -Dsolr.modules=extraction" -f
 "%NSSMEXE%" set "%SERVICE_NAME%" Description "%SERVICE_DESCRIPTION%"
 
 IF %ERRORLEVEL% NEQ 0 GOTO failed

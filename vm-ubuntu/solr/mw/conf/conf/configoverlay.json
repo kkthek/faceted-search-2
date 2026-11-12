@@ -1,0 +1,7 @@
+{"queryResponseWriter":{"velocity":{
+      "name":"velocity",
+      "startup":"lazy",
+      "params.resource.loader.enabled":"true",
+      "template.base.dir":"",
+      "solr.resource.loader.enabled":"true",
+      "class":"solr.VelocityResponseWriter"}}}
