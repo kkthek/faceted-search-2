@@ -1,0 +1,5 @@
+This configuration in mw-folder is compatible with the Solr version 9.10.0
+Download SOLR release here: https://archive.apache.org/dist/solr/solr/9.10.0/solr-9.10.0.tgz
+and place it in this folder.
+
+Latest version of SOLR is 9.11.0 (2026-11-06). However, it does not contain Tika support. 9.10.0 is the latest version that does.

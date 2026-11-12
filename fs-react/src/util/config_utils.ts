@@ -28,7 +28,24 @@ class ConfigUtils {
             case 'pdf': return "application/pdf";
             case 'png': return "image/png";
             case 'jpeg':
+            case 'jpe':
+            case 'jfif':
+            case 'pjpeg':
+            case 'pjp':
             case 'jpg': return "image/jpeg";
+            case 'gif': return "image/gif";
+            case 'bmp': return "image/bmp";
+            case 'webp': return "image/webp";
+            case 'svg':
+            case 'svgz': return "image/svg+xml";
+            case 'ico':
+            case 'cur': return "image/x-icon";
+            case 'tif':
+            case 'tiff': return "image/tiff";
+            case 'avif': return "image/avif";
+            case 'apng': return "image/apng";
+            case 'heic': return "image/heic";
+            case 'heif': return "image/heif";
             default:
                 return 'application/text';
         }
@@ -89,8 +106,7 @@ class ConfigUtils {
     }
 
     private static getFullTitle(wikiContext: WikiContextAccessor, doc: Document) {
-        const namespaces = wikiContext.config['wgFormattedNamespaces'];
-        const namespaceAsText = namespaces[doc.namespaceFacet.namespace];
+        const namespaceAsText = this.getNamespaceAsText(wikiContext, doc.namespaceFacet.namespace);
         return doc.namespaceFacet.isMainNamespace() ? doc.title : `${namespaceAsText}:${doc.title}`;
     }
 

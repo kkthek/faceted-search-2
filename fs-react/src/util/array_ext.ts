@@ -10,6 +10,7 @@ declare global {
         reorder(order: number[]) : T[];
         intersect(getKey: (e: T) => string, keyArrayToIntersect: string[]): T[];
         calculatePermutation(defaultOrder: string[]): number[];
+        last(): T
     }
 }
 
@@ -25,6 +26,10 @@ Array.prototype.createUniqueArray = function <T>(getKey: (e: T) => string = c=> 
         }
     })
     return result;
+}
+
+Array.prototype.last = function() {
+    return this.length > 0 ? this[this.length - 1] : null;
 }
 
 Array.prototype.findFirst = function<T>(predicate: (e: T) => boolean): T {
