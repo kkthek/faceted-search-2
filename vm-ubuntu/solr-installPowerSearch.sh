@@ -18,9 +18,9 @@ if [ -e $SOLR_DATA_DIR ]; then
   return
 fi
 
-if [ ! -e $POWER_SEARCH/solr-8.11.3.zip ]; then
-  sudo wget -O /tmp/solr-8.11.3.zip "https://www.apache.org/dyn/closer.lua/lucene/solr/8.11.3/solr-8.11.3.zip?action=download"
-  sudo mv /tmp/solr-8.11.3.zip $POWER_SEARCH
+if [ ! -e $POWER_SEARCH/solr-9.10.0.tgz ]; then
+  sudo wget -O /tmp/solr-9.10.0.tgz "https://archive.apache.org/dist/solr/solr/9.10.0/solr-9.10.0.tgz"
+  sudo mv /tmp/solr-9.10.0.tgz $POWER_SEARCH
 fi
 
 printf "\n\n\n#################### Deleting old SOLR installation and old indexex\n"
@@ -31,7 +31,7 @@ sudo rm -R $SOLR_INSTALL_DIR
 printf "####################  Installing new SOLR server\n"
 sudo dos2unix $POWER_SEARCH/install_solr_service.sh
 sudo mkdir $SOLR_DATA_DIR
-sudo $POWER_SEARCH/install_solr_service.sh $POWER_SEARCH/solr*.zip -n -f
+sudo $POWER_SEARCH/install_solr_service.sh $POWER_SEARCH/solr*.tgz -n -f
 sudo chown -R solr:solr $SOLR_INSTALL_DIR/
 
 printf "####################  Starting SOLR -server\n"
